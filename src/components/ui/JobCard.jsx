@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Briefcase, MapPin, DollarSign, ArrowRight, Building2, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, isAuthenticated = true }) => {
     // Utility for date formatting
     const formattedDate = new Date(job.created_at).toLocaleDateString(undefined, {
         month: 'short',
@@ -95,7 +95,7 @@ const JobCard = ({ job }) => {
                     <Link to={`/jobs/${job.id}`} className="block">
                         <button className="w-full relative group/btn overflow-hidden bg-black text-white font-display font-bold text-xs py-3.5 rounded-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex justify-center items-center gap-2 active:scale-[0.98]">
                             <span className="relative z-10 flex items-center gap-2">
-                                Details <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                                View Details <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                             </span>
                         </button>
                     </Link>

@@ -4,8 +4,10 @@ import JobCard from '../../components/ui/JobCard';
 import Loader from '../../components/ui/Loader';
 import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 const JobFeedPage = () => {
+    const { isAuthenticated } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -210,7 +212,7 @@ const JobFeedPage = () => {
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     {filtered.length > 0 ? (
-                        filtered.map(job => <JobCard key={job.id} job={job} />)
+                        filtered.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (
                         <div className="col-span-full text-center py-24 bg-white rounded-3xl border-4 border-black border-dotted">
                             <div className="w-20 h-20 bg-black rounded-3xl grid place-items-center mx-auto mb-6 shadow-2xl">

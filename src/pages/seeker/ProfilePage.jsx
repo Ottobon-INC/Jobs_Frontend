@@ -72,14 +72,43 @@ const ProfilePage = () => {
                             {user.email.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-black uppercase tracking-tight">{user.email}</h2>
+                            <h2 className="text-2xl font-black text-black uppercase tracking-tight">{profile?.full_name || user.email?.split('@')[0]}</h2>
                             <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em] mt-1">{profile?.role || 'UNAUTHORIZED_ACCESS'}</p>
-                            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-widest rounded-lg italic">
-                                STATUS: ONLINE
+                            <div className="flex flex-wrap gap-3 mt-4">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-widest rounded-lg italic">
+                                    STATUS: ONLINE
+                                </div>
+                                {profile?.location && (
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 border border-black/10 text-black text-[9px] font-black uppercase tracking-widest rounded-lg">
+                                        LOCATION: {profile.location}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Contact Statistics - Mini Bento */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.05 }}
+                        className="bg-white border-2 border-black rounded-3xl p-6 shadow-[6px_6px_0px_#000]"
+                    >
+                        <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em] mb-2">Primary Email</p>
+                        <p className="text-sm font-black text-black break-all">{user.email}</p>
+                    </motion.div>
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="bg-white border-2 border-black rounded-3xl p-6 shadow-[6px_6px_0px_#000]"
+                    >
+                        <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em] mb-2">Phone Number</p>
+                        <p className="text-sm font-black text-black">{profile?.phone || 'NOT_LINKED'}</p>
+                    </motion.div>
+                </div>
 
                 {/* Resume Section - High Contrast */}
                 <motion.div

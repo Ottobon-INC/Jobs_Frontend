@@ -46,7 +46,10 @@ const Navbar = () => {
                 <div className="flex items-center gap-4">
                     {user ? (
                         <>
-                            <div className="flex items-center gap-3 bg-white border-2 border-black px-4 py-1.5 rounded-xl shadow-[4px_4px_0px_#000]">
+                            <Link 
+                                to="/profile"
+                                className="flex items-center gap-3 bg-white border-2 border-black px-4 py-1.5 rounded-xl shadow-[4px_4px_0px_#000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-300"
+                            >
                                 <div className="w-6 h-6 bg-black rounded-full grid place-items-center">
                                     <User size={12} className="text-white" />
                                 </div>
@@ -56,7 +59,7 @@ const Navbar = () => {
                                         {role || 'User'}
                                     </span>
                                 </div>
-                            </div>
+                            </Link>
 
                             <button
                                 onClick={handleLogout}
