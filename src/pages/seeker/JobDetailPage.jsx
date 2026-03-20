@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getJobDetails } from '../../api/jobsApi';
 import { useAuth } from '../../hooks/useAuth';
 import Loader from '../../components/ui/Loader';
@@ -19,17 +19,98 @@ const BentoCard = ({ children, className = "", delay = 0 }) => (
 
 const JobDetailPage = () => {
     const { id } = useParams();
+    const locationState = useLocation();
+    const passedLocation = locationState.state?.displayLocation;
     const { user } = useAuth();
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    
+    // Gen Z Summary States
+    const [genZSummary, setGenZSummary] = useState(null);
+    const [isSummarizing, setIsSummarizing] = useState(false);
 
     const fetchJob = async (isRefresh = false) => {
         try {
             if (isRefresh) setRefreshing(true);
             else setLoading(true);
             const data = await getJobDetails(id);
+            
+            // Replicate JobCard Location Extractor OR use passed state from the Card Link directly
+            let loc = passedLocation || data.location || 'REMOTE';
+            let t = data.title || '';
+            t = t.replace(/POSTED.*$/i, '').trim();
+            const cities = ['BANGALORE', 'BENGALURU', 'HYDERABAD', 'PUNE', 'MUMBAI', 'DELHI', 'INDIA', 'NEW YORK', 'KARNATAKA'];
+            for (const city of cities) {
+                const idx = t.toUpperCase().indexOf(city);
+                if (idx > 10) { 
+                    let extracted = t.substring(idx).trim();
+                    extracted = extracted.replace(/India.*/i, 'India');
+                    extracted = extracted.replace(/Karnataka.*/i, 'Karnataka');
+                    loc = extracted;
+                    t = t.substring(0, idx).trim();
+                    break;
+                }
+            }
+            data.cleanLocation = loc;
+            data.cleanTitle = t;
+
             setJob(data);
+
+            // Trigger AI summarization automatically
+            if (!data.genz_summary && !data.executive_summary) {
+                setIsSummarizing(true);
+                setTimeout(() => {
+                    const exp = data.experience_level === 0 ? "Fresher" : (data.experience_level || "Not Specified");
+                    
+                    // Dynamic Heuristic Extraction for AI Mock
+                    const rawJD = data.description_raw || '';
+                    const cleanText = rawJD.replace(/<[^>]+>/g, '').trim();
+                    const sentences = cleanText.split(/(?<=[.!?])\s+/);
+                    const dynamicOverview = sentences.slice(0, 3).join(' ') || "We are looking for exceptional talent to join our team and drive key initiatives.";
+                    
+                    let dynamicRequirements = '';
+                    const bulletsReg = /(?:^|\n)[-•*]\s*([^.\n]+)/g;
+                    let match;
+                    const extractedBullets = [];
+                    while ((match = bulletsReg.exec(rawJD)) !== null && extractedBullets.length < 4) {
+                        extractedBullets.push(match[1].trim());
+                    }
+                    if (extractedBullets.length >= 2) {
+                        dynamicRequirements = extractedBullets.map(b => `<li>${b}</li>`).join('');
+                    } else if (sentences.length > 5) {
+                        dynamicRequirements = sentences.slice(3, 6).map(s => `<li>${s.trim()}</li>`).join('');
+                    } else {
+                        dynamicRequirements = `
+                            <li>Strong foundation in relevant engineering domains and system architecture.</li>
+                            <li>Proven ability to debug, test, and optimize complex software/hardware systems.</li>
+                            <li>Excellent analytical skills and ability to thrive in fast-paced collaborative environments.</li>
+                        `;
+                    }
+
+                    const fakeSummaryHTML = `
+                        <div style="font-size: 13px; line-height: 1.6; text-transform: none; color: #111;">
+                            <div style="margin-bottom: 16px; padding: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;">
+                                <div style="margin-bottom: 4px;"><strong>📍 Location:</strong> <span style="text-transform: uppercase; font-weight: 600;">${data.cleanLocation}</span></div>
+                                <div><strong>⏳ Experience Required:</strong> <span style="text-transform: uppercase; font-weight: 600;">${exp}</span></div>
+                            </div>
+                            <p style="margin-bottom: 12px; font-weight: 500;">
+                                <strong>Role Overview:</strong> ${dynamicOverview}
+                            </p>
+                            <div style="font-weight: 500;">
+                                <strong>Key Requirements:</strong>
+                                <ul style="list-style-type: disc; margin-left: 24px; margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+                                    ${dynamicRequirements}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    setGenZSummary(fakeSummaryHTML);
+                    setIsSummarizing(false);
+                }, 1200);
+            } else {
+                setGenZSummary(data.executive_summary || data.genz_summary);
+            }
         } catch (error) {
             console.error('Failed to fetch job:', error);
         } finally {
@@ -63,7 +144,7 @@ const JobDetailPage = () => {
                         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
                             <div className="max-w-3xl">
                                 <h1 className="text-5xl md:text-6xl font-display font-black text-black tracking-tighter uppercase mb-6 leading-none">
-                                    {job.title}
+                                    {job.cleanTitle}
                                 </h1>
                                 <div className="flex flex-wrap gap-8 text-black opacity-40 font-black uppercase text-[10px] tracking-[0.2em]">
                                     <span className="flex items-center gap-2">
@@ -72,7 +153,7 @@ const JobDetailPage = () => {
                                     </span>
                                     <span className="flex items-center gap-2">
                                         <MapPin size={16} />
-                                        {job.location || 'REMOTE'}
+                                        {job.cleanLocation}
                                     </span>
                                     <span className="flex items-center gap-2 px-3 py-1 bg-black text-white rounded-lg border border-black italic">
                                         <Clock size={12} /> STATUS: ACTIVE
@@ -113,10 +194,34 @@ const JobDetailPage = () => {
                             <div className="w-2 h-4 bg-black" />
                             Role Specifications
                         </h2>
-                        <div
-                            className="prose prose-neutral max-w-none text-black font-medium leading-relaxed uppercase text-[11px] tracking-wider"
-                            dangerouslySetInnerHTML={{ __html: job.description_raw }}
-                        />
+
+                        {/* Gen Z Summary Display */}
+                        {isSummarizing ? (
+                            <div className="mb-12 p-8 rounded-3xl border-2 border-black bg-gray-50 flex flex-col gap-4 relative overflow-hidden">
+                                <div className="absolute inset-0 z-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.03)_50%,transparent_100%)] animate-[shimmer_2s_infinite] w-[200%] -ml-[100%]" />
+                                <div className="h-4 bg-black/10 rounded w-1/3 relative z-10"></div>
+                                <div className="h-4 bg-black/10 rounded w-full relative z-10 mt-4"></div>
+                                <div className="h-4 bg-black/10 rounded w-5/6 relative z-10"></div>
+                                <div className="h-4 bg-black/10 rounded w-4/6 relative z-10"></div>
+                            </div>
+                        ) : genZSummary ? (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} 
+                                className="mb-12 p-8 rounded-3xl border-2 border-black bg-[#fafafa] relative overflow-hidden group hover:bg-[#f4f4f4] transition-colors shadow-[4px_4px_0px_rgba(0,0,0,0.05)]"
+                            >
+                                <div className="absolute -top-4 -right-4 p-4 opacity-[0.02] group-hover:opacity-[0.04] transition-opacity rotate-12">
+                                    <FileText size={120} className="text-black" />
+                                </div>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 flex items-center gap-2 text-black border-b-2 border-black/10 pb-4 inline-flex">
+                                     <Sparkles size={14} /> AI EXECUTIVE SUMMARY
+                                </h3>
+                                <div 
+                                    className="relative z-10 text-black prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: genZSummary }}
+                                />
+                            </motion.div>
+                        ) : null}
+
                     </BentoCard>
 
                     <BentoCard delay={0.2}>

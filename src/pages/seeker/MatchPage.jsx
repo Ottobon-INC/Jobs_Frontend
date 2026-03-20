@@ -27,6 +27,7 @@ const MatchPage = () => {
 
     const [missingResume, setMissingResume] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState(null);
 
     const [tailoring, setTailoring] = useState(false);
     const [tailoredResume, setTailoredResume] = useState(null);
@@ -101,11 +102,14 @@ const MatchPage = () => {
         const file = e.target.files[0];
         if (!file) return;
         setUploading(true);
+        setUploadError(null);
         try {
             await uploadResume(file);
             setTimeout(() => runAnalysis(), 1000);
         } catch (err) {
             console.error(err);
+            const msg = err.response?.data?.detail || err.message || "Unknown Server Error during Upload";
+            setUploadError(msg);
             setUploading(false);
         }
     };
@@ -137,6 +141,13 @@ const MatchPage = () => {
                         <input type="file" className="hidden" accept=".pdf,.docx" onChange={handleFileUpload} disabled={uploading} />
                     </label>
                     {uploading && <p className="mt-8 text-black font-black uppercase tracking-widest animate-pulse">Processing Stream...</p>}
+                    {uploadError && (
+                        <div className="mt-8 p-4 bg-red-50 border-2 border-red-500 rounded-xl">
+                            <p className="text-red-600 font-bold text-xs uppercase tracking-widest text-center">
+                                ERROR: {typeof uploadError === 'string' ? uploadError : JSON.stringify(uploadError)}
+                            </p>
+                        </div>
+                    )}
                 </motion.div>
             </div>
         );

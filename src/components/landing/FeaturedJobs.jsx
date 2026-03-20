@@ -95,12 +95,12 @@ export function FeaturedJobs() {
                         >
                             Get started
                         </Link>
-                        <button
-                            onClick={() => document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' })}
+                        <Link
+                            to="/jobs"
                             className="text-black font-semibold border-b-2 border-black pb-1 hover:text-black/60 hover:border-black/30 transition-all cursor-pointer"
                         >
                             View All Jobs
-                        </button>
+                        </Link>
                     </div>
                 </div>
 

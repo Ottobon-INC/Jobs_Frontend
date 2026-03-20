@@ -9,24 +9,49 @@ const JobCard = ({ job }) => {
         day: 'numeric'
     });
 
-    // Clean ugly slug-format titles (e.g. "IN_ASSOCIATE_JAVA_DEVELOPER_KOLKATA")
-    const formatTitle = (raw) => {
-        if (!raw) return 'Untitled';
+    // Advanced parser for scraped titles containing locations and timestamps
+    const parseJobData = (raw) => {
+        if (!raw) return { title: 'Untitled', loc: null, time: null };
         let t = raw;
-        // Strip leading 2-letter country code prefix (e.g. "IN_", "US_")
-        t = t.replace(/^[A-Z]{2}_/, '');
-        // If still has underscores, it's a slug — clean it
-        if (t.includes('_')) {
-            t = t.replace(/_/g, ' ');
-            // Title case
-            t = t.replace(/\b\w+/g, w =>
-                ['&', 'AND', 'OF', 'THE', 'IN', 'AT', 'FOR'].includes(w.toUpperCase())
-                    ? w.toLowerCase()
-                    : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-            );
+        let time = null;
+        let loc = null;
+        
+        // Extract "Posted X hours ago"
+        const postedMatch = t.match(/POSTED\s*(.*)$/i);
+        if (postedMatch) {
+            time = postedMatch[1].trim();
+            t = t.replace(/POSTED.*$/i, '').trim();
         }
-        return t;
+
+        // Extract apparent locations
+        const cities = ['BANGALORE', 'BENGALURU', 'HYDERABAD', 'PUNE', 'MUMBAI', 'DELHI', 'INDIA', 'NEW YORK', 'KARNATAKA'];
+        for (const city of cities) {
+            const idx = t.toUpperCase().indexOf(city);
+            if (idx > 10) { 
+                let extracted = t.substring(idx).trim();
+                extracted = extracted.replace(/India.*/i, 'India');
+                extracted = extracted.replace(/Karnataka.*/i, 'Karnataka');
+                loc = extracted;
+                t = t.substring(0, idx).trim();
+                break;
+            }
+        }
+
+        // Clean slug formatting
+        t = t.replace(/^[A-Z]{2}_/, '');
+        t = t.replace(/_/g, ' ');
+        t = t.replace(/\b\w+/g, w =>
+            ['&', 'AND', 'OF', 'THE', 'IN', 'AT', 'FOR'].includes(w.toUpperCase())
+                ? w.toLowerCase()
+                : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+        );
+
+        return { title: t, loc, time };
     };
+
+    const { title: cleanTitle, loc: parsedLoc, time: parsedTime } = parseJobData(job.title);
+    const displayLocation = parsedLoc || job.location || 'Remote';
+    const displayTime = parsedTime ? `Posted ${parsedTime}` : formattedDate;
 
     return (
         <motion.div
@@ -50,8 +75,8 @@ const JobCard = ({ job }) => {
                                 {(job.company_name || 'O').charAt(0)}
                             </div>
                             <div>
-                                <h3 className="font-display font-semibold text-gray-900 tracking-tight leading-loose text-lg group-hover:text-black transition-colors">
-                                    {formatTitle(job.title)}
+                                <h3 className="font-display font-semibold text-gray-900 tracking-tight leading-loose text-lg group-hover:text-black transition-colors line-clamp-2">
+                                    {cleanTitle}
                                 </h3>
                                 <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
                                     <Building2 size={12} className="opacity-40" />
@@ -59,16 +84,16 @@ const JobCard = ({ job }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-50 rounded-full border border-black/[0.03] text-[10px] font-bold text-gray-400 uppercase tracking-widest shadow-sm">
+                        <div className="flex items-center justify-center shrink-0 h-fit gap-1.5 px-3 py-1.5 bg-gray-50 rounded-full border border-black/[0.03] text-[10px] font-bold text-gray-400 uppercase tracking-widest shadow-sm">
                             <Calendar size={10} />
-                            {formattedDate}
+                            {displayTime}
                         </div>
                     </div>
 
                     <div className="space-y-3 mb-4">
                         <div className="flex items-center gap-2.5 text-sm font-medium text-gray-500">
                             <MapPin size={14} className="opacity-40" />
-                            <span>{job.location || 'Remote'}</span>
+                            <span className="truncate">{displayLocation}</span>
                         </div>
                         {job.salary_range && (
                             <div className="flex items-center gap-2.5 text-sm font-semibold text-black">
@@ -92,7 +117,7 @@ const JobCard = ({ job }) => {
                         ))}
                     </div>
 
-                    <Link to={`/jobs/${job.id}`} className="block">
+                    <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="block">
                         <button className="w-full relative group/btn overflow-hidden bg-black text-white font-display font-bold text-xs py-3.5 rounded-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex justify-center items-center gap-2 active:scale-[0.98]">
                             <span className="relative z-10 flex items-center gap-2">
                                 Details <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />

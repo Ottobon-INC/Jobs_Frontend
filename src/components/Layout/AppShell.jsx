@@ -1,9 +1,11 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
 const AppShell = () => {
+    const { role } = useAuth();
     const location = useLocation();
     const hideFooter = location.pathname.startsWith('/chat');
 
@@ -15,7 +17,7 @@ const AppShell = () => {
                 <Sidebar />
 
                 {/* Main Content Area - Push right if sidebar is present (md:pl-64) */}
-                <main className="flex-1 w-full md:pl-64 min-w-0 transition-all duration-300 flex flex-col">
+                <main className={`flex-1 w-full ${role ? 'md:pl-64' : ''} min-w-0 transition-all duration-300 flex flex-col`}>
                     <div className="flex-1 p-6 md:p-8">
                         <Outlet />
                     </div>
