@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { MapPin, Briefcase, Check } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { MapPin, Briefcase } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const jobs = [
     {
@@ -67,13 +66,7 @@ const jobs = [
 ];
 
 export function FeaturedJobs() {
-    const [appliedJobs, setAppliedJobs] = useState([]);
-
-    const handleApply = (index) => {
-        if (!appliedJobs.includes(index)) {
-            setAppliedJobs([...appliedJobs, index]);
-        }
-    };
+    const navigate = useNavigate();
 
     return (
         <section className="bg-white py-24">
@@ -112,16 +105,9 @@ export function FeaturedJobs() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            onClick={() => handleApply(index)}
+                            onClick={() => navigate('/jobs')}
                             className="group border border-black/5 rounded-xl p-6 hover:border-black/20 hover:shadow-xl hover:shadow-black/5 transition-all cursor-pointer bg-white relative overflow-hidden"
                         >
-                            {appliedJobs.includes(index) && (
-                                <div className="absolute top-0 right-0 p-4 animate-in fade-in zoom-in duration-300">
-                                    <div className="bg-green-500 text-white p-1 rounded-full">
-                                        <Check className="w-4 h-4" />
-                                    </div>
-                                </div>
-                            )}
 
                             <div className="flex justify-between items-start mb-6">
                                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-xl ${job.color}`}>
@@ -134,8 +120,8 @@ export function FeaturedJobs() {
                                 )}
                             </div>
 
-                            <h3 className={`text-xl font-bold mb-1 transition-colors ${appliedJobs.includes(index) ? "text-green-600" : "text-black group-hover:text-primary"}`}>
-                                {appliedJobs.includes(index) ? "Applied Successfully" : job.role}
+                            <h3 className="text-xl font-bold mb-1 transition-colors text-black group-hover:text-primary">
+                                {job.role}
                             </h3>
                             <p className="text-black/80 font-medium mb-4">{job.company}</p>
 

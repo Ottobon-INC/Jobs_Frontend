@@ -30,7 +30,8 @@ const IngestionPage = () => {
         { id: 'deloitte', name: 'Deloitte', pattern: 'bg-black text-white' },
         { id: 'pwc', name: 'PwC', pattern: 'bg-white border-4 border-black text-black' },
         { id: 'kpmg', name: 'KPMG', pattern: 'bg-gray-100 text-black' },
-        { id: 'ey', name: 'EY', pattern: 'bg-black text-white italic' }
+        { id: 'ey', name: 'EY', pattern: 'bg-black text-white italic' },
+        { id: 'generic', name: 'Generic GCC', pattern: 'bg-gradient-to-br from-black to-gray-700 text-white' }
     ];
 
     return (

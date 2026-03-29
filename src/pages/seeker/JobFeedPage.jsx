@@ -2,13 +2,16 @@ import { useState, useEffect, useMemo } from 'react';
 import { getJobFeed } from '../../api/jobsApi';
 import JobCard from '../../components/ui/JobCard';
 import Loader from '../../components/ui/Loader';
-import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter } from 'lucide-react';
+import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter, ArrowDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 const JobFeedPage = () => {
+    const { isAuthenticated } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [visibleCount, setVisibleCount] = useState(20);
 
     // Filter State
     const [selectedLocation, setSelectedLocation] = useState('All Locations');
@@ -155,6 +158,14 @@ const JobFeedPage = () => {
             return matchesSearch && matchesLocation && matchesExperience && matchesCategory && matchesSkills;
         });
     }, [jobs, searchTerm, selectedLocation, selectedExperience, selectedCategory, selectedSkills]);
+
+    // Reset visible count when filters change
+    useEffect(() => {
+        setVisibleCount(20);
+    }, [searchTerm, selectedLocation, selectedSkills]);
+
+    const visibleJobs = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+    const hasMore = visibleCount < filtered.length;
 
     const toggleSkill = (skill) => {
         setSelectedSkills(prev =>
@@ -381,12 +392,15 @@ const JobFeedPage = () => {
                     <h2 className="text-2xl font-display font-black text-black uppercase tracking-tighter">
                         {filtered.length} AVAILABLE ROLES
                     </h2>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                        Showing {Math.min(visibleCount, filtered.length)} of {filtered.length}
+                    </span>
                     <div className="h-px bg-black flex-1 mx-8 hidden md:block opacity-10" />
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {filtered.length > 0 ? (
-                        filtered.map(job => <JobCard key={job.id} job={job} />)
+                    {visibleJobs.length > 0 ? (
+                        visibleJobs.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (
                         <div className="col-span-full text-center py-24 bg-white rounded-3xl border-4 border-black border-dotted">
                             <div className="w-20 h-20 bg-black rounded-3xl grid place-items-center mx-auto mb-6 shadow-2xl">
@@ -397,6 +411,23 @@ const JobFeedPage = () => {
                         </div>
                     )}
                 </div>
+
+                {/* View More Button */}
+                {hasMore && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex justify-center mt-16"
+                    >
+                        <button
+                            onClick={() => setVisibleCount(prev => prev + 20)}
+                            className="group flex items-center gap-3 px-10 py-5 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-white hover:text-black transition-all duration-300 shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20"
+                        >
+                            <ArrowDown size={16} className="group-hover:translate-y-0.5 transition-transform" />
+                            View More ({filtered.length - visibleCount} remaining)
+                        </button>
+                    </motion.div>
+                )}
             </main>
         </div>
     );

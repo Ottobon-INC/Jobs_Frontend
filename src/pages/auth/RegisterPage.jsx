@@ -8,7 +8,11 @@ import { motion } from 'framer-motion';
 const RegisterPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [location, setLocation] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [role, setRole] = useState(ROLES.SEEKER);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -16,9 +20,14 @@ const RegisterPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
+        if (password !== confirmPassword) {
+            setError('PASSWORDS_MATCH_FAILURE');
+            setLoading(false);
+            return;
+        }
+
         try {
-            await signUp(email, password, role);
+            await signUp(email, password, role, fullName, phone, location);
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.detail || 'REGISTRATION_FAILURE');
@@ -65,6 +74,17 @@ const RegisterPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Full Name</label>
+                            <input
+                                type="text"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
+                                className="w-full px-6 py-4 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all duration-300"
+                                placeholder="John Doe"
+                            />
+                        </div>
                         <div>
                             <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Email</label>
                             <input
@@ -77,6 +97,28 @@ const RegisterPage = () => {
                             />
                         </div>
                         <div>
+                            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Phone Number</label>
+                            <input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                                className="w-full px-6 py-4 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all duration-300"
+                                placeholder="+1 234 567 890"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Location</label>
+                            <input
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                required
+                                className="w-full px-6 py-4 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all duration-300"
+                                placeholder="City, Country"
+                            />
+                        </div>
+                        <div>
                             <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Password</label>
                             <input
                                 type="password"
@@ -85,6 +127,17 @@ const RegisterPage = () => {
                                 required
                                 className="w-full px-6 py-4 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all duration-300"
                                 placeholder="8+ characters"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-3 ml-1">Confirm Password</label>
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                                className="w-full px-6 py-4 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all duration-300"
+                                placeholder="Repeat password"
                             />
                         </div>
                     </div>
