@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { matchUserToJob as matchApi } from '../../api/matchingApi';
 import { getJobDetails as fetchJob } from '../../api/jobsApi';
-import { uploadResume } from '../../api/usersApi';
+import { uploadResume, reuploadResume } from '../../api/usersApi';
 import Loader from '../../components/ui/Loader';
 import { CheckCircle, MessageSquare, Upload, RefreshCw, ArrowLeft, ExternalLink, Zap, Shield, Target } from 'lucide-react';
 import { createChatSession } from '../../api/chatApi';
@@ -34,6 +34,9 @@ const MatchPage = () => {
     const [showModal, setShowModal] = useState(false);
 
     const [displayedScore, setDisplayedScore] = useState(0);
+    const [reuploading, setReuploading] = useState(false);
+    const [reuploadError, setReuploadError] = useState(null);
+    const [reuploadSuccess, setReuploadSuccess] = useState(false);
 
     const handleTailorResume = async () => {
         try {
@@ -46,6 +49,30 @@ const MatchPage = () => {
             alert("Analysis failure. Protocol exception.");
         } finally {
             setTailoring(false);
+        }
+    };
+
+    const handleReupload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        // Reset the input so the same file can be selected again later
+        e.target.value = '';
+        setReuploading(true);
+        setReuploadError(null);
+        setReuploadSuccess(false);
+        try {
+            await reuploadResume(file);
+            setReuploadSuccess(true);
+            // Brief pause so the user sees the success state, then re-run match
+            setTimeout(() => {
+                setReuploadSuccess(false);
+                runAnalysis();
+            }, 1500);
+        } catch (err) {
+            console.error(err);
+            const msg = err.response?.data?.detail || err.message || 'Resume re-upload failed';
+            setReuploadError(msg);
+            setReuploading(false);
         }
     };
 
@@ -241,6 +268,45 @@ const MatchPage = () => {
                             >
                                 <Target size={18} /> Resume Builder
                             </Link>
+
+                            {/* ── Re-upload Resume ────────────────────── */}
+                            <label className="block w-full cursor-pointer group">
+                                <div
+                                    className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-display font-black text-[10px] uppercase tracking-[0.25em] border-2 transition-all duration-500
+                                        ${
+                                            reuploadSuccess
+                                                ? 'border-green-500 bg-green-50 text-green-700'
+                                                : reuploading
+                                                ? 'border-black bg-gray-100 text-black opacity-60 cursor-not-allowed'
+                                                : 'border-black bg-white text-black group-hover:bg-black group-hover:text-white'
+                                        }`}
+                                >
+                                    {reuploading ? (
+                                        <><RefreshCw size={18} className="animate-spin" /> Processing...</>
+                                    ) : reuploadSuccess ? (
+                                        <><CheckCircle size={18} /> Uploaded! Re-analysing...</>
+                                    ) : (
+                                        <><Upload size={18} /> Re-upload Resume</>
+                                    )}
+                                </div>
+                                <input
+                                    id="reupload-resume-input"
+                                    type="file"
+                                    className="hidden"
+                                    accept=".pdf,.docx"
+                                    onChange={handleReupload}
+                                    disabled={reuploading || reuploadSuccess}
+                                />
+                            </label>
+
+                            {reuploadError && (
+                                <div className="p-3 bg-red-50 border-2 border-red-400 rounded-xl">
+                                    <p className="text-red-600 font-bold text-[9px] uppercase tracking-widest text-center">
+                                        {reuploadError}
+                                    </p>
+                                </div>
+                            )}
+                            {/* ──────────────────────────────────────── */}
 
                             <button
                                 onClick={handleStartChat}

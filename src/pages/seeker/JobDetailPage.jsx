@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { getJobDetails } from '../../api/jobsApi';
 import { useAuth } from '../../hooks/useAuth';
 import Loader from '../../components/ui/Loader';
-import { Briefcase, MapPin, ExternalLink, CheckCircle, HelpCircle, FileText, Target, ArrowLeft, Sparkles, Clock, Building2, RefreshCw, Lock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Briefcase, MapPin, ExternalLink, CheckCircle, HelpCircle, FileText, Target, ArrowLeft, Sparkles, Clock, Building2, RefreshCw, Lock, ChevronDown, ChevronUp, Radio } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (
@@ -167,6 +167,15 @@ const JobDetailPage = () => {
                                         <Link to={`/jobs/${id}/match`} className="w-full sm:w-auto">
                                             <button className="w-full bg-black text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] hover:bg-gray-900 transition-all flex items-center justify-center gap-3 shadow-xl">
                                                 <Sparkles size={18} /> Run Match IQ
+                                            </button>
+                                        </Link>
+                                        <Link
+                                            to={`/jobs/${id}/mock-interview`}
+                                            state={{ jobTitle: job.cleanTitle, companyName: job.company_name }}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <button className="w-full bg-white border-4 border-black text-black px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] hover:bg-black hover:text-white transition-all flex items-center justify-center gap-3">
+                                                <Radio size={18} /> Mock Interview
                                             </button>
                                         </Link>
                                     </>

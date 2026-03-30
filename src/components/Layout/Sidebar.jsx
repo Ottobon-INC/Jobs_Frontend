@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Briefcase, User, MessageSquare, LayoutDashboard, PlusCircle, Search, Upload, Newspaper, TrendingUp, BookOpen } from 'lucide-react';
+import { Briefcase, User, MessageSquare, LayoutDashboard, PlusCircle, Search, Upload, Newspaper, TrendingUp, BookOpen, Radio } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 import { motion } from 'framer-motion';
 
@@ -12,6 +12,7 @@ const Sidebar = () => {
         { to: '/jobs', label: 'Feed', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN] },
         { to: '/profile', label: 'Identity', icon: User, roles: [ROLES.SEEKER] },
         { to: '/courses', label: 'Courses', icon: BookOpen, roles: [ROLES.SEEKER] },
+        { to: '/mock-interview', label: 'Mock Interview', icon: Radio, roles: [ROLES.SEEKER] },
         { to: '/chat', label: 'Direct', icon: MessageSquare, roles: [ROLES.SEEKER] },
         { to: '/provider/create', label: 'Publish', icon: PlusCircle, roles: [ROLES.PROVIDER] },
         { to: '/provider/listings', label: 'Registry', icon: Briefcase, roles: [ROLES.PROVIDER] },

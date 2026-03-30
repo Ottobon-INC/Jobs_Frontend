@@ -17,6 +17,18 @@ export const uploadResume = async (file) => {
     return response.data;
 };
 
+export const reuploadResume = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.put('/users/resume', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+};
+
 export const getResumeDownloadUrl = async () => {
     const response = await api.get('/users/me/resume');
     return response.data;
