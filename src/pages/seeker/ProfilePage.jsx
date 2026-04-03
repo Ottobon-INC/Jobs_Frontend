@@ -17,8 +17,11 @@ import {
     MapPin,
     Phone,
     User,
-    ChevronRight
+    ChevronRight,
+    Calendar,
+    Target
 } from 'lucide-react';
+import { DESIRED_JOB_ROLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfilePage = () => {
@@ -33,8 +36,10 @@ const ProfilePage = () => {
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [location, setLocation] = useState('');
+    const [dob, setDob] = useState('');
     const [skills, setSkills] = useState([]);
     const [interests, setInterests] = useState('');
+    const [aspirations, setAspirations] = useState([]);
     const [newSkill, setNewSkill] = useState('');
 
     const [message, setMessage] = useState(null);
@@ -50,8 +55,10 @@ const ProfilePage = () => {
             setFullName(data.full_name || '');
             setPhone(data.phone || '');
             setLocation(data.location || '');
+            setDob(data.dob || '');
             setSkills(data.skills || []);
             setInterests(data.interests || '');
+            setAspirations(data.aspirations || []);
         } catch (err) {
             console.error(err);
             setError("Failed to fetch profile details.");
@@ -106,8 +113,10 @@ const ProfilePage = () => {
                 full_name: fullName,
                 phone: phone,
                 location: location,
+                dob: dob,
                 skills: skills,
-                interests: interests
+                interests: interests,
+                aspirations: aspirations
             });
             setMessage("Profile updated successfully.");
             setEditMode(false);
@@ -204,6 +213,22 @@ const ProfilePage = () => {
                                 ) : (
                                     <p className="font-bold flex items-center gap-2 text-sm">
                                         <MapPin size={14} className="text-black/30" /> {profile?.location || 'UNDEFINED'}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="text-[9px] font-black text-black/30 uppercase tracking-widest block mb-1 ml-1">Date of Birth</label>
+                                {editMode ? (
+                                    <input 
+                                        type="date" 
+                                        value={dob}
+                                        onChange={(e) => setDob(e.target.value)}
+                                        className="w-full bg-gray-50 border-2 border-black rounded-xl px-4 py-3 font-bold text-sm text-black"
+                                    />
+                                ) : (
+                                    <p className="font-bold flex items-center gap-2 text-sm">
+                                        <Calendar size={14} className="text-black/30" /> {profile?.dob ? new Date(profile.dob).toLocaleDateString() : 'NOT PROVIDED'}
                                     </p>
                                 )}
                             </div>
@@ -354,6 +379,67 @@ const ProfilePage = () => {
                                     <p className="text-sm font-bold leading-relaxed text-black/80">{interests}</p>
                                 ) : (
                                     <p className="text-[10px] italic font-bold text-black/20 uppercase text-center py-6">No trajectory defined. Enter edit mode to update.</p>
+                                )}
+                            </div>
+                        )}
+                    </motion.div>
+
+                    {/* Aspirations Questionnaire */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25 }}
+                        className="bg-white border-4 border-black rounded-[40px] p-10 shadow-[16px_16px_0px_rgba(0,0,0,0.05)]"
+                    >
+                        <h3 className="text-2xl font-black text-black uppercase tracking-tighter mb-1">Aspirations</h3>
+                        <p className="text-[9px] font-black text-black/30 uppercase tracking-[0.2em] mb-8">Desired Job Roles</p>
+                        
+                        {editMode ? (
+                            <div>
+                                <div className="flex flex-wrap gap-3">
+                                    {DESIRED_JOB_ROLES.map(roleName => {
+                                        const isSelected = aspirations.includes(roleName);
+                                        return (
+                                            <button
+                                                key={roleName}
+                                                type="button"
+                                                onClick={() => {
+                                                    if (isSelected) {
+                                                        setAspirations(aspirations.filter(a => a !== roleName));
+                                                    } else if (aspirations.length < 5) {
+                                                        setAspirations([...aspirations, roleName]);
+                                                    }
+                                                }}
+                                                className={`px-4 py-3 border-2 border-black rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-[4px_4px_0px_#000] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_#000] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none ${
+                                                    isSelected 
+                                                    ? 'bg-black text-white' 
+                                                    : 'bg-white text-black'
+                                                } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                disabled={aspirations.length >= 5 && !isSelected}
+                                            >
+                                                {roleName}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                {aspirations.length >= 5 && (
+                                    <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mt-4">Maximum 5 roles selected.</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap gap-3">
+                                {aspirations.length > 0 ? (
+                                    aspirations.map(aspiration => (
+                                        <span 
+                                            key={aspiration} 
+                                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-black text-white border-2 border-black rounded-xl text-[10px] font-black uppercase tracking-widest group shadow-[4px_4px_0px_#ccc]"
+                                        >
+                                            <Target size={14} className="opacity-50" />
+                                            {aspiration}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <p className="text-[10px] italic font-bold text-black/20 uppercase py-4">No aspirations selected. Enter edit mode to update.</p>
                                 )}
                             </div>
                         )}

@@ -10,3 +10,18 @@ export const ROLES = {
     PROVIDER: 'provider',
     ADMIN: 'admin',
 };
+
+export const DESIRED_JOB_ROLES = [
+    "Software Engineer",
+    "Product Manager",
+    "Data Scientist",
+    "UX/UI Designer",
+    "Frontend Developer",
+    "Backend Developer",
+    "DevOps Engineer",
+    "Machine Learning Engineer",
+    "Marketing Specialist",
+    "Sales Executive",
+    "Business Analyst",
+    "Graphic Designer"
+];

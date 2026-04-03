@@ -16,9 +16,11 @@ import {
     Plus,
     X,
     Upload,
-    Activity
+    Activity,
+    Calendar,
+    Target
 } from 'lucide-react';
-import { ROLES } from '../../utils/constants';
+import { ROLES, DESIRED_JOB_ROLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const RegisterPage = () => {
@@ -35,11 +37,13 @@ const RegisterPage = () => {
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [location, setLocation] = useState('');
+    const [dob, setDob] = useState('');
     
     // Questionnaire Data
     const [skills, setSkills] = useState([]);
     const [newSkill, setNewSkill] = useState('');
     const [interests, setInterests] = useState('');
+    const [aspirations, setAspirations] = useState([]);
     
     // UI State
     const [error, setError] = useState(null);
@@ -91,7 +95,7 @@ const RegisterPage = () => {
             }
         }
         if (step === 2) {
-            if (!fullName || !phone || !location) {
+            if (!fullName || !phone || !location || !dob) {
                 setError("Please fill in all personal details.");
                 return;
             }
@@ -111,7 +115,7 @@ const RegisterPage = () => {
         setError(null);
 
         try {
-            await signUp(email, password, role, fullName, phone, location, skills, interests);
+            await signUp(email, password, role, fullName, phone, location, skills, interests, dob, aspirations);
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.detail || 'Registration failed. Please try again.');
@@ -142,14 +146,14 @@ const RegisterPage = () => {
             <div className="w-full max-w-2xl">
                 {/* Progress Indicator */}
                 <div className="mb-12 flex items-center justify-center gap-4">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2, 3, 4].map(i => (
                         <div key={i} className="flex items-center gap-4">
                             <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-[10px] transition-all duration-500 border-2 ${
                                 step >= i ? 'bg-black text-white border-black' : 'bg-white text-black/20 border-black/10'
                             }`}>
                                 {step > i ? <Check size={16} strokeWidth={3} /> : i}
                             </div>
-                            {i < 3 && (
+                            {i < 4 && (
                                 <div className={`w-12 h-[2px] rounded-full transition-all duration-1000 ${
                                     step > i ? 'bg-black' : 'bg-black/5'
                                 }`} />
@@ -284,6 +288,16 @@ const RegisterPage = () => {
                                             placeholder="Location (City, Country)"
                                         />
                                     </div>
+                                    <div className="relative">
+                                        <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={18} />
+                                        <input
+                                            type="date"
+                                            value={dob}
+                                            onChange={(e) => setDob(e.target.value)}
+                                            className="w-full pl-16 pr-6 py-5 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:ring-8 focus:ring-black/5 transition-all"
+                                            required
+                                        />
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
@@ -370,6 +384,57 @@ const RegisterPage = () => {
                                 </div>
                             </motion.div>
                         )}
+
+                        {step === 4 && (
+                            <motion.div
+                                key="step4"
+                                custom={1}
+                                variants={stepVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ duration: 0.3 }}
+                                className="space-y-8"
+                            >
+                                <div className="text-center mb-10">
+                                    <h2 className="font-display text-4xl font-black uppercase tracking-tighter">Your Aspirations</h2>
+                                    <p className="text-[10px] font-black text-black/40 mt-3 uppercase tracking-[0.4em]">Step 04 · Career Targets</p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-4 ml-1">Desired Job Roles (Max 5)</label>
+                                    <div className="flex flex-wrap gap-3">
+                                        {DESIRED_JOB_ROLES.map(roleName => {
+                                            const isSelected = aspirations.includes(roleName);
+                                            return (
+                                                <button
+                                                    key={roleName}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (isSelected) {
+                                                            setAspirations(aspirations.filter(a => a !== roleName));
+                                                        } else if (aspirations.length < 5) {
+                                                            setAspirations([...aspirations, roleName]);
+                                                        }
+                                                    }}
+                                                    className={`px-4 py-3 border-2 border-black rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-[4px_4px_0px_#000] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_#000] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none ${
+                                                        isSelected 
+                                                        ? 'bg-black text-white' 
+                                                        : 'bg-white text-black'
+                                                    } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    disabled={aspirations.length >= 5 && !isSelected}
+                                                >
+                                                    {roleName}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {aspirations.length >= 5 && (
+                                        <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mt-4 ml-1">Maximum 5 roles selected.</p>
+                                    )}
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
 
                     {error && (
@@ -394,7 +459,7 @@ const RegisterPage = () => {
                             </button>
                         )}
                         
-                        {step < 3 ? (
+                        {step < 4 ? (
                             <button
                                 type="button"
                                 onClick={nextStep}
