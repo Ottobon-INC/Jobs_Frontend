@@ -4,8 +4,9 @@ import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi
 import { useAuth } from '../../hooks/useAuth';
 import Loader from '../../components/ui/Loader';
 import MatchGauge from '../../components/ui/MatchGauge';
+import MatchIQModal from '../../components/ui/MatchIQModal';
 import MatchedJobsSection from '../../components/ui/MatchedJobsSection';
-import { Briefcase, MapPin, ExternalLink, CheckCircle, HelpCircle, FileText, Target, ArrowLeft, Sparkles, Clock, Building2, RefreshCw, Lock, ChevronDown, ChevronUp, Radio } from 'lucide-react';
+import { Briefcase, MapPin, ExternalLink, CheckCircle, HelpCircle, FileText, Target, ArrowLeft, Sparkles, Clock, Building2, RefreshCw, Lock, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (
@@ -33,6 +34,7 @@ const JobDetailPage = () => {
     const [isSpecExpanded, setIsSpecExpanded] = useState(false);
     const [isMatching, setIsMatching] = useState(false);
     const [matchDetails, setMatchDetails] = useState(null);
+    const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
     const [recommendedJobs, setRecommendedJobs] = useState([]);
 
     const fetchJob = async (isRefresh = false) => {
@@ -130,22 +132,33 @@ const JobDetailPage = () => {
         setIsMatching(true);
         try {
             // Simulated breakdown fallback if backend isn't mapped
-            let score = 0;
-            let breakdown = { skills_score: 0, interests_score: 0, aspirations_score: 0 };
+            let matchData = {};
             try {
                 const response = await getJobMatchScore(id);
-                score = response.score || Math.round((response.similarity_score || 0) * 100) || 82;
-                breakdown = {
+                const score = response.score || Math.round((response.similarity_score || 0) * 100) || 82;
+                const breakdown = {
                     skills_score: response.skills_score || Math.max(score + 8, 0),
                     interests_score: response.interests_score || Math.max(score - 10, 0),
                     aspirations_score: response.aspirations_score || Math.max(score, 0),
                 };
+                matchData = { 
+                    score, 
+                    ...breakdown, 
+                    missing_skills: response.missing_skills || [],
+                    gap_analysis: response.gap_analysis || "Analysis Stream Complete."
+                };
             } catch (err) {
-                 score = 75;
-                 breakdown = { skills_score: 80, interests_score: 70, aspirations_score: 65 };
+                 const score = 75;
+                 const breakdown = { skills_score: 80, interests_score: 70, aspirations_score: 65 };
+                 matchData = { 
+                    score, 
+                    ...breakdown, 
+                    missing_skills: [],
+                    gap_analysis: "Analysis Stream complete (fallback)."
+                };
             }
-
-            setMatchDetails({ score, ...breakdown });
+            setMatchDetails(matchData);
+            setIsMatchModalOpen(true);
 
             // Fetch recommended
             try {
@@ -209,34 +222,24 @@ const JobDetailPage = () => {
                             <div className="flex flex-col sm:flex-row justify-start gap-4 shrink-0 w-full">
                                 {user ? (
                                     <>
-                                        {(!matchDetails) ? (
-                                            <button 
-                                                onClick={handleRunMatchIQ}
-                                                disabled={isMatching}
-                                                className="w-full sm:w-auto bg-black text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] hover:bg-gray-900 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50"
-                                            >
-                                                {isMatching ? (
-                                                    <><RefreshCw size={18} className="animate-spin" /> Processing...</>
-                                                ) : (
-                                                    <><Sparkles size={18} /> Run Match IQ</>
-                                                )}
-                                            </button>
-                                        ) : (
-                                            <button
-                                                className="w-full sm:w-auto bg-green-500 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-3 shadow-xl cursor-default"
-                                            >
-                                                <CheckCircle size={18} /> Match Complete
-                                            </button>
-                                        )}
-                                        <Link
-                                            to={`/jobs/${id}/mock-interview`}
-                                            state={{ jobTitle: job.cleanTitle, companyName: job.company_name }}
-                                            className="w-full sm:w-auto"
+                                        <button 
+                                            onClick={handleRunMatchIQ}
+                                            disabled={isMatching}
+                                            className={`w-full sm:w-auto px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-3 shadow-xl ${
+                                                matchDetails && !isMatching 
+                                                    ? 'bg-white border-4 border-black text-black hover:bg-black hover:text-white' 
+                                                    : 'bg-black text-white hover:bg-gray-900 shadow-[8px_8px_0px_rgba(0,0,0,0.1)]'
+                                            } disabled:opacity-50`}
                                         >
-                                            <button className="w-full bg-white border-4 border-black text-black px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] hover:bg-black hover:text-white transition-all flex items-center justify-center gap-3">
-                                                <Radio size={18} /> Mock Interview
-                                            </button>
-                                        </Link>
+                                            {isMatching ? (
+                                                <><RefreshCw size={18} className="animate-spin" /> Processing...</>
+                                            ) : matchDetails ? (
+                                                <><RefreshCw size={18} /> Re-run Match IQ</>
+                                            ) : (
+                                                <><Sparkles size={18} /> Run Match IQ</>
+                                            )}
+                                        </button>
+
                                     </>
                                 ) : (
                                     <Link to="/login" className="w-full sm:w-auto">
@@ -260,16 +263,14 @@ const JobDetailPage = () => {
                 {/* Left Column */}
                 <div className="lg:col-span-8 flex flex-col gap-10 min-w-0">
                     
-                    {matchDetails && (
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
-                            <MatchGauge 
-                                score={matchDetails.score} 
-                                skillsScore={matchDetails.skills_score}
-                                interestsScore={matchDetails.interests_score}
-                                aspirationsScore={matchDetails.aspirations_score}
-                           />
-                        </motion.div>
-                    )}
+                    {/* MatchedIQModal Integration */}
+                    <MatchIQModal 
+                        isOpen={isMatchModalOpen} 
+                        onClose={() => setIsMatchModalOpen(false)} 
+                        matchData={matchDetails} 
+                        job={job}
+                        jobId={id}
+                    />
 
                     <BentoCard className="overflow-hidden min-w-0 flex flex-col items-start relative">
                         <h2 className="text-sm font-black text-black mb-10 pb-4 border-b-2 border-black flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">

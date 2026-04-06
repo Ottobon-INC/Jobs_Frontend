@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useWebSocket } from '../../hooks/useWebSocket';
+import { useChatWebSocket } from '../../hooks/useChatWebSocket';
 import { createChatSession, getMySessions } from '../../api/chatApi';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import Card from '../../components/ui/Card';
@@ -130,7 +130,7 @@ const ChatPage = () => {
 
 // ── Chat Window Sub-component ──
 const ChatWindow = ({ sessionId }) => {
-    const { messages, sendMessage, isConnected, isTyping, sessionStatus } = useWebSocket(sessionId);
+    const { messages, sendMessage, isConnected, isTyping, sessionStatus } = useChatWebSocket(sessionId);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
 
@@ -151,8 +151,10 @@ const ChatWindow = ({ sessionId }) => {
             <div className="py-4 px-8 border-b-2 border-black flex justify-between items-center text-[9px] font-black text-black/40 uppercase tracking-[0.3em] bg-gray-50">
                 <div>NODE: <span className="font-mono text-black">{sessionId.slice(0, 8)}...</span></div>
                 <div className="flex items-center gap-3">
-                    <span className={`w-2 h-2 rounded-full animate-pulse ${isConnected ? 'bg-black' : 'bg-gray-300'}`} />
-                    {isConnected ? 'AI_ENGINE_ONLINE' : 'CONNECTING_STREAM...'}
+                    <span className={`w-2 h-2 rounded-full ${isConnected ? 'animate-pulse bg-black' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} />
+                    <span className={isConnected ? 'text-black' : 'text-red-500 animate-pulse'}>
+                        {isConnected ? 'AI_ENGINE_ONLINE' : messages.length > 0 ? 'STREAM_RECONNECTING...' : 'CONNECTING_STREAM...'}
+                    </span>
                 </div>
             </div>
 
@@ -258,8 +260,13 @@ const ChatWindow = ({ sessionId }) => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3 + i * 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                                    onClick={() => sendMessage(chip)}
-                                    className="px-4 py-2.5 rounded-xl border-2 border-black text-[9px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all duration-300 cursor-pointer"
+                                    onClick={() => isConnected && sendMessage(chip)}
+                                    disabled={!isConnected}
+                                    className={`px-4 py-2.5 rounded-xl border-2 border-black text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                                        isConnected 
+                                            ? 'hover:bg-black hover:text-white cursor-pointer' 
+                                            : 'opacity-30 cursor-not-allowed grayscale'
+                                    }`}
                                 >
                                     {chip}
                                 </motion.button>

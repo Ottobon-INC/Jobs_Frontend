@@ -24,7 +24,7 @@ export const getJobDetails = async (jobId) => {
 };
 
 export const getJobMatchScore = async (jobId) => {
-    const response = await api.post(`/jobs/${jobId}/match`, null, { timeout: 60000 });
+    const response = await api.get(`/jobs/${jobId}/match`, { timeout: 60000 });
     return response.data;
 };
 

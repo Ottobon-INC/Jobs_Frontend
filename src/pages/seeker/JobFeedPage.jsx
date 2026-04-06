@@ -271,9 +271,7 @@ const JobFeedPage = () => {
                                         className="w-full pl-16 pr-8 py-5 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-4 focus:ring-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 placeholder:uppercase placeholder:tracking-widest"
                                     />
                                 </div>
-                                <div className="flex md:w-auto w-full">
-                                    <JobMatchButton onMatch={handleMatchJobs} isLoading={isMatching} />
-                                </div>
+
                             </div>
 
                             {/* Options Row */}
@@ -420,6 +418,11 @@ const JobFeedPage = () => {
                                     <X size={14} /> RESET ALL
                                 </button>
                             )}
+                            </div>
+
+                        {/* Neural Match CTA: Centered & High Visibility */}
+                        <div className="mt-12 mb-4 flex justify-center">
+                            <JobMatchButton onMatch={handleMatchJobs} isLoading={isMatching} />
                         </div>
                     </motion.div>
                 </div>
@@ -433,14 +436,14 @@ const JobFeedPage = () => {
                     <MatchedJobsSection matchedJobs={matchedJobs} isAuthenticated={isAuthenticated} error={matchError} />
                 )}
 
-                <div className="flex justify-between items-center mb-12 border-b-2 border-black pb-4">
-                    <h2 className="text-2xl font-display font-black text-black uppercase tracking-tighter">
+                <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-12 border-b-2 border-black pb-4">
+                    <h2 className="text-2xl font-display font-black text-black uppercase tracking-tighter shrink-0 text-left">
                         {filtered.length} AVAILABLE ROLES
                     </h2>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    <div className="h-px bg-black flex-1 hidden md:block opacity-10" />
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest shrink-0 md:text-right text-left">
                         Showing {Math.min(visibleCount, filtered.length)} of {filtered.length}
                     </span>
-                    <div className="h-px bg-black flex-1 mx-8 hidden md:block opacity-10" />
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">

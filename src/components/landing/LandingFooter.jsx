@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Briefcase } from "lucide-react";
 
 export function LandingFooter() {
     return (
@@ -6,7 +7,14 @@ export function LandingFooter() {
             <div className="container mx-auto px-4 max-w-7xl">
                 {/* Brand Logo */}
                 <div className="mb-12">
-                    <h2 className="text-3xl font-bold tracking-tighter">ottobon.</h2>
+                    <Link to="/" className="flex items-center gap-3 group w-fit">
+                        <div className="w-10 h-10 bg-white rounded-xl grid place-items-center group-hover:scale-110 transition-transform duration-500">
+                            <Briefcase size={20} className="text-black" />
+                        </div>
+                        <span className="font-display font-black text-2xl tracking-tighter text-white uppercase">
+                            Ottobon<span className="opacity-40">/</span>Jobs
+                        </span>
+                    </Link>
                 </div>
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-20">

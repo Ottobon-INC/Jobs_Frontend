@@ -64,16 +64,17 @@ export function ShaderAnimation() {
         float lineWidth = 0.002;
 
         vec3 color = vec3(0.0);
-        // Reduced iterations for performance (2x3 instead of 3x5)
-        for(int j = 0; j < 2; j++){
-          for(int i=0; i < 3; i++){
-            float intensity = float(i * i) + 1.0;
-            float pulse = fract(t - 0.015 * float(j) + float(i) * 0.02) * 5.0;
-            float lineDef = abs(pulse - length(distortedUv) + mod(distortedUv.x + distortedUv.y, 0.25));
-            color[j] += lineWidth * intensity / lineDef;
-          }
+        float finalIntensity = 0.0;
+        
+        // Increased iterations slightly for a richer monochromatic look
+        for(int i=0; i < 5; i++){
+          float intensity = float(i * i) + 1.0;
+          float pulse = fract(t + float(i) * 0.03) * 5.0;
+          float lineDef = abs(pulse - length(distortedUv) + mod(distortedUv.x + distortedUv.y, 0.25));
+          finalIntensity += lineWidth * intensity / lineDef;
         }
         
+        color = vec3(finalIntensity);
         color = clamp(color, 0.0, 1.0);
         gl_FragColor = vec4(color, 1.0);
       }

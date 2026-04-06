@@ -85,34 +85,6 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-2 shrink-0 max-w-[30%]">
-                            {job.match_score != null && (() => {
-                                const score = job.match_score;
-                                const getColor = (val) => {
-                                    if (val >= 75) return '#22c55e';
-                                    if (val >= 50) return '#eab308';
-                                    if (val >= 25) return '#f97316';
-                                    return '#ef4444';
-                                };
-                                const color = getColor(score);
-                                const radius = 20;
-                                const circumference = 2 * Math.PI * radius;
-                                const strokeDashoffset = circumference - (score / 100) * circumference;
-
-                                return (
-                                    <div className="flex items-center justify-center relative shrink-0" title={`Match Score: ${score}%`}>
-                                        <svg className="w-[44px] h-[44px] transform -rotate-90">
-                                            <circle
-                                                cx="22" cy="22" r={radius} stroke="#f3f4f6" strokeWidth="4" fill="transparent"
-                                            />
-                                            <circle
-                                                cx="22" cy="22" r={radius} stroke={color} strokeWidth="4" fill="transparent"
-                                                strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round"
-                                            />
-                                        </svg>
-                                        <span className="absolute text-[11px] font-black text-black tracking-tighter">{score}</span>
-                                    </div>
-                                );
-                            })()}
                             <div className="flex items-center justify-end shrink-0 gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap text-right w-full">
                                 <Calendar size={12} className="shrink-0" />
                                 <span className="truncate">{displayTime}</span>

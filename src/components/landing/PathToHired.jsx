@@ -17,7 +17,7 @@ export function PathToHired() {
                     <h2 className="text-6xl md:text-7xl font-display font-black tracking-tighter leading-[0.85] text-white italic">
                         YOUR NEW <br />
                         PATH <br />
-                        TO HIRED.
+                        TO GET HIRED.
                     </h2>
                     <Link
                         to="/register"
