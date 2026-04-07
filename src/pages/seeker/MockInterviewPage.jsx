@@ -34,15 +34,14 @@ const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || 'ws://localhost:8001/mo
 
 // ── Sub-components ────────────────────────────────────────────
 
-/** Siri-style animated wave visualizer */
 const SiriVisualizer = ({ isActive }) => {
     const canvasRef = useRef(null);
     const requestRef = useRef();
     const phaseRef = useRef(0);
     const waves = [
-        { amplitude: 12, frequency: 0.06, color: 'rgba(255,0,128,0.8)', speed: 0.08 },
-        { amplitude: 10, frequency: 0.04, color: 'rgba(0,210,255,0.8)', speed: -0.06 },
-        { amplitude: 8, frequency: 0.08, color: 'rgba(75,0,255,0.8)', speed: 0.1 },
+        { amplitude: 12, frequency: 0.06, color: 'rgba(24,24,27,0.8)', speed: 0.08 },
+        { amplitude: 10, frequency: 0.04, color: 'rgba(113,113,122,0.8)', speed: -0.06 },
+        { amplitude: 8, frequency: 0.08, color: 'rgba(161,161,170,0.8)', speed: 0.1 },
     ];
 
     const animate = () => {
@@ -81,12 +80,11 @@ const SiriVisualizer = ({ isActive }) => {
 
     return (
         <div
-            className={`relative w-16 h-16 rounded-full overflow-hidden border-2 border-black shadow-[4px_4px_0px_#000] transition-all duration-500 ${
-                isActive ? 'scale-110' : ''
+            className={`relative w-20 h-20 rounded-full overflow-hidden border border-zinc-100 bg-[#FAFAFA] transition-all duration-500 ${
+                isActive ? 'scale-110 shadow-xl shadow-zinc-900/5' : ''
             }`}
-            style={{ background: '#050505' }}
         >
-            <canvas ref={canvasRef} width={64} height={64} style={{ filter: 'blur(2px)', transform: 'scale(1.3)' }} />
+            <canvas ref={canvasRef} width={80} height={80} style={{ filter: 'blur(3px)', transform: 'scale(1.2)' }} />
         </div>
     );
 };
@@ -106,54 +104,54 @@ const EvalReport = ({ evaluation }) => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl border-2 border-black p-10 shadow-[12px_12px_0px_rgba(0,0,0,0.05)] space-y-8"
+            className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 space-y-12"
         >
-            <h2 className="text-sm font-black uppercase tracking-[0.3em] flex items-center gap-3">
-                <div className="w-2 h-6 bg-black" /> Final Assessment Report
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 flex items-center gap-4">
+                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Final Performance Synthesis
             </h2>
 
             {/* Score */}
-            <div className="flex items-center gap-8">
-                <div className="text-7xl font-black font-display tracking-tighter leading-none">
-                    {overall_score}%
+            <div className="flex flex-col md:flex-row items-center gap-12">
+                <div className="text-8xl font-bold font-sans tracking-tighter text-zinc-900 leading-none">
+                    {overall_score}<span className="text-2xl text-zinc-300 ml-1">%</span>
                 </div>
-                <div className="flex-1 h-5 bg-gray-100 border-2 border-black rounded-full overflow-hidden">
+                <div className="flex-1 h-3 w-full bg-zinc-50 border border-zinc-100 rounded-full overflow-hidden">
                     <motion.div
-                        className="h-full bg-black rounded-full"
+                        className="h-full bg-zinc-900 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${overall_score}%` }}
-                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
                     />
                 </div>
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 bg-gray-50 rounded-2xl border-2 border-black">
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-50">Strengths</h3>
-                    <ul className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Strengths</h3>
+                    <ul className="space-y-4">
                         {strengths.length > 0 ? (
                             strengths.map((s, i) => (
-                                <li key={i} className="flex gap-2 text-xs font-bold uppercase tracking-wide">
-                                    <CheckCircle size={14} className="shrink-0 mt-0.5 text-black" /> {s}
+                                <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
+                                    <CheckCircle size={18} className="shrink-0 mt-0.5 text-zinc-900" /> {s}
                                 </li>
                             ))
                         ) : (
-                            <li className="text-xs font-bold opacity-30 uppercase">No data</li>
+                            <li className="text-sm font-medium text-zinc-300 italic">No metrics detected.</li>
                         )}
                     </ul>
                 </div>
-                <div className="p-6 bg-gray-50 rounded-2xl border-2 border-black">
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-50">Areas for Improvement</h3>
-                    <ul className="space-y-2">
+                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Growth Intervals</h3>
+                    <ul className="space-y-4">
                         {areas_for_improvement.length > 0 ? (
                             areas_for_improvement.map((a, i) => (
-                                <li key={i} className="flex gap-2 text-xs font-bold uppercase tracking-wide">
-                                    <AlertTriangle size={14} className="shrink-0 mt-0.5 text-black" /> {a}
+                                <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
+                                    <AlertTriangle size={18} className="shrink-0 mt-0.5 text-zinc-400" /> {a}
                                 </li>
                             ))
                         ) : (
-                            <li className="text-xs font-bold opacity-30 uppercase">No data</li>
+                            <li className="text-sm font-medium text-zinc-300 italic">Optimal alignment reached.</li>
                         )}
                     </ul>
                 </div>
@@ -161,19 +159,19 @@ const EvalReport = ({ evaluation }) => {
 
             {/* Feedback */}
             {detailed_feedback && (
-                <div className="p-6 bg-gray-50 rounded-2xl border-2 border-black">
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-50">Detailed Analysis</h3>
-                    <p className="text-sm font-medium leading-relaxed text-black">{detailed_feedback}</p>
+                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Core Evaluation</h3>
+                    <p className="text-base font-medium leading-relaxed text-zinc-600">{detailed_feedback}</p>
                 </div>
             )}
 
             {/* Topics */}
             {recommended_topics_to_review.length > 0 && (
                 <div>
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-50">Topics to Review</h3>
-                    <div className="flex flex-wrap gap-2">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Knowledge Synthesis Nodes</h3>
+                    <div className="flex flex-wrap gap-3">
                         {recommended_topics_to_review.map((t, i) => (
-                            <span key={i} className="px-4 py-2 border-2 border-black rounded-xl text-[9px] font-black uppercase tracking-widest">
+                            <span key={i} className="px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
                                 {t}
                             </span>
                         ))}
@@ -433,153 +431,151 @@ const MockInterviewPage = () => {
 
     // ── Status pill color ───────────────────────────────────────
     const statusColors = {
-        disconnected: 'bg-gray-100 text-gray-500',
-        connecting: 'bg-yellow-50 text-yellow-700 border-yellow-300',
-        listening: 'bg-green-50 text-green-700 border-green-300',
-        processing: 'bg-blue-50 text-blue-700 border-blue-300',
-        speaking: 'bg-purple-50 text-purple-700 border-purple-300',
+        disconnected: 'bg-zinc-50 text-zinc-400 border-zinc-100',
+        connecting: 'bg-zinc-50 text-zinc-500 border-zinc-100 animate-pulse',
+        listening: 'bg-zinc-900 text-white border-zinc-900',
+        processing: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+        speaking: 'bg-zinc-50 text-zinc-900 border-zinc-200',
     };
     const statusPill = statusColors[isSpeaking ? 'speaking' : statusClass] || statusColors.disconnected;
 
     // ── ENTRY SCREEN ──────────────────────────────────────────
     if (step === 'entry') {
         return (
-            <div className="min-h-screen pt-16 pb-24 px-4 md:px-8 bg-white flex flex-col items-center justify-center">
+            <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 bg-[#FBFBFB] flex flex-col items-center justify-center">
                 <div className="w-full max-w-2xl">
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="mb-10"
+                        className="mb-12"
                     >
                         <Link
                             to={id ? `/jobs/${id}` : '/jobs'}
-                            className="inline-flex items-center gap-2 text-black font-black uppercase text-[10px] tracking-[0.3em] hover:translate-x-[-4px] transition-transform"
+                            className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[11px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
                         >
-                            <ArrowLeft size={16} /> Back to Job
+                            <ArrowLeft size={16} /> Return to Signal
                         </Link>
                     </motion.div>
 
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="bg-white rounded-3xl border-4 border-black p-10 shadow-[16px_16px_0px_#000]"
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                        className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
                     >
                         {/* Header */}
-                        <div className="mb-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                        <div className="mb-12">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center">
                                     <Radio size={20} className="text-white" />
                                 </div>
-                                <h1 className="font-display text-3xl font-black uppercase tracking-tighter">
-                                    Mock Interview
+                                <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">
+                                    Interview Sim
                                 </h1>
                             </div>
                             {(companyName || jobTitle) && (
-                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40 mt-2">
-                                    {companyName && `${companyName} · `}{jobTitle}
+                                <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-4 flex items-center gap-3">
+                                    <div className="w-8 h-[1px] bg-zinc-100" />
+                                    {companyName && `${companyName} • `}{jobTitle}
                                 </p>
                             )}
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-4">
-                                Configure your session for the best results.
-                            </p>
                         </div>
 
                         {/* Interview Type */}
-                        <div className="mb-8">
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-40">
-                                1 · Interview Type
+                        <div className="mb-10">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
+                                01 / SELECT MODE
                             </p>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-4">
                                 {['technical', 'hr'].map((type) => (
                                     <button
                                         key={type}
                                         onClick={() => setInterviewType(type)}
-                                        className={`py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${
+                                        className={`py-5 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${
                                             interviewType === type
-                                                ? 'bg-black text-white border-black shadow-[4px_4px_0px_rgba(0,0,0,0.2)]'
-                                                : 'bg-white text-black border-black hover:bg-gray-50'
+                                                ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
+                                                : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
                                         }`}
                                     >
-                                        {type === 'technical' ? '⚙ Technical' : '🧑‍💼 HR / Behavioral'}
+                                        {type === 'technical' ? 'Technical Synthesis' : 'Behavioral Logic'}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Duration */}
-                        <div className="mb-8">
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-40">
-                                2 · Duration
+                        <div className="mb-10">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
+                                02 / TEMPORAL DEPTH
                             </p>
-                            <div className="grid grid-cols-4 gap-3">
+                            <div className="grid grid-cols-4 gap-4">
                                 {[5, 10, 15, 20].map((d) => (
                                     <button
                                         key={d}
                                         onClick={() => setDuration(d)}
-                                        className={`py-3 rounded-2xl border-2 font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${
+                                        className={`py-4 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${
                                             duration === d
-                                                ? 'bg-black text-white border-black'
-                                                : 'bg-white text-black border-black hover:bg-gray-50'
+                                                ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10'
+                                                : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
                                         }`}
                                     >
-                                        {d} min
+                                        {d}m
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Proctor Toggle */}
-                        <div className="mb-10 p-5 border-2 border-black/10 rounded-2xl flex items-center justify-between">
+                        <div className="mb-12 p-6 bg-zinc-50/50 rounded-[32px] border border-zinc-100 flex items-center justify-between">
                             <div>
-                                <p className="font-black text-xs uppercase tracking-widest">Proctor Mode</p>
-                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wide mt-1">
-                                    Mandatory fullscreen + tab monitoring
+                                <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">Proctor Protocol</p>
+                                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
+                                    Enforce cognitive focus (Tab Lock)
                                 </p>
                             </div>
                             <button
                                 onClick={() => setProctorMode((prev) => !prev)}
-                                className={`w-14 h-8 rounded-full border-2 border-black transition-all duration-300 flex items-center ${
-                                    proctorMode ? 'bg-black' : 'bg-white'
+                                className={`w-14 h-8 rounded-full border transition-all duration-500 flex items-center ${
+                                    proctorMode ? 'bg-zinc-900 border-zinc-900' : 'bg-zinc-200 border-zinc-200'
                                 }`}
                             >
                                 <div
-                                    className={`w-5 h-5 bg-white rounded-full border-2 border-black mx-1 transition-transform duration-300 ${
-                                        proctorMode ? 'translate-x-6' : ''
+                                    className={`w-5 h-5 bg-white rounded-full mx-1 transition-transform duration-500 ${
+                                        proctorMode ? 'translate-x-[26px]' : ''
                                     }`}
                                 />
                             </button>
                         </div>
 
                         {/* Resume Status */}
-                        <div className="mb-10">
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-4 opacity-40">
-                                3 · Resume Data
+                        <div className="mb-12">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
+                                03 / KNOWLEDGE SOURCE
                             </p>
-                            <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${
-                                hasResume ? 'border-black bg-gray-50' : 'border-red-200 bg-red-50'
+                            <div className={`p-8 rounded-[32px] border transition-all duration-500 ${
+                                hasResume ? 'border-zinc-100 bg-[#FAFAFA]' : 'border-red-100 bg-red-50/50'
                             }`}>
-                                <div className="flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                            hasResume ? 'bg-black' : 'bg-red-500'
+                                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                                            hasResume ? 'bg-zinc-900' : 'bg-red-500'
                                         }`}>
-                                            <FileText size={20} className="text-white" />
+                                            <FileText size={22} className="text-white" />
                                         </div>
                                         <div>
-                                            <p className="font-black text-xs uppercase tracking-widest">
+                                            <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">
                                                 {sessionResumeName 
-                                                    ? 'Session Override Active' 
+                                                    ? 'Session Override' 
                                                     : profile?.resume_text 
-                                                        ? 'Using Profile Resume' 
-                                                        : 'No Resume Detected'}
+                                                        ? 'Profile Synthesis' 
+                                                        : 'Missing Context'}
                                             </p>
-                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wide mt-1">
+                                            <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
                                                 {sessionResumeName 
-                                                    ? `File: ${sessionResumeName}`
+                                                    ? `${sessionResumeName}`
                                                     : profile?.resume_text 
-                                                        ? 'Picked up automatically from your profile' 
-                                                        : 'Upload one below or in your profile to start'}
+                                                        ? 'Automated mapping enabled' 
+                                                        : 'Upload required for logic sync'}
                                             </p>
                                         </div>
                                     </div>
@@ -592,9 +588,9 @@ const MockInterviewPage = () => {
                                             accept=".pdf,.docx"
                                             disabled={uploadingResume}
                                         />
-                                        <div className="flex items-center gap-2 px-4 py-2 border-2 border-black rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-black hover:text-white transition-all">
-                                            {uploadingResume ? <Activity size={12} className="animate-pulse" /> : <Upload size={12} />}
-                                            {hasResume ? 'Change' : 'Upload'}
+                                        <div className="flex items-center gap-2.5 px-6 py-3 bg-white border border-zinc-100 rounded-full font-bold text-[10px] uppercase tracking-widest hover:border-zinc-900 transition-all shadow-sm">
+                                            {uploadingResume ? <Activity size={14} className="animate-pulse" /> : <Upload size={14} />}
+                                            {hasResume ? 'Update' : 'Initialize'}
                                         </div>
                                     </label>
                                 </div>
@@ -602,9 +598,10 @@ const MockInterviewPage = () => {
                         </div>
 
                         {/* Advisory */}
-                        <div className="mb-10 p-5 bg-yellow-50 border-2 border-yellow-200 rounded-2xl">
-                            <p className="text-[10px] font-bold text-yellow-800 uppercase tracking-widest leading-relaxed">
-                                💡 Best Results: Sit in a quiet room and use headphones with a microphone for accurate voice recognition.
+                        <div className="mb-12 p-6 bg-zinc-50 border border-zinc-100 rounded-[32px]">
+                            <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest leading-relaxed flex items-center gap-3">
+                                <Zap size={16} className="text-zinc-900 shrink-0" />
+                                Optimal results require a silent environment and high-fidelity audio input.
                             </p>
                         </div>
 
@@ -612,17 +609,17 @@ const MockInterviewPage = () => {
                         <button
                             onClick={handleStart}
                             disabled={isStarting || !hasResume || uploadingResume}
-                            className="w-full py-5 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-[0.25em] hover:bg-gray-900 transition-all flex items-center justify-center gap-3 shadow-[8px_8px_0px_rgba(0,0,0,0.15)] disabled:opacity-40"
+                            className="w-full py-6 bg-zinc-900 text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-4 shadow-2xl shadow-zinc-900/20 disabled:opacity-30 active:scale-95"
                         >
                             {isStarting ? (
                                 <>
-                                    <Activity size={20} className="animate-pulse" /> Initialising…
+                                    <Activity size={20} className="animate-pulse" /> INITIALIZING INTERFACE...
                                 </>
                             ) : (
                                 <>
-                                    {!hasResume ? 'Resume Required' : (
+                                    {!hasResume ? 'SYNC REQUIRED' : (
                                         <>
-                                            <Play size={20} /> Launch Interview Session
+                                            LAUNCH INTERVIEW SIM
                                             <ChevronRight size={20} />
                                         </>
                                     )}
@@ -638,43 +635,44 @@ const MockInterviewPage = () => {
     // ── INTERVIEW SCREEN ──────────────────────────────────────
     return (
         <>
-            <div className="min-h-screen pt-16 pb-24 px-4 md:px-8 bg-white">
-                <div className="max-w-7xl mx-auto space-y-8">
+            <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 bg-[#FBFBFB]">
+                <div className="max-w-7xl mx-auto space-y-12">
                     {/* Top bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 pt-4">
-                        <div className="flex items-center gap-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-12 border-b border-zinc-100">
+                        <div className="flex items-center gap-6">
                             <SiriVisualizer isActive={isSpeaking} />
                             <div>
-                                <h1 className="font-display text-2xl font-black uppercase tracking-tighter">
-                                    Mock Interview
+                                <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">
+                                    Sim Session
                                 </h1>
                                 {(companyName || jobTitle) && (
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40">
-                                        {companyName}{jobTitle && ` · ${jobTitle.slice(0, 40)}`}
+                                    <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-2 truncate max-w-md">
+                                        {companyName}{jobTitle && ` • ${jobTitle}`}
                                     </p>
                                 )}
                             </div>
-                            {isTimerActive && (
-                                <div className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl font-display font-black text-xl tracking-widest">
-                                    <Clock size={16} /> {formatTime(timeLeft)}
-                                </div>
-                            )}
                         </div>
 
-                        <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex flex-wrap items-center gap-4">
+                            {isTimerActive && (
+                                <div className="flex items-center gap-3 px-6 py-3 bg-zinc-50 border border-zinc-100 text-zinc-900 rounded-full font-sans font-bold text-lg tracking-tight shadow-sm">
+                                    <Clock size={18} className="text-zinc-300" /> {formatTime(timeLeft)}
+                                </div>
+                            )}
+
                             {/* Status */}
-                            <span className={`px-4 py-2 border-2 rounded-xl text-[9px] font-black uppercase tracking-widest ${statusPill}`}>
-                                {isSpeaking ? 'AI Speaking (Mic Paused)' : status}
+                            <span className={`px-6 py-3 border rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ${statusPill}`}>
+                                {isSpeaking ? 'SYNTHESIZING' : status.toUpperCase()}
                             </span>
 
                             {/* Mute */}
                             <button
                                 onClick={() => setIsMuted((prev) => !prev)}
                                 disabled={!isActive}
-                                className={`flex items-center gap-2 px-5 py-3 rounded-xl border-2 font-black text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${
+                                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${
                                     isMuted
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-white text-black border-black hover:bg-black hover:text-white'
+                                        ? 'bg-zinc-900 text-white border-zinc-900'
+                                        : 'bg-white text-zinc-900 border-zinc-100 hover:border-zinc-900'
                                 }`}
                             >
                                 {isMuted ? <MicOff size={16} /> : <Mic size={16} />}
@@ -685,9 +683,9 @@ const MockInterviewPage = () => {
                             <button
                                 onClick={() => handleStop()}
                                 disabled={!isActive}
-                                className="flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-red-500 bg-red-50 text-red-600 font-black text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30"
+                                className="flex items-center gap-2.5 px-6 py-3.5 rounded-full border border-red-100 bg-red-50/50 text-red-500 font-bold text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30"
                             >
-                                <StopCircle size={16} /> End Session
+                                <StopCircle size={16} /> End
                             </button>
 
                             {/* Back to entry */}
@@ -697,43 +695,43 @@ const MockInterviewPage = () => {
                                     setStep('entry');
                                     handleStop();
                                 }}
-                                className="flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-black bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                                className="flex items-center gap-2.5 px-6 py-3.5 rounded-full border border-zinc-100 bg-white text-zinc-900 font-bold text-[10px] uppercase tracking-widest hover:border-zinc-900 transition-all"
                             >
-                                <ArrowLeft size={16} /> Back
+                                <ArrowLeft size={16} /> Exit
                             </button>
                         </div>
                     </div>
 
                     {/* Error Banner */}
                     {errorMsg && (
-                        <div className="p-4 bg-red-50 border-2 border-red-500 rounded-2xl">
+                        <div className="p-5 bg-red-50 border border-red-100 rounded-[32px] flex items-center gap-3">
+                            <AlertTriangle size={18} className="text-red-500" />
                             <p className="text-red-600 font-bold text-xs uppercase tracking-widest">{errorMsg}</p>
                         </div>
                     )}
 
                     {/* Transcript + Response panels */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {/* Participant Transcript */}
-                        <div className="bg-white rounded-3xl border-2 border-black p-8 shadow-[8px_8px_0px_rgba(0,0,0,0.04)]">
-                            <h2 className="text-sm font-black uppercase tracking-[0.3em] mb-6 flex items-center gap-3 pb-4 border-b-2 border-black">
-                                <User size={16} /> Participant
+                        <div className="bg-white rounded-[40px] border border-zinc-100 p-10 shadow-2xl shadow-zinc-900/5">
+                            <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] mb-8 flex items-center gap-4 pb-6 border-b border-zinc-100 text-zinc-400">
+                                <User size={18} className="text-zinc-300" /> Participant Signal
                             </h2>
                             <div
                                 ref={transcriptRef}
-                                className="h-80 overflow-y-auto flex flex-col gap-3 pr-2"
-                                style={{ scrollbarWidth: 'thin' }}
+                                className="h-96 overflow-y-auto flex flex-col gap-6 pr-4 custom-scrollbar"
                             >
                                 {transcripts.length === 0 ? (
-                                    <p className="text-xs font-bold uppercase tracking-widest text-black/20 italic">
-                                        Waiting for participant input…
+                                    <p className="text-xs font-medium text-zinc-300 italic">
+                                        Awaiting input stream...
                                     </p>
                                 ) : (
                                     transcripts.map((t, i) => (
                                         <motion.p
                                             key={i}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="text-sm font-medium text-black border-b border-black/5 pb-3"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="text-base font-medium text-zinc-600 leading-relaxed"
                                         >
                                             {t}
                                         </motion.p>
@@ -743,35 +741,34 @@ const MockInterviewPage = () => {
                         </div>
 
                         {/* AI Response */}
-                        <div className="bg-white rounded-3xl border-2 border-black p-8 shadow-[8px_8px_0px_rgba(0,0,0,0.04)]">
-                            <h2 className="text-sm font-black uppercase tracking-[0.3em] mb-6 flex items-center gap-3 pb-4 border-b-2 border-black">
-                                <Bot size={16} /> AI Interviewer
+                        <div className="bg-white rounded-[40px] border border-zinc-100 p-10 shadow-2xl shadow-zinc-900/5">
+                            <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] mb-8 flex items-center gap-4 pb-6 border-b border-zinc-100 text-zinc-400">
+                                <Bot size={18} className="text-zinc-300" /> AI Interviewer
                             </h2>
                             <div
                                 ref={responseRef}
-                                className="h-80 overflow-y-auto flex flex-col gap-3 pr-2"
-                                style={{ scrollbarWidth: 'thin' }}
+                                className="h-96 overflow-y-auto flex flex-col gap-6 pr-4 custom-scrollbar"
                             >
                                 {responses.length === 0 && !currentResponse ? (
-                                    <p className="text-xs font-bold uppercase tracking-widest text-black/20 italic">
-                                        Waiting for AI response…
+                                    <p className="text-xs font-medium text-zinc-300 italic">
+                                        Awaiting logic synthesis...
                                     </p>
                                 ) : (
                                     responses.map((r, i) => (
                                         <motion.p
                                             key={i}
-                                            initial={{ opacity: 0, x: 10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="text-sm font-medium text-black border-b border-black/5 pb-3"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="text-base font-medium text-zinc-900 leading-relaxed"
                                         >
                                             {r}
                                         </motion.p>
                                     ))
                                 )}
                                 {currentResponse && (
-                                    <p className="text-sm font-bold text-black mt-1">
+                                    <p className="text-base font-bold text-zinc-900 leading-relaxed">
                                         {currentResponse}
-                                        <span className="animate-pulse">█</span>
+                                        <span className="inline-block w-1.5 h-5 bg-zinc-900 ml-1 animate-pulse align-middle" />
                                     </p>
                                 )}
                             </div>
@@ -780,10 +777,10 @@ const MockInterviewPage = () => {
 
                     {/* Evaluation */}
                     {isEvaluating && (
-                        <div className="bg-white rounded-3xl border-2 border-black p-10 shadow-[8px_8px_0px_rgba(0,0,0,0.04)] flex items-center justify-center gap-4">
-                            <BarChart2 size={24} className="animate-pulse" />
-                            <p className="font-black uppercase tracking-widest text-sm animate-pulse">
-                                Analysing Transcripts… Securing Evaluation Data
+                        <div className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 flex items-center justify-center gap-6">
+                            <BarChart2 size={28} className="text-zinc-300 animate-pulse" />
+                            <p className="font-bold uppercase tracking-[0.4em] text-[11px] text-zinc-400 animate-pulse">
+                                Synthesizing final performance metrics...
                             </p>
                         </div>
                     )}
@@ -798,22 +795,28 @@ const MockInterviewPage = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex flex-col items-center justify-center text-center p-8 bg-black/95 border-4 border-red-500"
+                        className="fixed inset-0 z-50 flex flex-col items-center justify-center text-center p-12 bg-white/80 backdrop-blur-2xl"
                     >
-                        <h2 className="text-red-500 text-5xl font-black uppercase tracking-tighter mb-6">
-                            ⚠ Proctor Violation
+                        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-10">
+                            <AlertTriangle size={40} className="text-red-500" />
+                        </div>
+                        <h2 className="text-zinc-900 text-4xl font-bold tracking-tight mb-6">
+                            Focus Interrupted
                         </h2>
-                        <p className="text-white text-lg max-w-lg mb-6 font-bold">
-                            Warning: You have left the interview window. This action has been logged.
+                        <p className="text-zinc-500 text-base max-w-md mb-10 font-medium leading-relaxed">
+                            Sim session requires absolute cognitive focus. This interruption has been logged in the performance matrix.
                         </p>
-                        <div className="text-3xl text-white mb-8 font-black">
-                            Total Violations: <span className="text-red-500">{violationCount}</span>
+                        <div className="flex items-center gap-4 mb-12">
+                            <div className="px-6 py-4 bg-zinc-50 rounded-3xl border border-zinc-100">
+                                <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Total Violations</p>
+                                <p className="text-3xl font-bold text-zinc-900">{violationCount}</p>
+                            </div>
                         </div>
                         <button
                             onClick={() => setShowViolationAlert(false)}
-                            className="px-10 py-4 bg-white text-black rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-100 transition-all"
+                            className="px-12 py-5 bg-zinc-900 text-white rounded-full font-bold uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95"
                         >
-                            I Understand &amp; Will Resume
+                            Return to Interface
                         </button>
                     </motion.div>
                 )}

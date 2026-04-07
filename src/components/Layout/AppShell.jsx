@@ -10,15 +10,15 @@ const AppShell = () => {
     const hideFooter = location.pathname.startsWith('/chat');
 
     return (
-        <div className="min-h-screen flex flex-col bg-[var(--bg-primary)]">
+        <div className="min-h-screen flex flex-col bg-[#FBFBFB]">
             <Navbar />
 
-            <div className="flex flex-1 pt-16"> {/* Offset for fixed header */}
+            <div className="flex flex-1 pt-20"> {/* Increased offset for floating header effect */}
                 <Sidebar />
 
-                {/* Main Content Area - Push right IF sidebar is rendered (role exists) */}
-                <main className={`flex-1 w-full ${role ? 'md:pl-64' : ''} min-w-0 transition-all duration-300 flex flex-col`}>
-                    <div className="flex-1 p-6 md:p-8">
+                {/* Main Content Area - Refined Neu-Minimalist spacing */}
+                <main className={`flex-1 w-full ${role ? 'md:pl-64' : ''} min-w-0 transition-all duration-500 flex flex-col`}>
+                    <div className="flex-1 p-6 md:p-10 lg:p-12 overflow-x-hidden">
                         <Outlet />
                     </div>
                     {!hideFooter && <Footer />}

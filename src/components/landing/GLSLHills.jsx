@@ -170,13 +170,19 @@ export function GLSLHills({
     useEffect(() => {
         if (!canvasRef.current) return;
 
-        const renderer = new THREE.WebGLRenderer({
-            canvas: canvasRef.current,
-            antialias: false,
-            powerPreference: "high-performance",
-            alpha: true
-        });
-        renderer.setPixelRatio(1.0);
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({
+                canvas: canvasRef.current,
+                antialias: false,
+                powerPreference: "high-performance",
+                alpha: true
+            });
+            renderer.setPixelRatio(1.0);
+        } catch (e) {
+            console.error("WebGL context creation failed:", e);
+            return;
+        }
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(

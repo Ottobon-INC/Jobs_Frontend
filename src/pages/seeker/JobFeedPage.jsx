@@ -224,78 +224,74 @@ const JobFeedPage = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Monochrome Header Section */}
-            <header className="relative z-20 pt-16 pb-6 px-6 border-b border-gray-100">
-                {/* Minimal Grid Pattern Overlay */}
-                <div className="absolute inset-0 z-0 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03]" />
+        <div className="min-h-screen bg-[#FBFBFB]">
+            {/* Minimalist Header Section */}
+            <header className="relative z-20 pt-24 pb-12 px-6">
+                {/* Refined Background Accent */}
+                <div className="absolute inset-x-0 top-0 h-96 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-50" />
 
                 <div className="max-w-7xl mx-auto relative z-10 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] mb-8 border border-black shadow-lg shadow-black/10">
-                            <Sparkles size={12} className="text-white" />
-                            Curated Feed
+                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 border border-zinc-100 shadow-sm">
+                            <Sparkles size={12} className="text-zinc-400" />
+                            Global Intelligence
                         </div>
-                        <h1 className="text-6xl md:text-7xl font-display font-bold mb-6 tracking-tighter">
-                            <span className="text-black inline-block">THE</span>
-                            <span className="text-gray-400 inline-block px-1">/</span>
-                            <span className="text-black inline-block">MARKET</span>
+                        <h1 className="text-7xl md:text-8xl font-sans font-bold mb-8 tracking-tight text-zinc-900">
+                            The Market
                         </h1>
-                        <p className="text-gray-500 max-w-xl mx-auto text-lg mb-12 leading-relaxed font-medium">
-                            Real-time streaming intelligence from the Ottobon network.
-                            Strictly verified opportunities.
+                        <p className="text-zinc-500 max-w-2xl mx-auto text-xl mb-12 leading-relaxed font-medium">
+                            Real-time streaming intelligence from the Ottobon network. Verified opportunities, zero noise.
                         </p>
                     </motion.div>
 
-                    {/* High-Contrast Search Bar & Filters */}
+                    {/* Neu-Minimalist Search Bar & Filters */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="max-w-5xl mx-auto mt-10"
+                        transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        className="max-w-4xl mx-auto"
                     >
-                        <div className="flex flex-col gap-4">
-                            {/* Search Input Row */}
+                        <div className="flex flex-col gap-6">
+                            {/* Search Input Row - Refined Pill */}
                             <div className="flex flex-col md:flex-row gap-4 w-full">
                                 <div className="relative flex-1 group">
-                                    <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-black group-focus-within:text-black transition-colors" />
+                                    <Search size={22} className="absolute left-7 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" />
                                     <input
                                         type="text"
-                                        placeholder="SEARCH POSITIONS..."
+                                        placeholder="Search roles, companies, or skills..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-16 pr-8 py-5 bg-white border-2 border-black rounded-2xl text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-4 focus:ring-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 placeholder:uppercase placeholder:tracking-widest"
+                                        className="w-full pl-16 pr-8 py-6 bg-white border border-zinc-100 rounded-[32px] text-zinc-900 font-semibold text-base placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-black/5 shadow-[0_4px_32px_rgba(0,0,0,0.02)] transition-all duration-300"
                                     />
                                 </div>
-
                             </div>
 
-                            {/* Options Row */}
+                            {/* Options Row - Floating Selects */}
                             <div className="flex flex-col md:flex-row gap-4">
                                 {/* Location Dropdown */}
                                 <div className="relative flex-1">
                                     <button
                                         onClick={() => setIsLocationOpen(!isLocationOpen)}
-                                        className="w-full px-6 py-4 bg-black text-white border-2 border-black rounded-xl text-[11px] font-bold flex justify-between items-center hover:bg-gray-900 shadow-xl shadow-black/5 transition-all uppercase tracking-widest"
+                                        className="w-full px-6 py-4 bg-white text-zinc-900 border border-zinc-100 rounded-2xl text-xs font-bold flex justify-between items-center hover:bg-zinc-50 transition-all shadow-sm"
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
-                                            <MapPin size={14} className="text-gray-400 shrink-0" />
+                                            <MapPin size={16} className="text-zinc-400 shrink-0" />
                                             <span className="truncate">{selectedLocation}</span>
                                         </div>
-                                        <ChevronDown size={14} className={`text-white transition-transform ${isLocationOpen ? 'rotate-180' : ''}`} />
+                                        <ChevronDown size={16} className={`text-zinc-400 transition-transform ${isLocationOpen ? 'rotate-180' : ''}`} />
                                     </button>
 
                                     <AnimatePresence>
                                         {isLocationOpen && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                animate={{ opacity: 1, y: 5, scale: 1 }}
-                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border-2 border-black rounded-xl shadow-2xl p-2 max-h-60 overflow-y-auto"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 5 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl p-2 max-h-64 overflow-y-auto backdrop-blur-xl"
                                             >
                                                 {locations.map(loc => (
                                                     <button
@@ -304,7 +300,7 @@ const JobFeedPage = () => {
                                                             setSelectedLocation(loc);
                                                             setIsLocationOpen(false);
                                                         }}
-                                                        className={`w-full text-left px-4 py-3 rounded-lg text-[10px] font-bold transition-colors uppercase tracking-widest ${selectedLocation === loc ? 'bg-black text-white' : 'text-black hover:bg-gray-50'}`}
+                                                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-semibold transition-colors ${selectedLocation === loc ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-50'}`}
                                                     >
                                                         {loc}
                                                     </button>
@@ -318,22 +314,22 @@ const JobFeedPage = () => {
                                 <div className="relative flex-1">
                                     <button
                                         onClick={() => setIsExperienceOpen(!isExperienceOpen)}
-                                        className="w-full px-6 py-4 bg-black text-white border-2 border-black rounded-xl text-[11px] font-bold flex justify-between items-center hover:bg-gray-900 shadow-xl shadow-black/5 transition-all uppercase tracking-widest"
+                                        className="w-full px-6 py-4 bg-white text-zinc-900 border border-zinc-100 rounded-2xl text-xs font-bold flex justify-between items-center hover:bg-zinc-50 transition-all shadow-sm"
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
-                                            <span className="text-gray-400 shrink-0">EXP</span>
+                                            <span className="text-zinc-400 shrink-0 font-bold tracking-tighter">EXP</span>
                                             <span className="truncate">{selectedExperience}</span>
                                         </div>
-                                        <ChevronDown size={14} className={`text-white transition-transform ${isExperienceOpen ? 'rotate-180' : ''}`} />
+                                        <ChevronDown size={16} className={`text-zinc-400 transition-transform ${isExperienceOpen ? 'rotate-180' : ''}`} />
                                     </button>
 
                                     <AnimatePresence>
                                         {isExperienceOpen && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                animate={{ opacity: 1, y: 5, scale: 1 }}
-                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border-2 border-black rounded-xl shadow-2xl p-2 max-h-60 overflow-y-auto"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 5 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl p-2 max-h-64 overflow-y-auto backdrop-blur-xl"
                                             >
                                                 {experiences.map(exp => (
                                                     <button
@@ -342,7 +338,7 @@ const JobFeedPage = () => {
                                                             setSelectedExperience(exp);
                                                             setIsExperienceOpen(false);
                                                         }}
-                                                        className={`w-full text-left px-4 py-3 rounded-lg text-[10px] font-bold transition-colors uppercase tracking-widest ${selectedExperience === exp ? 'bg-black text-white' : 'text-black hover:bg-gray-50'}`}
+                                                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-semibold transition-colors ${selectedExperience === exp ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-50'}`}
                                                     >
                                                         {exp}
                                                     </button>
@@ -356,22 +352,22 @@ const JobFeedPage = () => {
                                 <div className="relative flex-1">
                                     <button
                                         onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                                        className="w-full px-6 py-4 bg-black text-white border-2 border-black rounded-xl text-[11px] font-bold flex justify-between items-center hover:bg-gray-900 shadow-xl shadow-black/5 transition-all uppercase tracking-widest"
+                                        className="w-full px-6 py-4 bg-white text-zinc-900 border border-zinc-100 rounded-2xl text-xs font-bold flex justify-between items-center hover:bg-zinc-50 transition-all shadow-sm"
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
-                                            <Tag size={14} className="text-gray-400 shrink-0" />
+                                            <Tag size={16} className="text-zinc-400 shrink-0" />
                                             <span className="truncate">{selectedCategory}</span>
                                         </div>
-                                        <ChevronDown size={14} className={`text-white transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                                        <ChevronDown size={16} className={`text-zinc-400 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
                                     </button>
 
                                     <AnimatePresence>
                                         {isCategoryOpen && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                animate={{ opacity: 1, y: 5, scale: 1 }}
-                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border-2 border-black rounded-xl shadow-2xl p-2 max-h-60 overflow-y-auto"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 5 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl p-2 max-h-64 overflow-y-auto backdrop-blur-xl"
                                             >
                                                 {categories.map(cat => (
                                                     <button
@@ -380,7 +376,7 @@ const JobFeedPage = () => {
                                                             setSelectedCategory(cat);
                                                             setIsCategoryOpen(false);
                                                         }}
-                                                        className={`w-full text-left px-4 py-3 rounded-lg text-[10px] font-bold transition-colors uppercase tracking-widest ${selectedCategory === cat ? 'bg-black text-white' : 'text-black hover:bg-gray-50'}`}
+                                                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-semibold transition-colors ${selectedCategory === cat ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-50'}`}
                                                     >
                                                         {cat}
                                                     </button>
@@ -392,18 +388,15 @@ const JobFeedPage = () => {
                             </div>
                         </div>
 
-                        {/* Monochrome Skill Pills */}
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-black uppercase tracking-[0.3em] mr-4 opacity-40">
-                                <Filter size={14} /> FILTER BY
-                            </div>
+                        {/* Refined Skill Pills */}
+                        <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
                             {topSkills.map(skill => (
                                 <button
                                     key={skill}
                                     onClick={() => toggleSkill(skill)}
-                                    className={`px-5 py-2.5 rounded-xl text-[10px] font-black border-2 transition-all duration-200 uppercase tracking-widest ${selectedSkills.includes(skill)
-                                        ? 'bg-black border-black text-white shadow-lg'
-                                        : 'bg-white border-gray-100 text-black hover:border-black active:scale-[0.95]'
+                                    className={`px-6 py-2.5 rounded-full text-xs font-bold border transition-all duration-300 ${selectedSkills.includes(skill)
+                                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-900/10'
+                                        : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-200 active:scale-[0.95]'
                                         }`}
                                 >
                                     {skill}
@@ -413,49 +406,54 @@ const JobFeedPage = () => {
                             {hasFilters && (
                                 <button
                                     onClick={clearFilters}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black text-black border-2 border-transparent hover:bg-black hover:text-white transition-all uppercase tracking-widest"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-50 transition-all"
                                 >
-                                    <X size={14} /> RESET ALL
+                                    <X size={16} /> RESET
                                 </button>
                             )}
-                            </div>
+                        </div>
 
-                        {/* Neural Match CTA: Centered & High Visibility */}
-                        <div className="mt-12 mb-4 flex justify-center">
+                        {/* Neural Match CTA */}
+                        <div className="mt-12 flex justify-center">
                             <JobMatchButton onMatch={handleMatchJobs} isLoading={isMatching} />
                         </div>
                     </motion.div>
                 </div>
             </header>
 
-            {/* Grid Container */}
-            <main className="max-w-7xl mx-auto pt-2 pb-20 px-6">
+            {/* Content Container */}
+            <main className="max-w-7xl mx-auto pt-8 pb-32 px-6">
                 
                 {/* 3. Matched Roles Section ABOVE Available Roles */}
                 {matchedJobs !== null && (
                     <MatchedJobsSection matchedJobs={matchedJobs} isAuthenticated={isAuthenticated} error={matchError} />
                 )}
 
-                <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-12 border-b-2 border-black pb-4">
-                    <h2 className="text-2xl font-display font-black text-black uppercase tracking-tighter shrink-0 text-left">
-                        {filtered.length} AVAILABLE ROLES
-                    </h2>
-                    <div className="h-px bg-black flex-1 hidden md:block opacity-10" />
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest shrink-0 md:text-right text-left">
-                        Showing {Math.min(visibleCount, filtered.length)} of {filtered.length}
+                <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-12">
+                    <div>
+                        <h2 className="text-3xl font-sans font-bold text-zinc-900 tracking-tight">
+                            Available Roles
+                        </h2>
+                        <p className="text-zinc-400 text-sm mt-1 font-medium">
+                            Explore {filtered.length} curated opportunities
+                        </p>
+                    </div>
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] bg-zinc-100/50 px-3 py-1.5 rounded-lg border border-zinc-200/30">
+                        Signal: Active
                     </span>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
                     {visibleJobs.length > 0 ? (
                         visibleJobs.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (
-                        <div className="col-span-full text-center py-24 bg-white rounded-3xl border-4 border-black border-dotted">
-                            <div className="w-20 h-20 bg-black rounded-3xl grid place-items-center mx-auto mb-6 shadow-2xl">
-                                <Search size={32} className="text-white" />
+                        <div className="col-span-full text-center py-32 bg-white rounded-[40px] border border-zinc-100 shadow-sm">
+                            <div className="w-24 h-24 bg-zinc-50 rounded-[32px] grid place-items-center mx-auto mb-8">
+                                <Search size={40} className="text-zinc-200" />
                             </div>
-                            <h3 className="text-2xl font-display font-black text-black uppercase tracking-widest mb-2">Null Result</h3>
-                            <p className="text-gray-400 text-sm font-medium uppercase tracking-widest">Broaden your parameters to reveal opportunities.</p>
+                            <h3 className="text-2xl font-sans font-bold text-zinc-900 mb-2">No results found</h3>
+                            <p className="text-zinc-400 text-base font-medium">Broaden your parameters to reveal matching opportunities.</p>
+                            <button onClick={clearFilters} className="mt-8 text-zinc-900 font-bold text-sm underline underline-offset-8">Clear all filters</button>
                         </div>
                     )}
                 </div>
@@ -465,14 +463,14 @@ const JobFeedPage = () => {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="flex justify-center mt-16"
+                        className="flex justify-center mt-20"
                     >
                         <button
                             onClick={() => setVisibleCount(prev => prev + 20)}
-                            className="group flex items-center gap-3 px-10 py-5 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-white hover:text-black transition-all duration-300 shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20"
+                            className="group flex items-center gap-3 px-12 py-5 bg-zinc-900 text-white rounded-2xl text-sm font-bold transition-all duration-300 hover:bg-zinc-800 shadow-xl shadow-zinc-900/10 active:scale-[0.98]"
                         >
-                            <ArrowDown size={16} className="group-hover:translate-y-0.5 transition-transform" />
-                            View More ({filtered.length - visibleCount} remaining)
+                            <ArrowDown size={18} className="group-hover:translate-y-1 transition-transform" />
+                            View More Positions
                         </button>
                     </motion.div>
                 )}

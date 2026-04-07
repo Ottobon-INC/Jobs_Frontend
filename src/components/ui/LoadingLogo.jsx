@@ -8,27 +8,30 @@ import { cn } from "../../utils/cn";
  */
 const LoadingLogo = ({ className = "" }) => {
     return (
-        <div className={cn("flex flex-col items-center justify-center gap-6", className)}>
-            {/* Pulsing Icon Square */}
+        <div className={cn("flex flex-col items-center justify-center gap-8", className)}>
+            {/* Minimalist Pulse Container */}
             <div className="relative">
-                {/* Outer Glow/Pulse Layer */}
-                <div className="absolute inset-0 bg-black rounded-xl animate-ping opacity-20" />
+                {/* Soft Outer Glow */}
+                <div className="absolute inset-0 bg-zinc-900 rounded-2xl animate-ping opacity-5 scale-125" />
                 
-                {/* Main Logo Square */}
-                <div className="relative w-16 h-16 bg-black rounded-xl flex items-center justify-center animate-pulse shadow-2xl">
-                    <Briefcase size={32} className="text-white" />
+                {/* Main Logo Square - Neu-Minimalist */}
+                <div className="relative w-20 h-20 bg-zinc-900 rounded-[24px] flex items-center justify-center shadow-2xl shadow-zinc-900/20">
+                    <Briefcase size={40} className="text-white" />
                 </div>
             </div>
 
-            {/* Typography with Suble Scale */}
-            <div className="flex flex-col items-center gap-1 animate-bounce duration-[2000ms]">
-                <span className="font-display font-black text-2xl tracking-tighter text-black uppercase">
-                    Ottobon<span className="opacity-40">/</span>Jobs
+            {/* Typography - Refined */}
+            <div className="flex flex-col items-center gap-2">
+                <span className="font-sans font-bold text-3xl tracking-tight text-zinc-900">
+                    Ottobon<span className="text-zinc-200 font-light mx-1">|</span>Jobs
                 </span>
-                <div className="flex gap-1.5 mt-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-black animate-bounce delay-0" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-black/40 animate-bounce delay-150" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-black/10 animate-bounce delay-300" />
+                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-[0.3em] mt-1">
+                    System Initializing
+                </p>
+                <div className="flex gap-2.5 mt-4">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 animate-pulse" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-200" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-100" />
                 </div>
             </div>
         </div>

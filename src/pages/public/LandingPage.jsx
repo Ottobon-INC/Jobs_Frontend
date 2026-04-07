@@ -7,6 +7,8 @@ import { FeaturedJobs } from '../../components/landing/FeaturedJobs';
 import { CategoriesSection } from '../../components/landing/CategoriesSection';
 import { BenefitsSection } from '../../components/landing/BenefitsSection';
 import { LandingFooter } from '../../components/landing/LandingFooter';
+import { MockInterviewSection } from '../../components/landing/MockInterviewSection';
+import { BlogHighlights } from '../../components/landing/BlogHighlights';
 import { Link } from 'react-router-dom';
 
 const ROBOT_SCENE_URL = "https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode";
@@ -81,6 +83,10 @@ export default function LandingPage() {
                 <PathToHired />
             </div>
 
+            <div id="mock-interview-promo" className="section-optimize">
+                <MockInterviewSection />
+            </div>
+
             {/* Padded Content Sections */}
             <div className="relative z-10 px-4 md:px-12 lg:px-20 overflow-hidden section-optimize">
                 <div id="stats" className="gpu-accelerate">
@@ -94,6 +100,9 @@ export default function LandingPage() {
                 </div>
                 <div id="categories" className="gpu-accelerate">
                     <CategoriesSection />
+                </div>
+                <div id="blog-highlights" className="gpu-accelerate">
+                    <BlogHighlights />
                 </div>
             </div>
 

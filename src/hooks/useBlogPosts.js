@@ -13,7 +13,7 @@ export const useBlogPosts = (limit = 20) => {
             const data = await listBlogPosts(limit);
             setPosts(data);
         } catch (err) {
-            console.error(err);
+            console.error("Error fetching blogs:", err);
             setError(err);
         } finally {
             setLoading(false);

@@ -14,48 +14,50 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/90 backdrop-blur-xl border-b border-black">
-            <div className="h-full px-8 flex items-center justify-between">
-                {/* Logo - Strictly Black/White */}
+        <nav className="fixed top-4 left-6 right-6 z-50 h-16 bg-white/80 backdrop-blur-xl border border-white/40 rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
+            <div className="h-full px-6 flex items-center justify-between">
+                {/* Logo - Refined Branding */}
                 <Link to="/" className="flex items-center gap-3 group">
-                    <div className="w-8 h-8 bg-black rounded-lg grid place-items-center group-hover:scale-110 transition-transform duration-500">
-                        <Briefcase size={16} className="text-white" />
+                    <div className="w-9 h-9 bg-zinc-900 rounded-xl grid place-items-center group-hover:scale-105 transition-transform duration-500 shadow-lg shadow-zinc-900/10">
+                        <Briefcase size={18} className="text-white" />
                     </div>
-                    <span className="font-display font-black text-xl tracking-tighter text-black uppercase">
-                        Ottobon<span className="opacity-40">/</span>Jobs
+                    <span className="font-sans font-bold text-lg tracking-tight text-zinc-900">
+                        Ottobon<span className="text-zinc-300 font-light mx-1">|</span>Jobs
                     </span>
                 </Link>
 
-                {/* Center Search - High Contrast Focus */}
+                {/* Center Search - Minimalist Pill */}
                 {user && (
                     <div className="hidden md:flex items-center">
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                                <Search size={14} className="text-black opacity-40 group-focus-within:opacity-100 transition-opacity" />
+                                <Search size={14} className="text-zinc-400 group-focus-within:text-zinc-900 transition-colors" />
                             </div>
                             <input
                                 type="text"
-                                placeholder="QUICK ACTION..."
-                                className="pl-10 pr-6 py-2 bg-white border-2 border-transparent border-b-black rounded-none text-[10px] font-black text-black placeholder:text-gray-300 focus:outline-none focus:border-black transition-all duration-500 w-72 uppercase tracking-widest"
+                                placeholder="Search the network..."
+                                className="pl-11 pr-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/5 focus:bg-white transition-all duration-300 w-80"
                             />
                         </div>
                     </div>
                 )}
 
                 {/* User Actions */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                     {user ? (
                         <>
                             <Link 
                                 to="/profile"
-                                className="flex items-center gap-3 bg-white border-2 border-black px-4 py-1.5 rounded-xl shadow-[4px_4px_0px_#000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-300"
+                                className="flex items-center gap-3 bg-white border border-zinc-100 pl-1.5 pr-4 py-1.5 rounded-full hover:bg-zinc-50 transition-all duration-300 shadow-sm hover:shadow-md"
                             >
-                                <div className="w-6 h-6 bg-black rounded-full grid place-items-center">
-                                    <User size={12} className="text-white" />
+                                <div className="w-7 h-7 bg-zinc-100 rounded-full grid place-items-center">
+                                    <User size={14} className="text-zinc-900" />
                                 </div>
-                                <div className="hidden md:flex flex-col">
-                                    <span className="text-[10px] font-black text-black leading-none uppercase tracking-wider">{user.email?.split('@')[0]}</span>
-                                    <span className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">
+                                <div className="hidden lg:flex flex-col">
+                                    <span className="text-[11px] font-bold text-zinc-900 leading-none">
+                                        {user.email?.split('@')[0]}
+                                    </span>
+                                    <span className="text-[9px] text-zinc-400 font-medium uppercase tracking-wider">
                                         {role || 'User'}
                                     </span>
                                 </div>
@@ -63,18 +65,18 @@ const Navbar = () => {
 
                             <button
                                 onClick={handleLogout}
-                                className="p-2 text-black hover:bg-black hover:text-white border-2 border-transparent hover:border-black rounded-xl transition-all duration-300"
+                                className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 rounded-full transition-all duration-300"
                                 title="Logout"
                             >
-                                <LogOut size={16} />
+                                <LogOut size={18} />
                             </button>
                         </>
                     ) : (
-                        <div className="flex gap-4 items-center">
-                            <Link to="/login" className="text-[10px] font-black text-black hover:underline uppercase tracking-[0.2em]">
+                        <div className="flex gap-2 items-center">
+                            <Link to="/login" className="px-5 py-2.5 text-xs font-semibold text-zinc-600 hover:text-zinc-900 transition-colors">
                                 Access
                             </Link>
-                            <Link to="/register" className="bg-black text-white px-6 py-2 text-[10px] font-black rounded-xl border-2 border-black hover:bg-white hover:text-black transition-all duration-500 uppercase tracking-widest">
+                            <Link to="/register" className="bg-zinc-900 text-white px-6 py-2.5 text-xs font-bold rounded-full hover:bg-zinc-800 transition-all duration-300 shadow-lg shadow-zinc-900/10">
                                 Join Network
                             </Link>
                         </div>

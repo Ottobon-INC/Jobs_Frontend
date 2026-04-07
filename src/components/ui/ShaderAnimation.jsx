@@ -101,8 +101,14 @@ export function ShaderAnimation() {
     const mesh = new THREE.Mesh(geometry, material)
     scene.add(mesh)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" })
-    renderer.setPixelRatio(1.0)
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" })
+      renderer.setPixelRatio(1.0)
+    } catch (e) {
+      console.error("WebGL context creation failed:", e)
+      return;
+    }
 
     container.appendChild(renderer.domElement)
 

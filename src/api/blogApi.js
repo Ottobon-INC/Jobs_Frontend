@@ -1,13 +1,25 @@
-import api from './client';
+import api, { supabase } from './client';
 
 export const listBlogPosts = async (limit = 10) => {
-    const response = await api.get(`/blogs?limit=${limit}`);
-    return response.data;
+    const { data, error } = await supabase
+        .from('jobs_blogs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+    if (error) throw error;
+    return data;
 };
 
-export const getBlogPost = async (slug) => {
-    const response = await api.get(`/blogs/${slug}`);
-    return response.data;
+export const getBlogPost = async (id) => {
+    const { data, error } = await supabase
+        .from('jobs_blogs')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+    return data;
 };
 
 export const generateBlogPost = async () => {

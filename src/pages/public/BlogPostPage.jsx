@@ -4,59 +4,8 @@ import { getBlogPost } from '../../api/blogApi';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Loader from '../../components/ui/Loader';
-import { ArrowLeft, Calendar, Share2, AlertCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, Calendar, Share2, AlertCircle, Sparkles, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const MOCK_CONTENT = {
-    'mock-1': {
-        title: "The Death of 'Entry Level': Why Juniors Need to Specialize",
-        content: `
-# The Generalist is Dead. Long Live the Specialist.
-
-It used to be enough to know "React and Node." In 2026, that resume gets you filtered out by the first AI screen. 
-
-## The Data Doesn't Lie
-We analyzed 1.2 million job postings from the last 6 months. 
-- **Generic "Full Stack Developer" roles:** Down 45% YoY.
-- **Specialized roles (e.g., "Systems Engineer", "AI/ML Ops"):** Up 210%.
-
-## Why is this happening?
-AI coding assistants have democratized basic CRUD app creation. A junior dev with an AI tool can now output the same volume of boilerplate code as a mid-level dev from 2023. 
-
-Companies no longer pay for boilerplate. They pay for **edge cases, performance optimization, and architectural decisions**.
-
-## Action Plan
-1. **Pick a Niche:** Don't just learn "Python". Learn "Python for High-Frequency Trading".
-2. **Build Hard Things:** Stop building To-Do lists. Build a custom database engine. Build a compiler.
-3. **Show Your Work:** Your GitHub graph is your new resume.
-        `,
-        image_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop",
-        published_at: new Date('2026-02-18').toISOString(),
-    },
-    'mock-2': {
-        title: "Salary Shock: Remote vs. On-Site Paygaps Widening",
-        content: `
-# The Cost of Comfort
-
-We all love working in our pajamas. But it might be costing you $30,000 a year.
-
-## The Pay Gap
-Our internal salary data reveals a startling trend for Q1 2026:
-- **On-Site / Hybrid Roles:** Avg. Salary $145,000
-- **Fully Remote Roles:** Avg. Salary $115,000
-
-That's a **26% premium** for showing up to the office.
-
-## Validating Presence
-Employers are effectively taxing remote work. They view on-site presence as a "premium feature", correlating it with higher engagement.
-
-## What should you do?
-If you're optimized for income, consider a hybrid role. If you're optimized for lifestyle, be prepared to accept the "Remote Tax".
-        `,
-        image_url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2664&auto=format&fit=crop",
-        published_at: new Date('2026-02-17').toISOString(),
-    }
-};
 
 const BlogPostPage = () => {
     const { slug } = useParams();
@@ -68,11 +17,6 @@ const BlogPostPage = () => {
         const fetchPost = async () => {
             setLoading(true);
             try {
-                if (MOCK_CONTENT[slug]) {
-                    setPost(MOCK_CONTENT[slug]);
-                    setLoading(false);
-                    return;
-                }
                 const data = await getBlogPost(slug);
                 setPost(data);
                 setError(null);
@@ -89,12 +33,12 @@ const BlogPostPage = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
 
     if (error) return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-white">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-xl bg-white border-4 border-black p-12 rounded-[32px] shadow-[16px_16px_0px_#000]">
-                <AlertCircle size={64} className="mx-auto mb-8 text-black" />
-                <h1 className="text-4xl font-display font-black text-black uppercase tracking-tighter mb-4">Signal Null</h1>
-                <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.4em] mb-12 italic">{error}</p>
-                <Link to="/blogs" className="inline-block bg-black text-white px-10 py-4 rounded-xl font-display font-black text-[10px] uppercase tracking-widest hover:bg-gray-800 transition-all shadow-xl">
+        <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-[#FBFBFB]">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-xl bg-white border border-zinc-100 p-16 rounded-[48px] shadow-2xl shadow-zinc-900/5">
+                <AlertCircle size={64} className="mx-auto mb-10 text-zinc-300" />
+                <h1 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Signal Null</h1>
+                <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.4em] mb-12 italic">{error}</p>
+                <Link to="/blogs" className="inline-block bg-zinc-900 text-white px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10">
                     Return to Feed
                 </Link>
             </motion.div>
@@ -102,31 +46,31 @@ const BlogPostPage = () => {
     );
 
     return (
-        <div className="min-h-screen pt-16 pb-24 px-8 bg-white">
+        <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 bg-[#FBFBFB]">
             <article className="max-w-4xl mx-auto">
-                <Link to="/blogs" className="inline-flex items-center gap-3 text-[10px] font-black text-black/40 hover:text-black mb-12 transition-all uppercase tracking-[0.3em]">
+                <Link to="/blogs" className="inline-flex items-center gap-3 text-[11px] font-bold text-zinc-400 hover:text-zinc-900 mb-16 transition-all uppercase tracking-[0.3em]">
                     <ArrowLeft size={16} /> Return to Intel
                 </Link>
 
                 <motion.header
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-16 text-center pb-16 border-b-4 border-black"
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="mb-20 text-center pb-20 border-b border-zinc-100"
                 >
-                    <div className="flex items-center justify-center gap-3 text-[9px] font-black text-white mb-8 bg-black inline-flex px-6 py-2 rounded-lg border border-black shadow-lg uppercase tracking-widest">
-                        <Calendar size={12} />
-                        <span>{new Date(post.published_at).toLocaleDateString()}</span>
-                        <span className="mx-2 opacity-30">|</span>
-                        <span>OTTOBON_SIG_INT</span>
+                    <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-zinc-500 mb-10 bg-zinc-50 inline-flex px-8 py-2.5 rounded-full border border-zinc-100 shadow-sm uppercase tracking-widest">
+                        <Calendar size={14} className="text-zinc-300" />
+                        <span>{new Date(post.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                        <span className="mx-2 opacity-20">|</span>
+                        <span>ANALYSIS_CORE</span>
                     </div>
-                    <h1 className="text-5xl md:text-6xl font-display font-black mb-12 tracking-tighter text-black leading-tight uppercase">
+                    <h1 className="text-3xl md:text-5xl font-sans font-bold mb-16 tracking-tight text-zinc-900 leading-[1.1]">
                         {post.title}
                     </h1>
                     {post.image_url && (
-                        <div className="relative rounded-[40px] overflow-hidden border-4 border-black shadow-[24px_24px_0px_rgba(0,0,0,0.05)]">
-                            <img src={post.image_url} alt={post.title} className="w-full h-[500px] object-cover grayscale brightness-90 contrast-125" />
-                            <div className="absolute inset-0 bg-black/10" />
+                        <div className="relative rounded-[56px] overflow-hidden border border-zinc-100 shadow-2xl shadow-zinc-900/5">
+                            <img src={post.image_url} alt={post.title} className="w-full h-[600px] object-cover opacity-90 brightness-110" />
+                            <div className="absolute inset-0 bg-zinc-900/5" />
                         </div>
                     )}
                 </motion.header>
@@ -134,30 +78,60 @@ const BlogPostPage = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                    className="prose prose-neutral prose-2xl max-w-none 
-                    prose-headings:font-display prose-headings:font-black prose-headings:tracking-tighter prose-headings:text-black prose-headings:uppercase
-                    prose-p:text-black/80 prose-p:font-medium prose-p:leading-relaxed prose-p:uppercase prose-p:text-sm prose-p:tracking-wider
-                    prose-li:text-black/80 prose-li:font-medium prose-li:uppercase prose-li:text-xs prose-li:tracking-widest
-                    prose-strong:text-black prose-strong:font-black prose-strong:underline
-                    prose-a:text-black prose-a:font-black prose-a:underline hover:prose-a:opacity-50 transition-opacity
-                    prose-blockquote:border-l-8 prose-blockquote:border-black prose-blockquote:bg-gray-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:not-italic prose-blockquote:rounded-3xl prose-blockquote:text-black prose-blockquote:font-black prose-blockquote:uppercase prose-blockquote:text-xl
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    className="prose prose-zinc prose-lg md:prose-xl max-w-none 
+                    prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-900
+                    prose-p:text-zinc-600 prose-p:font-medium prose-p:leading-[1.8]
+                    prose-li:text-zinc-600 prose-li:font-medium
+                    prose-strong:text-zinc-900 prose-strong:font-bold
+                    prose-a:text-zinc-900 prose-a:font-bold prose-a:no-underline hover:prose-a:underline transition-all
+                    prose-blockquote:border-l-4 prose-blockquote:border-zinc-900 prose-blockquote:bg-zinc-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:not-italic prose-blockquote:rounded-[32px] prose-blockquote:text-zinc-900 prose-blockquote:font-medium prose-blockquote:text-xl
                 "
                 >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {post.content}
-                    </ReactMarkdown>
+                    {post.description && (
+                        <div className="text-lg md:text-xl font-medium text-zinc-600 leading-[1.8] tracking-tight border-l-4 border-zinc-900 pl-8 md:pl-10 py-4 mb-12">
+                            {post.description}
+                        </div>
+                    )}
+                    
+                    {post.summary && post.summary !== post.description && (
+                        <div className={`text-[17px] md:text-lg font-medium text-zinc-500 leading-relaxed tracking-tight ${!post.description ? 'border-l-4 border-zinc-900 pl-8 md:pl-10 py-4' : 'mb-12'}`}>
+                            {post.summary}
+                        </div>
+                    )}
+                    
+                    {post.content && (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {post.content}
+                        </ReactMarkdown>
+                    )}
+                    
+                    {(!post.content && !post.description && !post.summary) && (
+                        <p className="italic text-zinc-400">*Signal contains no textual decryption.*</p>
+                    )}
+
+                    {post.url && (
+                        <div className="mt-16 p-8 bg-zinc-50 border border-zinc-100 rounded-[32px] flex flex-col md:flex-row items-center justify-between gap-6 not-prose">
+                            <div>
+                                <h3 className="font-bold text-zinc-900 text-xl m-0 tracking-tight">Access External Signal</h3>
+                                <p className="text-sm font-medium text-zinc-500 m-0 mt-2">This intel is an automated extraction. Proceed to the root source to decrypt the full context.</p>
+                            </div>
+                            <a href={post.url} target="_blank" rel="noopener noreferrer" className="shrink-0 flex items-center gap-3 bg-zinc-900 text-white px-8 py-4 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10 no-underline">
+                                Authenticate via {post.domain || 'Source'} <ExternalLink size={16} />
+                            </a>
+                        </div>
+                    )}
                 </motion.div>
 
-                <div className="mt-24 pt-12 border-t-8 border-black flex flex-col md:flex-row justify-between items-center gap-10 bg-white rounded-[40px] border-4 border-black p-12 shadow-[20px_20px_0px_#000]">
+                <div className="mt-32 p-12 bg-white border border-zinc-100 rounded-[48px] flex flex-col md:flex-row justify-between items-center gap-10 shadow-2xl shadow-zinc-900/5">
                     <div>
-                        <p className="font-display font-black text-2xl text-black uppercase tracking-tighter flex items-center gap-3">
-                            <Sparkles size={24} /> SIGNAL_SYNC_SUCCESS
+                        <p className="text-2xl font-bold text-zinc-900 tracking-tight flex items-center gap-3">
+                            <Sparkles size={24} className="text-zinc-900" /> Signal Sync
                         </p>
-                        <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em] mt-2">Transmit intel to your network node.</p>
+                        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.3em] mt-3">Transmit intel to your external network.</p>
                     </div>
-                    <button className="flex items-center gap-3 px-10 py-5 bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] hover:bg-gray-800 transition-all shadow-2xl active:scale-95">
-                        <Share2 size={24} /> Transmit Intel
+                    <button className="flex items-center gap-3 px-10 py-5 bg-zinc-900 text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95">
+                        <Share2 size={20} /> Transmit Intel
                     </button>
                 </div>
             </article>
