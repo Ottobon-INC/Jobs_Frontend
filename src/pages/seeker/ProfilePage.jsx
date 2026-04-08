@@ -3,17 +3,17 @@ import { useAuth } from '../../hooks/useAuth';
 import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar } from '../../api/usersApi';
 import { supabase } from '../../api/client';
 import Loader from '../../components/ui/Loader';
-import { 
-    Upload, 
-    FileText, 
-    CheckCircle, 
-    AlertCircle, 
-    RefreshCw, 
-    Activity, 
-    Sparkles, 
-    Plus, 
-    X, 
-    Save, 
+import {
+    Upload,
+    FileText,
+    CheckCircle,
+    AlertCircle,
+    RefreshCw,
+    Activity,
+    Sparkles,
+    Plus,
+    X,
+    Save,
     Edit2,
     MapPin,
     Phone,
@@ -31,7 +31,7 @@ const ProfilePage = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [extracting, setExtracting] = useState(false);
-    
+
     // Editable State
     const [editMode, setEditMode] = useState(false);
     const [fullName, setFullName] = useState('');
@@ -53,7 +53,7 @@ const ProfilePage = () => {
             setLoading(true);
             const data = await getMyProfile();
             setProfile(data);
-            
+
             // Sync local editable state
             setFullName(data.full_name || '');
             setPhone(data.phone || '');
@@ -188,8 +188,9 @@ const ProfilePage = () => {
             setMessage("Identity visualized. Refreshing profile...");
             await fetchProfile();
         } catch (err) {
-            console.error(err);
-            setError("Avatar sync failed. Check connection.");
+            console.error('Avatar Sync Error:', err);
+            setError(`Avatar sync failed: ${err.message || err.error || JSON.stringify(err)}`);
+            alert("DEBUG ERROR: " + (err.message || JSON.stringify(err) || "Unknown error"));
         } finally {
             setUploadingAvatar(false);
         }
@@ -201,22 +202,21 @@ const ProfilePage = () => {
         <div className="max-w-6xl mx-auto py-20 px-6 min-h-screen">
             <header className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div>
-                <div>
-                    <h1 className="text-6xl font-bold text-black tracking-tight leading-none">Identity</h1>
-                    <p className="text-[10px] font-black text-zinc-400 mt-4 uppercase tracking-[0.4em] flex items-center gap-3">
-                        <div className="w-10 h-[1px] bg-zinc-200" /> Your Professional Dashboard
-                    </p>
-                </div>
+                    <div>
+                        <h1 className="text-6xl font-bold text-black tracking-tight leading-none">Identity</h1>
+                        <p className="text-[10px] font-black text-zinc-400 mt-4 uppercase tracking-[0.4em] flex items-center gap-3">
+                            <div className="w-10 h-[1px] bg-zinc-200" /> Your Professional Dashboard
+                        </p>
+                    </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => editMode ? handleSave() : setEditMode(true)}
                         disabled={saving}
-                        className={`px-8 py-4 rounded-full font-bold text-xs transition-all flex items-center gap-3 shadow-xl shadow-zinc-900/10 ${
-                            editMode 
-                            ? 'bg-zinc-900 text-white hover:bg-zinc-800' 
-                            : 'bg-white border border-zinc-200 text-zinc-900 hover:bg-zinc-50'
-                        }`}
+                        className={`px-8 py-4 rounded-full font-bold text-xs transition-all flex items-center gap-3 shadow-xl shadow-zinc-900/10 ${editMode
+                                ? 'bg-zinc-900 text-white hover:bg-zinc-800'
+                                : 'bg-white border border-zinc-200 text-zinc-900 hover:bg-zinc-50'
+                            }`}
                     >
                         {saving ? <RefreshCw size={16} className="animate-spin" /> : (editMode ? <Save size={16} /> : <Edit2 size={16} />)}
                         {editMode ? 'Save Changes' : 'Edit Profile'}
@@ -235,9 +235,9 @@ const ProfilePage = () => {
                         <div className="relative group/avatar mb-12">
                             <div className="w-32 h-32 rounded-full bg-black overflow-hidden shadow-2xl shadow-black/20 ring-8 ring-zinc-50 border-4 border-white relative">
                                 {profile?.avatar_url ? (
-                                    <img 
-                                        src={profile.avatar_url} 
-                                        alt={profile.full_name} 
+                                    <img
+                                        src={profile.avatar_url}
+                                        alt={profile.full_name}
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
@@ -245,13 +245,13 @@ const ProfilePage = () => {
                                         {user?.email?.charAt(0).toUpperCase()}
                                     </div>
                                 )}
-                                
+
                                 {/* Overlay for Edit Mode */}
                                 {editMode && (
                                     <label className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center gap-2">
-                                        <input 
-                                            type="file" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            className="hidden"
                                             onChange={handleAvatarChange}
                                             accept="image/*"
                                             disabled={uploadingAvatar}
@@ -267,20 +267,20 @@ const ProfilePage = () => {
                                     </label>
                                 )}
                             </div>
-                            
+
                             {uploadingAvatar && (
                                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-black text-white text-[8px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full shadow-lg">
                                     Syncing...
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="space-y-10">
                             <div>
                                 <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Full Name</label>
                                 {editMode ? (
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
                                         className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
@@ -295,8 +295,8 @@ const ProfilePage = () => {
                                 <div>
                                     <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Current Location</label>
                                     {editMode ? (
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             value={location}
                                             onChange={(e) => setLocation(e.target.value)}
                                             className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
@@ -312,8 +312,8 @@ const ProfilePage = () => {
                                 <div>
                                     <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Date of Birth</label>
                                     {editMode ? (
-                                        <input 
-                                            type="date" 
+                                        <input
+                                            type="date"
                                             value={dob}
                                             onChange={(e) => setDob(e.target.value)}
                                             className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm text-zinc-900 focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
@@ -338,8 +338,8 @@ const ProfilePage = () => {
                         <div className="p-10 bg-white border border-zinc-50 rounded-[48px] shadow-sm">
                             <p className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-300 mb-4">Secure Contact</p>
                             {editMode ? (
-                                <input 
-                                    type="tel" 
+                                <input
+                                    type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     className="w-full bg-transparent border-0 border-b border-zinc-100 focus:border-black focus:ring-0 p-0 font-bold text-zinc-900 placeholder:text-zinc-200"
@@ -356,7 +356,7 @@ const ProfilePage = () => {
                 <div className="lg:col-span-2 space-y-10">
                     <AnimatePresence mode="wait">
                         {message && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
@@ -366,7 +366,7 @@ const ProfilePage = () => {
                             </motion.div>
                         )}
                         {error && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
@@ -390,9 +390,9 @@ const ProfilePage = () => {
                                 <p className="text-[10px] font-black text-zinc-300 mt-2 uppercase tracking-[0.4em]">Refine your skills</p>
                             </div>
                             <label className="cursor-pointer">
-                                <input 
-                                    type="file" 
-                                    className="hidden" 
+                                <input
+                                    type="file"
+                                    className="hidden"
                                     onChange={handleScanResume}
                                     accept=".pdf,.docx"
                                     disabled={extracting}
@@ -426,8 +426,8 @@ const ProfilePage = () => {
                         <div className="flex flex-wrap gap-2.5">
                             {skills.length > 0 ? (
                                 skills.map(skill => (
-                                    <span 
-                                        key={skill} 
+                                    <span
+                                        key={skill}
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-semibold text-zinc-600 hover:bg-zinc-100 transition-colors"
                                     >
                                         {skill}
@@ -455,7 +455,7 @@ const ProfilePage = () => {
                     >
                         <h3 className="text-2xl font-bold text-black tracking-tight mb-2">Career Goals</h3>
                         <p className="text-[10px] font-black text-zinc-300 mb-12 uppercase tracking-[0.4em]">Define your ideal professional journey</p>
-                        
+
                         {editMode ? (
                             <textarea
                                 value={interests}
@@ -485,7 +485,7 @@ const ProfilePage = () => {
                     >
                         <h3 className="text-2xl font-bold text-black tracking-tight mb-2">Future Roles</h3>
                         <p className="text-[10px] font-black text-zinc-300 mb-12 uppercase tracking-[0.4em]">Select the roles you are aiming for</p>
-                        
+
                         {editMode ? (
                             <div className="space-y-10">
                                 {/* Custom Job Role Input */}
@@ -521,18 +521,17 @@ const ProfilePage = () => {
                                                         setAspirations([...aspirations, roleName]);
                                                     }
                                                 }}
-                                                className={`px-5 py-3 border rounded-full text-[11px] font-bold transition-all ${
-                                                    isSelected 
-                                                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-900/10' 
-                                                    : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-200'
-                                                } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-20 cursor-not-allowed' : ''}`}
+                                                className={`px-5 py-3 border rounded-full text-[11px] font-bold transition-all ${isSelected
+                                                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-900/10'
+                                                        : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-200'
+                                                    } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-20 cursor-not-allowed' : ''}`}
                                                 disabled={aspirations.length >= 5 && !isSelected}
                                             >
                                                 {roleName}
                                             </button>
                                         );
                                     })}
-                                    
+
                                     {/* Handle Custom Aspirations that are NOT in the predefined list */}
                                     {aspirations.filter(a => !DESIRED_JOB_ROLES.includes(a)).map(customRole => (
                                         <button
@@ -546,7 +545,7 @@ const ProfilePage = () => {
                                         </button>
                                     ))}
                                 </div>
-                                
+
                                 {aspirations.length >= 5 && (
                                     <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mt-6 bg-rose-50 px-4 py-2 rounded-full inline-block">Security Protocol: Capacity Reached (5/5)</p>
                                 )}
@@ -555,8 +554,8 @@ const ProfilePage = () => {
                             <div className="flex flex-wrap gap-2.5">
                                 {aspirations.length > 0 ? (
                                     aspirations.map(aspiration => (
-                                        <span 
-                                            key={aspiration} 
+                                        <span
+                                            key={aspiration}
                                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-900 text-white rounded-full text-xs font-bold shadow-lg shadow-zinc-900/10"
                                         >
                                             <Target size={14} className="opacity-50" />
@@ -583,12 +582,12 @@ const ProfilePage = () => {
                         <div className="absolute -right-10 -bottom-10 opacity-[0.03]">
                             <FileText size={320} />
                         </div>
-                        
+
                         <div className="relative z-10">
                             <h3 className="text-2xl font-bold tracking-tight mb-10 flex items-center gap-3">
                                 <FileText size={24} className="text-zinc-500" /> Your Resume
                             </h3>
-                            
+
                             <div className="flex flex-col md:flex-row items-center gap-10">
                                 <div className={`w-28 h-28 rounded-full flex items-center justify-center border-4 transition-all duration-700 ${profile?.resume_text ? 'bg-emerald-50 border-white shadow-[0_0_40px_rgba(16,185,129,0.1)]' : 'bg-zinc-50 border-white'}`}>
                                     <CheckCircle size={40} className={profile?.resume_text ? "text-emerald-500" : "text-zinc-200"} />
@@ -598,19 +597,19 @@ const ProfilePage = () => {
                                         {profile?.resume_text ? "Resume Uploaded" : "No Resume Found"}
                                     </p>
                                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-relaxed max-w-sm">
-                                        {profile?.resume_text 
-                                            ? `Last sync: ${new Date(profile.created_at).toLocaleDateString()}. Your data is used for job matching.` 
+                                        {profile?.resume_text
+                                            ? `Last sync: ${new Date(profile.created_at).toLocaleDateString()}. Your data is used for job matching.`
                                             : "Upload your resume to start matching with relevant jobs."}
                                     </p>
                                 </div>
                                 <label className="cursor-pointer bg-black text-white px-10 py-5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3 group shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 breathing-pulse">
-                                    <input 
-                                        type="file" 
-                                        className="hidden" 
+                                    <input
+                                        type="file"
+                                        className="hidden"
                                         onChange={handleResumeUpload}
                                         accept=".pdf,.docx"
                                     />
-                                    <Upload size={18} className="group-hover:-translate-y-1 transition-transform" /> 
+                                    <Upload size={18} className="group-hover:-translate-y-1 transition-transform" />
                                     Update Resume
                                 </label>
                             </div>
@@ -620,7 +619,7 @@ const ProfilePage = () => {
                     {/* Bottom Save Button - Exclusive to Edit Mode */}
                     <AnimatePresence>
                         {editMode && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 20 }}
