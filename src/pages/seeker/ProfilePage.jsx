@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { uploadResume, getMyProfile, updateProfile, extractSkills } from '../../api/usersApi';
+import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar } from '../../api/usersApi';
+import { supabase } from '../../api/client';
 import Loader from '../../components/ui/Loader';
 import { 
     Upload, 
@@ -41,6 +42,8 @@ const ProfilePage = () => {
     const [interests, setInterests] = useState('');
     const [aspirations, setAspirations] = useState([]);
     const [newSkill, setNewSkill] = useState('');
+    const [newAspiration, setNewAspiration] = useState('');
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -81,6 +84,19 @@ const ProfilePage = () => {
 
     const handleRemoveSkill = (skillToRemove) => {
         setSkills(skills.filter(s => s !== skillToRemove));
+    };
+
+    const handleAddAspiration = (e) => {
+        if (e) e.preventDefault();
+        const trimmed = newAspiration.trim();
+        if (trimmed && !aspirations.includes(trimmed)) {
+            if (aspirations.length < 5) {
+                setAspirations([...aspirations, trimmed]);
+                setNewAspiration('');
+            } else {
+                setError("Protocol Limit: Maximum 5 aspirations allowed.");
+            }
+        }
     };
 
     const handleScanResume = async (e) => {
@@ -147,16 +163,50 @@ const ProfilePage = () => {
         }
     };
 
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validation for Image/GIF
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            setError("Invalid format. Please upload a Static Image or GIF.");
+            return;
+        }
+
+        setUploadingAvatar(true);
+        setError(null);
+        setMessage("Uploading identity payload...");
+
+        try {
+            // 1. Upload to Supabase Storage
+            const publicUrl = await uploadAvatar(user.id, file);
+
+            // 2. Update Profile in DB
+            await updateProfile({ avatar_url: publicUrl });
+
+            setMessage("Identity visualized. Refreshing profile...");
+            await fetchProfile();
+        } catch (err) {
+            console.error(err);
+            setError("Avatar sync failed. Check connection.");
+        } finally {
+            setUploadingAvatar(false);
+        }
+    };
+
     if (loading) return <Loader fullScreen variant="logo" />;
 
     return (
         <div className="max-w-6xl mx-auto py-20 px-6 min-h-screen">
             <header className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div>
-                    <h1 className="text-6xl font-sans font-bold text-zinc-900 tracking-tight">Identity</h1>
-                    <p className="text-sm font-medium text-zinc-400 mt-3 flex items-center gap-2">
-                        <Activity size={14} className="text-zinc-300" /> Professional Intelligence Dashboard
+                <div>
+                    <h1 className="text-6xl font-bold text-black tracking-tight leading-none">Identity</h1>
+                    <p className="text-[10px] font-black text-zinc-400 mt-4 uppercase tracking-[0.4em] flex items-center gap-3">
+                        <div className="w-10 h-[1px] bg-zinc-200" /> Your Professional Dashboard
                     </p>
+                </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
@@ -182,56 +232,95 @@ const ProfilePage = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="bg-white border border-zinc-100 rounded-[40px] p-10 shadow-xl shadow-zinc-900/5 relative overflow-hidden"
                     >
-                        <div className="w-28 h-28 rounded-[38px] bg-zinc-900 grid place-items-center text-5xl font-bold text-white shadow-2xl shadow-zinc-900/20 mb-10">
-                            {user?.email?.charAt(0).toUpperCase()}
+                        <div className="relative group/avatar mb-12">
+                            <div className="w-32 h-32 rounded-full bg-black overflow-hidden shadow-2xl shadow-black/20 ring-8 ring-zinc-50 border-4 border-white relative">
+                                {profile?.avatar_url ? (
+                                    <img 
+                                        src={profile.avatar_url} 
+                                        alt={profile.full_name} 
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full grid place-items-center text-5xl font-bold text-white">
+                                        {user?.email?.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                                
+                                {/* Overlay for Edit Mode */}
+                                {editMode && (
+                                    <label className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer flex flex-col items-center justify-center gap-2">
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            onChange={handleAvatarChange}
+                                            accept="image/*"
+                                            disabled={uploadingAvatar}
+                                        />
+                                        {uploadingAvatar ? (
+                                            <RefreshCw size={24} className="text-white animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Upload size={24} className="text-white" />
+                                                <span className="text-[10px] font-black text-white uppercase tracking-widest text-center px-4">Change Visual</span>
+                                            </>
+                                        )}
+                                    </label>
+                                )}
+                            </div>
+                            
+                            {uploadingAvatar && (
+                                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-black text-white text-[8px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full shadow-lg">
+                                    Syncing...
+                                </div>
+                            )}
                         </div>
                         
-                        <div className="space-y-8">
+                        <div className="space-y-10">
                             <div>
-                                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1.5 ml-1">Identity</label>
+                                <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Full Name</label>
                                 {editMode ? (
                                     <input 
                                         type="text" 
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
-                                        className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-5 py-4 font-semibold text-sm focus:bg-white focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none"
+                                        className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
                                         placeholder="Full Name"
                                     />
                                 ) : (
-                                    <h2 className="text-2xl font-bold text-zinc-900 tracking-tight break-words">{profile?.full_name || 'Anonymous User'}</h2>
+                                    <h2 className="text-3xl font-bold text-black tracking-tight break-words">{profile?.full_name || 'Anonymous User'}</h2>
                                 )}
                             </div>
 
                             <div className="grid grid-cols-1 gap-6">
                                 <div>
-                                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1.5 ml-1">Location</label>
+                                    <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Current Location</label>
                                     {editMode ? (
                                         <input 
                                             type="text" 
                                             value={location}
                                             onChange={(e) => setLocation(e.target.value)}
-                                            className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-5 py-4 font-semibold text-sm focus:bg-white focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none"
+                                            className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
                                             placeholder="City, Country"
                                         />
                                     ) : (
-                                        <p className="font-semibold flex items-center gap-2.5 text-zinc-600 text-sm">
-                                            <MapPin size={16} className="text-zinc-300" /> {profile?.location || 'Not Specified'}
+                                        <p className="font-bold flex items-center gap-3 text-zinc-600 text-sm">
+                                            <MapPin size={16} className="text-zinc-200" /> {profile?.location || 'Not Specified'}
                                         </p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1.5 ml-1">Date of Birth</label>
+                                    <label className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] block mb-3 ml-1">Date of Birth</label>
                                     {editMode ? (
                                         <input 
                                             type="date" 
                                             value={dob}
                                             onChange={(e) => setDob(e.target.value)}
-                                            className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-5 py-4 font-semibold text-sm text-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none"
+                                            className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm text-zinc-900 focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
                                         />
                                     ) : (
-                                        <p className="font-semibold flex items-center gap-2.5 text-zinc-600 text-sm">
-                                            <Calendar size={16} className="text-zinc-300" /> {profile?.dob ? new Date(profile.dob).toLocaleDateString() : 'Not set'}
+                                        <p className="font-bold flex items-center gap-3 text-zinc-600 text-sm">
+                                            <Calendar size={16} className="text-zinc-200" /> {profile?.dob ? new Date(profile.dob).toLocaleDateString() : 'Not set'}
                                         </p>
                                     )}
                                 </div>
@@ -241,22 +330,23 @@ const ProfilePage = () => {
 
                     {/* Quick Stats - Low Contrast Tiles */}
                     <div className="space-y-4">
-                        <div className="p-8 bg-zinc-900 text-white rounded-[32px] shadow-xl shadow-zinc-900/10">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2">Network ID</p>
-                            <p className="text-sm font-medium break-all">{user?.email}</p>
+                        <div className="p-10 bg-black text-white rounded-[48px] shadow-2xl shadow-black/10 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 transition-transform duration-1000 group-hover:scale-150" />
+                            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-500 mb-4">Email Address</p>
+                            <p className="text-sm font-bold break-all">{user?.email}</p>
                         </div>
-                        <div className="p-8 bg-white border border-zinc-100 rounded-[32px] shadow-sm">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2">Linked Contact</p>
+                        <div className="p-10 bg-white border border-zinc-50 rounded-[48px] shadow-sm">
+                            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-300 mb-4">Secure Contact</p>
                             {editMode ? (
                                 <input 
                                     type="tel" 
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full bg-transparent border-0 border-b border-zinc-200 focus:border-zinc-900 focus:ring-0 p-0 font-bold text-zinc-900 placeholder:text-zinc-200"
+                                    className="w-full bg-transparent border-0 border-b border-zinc-100 focus:border-black focus:ring-0 p-0 font-bold text-zinc-900 placeholder:text-zinc-200"
                                     placeholder="+1 (555) 000-0000"
                                 />
                             ) : (
-                                <p className="text-base font-bold text-zinc-900">{profile?.phone || 'No Phone Linked'}</p>
+                                <p className="text-xl font-bold text-black">{profile?.phone || 'No Phone Linked'}</p>
                             )}
                         </div>
                     </div>
@@ -294,10 +384,10 @@ const ProfilePage = () => {
                         transition={{ delay: 0.1 }}
                         className="bg-white border border-zinc-100 rounded-[40px] p-10 shadow-sm"
                     >
-                        <header className="flex items-center justify-between mb-10">
+                        <header className="flex items-center justify-between mb-12">
                             <div>
-                                <h3 className="text-2xl font-bold text-zinc-900 tracking-tight">Competencies</h3>
-                                <p className="text-xs font-medium text-zinc-400 mt-1">Refine your technical expertise matrix</p>
+                                <h3 className="text-2xl font-bold text-black tracking-tight">Skills</h3>
+                                <p className="text-[10px] font-black text-zinc-300 mt-2 uppercase tracking-[0.4em]">Refine your skills</p>
                             </div>
                             <label className="cursor-pointer">
                                 <input 
@@ -307,9 +397,9 @@ const ProfilePage = () => {
                                     accept=".pdf,.docx"
                                     disabled={extracting}
                                 />
-                                <div className={`flex items-center gap-2.5 px-5 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-[11px] font-bold text-zinc-600 hover:bg-zinc-900 hover:text-white transition-all shadow-sm ${extracting ? 'bg-zinc-900 text-white' : ''}`}>
+                                <div className={`flex items-center gap-3 px-6 py-3 bg-zinc-50 border-none rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:bg-black hover:text-white transition-all shadow-sm ${extracting ? 'bg-black text-white' : ''}`}>
                                     {extracting ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                                    {extracting ? 'Synthesizing...' : 'AI Auto-Scan'}
+                                    {extracting ? 'Scanning...' : 'upload your resume to scan for skills'}
                                 </div>
                             </label>
                         </header>
@@ -363,8 +453,8 @@ const ProfilePage = () => {
                         transition={{ delay: 0.2 }}
                         className="bg-white border border-zinc-100 rounded-[40px] p-10 shadow-sm"
                     >
-                        <h3 className="text-2xl font-bold text-zinc-900 tracking-tight mb-1">Trajectory</h3>
-                        <p className="text-xs font-medium text-zinc-400 mb-10">Define your ideal professional evolution</p>
+                        <h3 className="text-2xl font-bold text-black tracking-tight mb-2">Career Goals</h3>
+                        <p className="text-[10px] font-black text-zinc-300 mb-12 uppercase tracking-[0.4em]">Define your ideal professional journey</p>
                         
                         {editMode ? (
                             <textarea
@@ -393,11 +483,30 @@ const ProfilePage = () => {
                         transition={{ delay: 0.25 }}
                         className="bg-white border border-zinc-100 rounded-[40px] p-10 shadow-sm"
                     >
-                        <h3 className="text-2xl font-bold text-zinc-900 tracking-tight mb-1">Aspirations</h3>
-                        <p className="text-xs font-medium text-zinc-400 mb-10">Select your desired professional roles</p>
+                        <h3 className="text-2xl font-bold text-black tracking-tight mb-2">Future Roles</h3>
+                        <p className="text-[10px] font-black text-zinc-300 mb-12 uppercase tracking-[0.4em]">Select the roles you are aiming for</p>
                         
                         {editMode ? (
-                            <div>
+                            <div className="space-y-10">
+                                {/* Custom Job Role Input */}
+                                <div className="flex gap-3">
+                                    <input
+                                        type="text"
+                                        value={newAspiration}
+                                        onChange={(e) => setNewAspiration(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handleAddAspiration()}
+                                        className="flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 font-semibold text-sm focus:bg-white focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none"
+                                        placeholder="Type custom role (e.g. Lead Quant, Prompt Engineer)"
+                                    />
+                                    <button
+                                        onClick={handleAddAspiration}
+                                        disabled={aspirations.length >= 5}
+                                        className="w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-zinc-900/10 hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        <Plus size={24} />
+                                    </button>
+                                </div>
+
                                 <div className="flex flex-wrap gap-2.5">
                                     {DESIRED_JOB_ROLES.map(roleName => {
                                         const isSelected = aspirations.includes(roleName);
@@ -416,16 +525,30 @@ const ProfilePage = () => {
                                                     isSelected 
                                                     ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-900/10' 
                                                     : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-200'
-                                                } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                } ${(aspirations.length >= 5 && !isSelected) ? 'opacity-20 cursor-not-allowed' : ''}`}
                                                 disabled={aspirations.length >= 5 && !isSelected}
                                             >
                                                 {roleName}
                                             </button>
                                         );
                                     })}
+                                    
+                                    {/* Handle Custom Aspirations that are NOT in the predefined list */}
+                                    {aspirations.filter(a => !DESIRED_JOB_ROLES.includes(a)).map(customRole => (
+                                        <button
+                                            key={customRole}
+                                            type="button"
+                                            onClick={() => setAspirations(aspirations.filter(a => a !== customRole))}
+                                            className="px-5 py-3 bg-zinc-900 border-zinc-900 text-white rounded-full text-[11px] font-bold shadow-lg shadow-zinc-900/10 flex items-center gap-2 group"
+                                        >
+                                            {customRole}
+                                            <X size={14} className="opacity-50 group-hover:opacity-100" />
+                                        </button>
+                                    ))}
                                 </div>
+                                
                                 {aspirations.length >= 5 && (
-                                    <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mt-6 bg-rose-50 px-4 py-2 rounded-full inline-block">Maximum 5 roles selected</p>
+                                    <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mt-6 bg-rose-50 px-4 py-2 rounded-full inline-block">Security Protocol: Capacity Reached (5/5)</p>
                                 )}
                             </div>
                         ) : (
@@ -454,7 +577,7 @@ const ProfilePage = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="bg-zinc-900 text-white rounded-[40px] p-12 shadow-2xl shadow-zinc-900/20 overflow-hidden relative"
+                        className="glass-card p-12 overflow-hidden relative"
                     >
                         {/* Subtle background decoration */}
                         <div className="absolute -right-10 -bottom-10 opacity-[0.03]">
@@ -463,24 +586,24 @@ const ProfilePage = () => {
                         
                         <div className="relative z-10">
                             <h3 className="text-2xl font-bold tracking-tight mb-10 flex items-center gap-3">
-                                <FileText size={24} className="text-zinc-500" /> Data Payload
+                                <FileText size={24} className="text-zinc-500" /> Your Resume
                             </h3>
                             
                             <div className="flex flex-col md:flex-row items-center gap-10">
-                                <div className={`w-24 h-24 rounded-[32px] flex items-center justify-center border transition-all duration-500 ${profile?.resume_text ? 'bg-green-500/10 border-green-500/20' : 'bg-white/5 border-white/10'}`}>
-                                    <CheckCircle size={40} className={profile?.resume_text ? "text-green-400" : "text-zinc-700"} />
+                                <div className={`w-28 h-28 rounded-full flex items-center justify-center border-4 transition-all duration-700 ${profile?.resume_text ? 'bg-emerald-50 border-white shadow-[0_0_40px_rgba(16,185,129,0.1)]' : 'bg-zinc-50 border-white'}`}>
+                                    <CheckCircle size={40} className={profile?.resume_text ? "text-emerald-500" : "text-zinc-200"} />
                                 </div>
                                 <div className="text-center md:text-left flex-1">
-                                    <p className="font-bold text-xl tracking-tight mb-2">
-                                        {profile?.resume_text ? "Resume Synchronized" : "Buffer Empty"}
+                                    <p className="font-bold text-2xl text-black tracking-tight mb-3">
+                                        {profile?.resume_text ? "Resume Uploaded" : "No Resume Found"}
                                     </p>
-                                    <p className="text-xs font-medium text-zinc-400 leading-relaxed max-w-sm">
+                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-relaxed max-w-sm">
                                         {profile?.resume_text 
-                                            ? `Last synchronized on ${new Date(profile.created_at).toLocaleDateString()}. Your data is actively used for AI tailoring.` 
-                                            : "Upload your resume to initialize AI matching protocols and tailor your profile."}
+                                            ? `Last sync: ${new Date(profile.created_at).toLocaleDateString()}. Your data is used for job matching.` 
+                                            : "Upload your resume to start matching with relevant jobs."}
                                     </p>
                                 </div>
-                                <label className="cursor-pointer bg-white text-zinc-900 px-8 py-5 rounded-full font-bold text-xs transition-all flex items-center gap-2.5 group shadow-xl hover:bg-zinc-100 active:scale-95">
+                                <label className="cursor-pointer bg-black text-white px-10 py-5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3 group shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 breathing-pulse">
                                     <input 
                                         type="file" 
                                         className="hidden" 
@@ -488,11 +611,32 @@ const ProfilePage = () => {
                                         accept=".pdf,.docx"
                                     />
                                     <Upload size={18} className="group-hover:-translate-y-1 transition-transform" /> 
-                                    Update Payload
+                                    Update Resume
                                 </label>
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Bottom Save Button - Exclusive to Edit Mode */}
+                    <AnimatePresence>
+                        {editMode && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                className="mt-12 flex justify-center pb-20"
+                            >
+                                <button
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                    className="w-full md:w-auto px-16 py-6 bg-zinc-900 text-white rounded-[32px] font-bold text-sm uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-4 shadow-2xl shadow-zinc-900/20 active:scale-95 disabled:opacity-50"
+                                >
+                                    {saving ? <RefreshCw size={20} className="animate-spin" /> : <Save size={20} />}
+                                    {saving ? 'Synchronizing...' : 'Save Profile Changes'}
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
         </div>

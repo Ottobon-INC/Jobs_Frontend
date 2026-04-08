@@ -3,9 +3,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useChatWebSocket } from '../../hooks/useChatWebSocket';
 import { createChatSession, getMySessions } from '../../api/chatApi';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import Card from '../../components/ui/Card';
 import Loader from '../../components/ui/Loader';
-import { Send, User, Bot, Briefcase, ArrowLeft, MessageSquare, Plus, Clock, Shield } from 'lucide-react';
+import { Send, User, Bot, Briefcase, ArrowLeft, MessageSquare, Plus, Clock, Shield, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -46,37 +45,54 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto pt-16 pb-8 px-8 h-screen flex flex-col bg-white">
-            <div className="mb-10 flex items-center justify-between border-b-4 border-black pb-8">
-                <div>
-                    <h1 className="text-4xl font-display font-black tracking-tighter text-black uppercase">Coach Terminal</h1>
-                    <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.4em] mt-2">Personal AI Logic Stream</p>
-                </div>
-                <Link to="/jobs">
-                    <button className="text-[10px] font-black text-black/40 hover:text-black flex items-center gap-2 transition-all uppercase tracking-[0.3em]">
-                        <ArrowLeft size={16} /> Return to Signal
-                    </button>
-                </Link>
-            </div>
+        <div className="min-h-screen flex flex-col">
+            {/* Minimalist Header */}
+            <header className="relative z-10 pt-12 pb-12 flex items-center justify-between">
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                >
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-4 border border-zinc-100 shadow-sm">
+                        <Sparkles size={12} className="text-zinc-400" />
+                        AI Assistance
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-zinc-900">
+                        Coach
+                    </h1>
+                </motion.div>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-10 min-h-0">
+                <Link to="/jobs">
+                    <motion.button 
+                        whileHover={{ x: -4 }}
+                        className="text-[10px] font-bold text-zinc-400 hover:text-zinc-900 flex items-center gap-2 transition-all uppercase tracking-[0.2em] bg-white px-6 py-3 rounded-2xl border border-zinc-100 shadow-sm"
+                    >
+                        <ArrowLeft size={14} /> Back to Market
+                    </motion.button>
+                </Link>
+            </header>
+
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-10 min-h-0 pb-12">
                 {/* Sidebar */}
-                <div className="col-span-1 lg:col-span-1">
-                    <div className="bg-white rounded-[32px] border-4 border-black flex flex-col max-h-[600px] overflow-hidden sticky top-24 shadow-[12px_12px_0px_rgba(0,0,0,0.05)]">
-                        <div className="p-6 border-b-2 border-black bg-gray-50">
-                            <h2 className="font-display font-black text-[11px] text-black flex items-center gap-3 uppercase tracking-[0.3em]">
+                <div className="col-span-1">
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white/80 backdrop-blur-xl rounded-[32px] border border-zinc-100 flex flex-col h-[600px] overflow-hidden sticky top-24 shadow-sm"
+                    >
+                        <div className="p-6 border-b border-zinc-50 bg-zinc-50/30">
+                            <h2 className="text-[11px] font-bold text-zinc-400 flex items-center gap-3 uppercase tracking-[0.3em]">
                                 <MessageSquare size={16} />
                                 Active Sessions
                             </h2>
                         </div>
 
-                        <div className="overflow-y-auto p-4 space-y-3">
+                        <div className="overflow-y-auto p-4 space-y-2">
                             {loadingList ? (
-                                <div className="p-4 text-center text-[10px] font-black text-black/20 uppercase tracking-widest italic animate-pulse">Syncing...</div>
+                                <div className="p-4 text-center text-[10px] font-bold text-zinc-400 uppercase tracking-widest animate-pulse">Syncing...</div>
                             ) : sessions.length === 0 ? (
-                                <div className="p-10 text-center text-black/20 text-[10px] font-black uppercase tracking-widest leading-relaxed">
-                                    No Streams Detected. <br />
-                                    Initiate Match to Start.
+                                <div className="p-10 text-center text-zinc-300 text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+                                    No active streams.
                                 </div>
                             ) : (
                                 sessions.map(session => {
@@ -85,24 +101,24 @@ const ChatPage = () => {
                                         <button
                                             key={session.id}
                                             onClick={() => handleSelectSession(session.id)}
-                                            className={`w-full text-left p-5 rounded-2xl transition-all duration-500 border-2 ${isActive
-                                                ? 'bg-black text-white border-black shadow-xl translate-y-[-2px]'
-                                                : 'text-black border-transparent hover:border-black/10 hover:bg-black/5'
+                                            className={`w-full text-left p-5 rounded-2xl transition-all duration-300 border ${isActive
+                                                ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10 scale-[1.02]'
+                                                : 'text-zinc-600 border-transparent hover:bg-zinc-50 hover:text-zinc-900'
                                                 }`}
                                         >
-                                            <div className="text-[11px] font-black uppercase tracking-widest truncate">
-                                                {session.job_title || "GENERAL_COACH"}
+                                            <div className="text-xs font-bold truncate">
+                                                {session.job_title || "General Coach"}
                                             </div>
-                                            <div className={`text-[9px] mt-2 font-bold uppercase tracking-[0.2em] flex items-center gap-2 ${isActive ? 'opacity-50' : 'opacity-30'}`}>
+                                            <div className={`text-[9px] mt-2 font-bold uppercase tracking-[0.1em] flex items-center gap-2 ${isActive ? 'opacity-50' : 'opacity-30'}`}>
                                                 <Clock size={12} />
-                                                {session.created_at ? new Date(session.created_at).toLocaleDateString() : 'INITIAL'}
+                                                {session.created_at ? new Date(session.created_at).toLocaleDateString() : 'Initial'}
                                             </div>
                                         </button>
                                     );
                                 })
                             )}
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Main Chat Area */}
@@ -110,17 +126,21 @@ const ChatPage = () => {
                     {sessionId ? (
                         <ChatWindow sessionId={sessionId} />
                     ) : (
-                        <div className="bg-white rounded-[40px] border-4 border-dashed border-black/10 h-full grid place-items-center text-center p-16">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white/50 backdrop-blur-sm rounded-[40px] border border-dashed border-zinc-200 h-full grid place-items-center text-center p-16"
+                        >
                             <div>
-                                <div className="w-24 h-24 bg-black rounded-3xl grid place-items-center mx-auto mb-10 shadow-2xl">
-                                    <Bot size={48} className="text-white" />
+                                <div className="w-24 h-24 bg-zinc-100 rounded-[32px] grid place-items-center mx-auto mb-10 shadow-inner">
+                                    <Bot size={48} className="text-zinc-300" />
                                 </div>
-                                <h3 className="font-display font-black text-3xl text-black mb-4 uppercase tracking-tighter">Select Signal</h3>
-                                <p className="text-[10px] font-black text-black/40 max-w-sm mx-auto uppercase tracking-[0.3em] leading-relaxed">
-                                    Connect to an existing logic stream or navigate to a job node to initiate a new session.
+                                <h3 className="text-2xl font-bold text-zinc-900 mb-4 tracking-tight">Select a Session</h3>
+                                <p className="text-xs font-medium text-zinc-400 max-w-sm mx-auto leading-relaxed uppercase tracking-wider">
+                                    Connect to an existing logic stream or initiate a new session from any job details page.
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             </div>
@@ -128,9 +148,8 @@ const ChatPage = () => {
     );
 };
 
-// ── Chat Window Sub-component ──
 const ChatWindow = ({ sessionId }) => {
-    const { messages, sendMessage, isConnected, isTyping, sessionStatus } = useChatWebSocket(sessionId);
+    const { messages, sendMessage, isConnected, isTyping } = useChatWebSocket(sessionId);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
 
@@ -146,145 +165,96 @@ const ChatWindow = ({ sessionId }) => {
     };
 
     return (
-        <div className="bg-white rounded-[40px] border-4 border-black h-full flex flex-col overflow-hidden shadow-[20px_20px_0px_rgba(0,0,0,0.05)]">
+        <div className="bg-white rounded-[40px] border border-zinc-100 h-full flex flex-col overflow-hidden shadow-sm hover:shadow-xl hover:shadow-zinc-900/5 transition-all duration-500">
             {/* Header */}
-            <div className="py-4 px-8 border-b-2 border-black flex justify-between items-center text-[9px] font-black text-black/40 uppercase tracking-[0.3em] bg-gray-50">
-                <div>NODE: <span className="font-mono text-black">{sessionId.slice(0, 8)}...</span></div>
+            <div className="py-5 px-10 border-b border-zinc-50 flex justify-between items-center text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em] bg-zinc-50/30 backdrop-blur-md">
+                <div className="flex items-center gap-4">
+                    <span className="text-zinc-300">NODE</span>
+                    <span className="font-mono text-zinc-900 bg-white px-2 py-1 rounded-lg border border-zinc-100">{sessionId.slice(0, 8)}</span>
+                </div>
                 <div className="flex items-center gap-3">
-                    <span className={`w-2 h-2 rounded-full ${isConnected ? 'animate-pulse bg-black' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} />
-                    <span className={isConnected ? 'text-black' : 'text-red-500 animate-pulse'}>
-                        {isConnected ? 'AI_ENGINE_ONLINE' : messages.length > 0 ? 'STREAM_RECONNECTING...' : 'CONNECTING_STREAM...'}
+                    <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-rose-500 animate-pulse'}`} />
+                    <span className={isConnected ? 'text-zinc-900' : 'text-rose-500'}>
+                        {isConnected ? 'LIVE' : 'RECONNECTING...'}
                     </span>
                 </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-10 bg-white">
+            <div className="flex-1 overflow-y-auto p-10 space-y-12 bg-[#FDFDFD]">
                 {messages.length === 0 && !isTyping && (
-                    <div className="h-full grid place-items-center text-black/10">
-                        <div className="text-center">
-                            <Bot size={80} className="mx-auto mb-6 opacity-5" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em]">Initializing Core Sync...</p>
+                    <div className="h-full grid place-items-center">
+                        <div className="text-center opacity-20">
+                            <Bot size={80} className="mx-auto mb-6" />
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Initializing Stream...</p>
                         </div>
                     </div>
                 )}
 
                 {messages.map((msg, idx) => {
                     const isUser = msg.role === 'user';
-                    const isSystem = msg.role === 'system';
                     const isAdmin = msg.role === 'admin';
 
-                    if (isSystem) {
-                        return (
-                            <div key={idx} className="flex justify-center my-8">
-                                <span className="text-[9px] font-black text-black opacity-30 px-6 py-2 border-2 border-black/5 rounded-full uppercase tracking-widest">
-                                    {msg.content}
-                                </span>
-                            </div>
-                        );
-                    }
-
                     return (
-                        <div key={idx} className={`flex gap-6 ${isUser ? 'flex-row-reverse' : ''}`}>
-                            <div className={`w-10 h-10 rounded-xl grid place-items-center shrink-0 border-2 ${isUser
-                                ? 'bg-black border-black text-white'
-                                : isAdmin
-                                    ? 'bg-indigo-600 border-indigo-600 text-white'
-                                    : 'bg-gray-100 border-transparent text-black opacity-40'
+                        <motion.div 
+                            key={idx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`flex gap-6 ${isUser ? 'flex-row-reverse' : ''}`}
+                        >
+                            <div className={`w-10 h-10 rounded-2xl grid place-items-center shrink-0 shadow-sm border ${isUser
+                                ? 'bg-zinc-900 border-zinc-900 text-white'
+                                : 'bg-white border-zinc-100 text-zinc-400'
                                 }`}>
                                 {isUser ? <User size={18} /> : isAdmin ? <Shield size={18} /> : <Bot size={18} />}
                             </div>
                             <div className={`max-w-[85%] space-y-2 ${isUser ? 'text-right' : 'text-left'}`}>
-                                <div className={`p-6 rounded-3xl text-[11px] font-medium leading-relaxed uppercase tracking-wider ${isUser
-                                    ? 'bg-black text-white rounded-tr-sm'
-                                    : isAdmin
-                                        ? 'bg-indigo-50 border-2 border-indigo-200 text-indigo-900 rounded-tl-sm shadow-[6px_6px_0px_#4f46e5]'
-                                        : 'bg-white border-2 border-black text-black rounded-tl-sm shadow-[6px_6px_0px_#000]'
+                                <div className={`p-6 rounded-[28px] text-[13px] font-medium leading-relaxed ${isUser
+                                    ? 'bg-zinc-900 text-white rounded-tr-sm shadow-lg shadow-zinc-900/10'
+                                    : 'bg-white border border-zinc-100 text-zinc-700 rounded-tl-sm shadow-sm'
                                     }`}>
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{
-                                            p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
-                                            ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-3 space-y-2" {...props} />,
-                                            ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-3 space-y-2" {...props} />,
-                                            li: ({ node, ...props }) => <li className="tracking-widest" {...props} />,
-                                            h1: ({ node, ...props }) => <h1 className="text-xs font-black mb-3 mt-6 first:mt-0 underline" {...props} />,
-                                            h2: ({ node, ...props }) => <h2 className="text-[10px] font-black mb-2 mt-4 first:mt-0 underline" {...props} />,
-                                            blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-black/10 pl-4 italic my-4 opacity-50" {...props} />,
+                                            p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
+                                            ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-4 space-y-2" {...props} />,
+                                            ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-4 space-y-2" {...props} />,
+                                            li: ({ node, ...props }) => <li className="font-medium" {...props} />,
+                                            h1: ({ node, ...props }) => <h1 className="text-lg font-bold mb-4 mt-8 first:mt-0" {...props} />,
+                                            h2: ({ node, ...props }) => <h2 className="text-base font-bold mb-3 mt-6 first:mt-0" {...props} />,
+                                            blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-zinc-100 pl-4 italic my-4 text-zinc-400" {...props} />,
                                             code: ({ node, inline, className, children, ...props }) => {
                                                 return inline ? (
-                                                    <code className="bg-black/5 px-2 py-0.5 rounded font-mono font-black" {...props}>{children}</code>
+                                                    <code className="bg-zinc-100/50 px-2 py-0.5 rounded font-mono text-zinc-900" {...props}>{children}</code>
                                                 ) : (
-                                                    <code className="block bg-black text-white p-5 rounded-2xl text-[10px] font-mono whitespace-pre-wrap mb-4 border-2 border-black" {...props}>{children}</code>
+                                                    <code className="block bg-zinc-900 text-zinc-100 p-6 rounded-2xl text-[11px] font-mono whitespace-pre-wrap mb-4 border border-zinc-800" {...props}>{children}</code>
                                                 );
                                             },
-                                            strong: ({ node, ...props }) => <strong className="font-black underline" {...props} />,
-                                            a: ({ node, ...props }) => <a className="underline font-black hover:opacity-50 transition-opacity" target="_blank" rel="noopener noreferrer" {...props} />,
+                                            strong: ({ node, ...props }) => <strong className="font-bold text-zinc-900" {...props} />,
+                                            a: ({ node, ...props }) => <a className="text-zinc-900 underline font-bold hover:text-blue-600 transition-colors" target="_blank" rel="noopener noreferrer" {...props} />,
                                         }}
                                     >
                                         {msg.content}
                                     </ReactMarkdown>
                                 </div>
-                                <div className={`text-[8px] font-black text-black/20 uppercase tracking-widest px-2`}>
-                                    {isUser ? 'You' : isAdmin ? 'Expert' : 'AI'} · {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                                <div className={`text-[9px] font-bold text-zinc-300 uppercase tracking-widest px-2`}>
+                                    {isUser ? 'You' : isAdmin ? 'Expert' : 'Coach'} · {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     );
                 })}
 
-                {/* Quick-action chips — visible only on the initial greeting */}
-                {(() => {
-                    const hasUserMsg = messages.some(m => m.role === 'user');
-                    const firstAssistant = messages.find(m => m.role === 'assistant');
-                    if (hasUserMsg || !firstAssistant) return null;
-
-                    const isJobSpecific = firstAssistant.content?.includes('exploring the **');
-                    const chips = isJobSpecific
-                        ? [
-                            'Give me interview tips for this role',
-                            'What skills should I develop?',
-                            'Help me tailor my resume',
-                        ]
-                        : [
-                            'Help me prepare for interviews',
-                            'Review my resume',
-                            'Suggest skills to learn',
-                        ];
-
-                    return (
-                        <div className="flex flex-wrap gap-3 pl-16 mt-2">
-                            {chips.map((chip, i) => (
-                                <motion.button
-                                    key={chip}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 + i * 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                                    onClick={() => isConnected && sendMessage(chip)}
-                                    disabled={!isConnected}
-                                    className={`px-4 py-2.5 rounded-xl border-2 border-black text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
-                                        isConnected 
-                                            ? 'hover:bg-black hover:text-white cursor-pointer' 
-                                            : 'opacity-30 cursor-not-allowed grayscale'
-                                    }`}
-                                >
-                                    {chip}
-                                </motion.button>
-                            ))}
-                        </div>
-                    );
-                })()}
-
                 {isTyping && (
                     <div className="flex gap-6">
-                        <div className="w-10 h-10 rounded-xl grid place-items-center shrink-0 bg-gray-100 border-2 border-transparent">
-                            <Bot size={18} className="text-black opacity-40" />
+                        <div className="w-10 h-10 rounded-2xl grid place-items-center bg-white border border-zinc-100 text-zinc-400">
+                            <Bot size={18} />
                         </div>
-                        <div className="p-6 rounded-3xl rounded-tl-sm bg-white border-2 border-black w-24 shadow-[4px_4px_0px_#000]">
+                        <div className="p-6 rounded-[28px] rounded-tl-sm bg-zinc-50/50 border border-zinc-100 w-24">
                             <div className="flex gap-2 justify-center">
-                                <span className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                             </div>
                         </div>
                     </div>
@@ -292,24 +262,26 @@ const ChatWindow = ({ sessionId }) => {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
-            <div className="p-8 border-t-4 border-black bg-gray-50">
-                <form onSubmit={handleSend} className="relative flex items-center">
+            {/* Input Form */}
+            <div className="p-8 border-t border-zinc-50 bg-white">
+                <form onSubmit={handleSend} className="relative flex items-center max-w-5xl mx-auto w-full">
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={isConnected ? "INJECT SIGNAL..." : "CONNECTION_OFFLINE..."}
+                        placeholder={isConnected ? "Message Coach..." : "Connecting..."}
                         disabled={!isConnected}
-                        className="w-full bg-white border-4 border-black rounded-[24px] px-8 py-5 pr-20 text-black font-black text-xs placeholder:text-black/20 focus:outline-none focus:ring-12 focus:ring-black/5 transition-all uppercase tracking-widest"
+                        className="w-full bg-zinc-50/50 border border-zinc-100 rounded-[32px] px-10 py-6 pr-24 text-zinc-900 font-medium text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all shadow-sm"
                     />
-                    <button
+                    <motion.button
                         type="submit"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         disabled={!isConnected || !input.trim()}
-                        className="absolute right-4 p-4 bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-xl"
+                        className="absolute right-3 p-4 bg-zinc-900 text-white rounded-2xl hover:bg-zinc-800 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-lg shadow-zinc-900/10"
                     >
-                        <Send size={24} />
-                    </button>
+                        <Send size={20} />
+                    </motion.button>
                 </form>
             </div>
         </div>
@@ -317,3 +289,4 @@ const ChatWindow = ({ sessionId }) => {
 };
 
 export default ChatPage;
+

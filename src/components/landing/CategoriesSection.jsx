@@ -11,6 +11,7 @@ import {
     Heart
 } from "lucide-react";
 import { CategoryCard } from "../ui/CategoryCard";
+import { cn } from "../../utils/cn";
 
 /**
  * Enhanced CategoriesSection - Minimal, modern, and highly interactive.
@@ -34,42 +35,52 @@ export function CategoriesSection() {
     };
 
     return (
-        <section id="categories" className="bg-[#F8F9FA]/30 py-28 overflow-hidden">
+        <section id="categories" className="bg-zinc-50/50 py-40 overflow-hidden">
             <div className="container mx-auto px-6 md:px-12 max-w-7xl">
-                {/* Section Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
-                    <div className="max-w-2xl space-y-6">
-                        <h2 className="text-5xl md:text-6xl font-bold text-black tracking-tight leading-tight">
-                            Explore specialized <br />
-                            <span className="text-black/20">fields of work.</span>
+                {/* Asymmetrical Section Header */}
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between mb-32 gap-16">
+                    <div className="max-w-3xl space-y-8">
+                        <h2 className="text-5xl md:text-7xl font-bold text-black tracking-tight leading-zero">
+                            Browse by <br />
+                            <span className="text-zinc-200">Job Categories.</span>
                         </h2>
-                        <p className="text-lg text-black/40 font-medium leading-relaxed">
-                            Discover high-impact opportunities curated across global tech centers. 
-                            Filtering the noise to find your perfect professional match.
+                        <p className="text-xl text-zinc-400 font-medium leading-relaxed max-w-xl">
+                            Explore top-tier opportunities across global tech hubs. 
+                            We filter the noise, presenting only the elite professional matches.
                         </p>
                     </div>
                     
-                    <button 
-                        onClick={scrollToJobs}
-                        className="group flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-black hover:text-black/60 transition-all duration-300"
-                    >
-                        View All Categories
-                        <div className="w-12 h-px bg-black/20 group-hover:w-16 transition-all duration-500" />
-                    </button>
+                    <div className="lg:pt-4">
+                        <button 
+                            onClick={scrollToJobs}
+                            className="group flex flex-col items-start gap-4"
+                        >
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 group-hover:text-black transition-colors">
+                                Explore Jobs
+                            </span>
+                            <div className="w-20 h-[2px] bg-zinc-100 group-hover:w-40 group-hover:bg-black transition-all duration-700" />
+                        </button>
+                    </div>
                 </div>
 
-                {/* Grid Layout (2 cols mobile, 4 cols desktop) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                {/* Staggered / Asymmetrical Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {categories.map((category, index) => (
                         <motion.div
                             key={category.name}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            className={cn(
+                                "h-full",
+                                index % 4 === 1 ? "lg:mt-12" : "",
+                                index % 4 === 2 ? "lg:-mt-8" : "",
+                                index % 4 === 3 ? "lg:mt-4" : ""
+                            )}
                             transition={{ 
-                                duration: 0.8, 
-                                delay: (index % 4) * 0.1,
-                                ease: [0.21, 0.47, 0.32, 0.98]
+                                duration: 1.2, 
+                                delay: (index % 4) * 0.15,
+                                ease: [0.23, 1, 0.32, 1]
                             }}
                         >
                             <CategoryCard

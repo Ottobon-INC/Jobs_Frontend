@@ -10,7 +10,7 @@ const AppShell = () => {
     const hideFooter = location.pathname.startsWith('/chat');
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FBFBFB]">
+        <div className="min-h-screen flex flex-col bg-zinc-50/50">
             <Navbar />
 
             <div className="flex flex-1 pt-20"> {/* Increased offset for floating header effect */}

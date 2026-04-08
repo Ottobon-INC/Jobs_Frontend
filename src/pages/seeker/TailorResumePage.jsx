@@ -155,7 +155,7 @@ const TailorResumePage = () => {
                             <Upload size={48} className="text-black group-hover:text-white transition-colors" />
                         )}
                         <span className="font-black text-xl uppercase tracking-tighter">
-                            {uploadingResume ? "Injecting Payload..." : "Inject Payload"}
+                            {uploadingResume ? "Uploading..." : "Upload Resume"}
                         </span>
                         <span className="text-[9px] font-bold text-black/40 group-hover:text-white/40 uppercase tracking-[0.3em]">
                             PDF / DOCX (MAX 5MB)

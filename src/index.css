@@ -7,45 +7,44 @@
 
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-display: 'Inter', sans-serif;
-    --font-serif: 'Playfair Display', Georgia, serif;
 
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-2xl: 24px;
-    --radius-3xl: 32px;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-2xl: 40px;
+    --radius-3xl: 64px;
 
     --animate-spin-slow: spin 8s linear infinite;
 
-    /* Neu-Minimalist Palette */
+    /* The Digital Curator: Tonal Monochrome Palette */
     --bg-primary: #F8FAFC;
-    --bg-surface: #FFFFFF;
-    --bg-surface-solid: #FFFFFF;
-    --bg-surface-hover: #F1F5F9;
+    --bg-surface: #F1F5F9; /* Level 1 Section */
+    --bg-surface-solid: #FFFFFF; /* Level 2 Card */
+    --bg-surface-hover: #F8FAFC;
 
-    --accent: #09090B;
-    --accent-hover: #18181B;
-    --accent-primary: #09090B;
-    --accent-secondary: #27272A;
-    --accent-tertiary: #52525B;
+    --accent: #000000;
+    --accent-hover: #1A1A1A;
+    --accent-primary: #000000;
+    --accent-secondary: #474747;
+    --accent-tertiary: #777777;
 
     --danger: #EF4444;
     --warning: #F59E0B;
     --success: #10B981;
 
-    --text-main: #09090B;
-    --text-primary: #09090B;
-    --text-muted: #71717A;
-    --text-subtle: #A1A1AA;
+    --text-main: #191C1D;
+    --text-primary: #191C1D;
+    --text-muted: #474747;
+    --text-subtle: #777777;
     
-    --border-main: rgba(0, 0, 0, 0.05);
-    --border-color: rgba(0, 0, 0, 0.05);
-    --border-subtle: rgba(0, 0, 0, 0.03);
+    --border-main: rgba(0, 0, 0, 0.03); /* Extremely subtle */
+    --border-color: rgba(0, 0, 0, 0.03);
+    --border-subtle: rgba(0, 0, 0, 0.01);
 
     --background: var(--bg-primary);
     --foreground: var(--text-main);
-  }
+}
 
   @keyframes spin {
     from {
@@ -116,34 +115,35 @@
 @layer utilities {
   .premium-shadow {
     box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.05),
-      0 4px 12px -2px rgba(0, 0, 0, 0.08);
+      0 1px 3px 0 rgba(25, 28, 29, 0.02),
+      0 4px 12px -2px rgba(25, 28, 29, 0.05);
   }
 
   .premium-shadow-lg {
     box-shadow:
-      0 10px 25px -10px rgba(0, 0, 0, 0.1),
-      0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      0 20px 40px -10px rgba(25, 28, 29, 0.06),
+      0 4px 6px -4px rgba(25, 28, 29, 0.02);
   }
 
   .premium-shadow-hover {
     box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      0 40px 60px -12px rgba(25, 28, 29, 0.1),
+      0 10px 15px -8px rgba(25, 28, 29, 0.05);
   }
 
   .glass-panel {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background-color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.02);
   }
 
   .glass-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: var(--radius-3xl);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.03);
   }
 
   .glass-card-light {
@@ -190,25 +190,26 @@
     contain-intrinsic-size: 1px 5000px;
   }
 
-  /* GPU Acceleration utility */
-  .gpu-accelerate {
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-  }
-
   .text-gradient {
-    background: linear-gradient(135deg, #000000, #404040);
+    background: linear-gradient(135deg, #000000 0%, #474747 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .text-gradient-warm {
-    background: linear-gradient(135deg, #000000, #737373);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .asymmetric-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+  }
+
+  .breathing-pulse {
+    animation: breathing 4s ease-in-out infinite;
+  }
+
+  @keyframes breathing {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.95; }
   }
 }
 

@@ -62,8 +62,8 @@ export function BenefitsSection() {
                         transition={{ duration: 0.6 }}
                         className="max-w-xl w-full flex flex-col justify-center"
                     >
-                        <p className="text-black font-medium mb-4 text-lg font-serif">Got talent?</p>
-                        <h2 className="text-4xl md:text-5xl font-bold text-black mb-12 tracking-tight font-serif">
+                        <p className="text-black font-bold mb-4 text-sm uppercase tracking-[0.2em]">Got talent?</p>
+                        <h2 className="text-4xl md:text-5xl font-extrabold text-black mb-12 tracking-tighter">
                             Why job seekers love us
                         </h2>
 
@@ -106,8 +106,8 @@ export function BenefitsSection() {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="max-w-xl w-full flex flex-col justify-center"
                     >
-                        <p className="text-black font-medium mb-4 text-lg font-serif">Need talent?</p>
-                        <h2 className="text-4xl md:text-5xl font-bold text-black mb-12 tracking-tight font-serif">
+                        <p className="text-black font-bold mb-4 text-sm uppercase tracking-[0.2em]">Need talent?</p>
+                        <h2 className="text-4xl md:text-5xl font-extrabold text-black mb-12 tracking-tighter">
                             Why recruiters love us
                         </h2>
 

@@ -4,21 +4,22 @@ import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
     LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
-import { TrendingUp, Users, DollarSign, Briefcase, Globe, Zap } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Briefcase, Globe, Zap, Sparkles } from 'lucide-react';
 import Loader from '../../components/ui/Loader';
 import { motion } from 'framer-motion';
 
-// Strictly Monochrome Palette
-const COLORS = ['#000000', '#262626', '#404040', '#525252', '#737373'];
+// Refined Zinc Palette
+const COLORS = ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#d4d4d8'];
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#000] px-4 py-3 text-black">
-                <p className="font-display font-black text-xs mb-2 uppercase tracking-widest">{label}</p>
+            <div className="bg-white/80 backdrop-blur-xl border border-zinc-100 shadow-xl rounded-2xl px-4 py-3 text-zinc-900">
+                <p className="text-[10px] font-bold mb-2 uppercase tracking-widest text-zinc-400">{label}</p>
                 {payload.map((entry, index) => (
-                    <p key={index} className="text-[10px] font-bold uppercase tracking-widest">
-                        {entry.name}: <span className="font-black">{entry.value}</span>
+                    <p key={index} className="text-xs font-bold flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+                        {entry.name}: <span className="font-extrabold">{entry.value}</span>
                     </p>
                 ))}
             </div>
@@ -45,145 +46,168 @@ const MarketPage = () => {
         fetchStats();
     }, []);
 
-    if (loading) return <Loader fullScreen />;
-    if (!stats) return <div className="p-8 text-center text-black font-black uppercase tracking-widest">Data Unavailable</div>;
+    if (loading) return <Loader fullScreen variant="logo" />;
+    if (!stats) return (
+        <div className="flex flex-col items-center justify-center py-32 text-center">
+            <div className="w-20 h-20 bg-zinc-50 rounded-[32px] grid place-items-center mb-6">
+                <Zap size={32} className="text-zinc-200" />
+            </div>
+            <h3 className="text-xl font-bold text-zinc-900 mb-2 uppercase tracking-tighter">Signal Lost</h3>
+            <p className="text-zinc-400 text-sm font-medium">Market data is currently unreachable.</p>
+        </div>
+    );
 
     const { total_jobs, top_skills, salary_trends, top_companies, work_styles, experience_levels } = stats;
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="max-w-7xl mx-auto px-8 py-12 space-y-12 bg-white"
-        >
-            <header className="pb-8 border-b-2 border-black">
-                <h1 className="text-5xl font-display font-black text-black tracking-tighter uppercase mb-2">
-                    Market Intelligence
-                </h1>
-                <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.4em]">
-                    Ottobon Terminal / Real-time Signals
-                </p>
+        <div className="min-h-screen">
+            {/* Minimalist Header */}
+            <header className="relative z-10 pt-12 pb-16">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="max-w-4xl"
+                >
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 border border-zinc-100 shadow-sm">
+                        <Sparkles size={12} className="text-zinc-400" />
+                        Global Intelligence
+                    </div>
+                    <h1 className="text-7xl md:text-8xl font-sans font-bold mb-8 tracking-tight text-zinc-900">
+                        Analytics
+                    </h1>
+                    <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed font-medium">
+                        Real-time streaming intelligence from the Ottobon network. Verified opportunities, zero noise.
+                    </p>
+                </motion.div>
             </header>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <StatCard icon={<Briefcase size={20} />} label="Total Inventory" value={total_jobs} delay={0} />
-                <StatCard icon={<TrendingUp size={20} />} label="Core Strength" value={top_skills[0]?.name || "N/A"} sub={`${top_skills[0]?.count || 0} listings`} delay={0.05} />
-                <StatCard icon={<DollarSign size={20} />} label="Comp Ceiling" value={`$${(salary_trends[0]?.avg_max / 1000).toFixed(0)}k`} sub={salary_trends[0]?.role || "N/A"} delay={0.1} />
-                <StatCard icon={<Globe size={20} />} label="Remote Distribution" value={`${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%`} sub="Global Network" delay={0.15} />
-            </div>
+            <main className="space-y-20 pb-32">
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <StatCard icon={<Briefcase size={20} />} label="Total Inventory" value={total_jobs} delay={0} />
+                    <StatCard icon={<TrendingUp size={20} />} label="Core Strength" value={top_skills[0]?.name || "N/A"} sub={`${top_skills[0]?.count || 0} listings`} delay={0.05} />
+                    <StatCard icon={<DollarSign size={20} />} label="Comp Ceiling" value={`$${(salary_trends[0]?.avg_max / 1000).toFixed(0)}k`} sub={salary_trends[0]?.role || "N/A"} delay={0.1} />
+                    <StatCard icon={<Globe size={20} />} label="Remote Presence" value={`${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%`} sub="Global Network" delay={0.15} />
+                </div>
 
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Skills Bar Chart */}
-                <ChartCard title="Skill Inventory">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={top_skills} layout="vertical" margin={{ left: 40, right: 20 }}>
-                            <defs>
-                                <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stopColor="#000000" stopOpacity={1} />
-                                    <stop offset="100%" stopColor="#404040" stopOpacity={1} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="2 2" stroke="#000000" opacity={0.05} horizontal={false} />
-                            <XAxis type="number" hide />
-                            <YAxis
-                                dataKey="name" type="category" width={100}
-                                tick={{ fontSize: 10, fill: '#000000', fontWeight: 900, textTransform: 'uppercase' }}
-                                stroke="#000000" strokeOpacity={0.1}
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#000', fillOpacity: 0.02 }} />
-                            <Bar dataKey="count" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={16} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </ChartCard>
-
-                {/* Salary Trends */}
-                <ChartCard title="Capital Flow">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={salary_trends}>
-                            <CartesianGrid strokeDasharray="2 2" stroke="#000" opacity={0.05} vertical={false} />
-                            <XAxis
-                                dataKey="role"
-                                tick={{ fontSize: 9, fill: '#000', fontWeight: 900 }}
-                                interval={0} angle={-15} textAnchor="end" height={60}
-                                stroke="#000" strokeOpacity={0.1}
-                            />
-                            <YAxis
-                                tickFormatter={(val) => `$${val / 1000}k`}
-                                stroke="#000" strokeOpacity={0.1}
-                                tick={{ fontSize: 10, fill: '#000', fontWeight: 900 }}
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#000', fillOpacity: 0.02 }} />
-                            <Bar dataKey="avg_max" fill="#000" radius={[4, 4, 0, 0]} barSize={24} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </ChartCard>
-
-                {/* Work Style Pie */}
-                <ChartCard title="Operational Model">
-                    <div className="h-[300px] flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={work_styles} cx="50%" cy="50%"
-                                    labelLine={false}
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                    outerRadius={90} fill="#000" dataKey="value"
-                                    stroke="#FFFFFF" strokeWidth={4}
-                                >
-                                    {work_styles?.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip content={<CustomTooltip />} />
-                            </PieChart>
+                {/* Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    {/* Skills Bar Chart */}
+                    <ChartCard title="Skill Inventory">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={top_skills} layout="vertical" margin={{ left: 40, right: 20 }}>
+                                <defs>
+                                    <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stopColor="#18181b" stopOpacity={1} />
+                                        <stop offset="100%" stopColor="#3f3f46" stopOpacity={1} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" horizontal={false} />
+                                <XAxis type="number" hide />
+                                <YAxis
+                                    dataKey="name" type="category" width={100}
+                                    tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }}
+                                    stroke="transparent"
+                                />
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#000', fillOpacity: 0.02 }} />
+                                <Bar dataKey="count" fill="url(#barGradient)" radius={[0, 8, 8, 0]} barSize={16} />
+                            </BarChart>
                         </ResponsiveContainer>
-                    </div>
-                </ChartCard>
+                    </ChartCard>
 
-                {/* Experience Radar */}
-                <ChartCard title="Experience Vector">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={experience_levels}>
-                            <PolarGrid stroke="#000" strokeOpacity={0.1} />
-                            <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#000', fontWeight: 900 }} stroke="#000" strokeOpacity={0.1} />
-                            <PolarRadiusAxis angle={30} domain={[0, 'auto']} stroke="transparent" tick={false} />
-                            <Radar name="Density" dataKey="A" stroke="#000" strokeWidth={3} fill="#000" fillOpacity={0.1} />
-                            <Tooltip content={<CustomTooltip />} />
-                        </RadarChart>
-                    </ResponsiveContainer>
-                </ChartCard>
-            </div>
-        </motion.div>
+                    {/* Salary Trends */}
+                    <ChartCard title="Capital Flow">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={salary_trends}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+                                <XAxis
+                                    dataKey="role"
+                                    tick={{ fontSize: 9, fill: '#71717a', fontWeight: 600 }}
+                                    interval={0} axisLine={false} tickLine={false} height={60}
+                                />
+                                <YAxis
+                                    tickFormatter={(val) => `$${val / 1000}k`}
+                                    stroke="transparent"
+                                    tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }}
+                                />
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#000', fillOpacity: 0.02 }} />
+                                <Bar dataKey="avg_max" fill="#18181b" radius={[8, 8, 0, 0]} barSize={24} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </ChartCard>
+
+                    {/* Work Style Pie */}
+                    <ChartCard title="Operational Model">
+                        <div className="h-[300px] flex items-center justify-center">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={work_styles} cx="50%" cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={90}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                        stroke="white"
+                                        strokeWidth={2}
+                                    >
+                                        {work_styles?.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip content={<CustomTooltip />} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </ChartCard>
+
+                    {/* Experience Radar */}
+                    <ChartCard title="Experience Vector">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={experience_levels}>
+                                <PolarGrid stroke="#e4e4e7" />
+                                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }} />
+                                <PolarRadiusAxis angle={30} domain={[0, 'auto']} stroke="transparent" tick={false} />
+                                <Radar name="Density" dataKey="A" stroke="#18181b" strokeWidth={2} fill="#18181b" fillOpacity={0.05} />
+                                <Tooltip content={<CustomTooltip />} />
+                            </RadarChart>
+                        </ResponsiveContainer>
+                    </ChartCard>
+                </div>
+            </main>
+        </div>
     );
 };
 
 const StatCard = ({ icon, label, value, sub, delay }) => (
     <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay }}
-        className="bg-white rounded-2xl border-2 border-black p-6 shadow-[6px_6px_0px_#000] hover:-translate-y-1 transition-all duration-300 active:scale-[0.98]"
+        className="bg-white rounded-3xl border border-zinc-100 p-8 shadow-sm hover:shadow-xl hover:shadow-zinc-900/5 transition-all duration-500 overflow-hidden relative group"
     >
-        <div className="flex justify-between items-start mb-6">
-            <div className="w-10 h-10 bg-black text-white rounded-lg grid place-items-center">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-50 rounded-bl-[64px] transition-transform duration-500 group-hover:scale-110 -z-0" />
+        
+        <div className="relative z-10">
+            <div className="w-12 h-12 bg-white border border-zinc-100 text-zinc-900 rounded-2xl grid place-items-center mb-6 shadow-sm">
                 {icon}
             </div>
-        </div>
-        <div>
-            <p className="text-[9px] font-black text-black/40 uppercase tracking-[0.2em] mb-1">{label}</p>
-            <h3 className="font-display font-black text-2xl text-black leading-none uppercase tracking-tighter">{value}</h3>
-            {sub && <p className="text-[10px] font-bold text-black opacity-60 mt-3 uppercase tracking-widest">{sub}</p>}
+            <div>
+                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{label}</p>
+                <h3 className="text-3xl font-bold text-zinc-900 leading-none tracking-tight">{value}</h3>
+                {sub && <p className="text-[11px] font-medium text-zinc-400 mt-3">{sub}</p>}
+            </div>
         </div>
     </motion.div>
 );
 
 const ChartCard = ({ title, children }) => (
     <motion.div
-        className="bg-white rounded-2xl border-2 border-black p-8 shadow-[8px_8px_0px_rgba(0,0,0,0.05)]"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-[40px] border border-zinc-100 p-10 shadow-sm hover:shadow-xl hover:shadow-zinc-900/5 transition-all duration-500"
     >
-        <h3 className="font-display font-black text-xs text-black uppercase tracking-[0.3em] mb-10 pb-4 border-b border-black/10">
+        <h3 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-12 border-b border-zinc-50 pb-4">
             {title}
         </h3>
         {children}
@@ -191,3 +215,4 @@ const ChartCard = ({ title, children }) => (
 );
 
 export default MarketPage;
+
