@@ -151,10 +151,15 @@ const ChatPage = () => {
 const ChatWindow = ({ sessionId }) => {
     const { messages, sendMessage, isConnected, isTyping } = useChatWebSocket(sessionId);
     const [input, setInput] = useState('');
-    const messagesEndRef = useRef(null);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+                top: scrollContainerRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     }, [messages, isTyping]);
 
     const handleSend = (e) => {
@@ -181,7 +186,7 @@ const ChatWindow = ({ sessionId }) => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-10 space-y-12 bg-[#FDFDFD]">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-10 space-y-12 bg-[#FDFDFD]">
                 {messages.length === 0 && !isTyping && (
                     <div className="h-full grid place-items-center">
                         <div className="text-center opacity-20">
@@ -259,7 +264,6 @@ const ChatWindow = ({ sessionId }) => {
                         </div>
                     </div>
                 )}
-                <div ref={messagesEndRef} />
             </div>
 
             {/* Input Form */}

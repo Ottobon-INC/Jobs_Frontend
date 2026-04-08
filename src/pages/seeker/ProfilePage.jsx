@@ -182,8 +182,14 @@ const ProfilePage = () => {
             // 1. Upload to Supabase Storage
             const publicUrl = await uploadAvatar(user.id, file);
 
-            // 2. Update Profile in DB
+            // 2. Update Profile in DB (Backend)
             await updateProfile({ avatar_url: publicUrl });
+
+            // 3. Persistent Fallback: Update Supabase Auth user_metadata
+            // This ensures the avatar stays visible even if the backend drops the field.
+            await supabase.auth.updateUser({
+                data: { avatar_url: publicUrl }
+            });
 
             setMessage("Identity visualized. Refreshing profile...");
             await fetchProfile();
@@ -234,10 +240,10 @@ const ProfilePage = () => {
                     >
                         <div className="relative group/avatar mb-12">
                             <div className="w-32 h-32 rounded-full bg-black overflow-hidden shadow-2xl shadow-black/20 ring-8 ring-zinc-50 border-4 border-white relative">
-                                {profile?.avatar_url ? (
+                                {profile?.avatar_url || user?.user_metadata?.avatar_url ? (
                                     <img
-                                        src={profile.avatar_url}
-                                        alt={profile.full_name}
+                                        src={profile?.avatar_url || user?.user_metadata?.avatar_url}
+                                        alt={profile?.full_name || 'User Avatar'}
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
