@@ -69,7 +69,7 @@ const TailorResumePage = () => {
                 // Prioritize Tailor failure
                 if (results[1].status === 'rejected') {
                     const err = results[1].reason;
-                    const msg = err?.response?.data?.detail || err?.message || "AI Optimization Engine Offline";
+                    const msg = err?.response?.data?.detail || err?.message || "Optimization Service Offline";
                     setError(msg);
                 } else if (results[0].status === 'rejected') {
                     const err = results[0].reason;
@@ -79,7 +79,7 @@ const TailorResumePage = () => {
 
             } catch (err) {
                 console.error("Failed to load initial data", err);
-                setError(err?.response?.data?.detail || err?.message || "Failed to initialize tailoring sequence.");
+                setError(err?.response?.data?.detail || err?.message || "Failed to initialize tailoring process.");
             } finally {
                 setLoadingJob(false); // ensuring it's off
                 setLoadingScore(false);
@@ -120,13 +120,13 @@ const TailorResumePage = () => {
 
         try {
             const res = await uploadResume(file);
-            setUploadMessage(`Protocol Success: ${res.characters_extracted} units extracted.`);
+            setUploadMessage(`Success: Data extracted from resume.`);
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         } catch (err) {
             console.error("Upload failed", err);
-            setLocalError(err.response?.data?.detail || "Protocol Exception / Injection Fail");
+            setLocalError(err.response?.data?.detail || "Upload Error / Service Failed");
         } finally {
             setUploadingResume(false);
         }
@@ -136,7 +136,7 @@ const TailorResumePage = () => {
     if (error) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#fafafa] px-4 font-display">
             <BentoCard className="max-w-xl w-full text-center items-center py-16">
-                <p className="text-2xl font-black uppercase tracking-tighter mb-4 text-red-500">Pipeline Disruption</p>
+                <p className="text-2xl font-black uppercase tracking-tighter mb-4 text-red-500">Service Error</p>
                 <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px] mb-8">{error}</p>
                 
                 {/* Upload Section */}
@@ -176,7 +176,7 @@ const TailorResumePage = () => {
                 )}
 
                 <Link to={`/jobs/${id}`} className="mt-2 px-8 py-4 bg-white border-4 border-black text-black rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] hover:bg-black hover:text-white transition-all shadow-xl inline-flex items-center gap-3">
-                    <ArrowLeft size={16} /> Return to Job
+                    <ArrowLeft size={16} /> Back to Job
                 </Link>
             </BentoCard>
         </div>
@@ -194,7 +194,7 @@ const TailorResumePage = () => {
         <div className="min-h-screen pt-16 pb-24 px-4 sm:px-8 max-w-[1400px] mx-auto bg-[#fafafa]">
              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-12">
                 <Link to={`/jobs/${id}`} className="inline-flex items-center gap-2 text-black font-black uppercase text-[10px] tracking-[0.3em] hover:translate-x-[-4px] transition-transform">
-                    <ArrowLeft size={16} /> Return to Job Specification
+                    <ArrowLeft size={16} /> Back to Job Details
                 </Link>
             </motion.div>
 
@@ -206,7 +206,7 @@ const TailorResumePage = () => {
                         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                             <div className="max-w-3xl">
                                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-lg mb-6 text-[10px] font-black uppercase tracking-[0.2em]">
-                                    <Target size={14} /> AI Tailoring Engine Active
+                                    <Target size={14} /> Resume Optimizer Active
                                 </div>
                                 <h1 className="text-4xl md:text-5xl font-display font-black text-black tracking-tighter uppercase mb-4 leading-none">
                                     {job?.title?.replace(/POSTED.*$/i, '').trim()}
@@ -233,7 +233,7 @@ const TailorResumePage = () => {
                         {loadingScore ? (
                             <div className="flex flex-col items-center justify-center py-12 gap-6 animate-pulse">
                                 <div className="w-24 h-24 rounded-full border-8 border-black/10 border-t-black animate-spin" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Calculating Matrix...</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Analyzing Match...</span>
                             </div>
                         ) : scoreData ? (
                             <div className="flex flex-col items-center">
@@ -252,7 +252,7 @@ const TailorResumePage = () => {
                                 
                                 {scoreData.gap_analysis && (
                                     <div className="w-full space-y-4 bg-gray-50 p-6 rounded-2xl border-2 border-gray-100">
-                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-gray-400">Analysis Logs</h3>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-gray-400">Analysis Summary</h3>
                                         <p className="text-xs font-bold text-gray-600 leading-relaxed">{scoreData.gap_analysis}</p>
                                     </div>
                                 )}
@@ -276,7 +276,7 @@ const TailorResumePage = () => {
                     <BentoCard delay={0.2}>
                         <div className="flex items-center gap-4 mb-6 pb-6 border-b-2 border-black/10">
                             <BrainCircuit size={24} className="text-black" />
-                            <h2 className="text-[10px] font-black text-black uppercase tracking-[0.2em]">Optimization Engine</h2>
+                            <h2 className="text-[10px] font-black text-black uppercase tracking-[0.2em]">Optimization Details</h2>
                         </div>
                         <p className="text-xs font-bold text-gray-500 leading-relaxed bg-gray-50 p-6 rounded-2xl border border-black/5">
                             The tailored resume is dynamically restructured to highlight the most relevant experiences targeting the specific core competencies found in this job description.
@@ -302,7 +302,7 @@ const TailorResumePage = () => {
                                         disabled={uploadingResume}
                                     />
                                     {uploadingResume ? <RefreshCw className="animate-spin" size={16} /> : <Upload size={16} />}
-                                    {uploadingResume ? "Syncing..." : "Update Resume"}
+                                    {uploadingResume ? "Uploading..." : "Update Resume"}
                                 </label>
                                 <button 
                                     onClick={handleDownload}
@@ -319,7 +319,7 @@ const TailorResumePage = () => {
                             <div className="flex-1 min-h-[500px] flex flex-col gap-6 relative overflow-hidden bg-gray-50 p-8 rounded-3xl border-2 border-dashed border-gray-200">
                                  <div className="absolute inset-0 z-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.03)_50%,transparent_100%)] animate-[shimmer_2s_infinite] w-[200%] -ml-[100%]" />
                                  <div className="flex items-center gap-4 mb-8 relative z-10 text-gray-400 font-bold uppercase tracking-widest text-[10px]">
-                                     <Sparkles className="animate-pulse" size={16}/> Compiling Matrix
+                                     <Sparkles className="animate-pulse" size={16}/> Finalizing Layout
                                  </div>
                                  {Array.from({length: 6}).map((_, i) => (
                                      <div key={i} className="space-y-3 relative z-10">
@@ -334,7 +334,7 @@ const TailorResumePage = () => {
                                 {changeSummary && (
                                     <div className="bg-black text-white p-8 rounded-2xl border-4 border-black shadow-[8px_8px_0px_#404040]">
                                         <h3 className="text-sm font-black uppercase tracking-widest border-b-2 border-white/20 pb-4 mb-4 flex items-center gap-3">
-                                            <Sparkles size={18} className="text-yellow-400" /> Executive Optimization Log
+                                            <Sparkles size={18} className="text-yellow-400" /> Summary of Optimization
                                         </h3>
                                         <div className="prose prose-invert prose-sm max-w-none font-medium leading-relaxed prose-headings:font-black prose-headings:uppercase prose-headings:tracking-widest">
                                             <ReactMarkdown>{changeSummary}</ReactMarkdown>
@@ -345,7 +345,7 @@ const TailorResumePage = () => {
                                 <div className="bg-green-50 text-green-700 border-2 border-green-500 p-4 rounded-2xl flex items-center font-black uppercase tracking-widest text-[10px] shadow-[4px_4px_0px_#22c55e]">
                                     <div className="flex items-center gap-3">
                                         <CheckCircle size={18} className="text-green-600" />
-                                        <span>Optimization Complete: Resume Matched Perfectly</span>
+                                        <span>Optimization Complete: Resume Refined for Role</span>
                                     </div>
                                 </div>
 

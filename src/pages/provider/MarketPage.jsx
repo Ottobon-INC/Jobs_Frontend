@@ -71,7 +71,7 @@ const MarketPage = () => {
                 >
                     <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 border border-zinc-100 shadow-sm">
                         <Sparkles size={12} className="text-zinc-400" />
-                        Global Intelligence
+                        Market Insights
                     </div>
                     <h1 className="text-7xl md:text-8xl font-sans font-bold mb-8 tracking-tight text-zinc-900">
                         Analytics
@@ -85,16 +85,16 @@ const MarketPage = () => {
             <main className="space-y-20 pb-32">
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <StatCard icon={<Briefcase size={20} />} label="Total Inventory" value={total_jobs} delay={0} />
-                    <StatCard icon={<TrendingUp size={20} />} label="Core Strength" value={top_skills[0]?.name || "N/A"} sub={`${top_skills[0]?.count || 0} listings`} delay={0.05} />
-                    <StatCard icon={<DollarSign size={20} />} label="Comp Ceiling" value={`$${(salary_trends[0]?.avg_max / 1000).toFixed(0)}k`} sub={salary_trends[0]?.role || "N/A"} delay={0.1} />
-                    <StatCard icon={<Globe size={20} />} label="Remote Presence" value={`${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%`} sub="Global Network" delay={0.15} />
+                    <StatCard icon={<Briefcase size={20} />} label="Total Listings" value={total_jobs} delay={0} />
+                    <StatCard icon={<TrendingUp size={20} />} label="Top Skill" value={top_skills[0]?.name || "N/A"} sub={`${top_skills[0]?.count || 0} listings`} delay={0.05} />
+                    <StatCard icon={<DollarSign size={20} />} label="Salary Peak" value={`$${(salary_trends[0]?.avg_max / 1000).toFixed(0)}k`} sub={salary_trends[0]?.role || "N/A"} delay={0.1} />
+                    <StatCard icon={<Globe size={20} />} label="Remote Presence" value={`${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%`} sub="Global Distribution" delay={0.15} />
                 </div>
 
                 {/* Charts Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* Skills Bar Chart */}
-                    <ChartCard title="Skill Inventory">
+                    <ChartCard title="Skill Demand">
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={top_skills} layout="vertical" margin={{ left: 40, right: 20 }}>
                                 <defs>
@@ -117,7 +117,7 @@ const MarketPage = () => {
                     </ChartCard>
 
                     {/* Salary Trends */}
-                    <ChartCard title="Capital Flow">
+                    <ChartCard title="Salary Trends">
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={salary_trends}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
@@ -138,7 +138,7 @@ const MarketPage = () => {
                     </ChartCard>
 
                     {/* Work Style Pie */}
-                    <ChartCard title="Operational Model">
+                    <ChartCard title="Employment Types">
                         <div className="h-[300px] flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -162,7 +162,7 @@ const MarketPage = () => {
                     </ChartCard>
 
                     {/* Experience Radar */}
-                    <ChartCard title="Experience Vector">
+                    <ChartCard title="Experience Distribution">
                         <ResponsiveContainer width="100%" height={300}>
                             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={experience_levels}>
                                 <PolarGrid stroke="#e4e4e7" />

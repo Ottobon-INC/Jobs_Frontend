@@ -54,6 +54,15 @@ const RegisterPage = () => {
     const [extracting, setExtracting] = useState(false);
     const fileInputRef = useRef(null);
 
+    const maxSteps = role === ROLES.PROVIDER ? 2 : 4;
+
+    const handleRoleChange = (selectedRole) => {
+        setRole(selectedRole);
+        if (selectedRole === ROLES.PROVIDER && step > 2) {
+            setStep(2);
+        }
+    };
+
     const handleAddSkill = (e) => {
         if (e) e.preventDefault();
         if (newSkill.trim() && !skills.includes(newSkill.trim())) {
@@ -103,7 +112,9 @@ const RegisterPage = () => {
             }
         }
         setError(null);
-        setStep(s => s + 1);
+        if (step < maxSteps) {
+            setStep(s => s + 1);
+        }
     };
 
     const prevStep = () => {
@@ -183,14 +194,14 @@ const RegisterPage = () => {
             <div className="w-full max-w-2xl mt-10 mb-20">
                 {/* Refined Progress Indicator */}
                 <div className="mb-14 flex items-center justify-center gap-6">
-                    {[1, 2, 3, 4].map(i => (
+                    {Array.from({ length: maxSteps }, (_, i) => i + 1).map(i => (
                         <div key={i} className="flex items-center gap-6">
                             <div className={`w-12 h-12 rounded-[20px] flex items-center justify-center text-[11px] font-bold transition-all duration-700 border ${
                                 step >= i ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10' : 'bg-white text-zinc-300 border-zinc-100'
                             }`}>
                                 {step > i ? <Check size={18} strokeWidth={3} /> : i}
                             </div>
-                            {i < 4 && (
+                            {i < maxSteps && (
                                 <div className={`w-12 h-[1px] transition-all duration-1000 ${
                                     step > i ? 'bg-zinc-900' : 'bg-zinc-100'
                                 }`} />
@@ -231,7 +242,7 @@ const RegisterPage = () => {
                                             <button
                                                 key={r}
                                                 type="button"
-                                                onClick={() => setRole(r)}
+                                                onClick={() => handleRoleChange(r)}
                                                 className={`py-4 rounded-[18px] text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${role === r
                                                     ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/10 scale-[1.02]'
                                                     : 'text-zinc-400 hover:bg-white hover:text-zinc-900'
@@ -534,7 +545,7 @@ const RegisterPage = () => {
                             </button>
                         )}
                         
-                        {step < 4 ? (
+                        {step < maxSteps ? (
                             <button
                                 type="button"
                                 onClick={nextStep}

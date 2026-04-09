@@ -45,9 +45,9 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
-            {/* Minimalist Header */}
-            <header className="relative z-10 pt-12 pb-12 flex items-center justify-between">
+        <div className="h-[calc(100vh-140px)] flex flex-col overflow-hidden">
+            {/* Minimalist Header - Fixed (Non-shrinking) */}
+            <header className="shrink-0 relative z-10 pb-8 flex items-center justify-between">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -72,13 +72,13 @@ const ChatPage = () => {
                 </Link>
             </header>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-10 min-h-0 pb-12">
-                {/* Sidebar */}
-                <div className="col-span-1">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-10 min-h-0 overflow-hidden pb-2">
+                {/* Sidebar - Fixed/H-Full */}
+                <div className="col-span-1 h-full overflow-hidden">
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white/80 backdrop-blur-xl rounded-[32px] border border-zinc-100 flex flex-col h-[600px] overflow-hidden sticky top-24 shadow-sm"
+                        className="bg-white/80 backdrop-blur-xl rounded-[32px] border border-zinc-100 flex flex-col h-full overflow-hidden shadow-sm"
                     >
                         <div className="p-6 border-b border-zinc-50 bg-zinc-50/30">
                             <h2 className="text-[11px] font-bold text-zinc-400 flex items-center gap-3 uppercase tracking-[0.3em]">
@@ -121,8 +121,8 @@ const ChatPage = () => {
                     </motion.div>
                 </div>
 
-                {/* Main Chat Area */}
-                <div className="col-span-1 lg:col-span-3 h-[700px] lg:h-[800px]">
+                {/* Main Chat Area - Occupies remaining space */}
+                <div className="col-span-1 lg:col-span-3 h-full overflow-hidden">
                     {sessionId ? (
                         <ChatWindow sessionId={sessionId} />
                     ) : (

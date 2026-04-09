@@ -177,11 +177,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                         <Bookmark size={14} className={saved ? 'fill-white' : ''} />
                         {saved ? 'Saved' : 'Save'}
                     </button>
-                    {matchScore != null && (
-                        <span className="text-lg font-bold text-zinc-900 tabular-nums shrink-0">
-                            {matchScore}%
-                        </span>
-                    )}
+
                 </div>
             </div>
         </motion.div>

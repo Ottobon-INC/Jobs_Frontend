@@ -75,9 +75,15 @@ export const AuthProvider = ({ children }) => {
             setRole(data.role);
         } catch (error) {
             const status = error?.response?.status;
+            const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
+
+            if (isTimeout) {
+                console.warn('fetchProfile: Request timed out. Skipping retries and using fallback.');
+            }
 
             // Retry on 503 (server overloaded) or 404 (user row not yet created by trigger)
-            if (retries > 0 && (status === 503 || status === 404)) {
+            // But NEVER retry on timeouts to prevent long hangs.
+            if (!isTimeout && retries > 0 && (status === 503 || status === 404)) {
                 const delay = status === 404 ? 1500 : 1000;
                 console.warn(`fetchProfile: ${status} error, retrying in ${delay}ms (${retries} retries left)`);
                 await new Promise(r => setTimeout(r, delay));

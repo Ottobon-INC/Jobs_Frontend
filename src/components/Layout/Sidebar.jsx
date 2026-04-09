@@ -9,18 +9,18 @@ const Sidebar = () => {
     if (!role) return null;
 
     const links = [
-        { to: '/jobs', label: 'Feed', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Discover' },
-        { to: '/saved', label: 'Saved', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Discover' },
-        { to: '/profile', label: 'Identity', icon: User, roles: [ROLES.SEEKER], category: 'Discover' },
-        { to: '/courses', label: 'Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Prepare' },
-        { to: '/mock-interview', label: 'Mock Interview', icon: Radio, roles: [ROLES.SEEKER], category: 'Prepare' },
-        { to: '/chat', label: 'Direct', icon: MessageSquare, roles: [ROLES.SEEKER], category: 'Prepare' },
-        { to: '/provider/create', label: 'Publish', icon: PlusCircle, roles: [ROLES.PROVIDER], category: 'Manage' },
-        { to: '/provider/listings', label: 'Registry', icon: Briefcase, roles: [ROLES.PROVIDER], category: 'Manage' },
-        { to: '/market-intelligence', label: 'Analytics', icon: TrendingUp, roles: [ROLES.PROVIDER, ROLES.SEEKER], category: 'Insight' },
-        { to: '/blogs', label: 'Blogs', icon: Newspaper, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Insight' },
-        { to: '/admin/tower', label: 'Command', icon: LayoutDashboard, roles: [ROLES.ADMIN], category: 'System' },
-        { to: '/admin/ingest', label: 'Ingestion', icon: Upload, roles: [ROLES.ADMIN], category: 'System' },
+        { to: '/jobs', label: 'Job Board', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
+        { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/mock-interview', label: 'Interview Prep', icon: Radio, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/chat', label: 'Messages', icon: MessageSquare, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/provider/create', label: 'Post a Job', icon: PlusCircle, roles: [ROLES.PROVIDER], category: 'Recruitment' },
+        { to: '/provider/listings', label: 'My Listings', icon: Briefcase, roles: [ROLES.PROVIDER], category: 'Recruitment' },
+        { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, roles: [ROLES.PROVIDER, ROLES.SEEKER], category: 'Insights' },
+        { to: '/blogs', label: 'Career Blog', icon: Newspaper, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Insights' },
+        { to: '/admin/tower', label: 'Admin Dashboard', icon: LayoutDashboard, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },
     ];
 
     const filteredLinks = links.filter(link => link.roles.includes(role));
@@ -35,12 +35,7 @@ const Sidebar = () => {
 
     return (
         <aside className="fixed left-8 top-32 bottom-8 w-64 glass-panel z-40 overflow-y-auto p-8 hidden md:flex flex-col gap-10 rounded-[32px] border-none shadow-2xl shadow-black/5">
-            <div className="pb-6 border-b border-zinc-100/50 mb-4 flex items-center justify-between px-2">
-                <p className="text-[9px] font-black text-zinc-300 tracking-[0.4em] uppercase">
-                    Repository
-                </p>
-                <div className="w-2 h-2 bg-black rounded-full breathing-pulse" />
-            </div>
+
 
             <div className="flex flex-col gap-6">
                 {Object.entries(groupedLinks).map(([category, items], cIdx) => (

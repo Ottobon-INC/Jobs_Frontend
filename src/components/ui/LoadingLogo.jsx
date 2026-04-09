@@ -25,9 +25,7 @@ const LoadingLogo = ({ className = "" }) => {
                 <span className="font-sans font-bold text-3xl tracking-tight text-zinc-900">
                     Ottobon<span className="text-zinc-200 font-light mx-1">|</span>Jobs
                 </span>
-                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-[0.3em] mt-1">
-                    System Initializing
-                </p>
+
                 <div className="flex gap-2.5 mt-4">
                     <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 animate-pulse" />
                     <div className="w-1.5 h-1.5 rounded-full bg-zinc-200" />

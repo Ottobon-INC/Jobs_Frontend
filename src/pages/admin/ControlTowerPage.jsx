@@ -45,31 +45,31 @@ const ControlTowerPage = () => {
     if (loading) return <Loader fullScreen />;
 
     return (
-        <div className="max-w-5xl mx-auto py-16 px-8 bg-white min-h-screen">
-            <header className="mb-16 border-b-4 border-black pb-10 flex justify-between items-end">
+        <div className="max-w-6xl mx-auto py-20 px-8 bg-[#FBFBFB] min-h-screen">
+            <header className="mb-20 border-b border-zinc-100 pb-12 flex justify-between items-end">
                 <div>
-                    <h1 className="text-5xl font-display font-black text-black uppercase tracking-tighter flex items-center gap-5">
-                        <div className="w-14 h-14 bg-black rounded-2xl grid place-items-center shadow-2xl">
+                    <h1 className="text-4xl font-sans font-bold text-zinc-900 tracking-tight flex items-center gap-6">
+                        <div className="w-16 h-16 bg-zinc-900 rounded-[24px] grid place-items-center shadow-lg shadow-zinc-900/20">
                             <Ear size={32} className="text-white" />
                         </div>
-                        Control Tower
+                        System Administration
                     </h1>
-                    <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.4em] mt-4">Command & Signal Authorization Layer</p>
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-6 ml-1">Session Monitoring & Administrative Control</p>
                 </div>
                 <button
                     onClick={fetchSessions}
                     disabled={refreshing}
-                    className="p-4 bg-black text-white hover:bg-gray-800 rounded-2xl transition-all shadow-xl disabled:opacity-30"
+                    className="p-5 bg-white border border-zinc-100 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all shadow-sm disabled:opacity-30"
                 >
                     <RefreshCw size={24} className={refreshing ? 'animate-spin' : ''} />
                 </button>
             </header>
 
-            <div className="grid md:grid-cols-2 gap-10 mb-16">
-                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                    <div className="bg-white border-4 border-black rounded-[40px] p-10 shadow-[20px_20px_0px_rgba(0,0,0,0.05)] h-full">
-                        <h2 className="text-[11px] font-black text-black uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
-                            <Shield size={18} /> Direct Intercept
+            <div className="grid md:grid-cols-2 gap-10 mb-20">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                    <div className="bg-white border border-zinc-100 rounded-[40px] p-10 shadow-xl shadow-zinc-900/5 h-full">
+                        <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                            <Shield size={16} className="text-zinc-900" /> Connect to Session
                         </h2>
                         <form onSubmit={handleConnect} className="flex gap-4">
                             <input
@@ -77,37 +77,38 @@ const ControlTowerPage = () => {
                                 placeholder="UUID / SIGNAL_ID"
                                 value={sessionId}
                                 onChange={(e) => setSessionId(e.target.value)}
-                                className="flex-1 bg-white border-4 border-black rounded-2xl p-5 text-black font-black text-xs placeholder:text-black/20 focus:outline-none focus:ring-12 focus:ring-black/5 transition-all uppercase tracking-widest"
+                                className="flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl p-5 text-zinc-900 font-semibold text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all tracking-widest"
                             />
-                            <button type="submit" className="bg-black text-white px-8 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-800 shadow-xl transition-all">
-                                Intercept
+                            <button type="submit" className="bg-zinc-900 text-white px-10 py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 shadow-lg shadow-zinc-900/10 transition-all">
+                                Connect
                             </button>
                         </form>
                     </div>
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                    <div className="bg-black border-4 border-black rounded-[40px] p-10 shadow-[20px_20px_0px_rgba(0,0,0,0.05)] h-full flex items-center justify-between text-white">
-                        <div>
-                            <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">ACTIVE_AI_NODES</p>
-                            <p className="text-6xl font-display font-black tracking-tighter">{activeAiCount}</p>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                    <div className="bg-zinc-900 rounded-[40px] p-10 shadow-2xl shadow-zinc-900/20 h-full flex items-center justify-between text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+                        <div className="relative z-10">
+                            <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-3">Active Sessions</p>
+                            <p className="text-6xl font-sans font-bold tracking-tighter">{activeAiCount}</p>
                         </div>
-                        <div className="text-right">
-                            <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] mb-2 italic">HUMAN_INTERVENTION</p>
-                            <p className="text-6xl font-display font-black tracking-tighter opacity-100">{humanCount}</p>
+                        <div className="text-right relative z-10">
+                            <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-3 italic">Active Support</p>
+                            <p className="text-6xl font-sans font-bold tracking-tighter opacity-100">{humanCount}</p>
                         </div>
                     </div>
                 </motion.div>
             </div>
 
-            <h2 className="text-[12px] font-black text-black uppercase tracking-[0.4em] mb-8 ml-2 flex items-center gap-3">
-                <Zap size={18} /> Live Signal Streams
+            <h2 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.5em] mb-10 ml-2 flex items-center gap-4">
+                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Live Sessions
             </h2>
 
             <div className="space-y-6">
                 {sessions.length === 0 && (
-                    <div className="text-center py-24 text-black/10 border-4 border-dashed border-black/5 rounded-[40px]">
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Signal Null Detected</p>
+                    <div className="text-center py-32 bg-zinc-50 border border-zinc-100 rounded-[40px] border-dashed">
+                        <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.4em]">No Live Sessions Found</p>
                     </div>
                 )}
 
@@ -118,28 +119,33 @@ const ControlTowerPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.05 }}
                     >
-                        <div className="bg-white border-2 border-black rounded-3xl p-8 flex flex-col md:flex-row justify-between items-center gap-8 hover:shadow-[10px_10px_0px_#000] transition-all duration-300 group">
-                            <div className="flex gap-6 items-center flex-1">
-                                <div className={`w-4 h-4 rounded-full ${session.status === 'active_human' ? 'bg-black animate-pulse' : 'bg-gray-200'}`} />
+                        <div className="bg-white border border-zinc-100 rounded-[32px] p-10 flex flex-col md:flex-row justify-between items-center gap-8 hover:shadow-2xl hover:shadow-zinc-900/5 transition-all duration-500 group">
+                            <div className="flex gap-8 items-center flex-1">
+                                <div className="relative">
+                                    <div className={`w-3 h-3 rounded-full ${session.status === 'active_human' ? 'bg-zinc-900' : 'bg-zinc-100'}`} />
+                                    {session.status === 'active_human' && (
+                                        <div className="absolute inset-0 bg-zinc-900 rounded-full animate-ping opacity-20" />
+                                    )}
+                                </div>
                                 <div className="flex-1">
-                                    <p className="text-xl font-display font-black text-black uppercase tracking-tight group-hover:italic transition-all">
-                                        {session.users?.full_name || session.users?.email || 'ANON_OBJECT'}
+                                    <p className="text-2xl font-sans font-bold text-zinc-900 tracking-tight group-hover:text-zinc-600 transition-colors">
+                                        {session.user?.full_name || session.user?.email || session.users_jobs?.full_name || 'Anonymous Guest'}
                                     </p>
-                                    <p className="text-[9px] text-black/40 font-mono mt-1 uppercase tracking-widest">{session.id}</p>
+                                    <p className="text-[10px] text-zinc-300 font-bold mt-2 uppercase tracking-[0.2em]">{session.id.slice(0, 18)}...</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-8">
+                            <div className="flex items-center gap-12">
                                 <div className="text-right">
-                                    <p className="text-[8px] font-black text-black/20 uppercase tracking-widest">STREAM_INIT</p>
-                                    <span className="text-[10px] font-black text-black uppercase tracking-widest">
-                                        {new Date(session.created_at).toLocaleTimeString()}
+                                    <p className="text-[8px] font-bold text-zinc-300 uppercase tracking-[0.2em] mb-1">Time Started</p>
+                                    <span className="text-xs font-bold text-zinc-900 tabular-nums">
+                                        {new Date(session.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
                                 <button
                                     onClick={() => navigate('/admin/helpdesk', { state: { sessionId: session.id } })}
-                                    className="px-10 py-4 bg-white border-2 border-black text-black rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-black hover:text-white transition-all shadow-lg overflow-hidden relative group"
+                                    className="px-12 py-4 bg-zinc-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/10"
                                 >
-                                    <span className="relative z-10">Monitor</span>
+                                    Monitor
                                 </button>
                             </div>
                         </div>

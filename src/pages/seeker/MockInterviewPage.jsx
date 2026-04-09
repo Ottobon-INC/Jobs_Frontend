@@ -183,12 +183,12 @@ const EvalReport = ({ evaluation }) => {
                     ) : (
                         <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
                     )}
-                    {isDownloading ? 'Capturing...' : 'Download Analysis'}
+                    {isDownloading ? 'Capturing...' : 'Download Analysis Report'}
                 </button>
             </div>
 
             <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 flex items-center gap-4">
-                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Job Match Analysis
+                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Performance Summary
             </h2>
 
             {/* Score */}
@@ -232,7 +232,7 @@ const EvalReport = ({ evaluation }) => {
                             </ul>
                         </div>
                         <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
-                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Growth Intervals</h3>
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Areas for Improvement</h3>
                             <ul className="space-y-4">
                                 {areas_for_improvement.length > 0 ? (
                                     areas_for_improvement.map((a, i) => (
@@ -256,7 +256,7 @@ const EvalReport = ({ evaluation }) => {
 
                     {recommended_topics_to_review.length > 0 && (
                         <div>
-                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Knowledge Synthesis Nodes</h3>
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Recommended Topics to Review</h3>
                             <div className="flex flex-wrap gap-3">
                                 {recommended_topics_to_review.map((t, i) => (
                                     <span key={i} className="px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
@@ -551,7 +551,7 @@ const MockInterviewPage = () => {
                             to={id ? `/jobs/${id}` : '/jobs'}
                             className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[11px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
                         >
-                            <ArrowLeft size={16} /> Return to Signal
+                            <ArrowLeft size={16} /> Back to Job Details
                         </Link>
                     </motion.div>
 
@@ -568,7 +568,7 @@ const MockInterviewPage = () => {
                                     <Radio size={20} className="text-white" />
                                 </div>
                                 <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">
-                                    Mock Interview Simulator
+                                    Mock Interview
                                 </h1>
                             </div>
                             {(companyName || jobTitle) && (
@@ -594,7 +594,7 @@ const MockInterviewPage = () => {
                                                 : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
                                             }`}
                                     >
-                                        {type === 'technical' ? 'Technical Synthesis' : 'Behavioral Logic'}
+                                        {type === 'technical' ? 'Technical Interview' : 'Behavioral Interview'}
                                     </button>
                                 ))}
                             </div>
@@ -603,7 +603,7 @@ const MockInterviewPage = () => {
                         {/* Duration */}
                         <div className="mb-10">
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
-                                02 / TEMPORAL DEPTH
+                                02 / INTERVIEW DURATION
                             </p>
                             <div className="grid grid-cols-4 gap-4">
                                 {[5, 10, 15, 20].map((d) => (
@@ -624,9 +624,9 @@ const MockInterviewPage = () => {
                         {/* Proctor Toggle */}
                         <div className="mb-12 p-6 bg-zinc-50/50 rounded-[32px] border border-zinc-100 flex items-center justify-between">
                             <div>
-                                <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">Proctor Protocol</p>
+                                <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">Enable Proctoring</p>
                                 <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
-                                    Enforce cognitive focus (Tab Lock)
+                                    Monitor focus during session
                                 </p>
                             </div>
                             <button
@@ -644,7 +644,7 @@ const MockInterviewPage = () => {
                         {/* Resume Status */}
                         <div className="mb-12">
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
-                                03 / KNOWLEDGE SOURCE
+                                03 / RESUME CONTEXT
                             </p>
                             <div className={`p-8 rounded-[32px] border transition-all duration-500 ${hasResume ? 'border-zinc-100 bg-[#FAFAFA]' : 'border-red-100 bg-red-50/50'
                                 }`}>
@@ -657,10 +657,10 @@ const MockInterviewPage = () => {
                                         <div>
                                             <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">
                                                 {sessionResumeName
-                                                    ? 'Session Override'
+                                                    ? 'Custom Session Resume'
                                                     : profile?.resume_text
-                                                        ? 'Profile Synthesis'
-                                                        : 'Missing Context'}
+                                                        ? 'Using Profile Data'
+                                                        : 'Resume Missing'}
                                             </p>
                                             <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
                                                 {sessionResumeName
@@ -705,13 +705,13 @@ const MockInterviewPage = () => {
                         >
                             {isStarting ? (
                                 <>
-                                    <Activity size={20} className="animate-pulse" /> INITIALIZING INTERFACE...
+                                    <Activity size={20} className="animate-pulse" /> STARTING SESSION...
                                 </>
                             ) : (
                                 <>
-                                    {!hasResume ? 'SYNC REQUIRED' : (
+                                    {!hasResume ? 'UPLOAD RESUME TO START' : (
                                         <>
-                                            LAUNCH MOCK INTERVIEW SIMULATOR
+                                            START PRACTICE INTERVIEW
                                             <ChevronRight size={20} />
                                         </>
                                     )}
@@ -735,7 +735,7 @@ const MockInterviewPage = () => {
                             <SiriVisualizer isActive={isSpeaking} />
                             <div>
                                 <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">
-                                    Sim Session
+                                    Practice Interview
                                 </h1>
                                 {(companyName || jobTitle) && (
                                     <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-2 truncate max-w-md">
@@ -754,7 +754,7 @@ const MockInterviewPage = () => {
 
                             {/* Status */}
                             <span className={`px-6 py-3 border rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ${statusPill}`}>
-                                {isSpeaking ? 'SYNTHESIZING' : status.toUpperCase()}
+                                {isSpeaking ? 'PROCESSING' : status.toUpperCase()}
                             </span>
 
                             {/* Mute */}

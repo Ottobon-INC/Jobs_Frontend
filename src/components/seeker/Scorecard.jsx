@@ -37,8 +37,8 @@ const Scorecard = ({ interview, onUpdate }) => {
                         <Zap size={24} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black uppercase tracking-tighter">AI Analysis</h3>
-                        <p className="text-[10px] font-black text-black/40 uppercase tracking-widest">Post-Interview Synthesis</p>
+                        <h3 className="text-xl font-black uppercase tracking-tighter">Performance Analysis</h3>
+                        <p className="text-[10px] font-black text-black/40 uppercase tracking-widest">Post-Interview Evaluation</p>
                     </div>
                 </div>
                 <p className="text-sm font-medium leading-relaxed text-black/80">
@@ -63,13 +63,13 @@ const Scorecard = ({ interview, onUpdate }) => {
             {/* 3. Transcript - Medium Box */}
             <div className="md:col-span-1 bg-gray-50 border-2 border-black p-6 rounded-[24px] h-[300px] flex flex-col">
                 <h4 className="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <MessageSquare size={14} /> Transcript Stream
+                    <MessageSquare size={14} /> Interview Transcript
                 </h4>
                 <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
                     {transcript?.map((entry, idx) => (
                         <div key={idx} className={`p-3 rounded-xl border ${entry.role === 'assistant' ? 'bg-white border-gray-100' : 'bg-black text-white border-black'}`}>
                             <div className="text-[8px] font-black uppercase tracking-tighter mb-1 opacity-40">
-                                {entry.role === 'assistant' ? 'ENGINE' : 'USER'}
+                                {entry.role === 'assistant' ? 'INTERVIEWER' : 'USER'}
                             </div>
                             <p className="text-[10px] leading-snug">{entry.content}</p>
                         </div>

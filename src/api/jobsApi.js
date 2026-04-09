@@ -11,6 +11,11 @@ export const getProviderJobs = async () => {
     return response.data;
 };
 
+export const deleteJob = async (jobId) => {
+    const response = await api.delete(`/jobs/${jobId}`);
+    return response.data;
+};
+
 export const getJobFeed = async (skip = 0, limit = 500) => {
     const response = await api.get('/jobs/feed', {
         params: { skip, limit },
