@@ -55,14 +55,14 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                 onClick={onClose}
                                 className="flex items-center gap-2.5 px-5 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-[11px] font-bold text-zinc-600 hover:bg-zinc-900 hover:text-white transition-all group"
                             >
-                                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Signal
+                                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Job Board
                             </button>
                             <div className="w-[1px] h-6 bg-zinc-100 mx-2 hidden md:block" />
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-zinc-900 rounded-xl flex items-center justify-center text-white">
                                     <Sparkles size={16} />
                                 </div>
-                                <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Alignment Synthesis</h3>
+                                <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Match Compatibility Analysis</h3>
                             </div>
                         </div>
                         <button 
@@ -107,7 +107,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Skills Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Technical Alignment</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Technical Compatibility</span>
                                             <span className="text-sm font-bold text-zinc-900">{skills_score}%</span>
                                         </div>
                                         <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
@@ -123,7 +123,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Interests Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Interest Synthesis</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Career Goals Alignment</span>
                                             <span className="text-sm font-bold text-zinc-900">{interests_score}%</span>
                                         </div>
                                         <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
@@ -157,7 +157,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     )}
 
                                     <div className="mt-12 p-8 bg-zinc-50/50 rounded-[40px] border border-zinc-100 relative overflow-hidden group">
-                                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Upskill Channels</h4>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Recommended Learning</h4>
                                         <div className="space-y-4">
                                             {missing_skills.slice(0, 3).map((skill, idx) => (
                                                 <a 
@@ -167,7 +167,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                                     rel="noopener noreferrer"
                                                     className="flex items-center justify-between p-4 bg-white border border-zinc-100 rounded-2xl hover:border-zinc-900 transition-all group/link shadow-sm"
                                                 >
-                                                    <span className="text-[11px] font-bold text-zinc-900 uppercase tracking-widest">{skill} Synthesis</span>
+                                                    <span className="text-[11px] font-bold text-zinc-900 uppercase tracking-widest">{skill} Tutorial</span>
                                                     <ExternalLink size={14} className="text-zinc-300 group-hover/link:text-zinc-900 transition-colors" />
                                                 </a>
                                             ))}
@@ -184,7 +184,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                     {/* Premium Action Footer */}
                     <div className="px-10 py-8 border-t border-zinc-100 bg-[#FAFAFA]/50 backdrop-blur-sm flex flex-col items-center gap-6">
                         <div className="flex flex-col items-center">
-                            <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-2">Cognitive Operations Available</h4>
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-2">Recommended Next Steps</h4>
                             <div className="w-12 h-1 bg-zinc-100 rounded-full" />
                         </div>
                         
@@ -197,7 +197,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                 <MessageSquare size={18} className="transition-transform group-hover:scale-110" /> 
-                                {isCreatingChat ? 'Initializing...' : 'Consult Coach'}
+                                {isCreatingChat ? 'Starting Session...' : 'Chat with Coach'}
                             </motion.button>
 
                             <Link
@@ -209,7 +209,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     whileTap={{ scale: 0.98 }}
                                     className="group w-full h-full bg-white border border-zinc-100 text-zinc-900 py-4 px-8 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-3 hover:bg-zinc-50"
                                 >
-                                    <Radio size={18} className="group-hover:animate-pulse" /> Interview Sim
+                                    <Radio size={18} className="group-hover:animate-pulse" /> Mock Interview Simulator
                                 </motion.button>
                             </Link>
                         </div>
@@ -218,7 +218,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                             onClick={onClose}
                             className="mt-2 text-[10px] font-bold text-zinc-300 uppercase tracking-[0.4em] hover:text-zinc-900 transition-colors"
                         >
-                            [ DISMISS NODE ]
+                            CLOSE ANALYSIS
                         </button>
                     </div>
                 </motion.div>

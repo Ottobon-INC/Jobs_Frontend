@@ -1,7 +1,9 @@
 import api, { supabase } from './client';
 
 export const getMyProfile = async () => {
-    const response = await api.get('/users/me');
+    const response = await api.get('/users/me', {
+        requestTimeout: 7000 // Ensure we fail fast for the initial profile sync
+    });
     return response.data;
 };
 
@@ -14,7 +16,7 @@ export const uploadAvatar = async (userId, file) => {
     // 1. Define file path: avatars/userId/timestamp_name
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}/${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${fileName}`;
+    // const filePath = `avatars/${fileName}`; // Not strictly needed
 
     // 2. Upload to Supabase Storage
     const { data, error } = await supabase.storage

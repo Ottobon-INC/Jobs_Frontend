@@ -1,27 +1,23 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
 
 const AppShell = () => {
     const { role } = useAuth();
-    const location = useLocation();
-    const hideFooter = location.pathname.startsWith('/chat');
 
     return (
-        <div className="min-h-screen flex flex-col bg-zinc-50/50">
+        <div className="h-screen overflow-hidden flex flex-col bg-zinc-50/50">
             <Navbar />
 
-            <div className="flex flex-1 pt-20"> {/* Increased offset for floating header effect */}
+            <div className="flex flex-1 pt-20 overflow-hidden"> {/* Offset for floating header */}
                 <Sidebar />
 
-                {/* Main Content Area - Refined Neu-Minimalist spacing */}
-                <main className={`flex-1 w-full ${role ? 'md:pl-64' : ''} min-w-0 transition-all duration-500 flex flex-col`}>
-                    <div className="flex-1 p-6 md:p-10 lg:p-12 overflow-x-hidden">
+                {/* Main Content Area - Locked Viewport Layout */}
+                <main className={`flex-1 w-full ${role ? 'md:pl-80' : ''} min-w-0 transition-all duration-500 h-full overflow-y-auto custom-scrollbar`}>
+                    <div className="p-6 md:p-10 lg:p-12">
                         <Outlet />
                     </div>
-                    {!hideFooter && <Footer />}
                 </main>
             </div>
         </div>
@@ -29,4 +25,3 @@ const AppShell = () => {
 };
 
 export default AppShell;
-

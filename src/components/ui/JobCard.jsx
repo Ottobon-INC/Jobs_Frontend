@@ -189,3 +189,5 @@ const JobCard = ({ job, isAuthenticated = true }) => {
 };
 
 export default JobCard;
+
+

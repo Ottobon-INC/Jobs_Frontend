@@ -24,7 +24,11 @@ import {
     Radio,
     FileText,
     Upload,
+    Download,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { toJpeg } from 'html-to-image';
 
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
@@ -64,7 +68,7 @@ const SiriVisualizer = ({ isActive }) => {
                 const y =
                     height / 2 +
                     Math.sin(x * wave.frequency + phaseRef.current * wave.speed + i) *
-                        wave.currentAmp;
+                    wave.currentAmp;
                 if (x === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
@@ -80,9 +84,8 @@ const SiriVisualizer = ({ isActive }) => {
 
     return (
         <div
-            className={`relative w-20 h-20 rounded-full overflow-hidden border border-zinc-100 bg-[#FAFAFA] transition-all duration-500 ${
-                isActive ? 'scale-110 shadow-xl shadow-zinc-900/5' : ''
-            }`}
+            className={`relative w-20 h-20 rounded-full overflow-hidden border border-zinc-100 bg-[#FAFAFA] transition-all duration-500 ${isActive ? 'scale-110 shadow-xl shadow-zinc-900/5' : ''
+                }`}
         >
             <canvas ref={canvasRef} width={80} height={80} style={{ filter: 'blur(3px)', transform: 'scale(1.2)' }} />
         </div>
@@ -98,16 +101,94 @@ const EvalReport = ({ evaluation }) => {
         areas_for_improvement = [],
         detailed_feedback = '',
         recommended_topics_to_review = [],
+        report_markdown = '',
     } = evaluation;
+
+    const reportRef = useRef(null);
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const handleDownload = async () => {
+        if (!reportRef.current) return;
+        setIsDownloading(true);
+        try {
+            // Give a tiny delay for any final layout pass if needed (though usually not necessary)
+            const dataUrl = await toJpeg(reportRef.current, {
+                quality: 0.95,
+                backgroundColor: '#ffffff',
+                cacheBust: true,
+                filter: (node) => {
+                    // Filter out the container that has the download button
+                    return node.id !== 'download-action-bar';
+                }
+            });
+            const link = document.createElement('a');
+            link.download = `Match_Analysis_${new Date().toISOString().split('T')[0]}.jpg`;
+            link.href = dataUrl;
+            link.click();
+        } catch (err) {
+            console.error('Analysis export failed:', err);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
+    const components = {
+        table: ({ children }) => (
+            <div className="overflow-x-auto my-8 border border-zinc-100 rounded-[24px] bg-white shadow-sm font-sans">
+                <table className="w-full border-collapse">
+                    {children}
+                </table>
+            </div>
+        ),
+        thead: ({ children }) => <thead className="bg-[#FAFAFA] border-b border-zinc-100">{children}</thead>,
+        th: ({ children }) => (
+            <th className="p-4 text-left font-bold text-zinc-400 border-r border-zinc-100 last:border-r-0 uppercase tracking-[0.2em] text-[10px]">
+                {children}
+            </th>
+        ),
+        td: ({ children }) => (
+            <td className="p-4 text-zinc-600 border-r border-zinc-100 last:border-r-0 border-b border-zinc-50 last:border-b-0 text-sm font-medium">
+                {children}
+            </td>
+        ),
+        h1: ({ children }) => <h1 className="text-2xl font-bold text-zinc-900 mb-6 mt-10 first:mt-0">{children}</h1>,
+        h2: ({ children }) => <h2 className="text-xl font-bold text-zinc-900 mb-4 mt-8">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-lg font-bold text-zinc-900 mb-3 mt-6">{children}</h3>,
+        p: ({ children }) => <p className="text-zinc-600 leading-relaxed mb-4 last:mb-0">{children}</p>,
+        ul: ({ children }) => <ul className="space-y-2 mb-6 ml-4">{children}</ul>,
+        li: ({ children }) => (
+            <li className="flex gap-3 text-zinc-600 text-sm font-medium">
+                <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full mt-2 shrink-0" />
+                {children}
+            </li>
+        ),
+    };
 
     return (
         <motion.div
+            ref={reportRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 space-y-12"
+            className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 space-y-12 relative overflow-hidden"
         >
+            {/* Download Action Bar */}
+            <div id="download-action-bar" className="absolute top-8 right-8 z-10">
+                <button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className="flex items-center gap-2.5 px-6 py-3 bg-zinc-900 text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 disabled:opacity-50 active:scale-95 group"
+                >
+                    {isDownloading ? (
+                        <Activity size={14} className="animate-pulse" />
+                    ) : (
+                        <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                    )}
+                    {isDownloading ? 'Capturing...' : 'Download Analysis Report'}
+                </button>
+            </div>
+
             <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 flex items-center gap-4">
-                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Final Performance Synthesis
+                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Performance Summary
             </h2>
 
             {/* Score */}
@@ -125,58 +206,67 @@ const EvalReport = ({ evaluation }) => {
                 </div>
             </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Strengths</h3>
-                    <ul className="space-y-4">
-                        {strengths.length > 0 ? (
-                            strengths.map((s, i) => (
-                                <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
-                                    <CheckCircle size={18} className="shrink-0 mt-0.5 text-zinc-900" /> {s}
-                                </li>
-                            ))
-                        ) : (
-                            <li className="text-sm font-medium text-zinc-300 italic">No metrics detected.</li>
-                        )}
-                    </ul>
+            {/* Markdown Report (Primary) */}
+            {report_markdown ? (
+                <div className="prose prose-zinc prose-sm md:prose-base max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+                        {report_markdown}
+                    </ReactMarkdown>
                 </div>
-                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Growth Intervals</h3>
-                    <ul className="space-y-4">
-                        {areas_for_improvement.length > 0 ? (
-                            areas_for_improvement.map((a, i) => (
-                                <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
-                                    <AlertTriangle size={18} className="shrink-0 mt-0.5 text-zinc-400" /> {a}
-                                </li>
-                            ))
-                        ) : (
-                            <li className="text-sm font-medium text-zinc-300 italic">Optimal alignment reached.</li>
-                        )}
-                    </ul>
-                </div>
-            </div>
-
-            {/* Feedback */}
-            {detailed_feedback && (
-                <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Core Evaluation</h3>
-                    <p className="text-base font-medium leading-relaxed text-zinc-600">{detailed_feedback}</p>
-                </div>
-            )}
-
-            {/* Topics */}
-            {recommended_topics_to_review.length > 0 && (
-                <div>
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Knowledge Synthesis Nodes</h3>
-                    <div className="flex flex-wrap gap-3">
-                        {recommended_topics_to_review.map((t, i) => (
-                            <span key={i} className="px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
-                                {t}
-                            </span>
-                        ))}
+            ) : (
+                <>
+                    {/* Fallback to legacy structure if no markdown */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Strengths</h3>
+                            <ul className="space-y-4">
+                                {strengths.length > 0 ? (
+                                    strengths.map((s, i) => (
+                                        <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
+                                            <CheckCircle size={18} className="shrink-0 mt-0.5 text-zinc-900" /> {s}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="text-sm font-medium text-zinc-300 italic">No metrics detected.</li>
+                                )}
+                            </ul>
+                        </div>
+                        <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Areas for Improvement</h3>
+                            <ul className="space-y-4">
+                                {areas_for_improvement.length > 0 ? (
+                                    areas_for_improvement.map((a, i) => (
+                                        <li key={i} className="flex gap-3 text-sm font-medium text-zinc-900">
+                                            <AlertTriangle size={18} className="shrink-0 mt-0.5 text-zinc-400" /> {a}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="text-sm font-medium text-zinc-300 italic">Optimal alignment reached.</li>
+                                )}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+
+                    {detailed_feedback && (
+                        <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Core Evaluation</h3>
+                            <p className="text-base font-medium leading-relaxed text-zinc-600">{detailed_feedback}</p>
+                        </div>
+                    )}
+
+                    {recommended_topics_to_review.length > 0 && (
+                        <div>
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Recommended Topics to Review</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {recommended_topics_to_review.map((t, i) => (
+                                    <span key={i} className="px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
+                                        {t}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
         </motion.div>
     );
@@ -222,7 +312,7 @@ const MockInterviewPage = () => {
 
     const { session, profile } = useAuth();
     const token = session?.access_token;
-    
+
     // Resume is available if either profile has it OR session has it
     const hasResume = !!profile?.resume_text || !!sessionResumeName;
 
@@ -232,6 +322,7 @@ const MockInterviewPage = () => {
     const transcriptRef = useRef(null);
     const responseRef = useRef(null);
     const forcedMuteRef = useRef(false);
+    const stopSessionRef = useRef(null);
 
     // Auto-scroll transcript/response panels
     useEffect(() => {
@@ -274,6 +365,8 @@ const MockInterviewPage = () => {
                         setResponses((prev) => [...prev, parsed.text]);
                     } else if (parsed.type === 'response') {
                         setResponses((prev) => [...prev, parsed.text]);
+                    } else if (parsed.type === 'session_end_trigger') {
+                        if (stopSessionRef.current) stopSessionRef.current();
                     }
                 } catch {
                     setResponses((prev) => [...prev, data]);
@@ -400,6 +493,11 @@ const MockInterviewPage = () => {
         fetchEvaluation();
     };
 
+    // Keep stopSessionRef in sync
+    useEffect(() => {
+        stopSessionRef.current = handleStop;
+    }, [handleStop]);
+
     // Proctor violation detection
     useEffect(() => {
         if (proctorMode && isActive) {
@@ -453,7 +551,7 @@ const MockInterviewPage = () => {
                             to={id ? `/jobs/${id}` : '/jobs'}
                             className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[11px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
                         >
-                            <ArrowLeft size={16} /> Return to Signal
+                            <ArrowLeft size={16} /> Back to Job Details
                         </Link>
                     </motion.div>
 
@@ -470,7 +568,7 @@ const MockInterviewPage = () => {
                                     <Radio size={20} className="text-white" />
                                 </div>
                                 <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">
-                                    Interview Sim
+                                    Mock Interview
                                 </h1>
                             </div>
                             {(companyName || jobTitle) && (
@@ -491,13 +589,12 @@ const MockInterviewPage = () => {
                                     <button
                                         key={type}
                                         onClick={() => setInterviewType(type)}
-                                        className={`py-5 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${
-                                            interviewType === type
+                                        className={`py-5 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${interviewType === type
                                                 ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
                                                 : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
-                                        }`}
+                                            }`}
                                     >
-                                        {type === 'technical' ? 'Technical Synthesis' : 'Behavioral Logic'}
+                                        {type === 'technical' ? 'Technical Interview' : 'Behavioral Interview'}
                                     </button>
                                 ))}
                             </div>
@@ -506,18 +603,17 @@ const MockInterviewPage = () => {
                         {/* Duration */}
                         <div className="mb-10">
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
-                                02 / TEMPORAL DEPTH
+                                02 / INTERVIEW DURATION
                             </p>
                             <div className="grid grid-cols-4 gap-4">
                                 {[5, 10, 15, 20].map((d) => (
                                     <button
                                         key={d}
                                         onClick={() => setDuration(d)}
-                                        className={`py-4 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${
-                                            duration === d
+                                        className={`py-4 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${duration === d
                                                 ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10'
                                                 : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
-                                        }`}
+                                            }`}
                                     >
                                         {d}m
                                     </button>
@@ -528,21 +624,19 @@ const MockInterviewPage = () => {
                         {/* Proctor Toggle */}
                         <div className="mb-12 p-6 bg-zinc-50/50 rounded-[32px] border border-zinc-100 flex items-center justify-between">
                             <div>
-                                <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">Proctor Protocol</p>
+                                <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">Enable Proctoring</p>
                                 <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
-                                    Enforce cognitive focus (Tab Lock)
+                                    Monitor focus during session
                                 </p>
                             </div>
                             <button
                                 onClick={() => setProctorMode((prev) => !prev)}
-                                className={`w-14 h-8 rounded-full border transition-all duration-500 flex items-center ${
-                                    proctorMode ? 'bg-zinc-900 border-zinc-900' : 'bg-zinc-200 border-zinc-200'
-                                }`}
+                                className={`w-14 h-8 rounded-full border transition-all duration-500 flex items-center ${proctorMode ? 'bg-zinc-900 border-zinc-900' : 'bg-zinc-200 border-zinc-200'
+                                    }`}
                             >
                                 <div
-                                    className={`w-5 h-5 bg-white rounded-full mx-1 transition-transform duration-500 ${
-                                        proctorMode ? 'translate-x-[26px]' : ''
-                                    }`}
+                                    className={`w-5 h-5 bg-white rounded-full mx-1 transition-transform duration-500 ${proctorMode ? 'translate-x-[26px]' : ''
+                                        }`}
                                 />
                             </button>
                         </div>
@@ -550,40 +644,38 @@ const MockInterviewPage = () => {
                         {/* Resume Status */}
                         <div className="mb-12">
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6 text-zinc-300">
-                                03 / KNOWLEDGE SOURCE
+                                03 / RESUME CONTEXT
                             </p>
-                            <div className={`p-8 rounded-[32px] border transition-all duration-500 ${
-                                hasResume ? 'border-zinc-100 bg-[#FAFAFA]' : 'border-red-100 bg-red-50/50'
-                            }`}>
+                            <div className={`p-8 rounded-[32px] border transition-all duration-500 ${hasResume ? 'border-zinc-100 bg-[#FAFAFA]' : 'border-red-100 bg-red-50/50'
+                                }`}>
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                                            hasResume ? 'bg-zinc-900' : 'bg-red-500'
-                                        }`}>
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${hasResume ? 'bg-zinc-900' : 'bg-red-500'
+                                            }`}>
                                             <FileText size={22} className="text-white" />
                                         </div>
                                         <div>
                                             <p className="font-bold text-xs uppercase tracking-widest text-zinc-900">
-                                                {sessionResumeName 
-                                                    ? 'Session Override' 
-                                                    : profile?.resume_text 
-                                                        ? 'Profile Synthesis' 
-                                                        : 'Missing Context'}
+                                                {sessionResumeName
+                                                    ? 'Custom Session Resume'
+                                                    : profile?.resume_text
+                                                        ? 'Using Profile Data'
+                                                        : 'Resume Missing'}
                                             </p>
                                             <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1">
-                                                {sessionResumeName 
+                                                {sessionResumeName
                                                     ? `${sessionResumeName}`
-                                                    : profile?.resume_text 
-                                                        ? 'Automated mapping enabled' 
+                                                    : profile?.resume_text
+                                                        ? 'Automated mapping enabled'
                                                         : 'Upload required for logic sync'}
                                             </p>
                                         </div>
                                     </div>
 
                                     <label className="cursor-pointer group">
-                                        <input 
-                                            type="file" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            className="hidden"
                                             onChange={handleResumeUpload}
                                             accept=".pdf,.docx"
                                             disabled={uploadingResume}
@@ -613,13 +705,13 @@ const MockInterviewPage = () => {
                         >
                             {isStarting ? (
                                 <>
-                                    <Activity size={20} className="animate-pulse" /> INITIALIZING INTERFACE...
+                                    <Activity size={20} className="animate-pulse" /> STARTING SESSION...
                                 </>
                             ) : (
                                 <>
-                                    {!hasResume ? 'SYNC REQUIRED' : (
+                                    {!hasResume ? 'UPLOAD RESUME TO START' : (
                                         <>
-                                            LAUNCH INTERVIEW SIM
+                                            START PRACTICE INTERVIEW
                                             <ChevronRight size={20} />
                                         </>
                                     )}
@@ -643,7 +735,7 @@ const MockInterviewPage = () => {
                             <SiriVisualizer isActive={isSpeaking} />
                             <div>
                                 <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">
-                                    Sim Session
+                                    Practice Interview
                                 </h1>
                                 {(companyName || jobTitle) && (
                                     <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-2 truncate max-w-md">
@@ -662,18 +754,17 @@ const MockInterviewPage = () => {
 
                             {/* Status */}
                             <span className={`px-6 py-3 border rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ${statusPill}`}>
-                                {isSpeaking ? 'SYNTHESIZING' : status.toUpperCase()}
+                                {isSpeaking ? 'PROCESSING' : status.toUpperCase()}
                             </span>
 
                             {/* Mute */}
                             <button
                                 onClick={() => setIsMuted((prev) => !prev)}
                                 disabled={!isActive}
-                                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${
-                                    isMuted
+                                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${isMuted
                                         ? 'bg-zinc-900 text-white border-zinc-900'
                                         : 'bg-white text-zinc-900 border-zinc-100 hover:border-zinc-900'
-                                }`}
+                                    }`}
                             >
                                 {isMuted ? <MicOff size={16} /> : <Mic size={16} />}
                                 {isMuted ? 'Unmute' : 'Mute'}
@@ -691,7 +782,7 @@ const MockInterviewPage = () => {
                             {/* Back to entry */}
                             <button
                                 onClick={() => {
-                                    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                                    if (document.fullscreenElement) document.exitFullscreen().catch(() => { });
                                     setStep('entry');
                                     handleStop();
                                 }}
@@ -780,7 +871,7 @@ const MockInterviewPage = () => {
                         <div className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 flex items-center justify-center gap-6">
                             <BarChart2 size={28} className="text-zinc-300 animate-pulse" />
                             <p className="font-bold uppercase tracking-[0.4em] text-[11px] text-zinc-400 animate-pulse">
-                                Synthesizing final performance metrics...
+                                Synthesizing job match analysis...
                             </p>
                         </div>
                     )}

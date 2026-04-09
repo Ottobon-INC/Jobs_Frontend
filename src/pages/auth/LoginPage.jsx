@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn } from '../../api/authApi';
+import { getMyProfile } from '../../api/usersApi';
+import { ROLES } from '../../utils/constants';
 import { Briefcase, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -18,7 +20,15 @@ const LoginPage = () => {
         setError(null);
         try {
             await signIn(email, password);
-            navigate('/jobs');
+            const profile = await getMyProfile();
+            
+            if (profile.role === ROLES.ADMIN) {
+                navigate('/admin/tower');
+            } else if (profile.role === ROLES.PROVIDER) {
+                navigate('/provider/listings');
+            } else {
+                navigate('/jobs');
+            }
         } catch (err) {
             setError(err.response?.data?.detail || 'Authentication failed. Please check your credentials.');
         } finally {
@@ -105,6 +115,12 @@ const LoginPage = () => {
                     </p>
                     <Link to="/register" className="text-base font-bold text-zinc-900 border-b-2 border-zinc-900 hover:pb-1 transition-all tracking-widest uppercase">
                         Sign Up
+                    </Link>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-zinc-50 flex justify-center">
+                    <Link to="/admin/login" className="text-[9px] font-bold text-zinc-200 hover:text-zinc-400 transition-colors uppercase tracking-[0.2em]">
+                        Administrative Portal
                     </Link>
                 </div>
             </motion.div>

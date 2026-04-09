@@ -182,14 +182,17 @@ const ProfilePage = () => {
             // 1. Upload to Supabase Storage
             const publicUrl = await uploadAvatar(user.id, file);
 
-            // 2. Update Profile in DB (Backend)
+            // 2. Update Profile in DB (if backend eventually supports it)
             await updateProfile({ avatar_url: publicUrl });
 
-            // 3. Persistent Fallback: Update Supabase Auth user_metadata
-            // This ensures the avatar stays visible even if the backend drops the field.
-            await supabase.auth.updateUser({
+            // 3. Update Supabase Auth user_metadata since backend drops avatar_url
+            const { error: authError } = await supabase.auth.updateUser({
                 data: { avatar_url: publicUrl }
             });
+            
+            if (authError) {
+                console.warn('Failed to update Supabase Auth metadata', authError);
+            }
 
             setMessage("Identity visualized. Refreshing profile...");
             await fetchProfile();

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
 import { useAuth } from '../../hooks/useAuth';
+import { ROLES } from '../../utils/constants';
 import Loader from '../../components/ui/Loader';
 import MatchGauge from '../../components/ui/MatchGauge';
 import MatchIQModal from '../../components/ui/MatchIQModal';
@@ -24,7 +25,7 @@ const JobDetailPage = () => {
     const { id } = useParams();
     const locationState = useLocation();
     const passedLocation = locationState.state?.displayLocation;
-    const { user } = useAuth();
+    const { user, role } = useAuth();
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -42,7 +43,7 @@ const JobDetailPage = () => {
             if (isRefresh) setRefreshing(true);
             else setLoading(true);
             const data = await getJobDetails(id);
-            
+
             // Replicate JobCard Location Extractor OR use passed state from the Card Link directly
             let loc = passedLocation || data.location || 'REMOTE';
             let t = data.title || '';
@@ -50,7 +51,7 @@ const JobDetailPage = () => {
             const cities = ['BANGALORE', 'BENGALURU', 'HYDERABAD', 'PUNE', 'MUMBAI', 'DELHI', 'INDIA', 'NEW YORK', 'KARNATAKA'];
             for (const city of cities) {
                 const idx = t.toUpperCase().indexOf(city);
-                if (idx > 10) { 
+                if (idx > 10) {
                     let extracted = t.substring(idx).trim();
                     extracted = extracted.replace(/India.*/i, 'India');
                     extracted = extracted.replace(/Karnataka.*/i, 'Karnataka');
@@ -69,13 +70,13 @@ const JobDetailPage = () => {
                 setIsSummarizing(true);
                 setTimeout(() => {
                     const exp = data.experience_level === 0 ? "Fresher" : (data.experience_level || "Not Specified");
-                    
+
                     // Dynamic Heuristic Extraction for AI Mock
                     const rawJD = data.description_raw || '';
                     const cleanText = rawJD.replace(/<[^>]+>/g, '').trim();
                     const sentences = cleanText.split(/(?<=[.!?])\s+/);
                     const dynamicOverview = sentences.slice(0, 3).join(' ') || "We are looking for exceptional talent to join our team and drive key initiatives.";
-                    
+
                     let dynamicRequirements = '';
                     const bulletsReg = /(?:^|\n)[-•*]\s*([^.\n]+)/g;
                     let match;
@@ -152,18 +153,18 @@ const JobDetailPage = () => {
                     interests_score: response.interests_score || Math.max(score - 10, 0),
                     aspirations_score: response.aspirations_score || Math.max(score, 0),
                 };
-                matchData = { 
-                    score, 
-                    ...breakdown, 
+                matchData = {
+                    score,
+                    ...breakdown,
                     missing_skills: response.missing_skills || [],
                     gap_analysis: response.gap_analysis || "Analysis Stream Complete."
                 };
             } catch (err) {
-                 const score = 75;
-                 const breakdown = { skills_score: 80, interests_score: 70, aspirations_score: 65 };
-                 matchData = { 
-                    score, 
-                    ...breakdown, 
+                const score = 75;
+                const breakdown = { skills_score: 80, interests_score: 70, aspirations_score: 65 };
+                matchData = {
+                    score,
+                    ...breakdown,
                     missing_skills: [],
                     gap_analysis: "Analysis Stream complete (fallback)."
                 };
@@ -179,11 +180,11 @@ const JobDetailPage = () => {
                     const recommended = allMatches.filter(j => j.id !== id).slice(0, 3);
                     setRecommendedJobs(recommended);
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("Failed fetching recommended", err);
             }
 
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         } finally {
             setIsMatching(false);
@@ -202,7 +203,7 @@ const JobDetailPage = () => {
         <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto bg-[#FBFBFB] overflow-x-hidden">
             <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-16">
                 <Link to="/jobs" className="inline-flex items-center gap-2 text-zinc-400 font-bold uppercase text-xs tracking-widest hover:text-zinc-900 transition-all">
-                    <ArrowLeft size={16} /> Return to Signal
+                    <ArrowLeft size={16} /> Back to Job Board
                 </Link>
             </motion.div>
 
@@ -232,39 +233,40 @@ const JobDetailPage = () => {
                             </div>
 
                             <div className="flex flex-wrap justify-start gap-4 shrink-0 w-full">
-                                {user ? (
+                                {role === ROLES.SEEKER && (
                                     <>
-                                        <button 
-                                            onClick={handleRunMatchIQ}
-                                            disabled={isMatching}
-                                            className={`w-full sm:w-auto px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl ${
-                                                matchDetails && !isMatching 
-                                                    ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white' 
-                                                    : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
-                                            } disabled:opacity-50 active:scale-95`}
-                                        >
-                                            {isMatching ? (
-                                                <><RefreshCw size={18} className="animate-spin" /> Processing...</>
-                                            ) : matchDetails ? (
-                                                <><RefreshCw size={18} /> Re-run Match IQ</>
-                                            ) : (
-                                                <><Sparkles size={18} /> Run Match IQ</>
-                                            )}
-                                        </button>
+                                        {user ? (
+                                            <button
+                                                onClick={handleRunMatchIQ}
+                                                disabled={isMatching}
+                                                className={`w-full sm:w-auto px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl ${matchDetails && !isMatching
+                                                        ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
+                                                        : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
+                                                    } disabled:opacity-50 active:scale-95`}
+                                            >
+                                                {isMatching ? (
+                                                    <><RefreshCw size={18} className="animate-spin" /> Analyzing...</>
+                                                ) : matchDetails ? (
+                                                    <><RefreshCw size={18} /> Re-run Match Analysis</>
+                                                ) : (
+                                                    <><Sparkles size={18} /> Analyze Job Fit</>
+                                                )}
+                                            </button>
+                                        ) : (
+                                            <Link to="/login" className="w-full sm:w-auto">
+                                                <button className="w-full bg-zinc-900 text-white px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95">
+                                                    <Sparkles size={18} /> Analyze Job Fit <Lock size={14} className="opacity-40" />
+                                                </button>
+                                            </Link>
+                                        )}
+                                        {job.external_apply_url && (
+                                            <a href={job.external_apply_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                                                <button className="w-full bg-white border border-zinc-100 text-zinc-900 px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-95">
+                                                    <ExternalLink size={20} /> Apply Now
+                                                </button>
+                                            </a>
+                                        )}
                                     </>
-                                ) : (
-                                    <Link to="/login" className="w-full sm:w-auto">
-                                        <button className="w-full bg-zinc-900 text-white px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95">
-                                            <Sparkles size={18} /> Run Match IQ <Lock size={14} className="opacity-40" />
-                                        </button>
-                                    </Link>
-                                )}
-                                {job.external_apply_url && (
-                                    <a href={job.external_apply_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                                        <button className="w-full bg-white border border-zinc-100 text-zinc-900 px-12 py-5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-95">
-                                            <ExternalLink size={20} /> Deploy Apply
-                                        </button>
-                                    </a>
                                 )}
                             </div>
                         </div>
@@ -273,12 +275,12 @@ const JobDetailPage = () => {
 
                 {/* Left Column */}
                 <div className="lg:col-span-8 flex flex-col gap-12 min-w-0">
-                    
+
                     {/* MatchedIQModal Integration */}
-                    <MatchIQModal 
-                        isOpen={isMatchModalOpen} 
-                        onClose={() => setIsMatchModalOpen(false)} 
-                        matchData={matchDetails} 
+                    <MatchIQModal
+                        isOpen={isMatchModalOpen}
+                        onClose={() => setIsMatchModalOpen(false)}
+                        matchData={matchDetails}
                         job={job}
                         jobId={id}
                     />
@@ -286,7 +288,7 @@ const JobDetailPage = () => {
                     <BentoCard className="overflow-hidden min-w-0 flex flex-col items-start relative border border-zinc-100">
                         <h2 className="text-xs font-bold text-zinc-400 mb-12 pb-4 border-b border-zinc-100 flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                            Role Specifications
+                            Job Description
                         </h2>
                         {/* Gen Z Summary Display */}
                         {isSummarizing ? (
@@ -298,18 +300,18 @@ const JobDetailPage = () => {
                                 <div className="h-4 bg-zinc-200 rounded-full w-4/6 relative z-10"></div>
                             </div>
                         ) : genZSummary ? (
-                            <motion.div 
-                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} 
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                                 className="w-full mb-12 p-10 rounded-[32px] border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm"
                             >
                                 <div className="absolute -top-6 -right-6 p-6 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
                                     <Sparkles size={160} className="text-zinc-900" />
                                 </div>
                                 <div className="flex items-center gap-2 text-zinc-400 mb-8 border-b border-zinc-100 pb-4 inline-flex w-full">
-                                     <Sparkles size={14} className="text-zinc-900" />
-                                     <span className="text-[10px] font-bold uppercase tracking-[0.3em]">AI Executive Synthesis</span>
+                                    <Sparkles size={14} className="text-zinc-900" />
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Smart Summary Analysis</span>
                                 </div>
-                                <div 
+                                <div
                                     className="relative z-10 text-zinc-600 prose prose-zinc max-w-none"
                                     dangerouslySetInnerHTML={{ __html: genZSummary }}
                                 />
@@ -340,7 +342,7 @@ const JobDetailPage = () => {
                     <BentoCard delay={0.2} className="border border-zinc-100">
                         <h2 className="text-xs font-bold text-zinc-400 mb-12 pb-4 border-b border-zinc-100 flex items-center gap-3 uppercase tracking-[0.3em]">
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                            Interview Vectors
+                            Interview Preparation
                         </h2>
                         <div className={`relative ${!user ? 'min-h-[250px]' : ''}`}>
                             <div className={!user ? "blur-2xl select-none pointer-events-none opacity-40 transition-all duration-700" : "transition-all duration-500"}>
@@ -371,7 +373,7 @@ const JobDetailPage = () => {
                                         <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm mb-10">
                                             <Sparkles className="text-zinc-200" size={32} />
                                         </div>
-                                        <p className="mb-10 font-bold uppercase text-xs tracking-widest text-zinc-300">Vectors Pending Synthesis</p>
+                                        <p className="mb-10 font-bold uppercase text-xs tracking-widest text-zinc-300">Preparation data pending</p>
                                         <button
                                             onClick={() => fetchJob(true)}
                                             disabled={refreshing}
@@ -406,7 +408,7 @@ const JobDetailPage = () => {
                     {recommendedJobs.length > 0 && (
                         <div className="w-full">
                             <h2 className="text-sm font-black text-black mb-6 flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">
-                                <Sparkles size={16} /> Recommended Roles Alternative
+                                <Sparkles size={16} /> Recommended Opportunities
                             </h2>
                             <MatchedJobsSection matchedJobs={recommendedJobs} isAuthenticated={!!user} />
                         </div>
@@ -438,7 +440,7 @@ const JobDetailPage = () => {
                     <BentoCard delay={0.3} className="flex flex-col items-start border border-zinc-100">
                         <h2 className="text-xs font-bold text-zinc-400 mb-10 pb-4 border-b border-zinc-100 flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                            Tailoring Heuristics
+                            Resume Optimization
                         </h2>
                         <div className={`relative w-full ${!user ? 'min-h-[250px]' : ''}`}>
                             <div className={!user ? "blur-2xl select-none pointer-events-none opacity-40 transition-all duration-700" : "transition-all duration-500"}>

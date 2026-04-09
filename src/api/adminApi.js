@@ -26,3 +26,8 @@ export const sendAdminMessage = async (sessionId, content) => {
     const response = await api.post(`/admin/sessions/${sessionId}/message`, { content });
     return response.data;
 };
+
+export const releaseSession = async (sessionId) => {
+    const response = await api.post(`/admin/sessions/${sessionId}/release`);
+    return response.data;
+};

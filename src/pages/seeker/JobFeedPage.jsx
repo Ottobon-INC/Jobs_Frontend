@@ -8,9 +8,10 @@ import { matchAllJobs } from '../../api/jobsApi';
 import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter, ArrowDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
+import { ROLES } from '../../utils/constants';
 
 const JobFeedPage = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, role } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -238,13 +239,13 @@ const JobFeedPage = () => {
                     >
                         <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 border border-zinc-100 shadow-sm">
                             <Sparkles size={12} className="text-zinc-400" />
-                            Global Intelligence
+                            Market Feed
                         </div>
                         <h1 className="text-7xl md:text-8xl font-sans font-bold mb-8 tracking-tight text-zinc-900">
-                            The Market
+                            Opportunities
                         </h1>
                         <p className="text-zinc-500 max-w-2xl mx-auto text-xl mb-12 leading-relaxed font-medium">
-                            Real-time streaming intelligence from the Ottobon network. Verified opportunities, zero noise.
+                            Access the latest job listings and career opportunities across our global network.
                         </p>
                     </motion.div>
 
@@ -413,10 +414,12 @@ const JobFeedPage = () => {
                             )}
                         </div>
 
-                        {/* Neural Match CTA */}
-                        <div className="mt-12 flex justify-center">
-                            <JobMatchButton onMatch={handleMatchJobs} isLoading={isMatching} />
-                        </div>
+                        {/* Neural Match CTA - Only for Seekers */}
+                        {role === ROLES.SEEKER && (
+                            <div className="mt-12 flex justify-center">
+                                <JobMatchButton onMatch={handleMatchJobs} isLoading={isMatching} />
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             </header>
@@ -439,7 +442,7 @@ const JobFeedPage = () => {
                         </p>
                     </div>
                     <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] bg-zinc-100/50 px-3 py-1.5 rounded-lg border border-zinc-200/30">
-                        Signal: Active
+                        System: Online
                     </span>
                 </div>
 

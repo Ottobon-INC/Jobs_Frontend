@@ -22,7 +22,7 @@ const JobMatchButton = ({ onMatch, isLoading }) => {
             {isLoading ? (
                 <>
                     <RefreshCw size={18} className="animate-spin text-yellow-400" />
-                    <span className="relative z-10">Syncing Matrix...</span>
+                    <span className="relative z-10">Analyzing Match...</span>
                 </>
             ) : (
                 <>
@@ -41,8 +41,8 @@ const JobMatchButton = ({ onMatch, isLoading }) => {
                         <Sparkles size={20} className="text-yellow-400 fill-yellow-400/20" />
                     </motion.div>
                     <span className="relative z-10 flex flex-col items-start leading-none">
-                        <span className="text-[14px]">Find My Match</span>
-                        <span className="text-[8px] opacity-40 mt-1 tracking-[0.4em] font-medium">Job Match Engine</span>
+                        <span className="text-[14px]">Analyze My Fit</span>
+                        <span className="text-[8px] opacity-40 mt-1 tracking-[0.4em] font-medium">Smart Matching Analysis</span>
                     </span>
                 </>
             )}

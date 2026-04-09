@@ -23,16 +23,20 @@ supabase.auth.onAuthStateChange((_event, session) => {
 // Axios instance for backend API
 const api = axios.create({
     baseURL: API_BASE_URL,
-    timeout: 30000,  // 30 second timeout to prevent indefinite hanging
+    timeout: 30000,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Request interceptor — uses cached token (sync, no await!)
+// Request interceptor — uses cached token (sync) and merges config overrides
 api.interceptors.request.use((config) => {
     if (_cachedToken) {
         config.headers.Authorization = `Bearer ${_cachedToken}`;
+    }
+    // Allow overriding timeout via config.requestTimeout
+    if (config.requestTimeout) {
+        config.timeout = config.requestTimeout;
     }
     return config;
 }, (error) => {

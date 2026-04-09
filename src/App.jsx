@@ -8,6 +8,7 @@ import Loader from './components/ui/Loader';
 
 // Auth Pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const AdminLoginPage = lazy(() => import('./pages/auth/AdminLoginPage'));
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
 
 // Seeker Pages
@@ -53,6 +54,7 @@ function App() {
 
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Protected Routes wrapped in AppShell */}

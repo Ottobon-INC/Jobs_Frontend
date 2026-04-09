@@ -37,73 +37,96 @@ const CreateJobPage = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto py-16 px-6 bg-white">
-            <header className="mb-16 border-b-4 border-black pb-8">
-                <h1 className="text-4xl font-display font-black text-black uppercase tracking-tighter">Publish Requirement</h1>
-                <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.4em] mt-2">Inject New Job Object into Network</p>
+        <div className="max-w-4xl mx-auto py-12 px-8">
+            <header className="mb-12 flex flex-col items-center text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 text-zinc-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-6 border border-zinc-200"
+                >
+                    <Sparkles size={12} className="text-zinc-400" />
+                    Signal Injection
+                </motion.div>
+                <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-zinc-900 mb-4">
+                    Publish Requirement
+                </h1>
+                <p className="text-xs font-medium text-zinc-400 uppercase tracking-[0.3em]">
+                    Transmit new job parameters to the network
+                </p>
             </header>
 
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="bg-white border-4 border-black rounded-[40px] p-12 shadow-[20px_20px_0px_#000]"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white/80 backdrop-blur-xl rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
             >
-                <form onSubmit={handleSubmit} className="space-y-10">
+                <form onSubmit={handleSubmit} className="space-y-12">
                     {error && (
-                        <div className="bg-black text-white p-5 rounded-2xl border-2 border-black text-[10px] font-black uppercase tracking-widest text-center italic">
-                            EXCEPTION: {error}
+                        <div className="bg-rose-50 text-rose-600 p-6 rounded-[24px] border border-rose-100 text-[10px] font-bold uppercase tracking-widest text-center">
+                            Exception Detected: {error}
                         </div>
                     )}
 
-                    <div>
-                        <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-4 ml-1">Requirement Title</label>
-                        <input
-                            type="text"
-                            required
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full bg-white border-2 border-black rounded-2xl p-5 text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all uppercase tracking-widest"
-                            placeholder="e.g. SYSTEMS_ARCHITECT"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4 ml-4">
+                                Requirement Title
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full bg-zinc-50/50 border border-zinc-100 rounded-[28px] px-8 py-6 text-zinc-900 font-bold text-sm placeholder:text-zinc-200 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all"
+                                placeholder="Systems Architect / Product Lead"
+                            />
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4 ml-4">
+                                Strategic Description
+                            </label>
+                            <textarea
+                                required
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={10}
+                                className="w-full bg-zinc-50/50 border border-zinc-100 rounded-[32px] px-8 py-8 text-zinc-700 font-medium text-sm placeholder:text-zinc-200 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all leading-relaxed"
+                                placeholder="Define the primary mission and technical scope..."
+                            />
+                            <div className="flex justify-between items-center mt-4 px-4">
+                                <p className="text-[9px] font-bold text-zinc-300 flex items-center gap-2 uppercase tracking-widest">
+                                    <Info size={14} className="text-zinc-200" /> Min_Char: 20
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4 ml-4">
+                                Required Scalars (Skills)
+                            </label>
+                            <input
+                                type="text"
+                                value={skillsInput}
+                                onChange={(e) => setSkillsInput(e.target.value)}
+                                className="w-full bg-zinc-50/50 border border-zinc-100 rounded-[28px] px-8 py-6 text-zinc-900 font-bold text-sm placeholder:text-zinc-200 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all"
+                                placeholder="Node.js, React, Strategy (Comma Separated)"
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-4 ml-1">Intelligence Parameters / Description</label>
-                        <textarea
-                            required
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows={8}
-                            className="w-full bg-white border-2 border-black rounded-2xl p-6 text-black font-medium text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all uppercase tracking-wider leading-relaxed"
-                            placeholder="Define the scope, expectations, and logic requirements..."
-                        />
-                        <p className="text-[9px] font-black text-black/30 mt-3 flex items-center gap-2 uppercase tracking-widest">
-                            <Info size={14} /> Min_Char_Threshold: 20
-                        </p>
-                    </div>
-
-                    <div>
-                        <label className="block text-[10px] font-black text-black uppercase tracking-[0.2em] mb-4 ml-1">Required Scalars / Skills</label>
-                        <input
-                            type="text"
-                            value={skillsInput}
-                            onChange={(e) => setSkillsInput(e.target.value)}
-                            className="w-full bg-white border-2 border-black rounded-2xl p-5 text-black font-bold text-sm placeholder:text-gray-300 focus:outline-none focus:ring-8 focus:ring-black/5 transition-all uppercase tracking-widest"
-                            placeholder="NODE, RUST, TYPESCRIPT (COMMA_SEP)"
-                        />
-                    </div>
-
-                    <div className="pt-6">
-                        <button
+                    <div className="pt-8 flex justify-center">
+                        <motion.button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-black text-white py-6 rounded-2xl font-display font-black text-[11px] uppercase tracking-[0.3em] hover:bg-gray-800 transition-all flex items-center justify-center gap-4 shadow-2xl disabled:opacity-30 active:scale-[0.98]"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full md:w-auto px-16 py-6 bg-zinc-900 text-white rounded-[24px] font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-black transition-all flex items-center justify-center gap-4 shadow-xl shadow-zinc-900/20 disabled:opacity-20"
                         >
                             {loading ? (
                                 <>
-                                    <Sparkles size={20} className="animate-pulse" />
-                                    TRANSMITTING_SYSTEM_OBJECT...
+                                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                    Transmitting...
                                 </>
                             ) : (
                                 <>
@@ -111,7 +134,7 @@ const CreateJobPage = () => {
                                     Publish Requirement
                                 </>
                             )}
-                        </button>
+                        </motion.button>
                     </div>
                 </form>
             </motion.div>
