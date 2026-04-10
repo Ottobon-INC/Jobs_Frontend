@@ -15,10 +15,10 @@ export const getSessionDetails = async (sessionId) => {
 };
 
 export const triggerIngestion = async (scraperName = null) => {
-    const url = scraperName
-        ? `/admin/ingest/trigger?scraper_name=${scraperName}`
-        : `/admin/ingest/trigger`;
-    const response = await api.post(url);
+    // SECURITY: Use Axios params to prevent URL injection
+    const response = await api.post('/admin/ingest/trigger', null, {
+        params: scraperName ? { scraper_name: scraperName } : {},
+    });
     return response.data;
 };
 

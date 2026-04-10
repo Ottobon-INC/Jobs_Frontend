@@ -4,6 +4,9 @@
  * Base URL is read from VITE_MOCK_API_URL env var — no hardcoding.
  */
 import axios from 'axios';
+// SECURITY: Use the same cached-token strategy as the main API client
+// to ensure auth is consistently applied (OWASP A07)
+import { supabase } from './client';
 
 const MOCK_BASE = import.meta.env.VITE_MOCK_API_URL || 'http://localhost:8001/mock';
 
@@ -12,17 +15,28 @@ const mockClient = axios.create({
     timeout: 30000,
 });
 
-// Attach auth token if available (mirrors the main api client pattern)
+// SECURITY: Use cached Supabase session token instead of localStorage
+let _mockCachedToken = null;
+supabase.auth.getSession().then(({ data }) => {
+    _mockCachedToken = data?.session?.access_token || null;
+});
+supabase.auth.onAuthStateChange((_event, session) => {
+    _mockCachedToken = session?.access_token || null;
+});
+
 mockClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('access_token');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (_mockCachedToken) {
+        config.headers.Authorization = `Bearer ${_mockCachedToken}`;
+    }
     return config;
 });
 
 export const uploadMockResume = async (file, sessionId = 'default_session') => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await mockClient.post(`/upload_resume?session_id=${sessionId}`, formData, {
+    // SECURITY: Use Axios params to prevent URL injection
+    const res = await mockClient.post('/upload_resume', formData, {
+        params: { session_id: sessionId },
         headers: { 'Content-Type': 'multipart/form-data' },
     });
     return res.data;
@@ -43,11 +57,17 @@ export const setMockMode = async (mode, sessionId = 'default_session') => {
 };
 
 export const analyzeMockResume = async (sessionId = 'default_session') => {
-    const res = await mockClient.post(`/analyze_resume?session_id=${sessionId}`);
+    // SECURITY: Use Axios params to prevent URL injection
+    const res = await mockClient.post('/analyze_resume', null, {
+        params: { session_id: sessionId },
+    });
     return res.data;
 };
 
 export const getMockEvaluation = async (sessionId = 'default_session') => {
-    const res = await mockClient.get(`/evaluate?session_id=${sessionId}`);
+    // SECURITY: Use Axios params to prevent URL injection
+    const res = await mockClient.get('/evaluate', {
+        params: { session_id: sessionId },
+    });
     return res.data;
 };

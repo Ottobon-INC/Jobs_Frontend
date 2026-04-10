@@ -12,9 +12,9 @@ const ProtectedRoute = ({ allowedRoles = [], children }) => {
         return <Navigate to="/login" replace />;
     }
 
-    // If roles are specified and we have a role, check access
-    if (allowedRoles.length > 0 && role && !allowedRoles.includes(role)) {
-        // Role not authorized, redirect to home
+    // SECURITY: If roles are required, deny access unless role is confirmed valid (OWASP A01)
+    if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+        // Role not authorized or unknown, redirect to home
         return <Navigate to="/" replace />;
     }
 

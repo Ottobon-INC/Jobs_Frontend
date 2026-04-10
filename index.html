@@ -3,6 +3,14 @@
 
 <head>
   <meta charset="UTF-8" />
+  <!-- SECURITY: Prevent MIME type sniffing -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <!-- SECURITY: Prevent clickjacking -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <!-- SECURITY: XSS protection fallback for older browsers -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <!-- SECURITY: Referrer policy — don't leak full URL to third parties -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />

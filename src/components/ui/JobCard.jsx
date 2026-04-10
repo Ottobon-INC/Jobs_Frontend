@@ -73,11 +73,10 @@ const JobCard = ({ job, isAuthenticated = true }) => {
     const displayTime = parsedTime ? `Posted ${parsedTime}` : formattedDate;
 
     // Match score from job data (if available from matchAllJobs)
-    const matchScore = job.match_score != null
-        ? Math.round(job.match_score * 100)
-        : job.similarity_score != null
-            ? Math.round(job.similarity_score * 100)
-            : null;
+    const rawScore = job.match_score ?? job.similarity_score;
+    const matchScore = rawScore != null
+        ? Math.round(rawScore <= 1 && rawScore > 0 ? rawScore * 100 : rawScore)
+        : null;
 
     const handleToggleSave = async (e) => {
         e.preventDefault();

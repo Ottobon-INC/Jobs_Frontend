@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar } from '../../api/usersApi';
 import { supabase } from '../../api/client';
+import { LIMITS, isValidText, isValidPhone, validateSkills, validateAspirations, validateFile, MAX_AVATAR_SIZE, MAX_RESUME_SIZE, ALLOWED_AVATAR_TYPES, ALLOWED_RESUME_TYPES } from '../../utils/validators';
 import Loader from '../../components/ui/Loader';
 import {
     Upload,
@@ -103,6 +104,10 @@ const ProfilePage = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // SECURITY: Validate file before upload
+        const fileError = validateFile(file, { maxSize: MAX_RESUME_SIZE, allowedTypes: ALLOWED_RESUME_TYPES });
+        if (fileError) { setError(fileError); return; }
+
         setExtracting(true);
         setError(null);
         try {
@@ -123,6 +128,14 @@ const ProfilePage = () => {
         setSaving(true);
         setError(null);
         setMessage(null);
+
+        // SECURITY: Validate all fields before submission (OWASP A03)
+        if (fullName && !isValidText(fullName, LIMITS.FULL_NAME_MAX)) { setError('Name is too long or contains invalid characters.'); setSaving(false); return; }
+        if (phone && !isValidPhone(phone)) { setError('Invalid phone number format.'); setSaving(false); return; }
+        if (location && !isValidText(location, LIMITS.LOCATION_MAX)) { setError('Location is too long.'); setSaving(false); return; }
+        if (interests && !isValidText(interests, LIMITS.INTERESTS_MAX)) { setError('Interests text is too long.'); setSaving(false); return; }
+        if (!validateSkills(skills)) { setError(`Too many skills (max ${LIMITS.SKILLS_MAX_COUNT}) or a skill is too long.`); setSaving(false); return; }
+        if (!validateAspirations(aspirations)) { setError(`Too many aspirations (max ${LIMITS.ASPIRATIONS_MAX}) or an aspiration is too long.`); setSaving(false); return; }
 
         try {
             await updateProfile({
@@ -148,6 +161,10 @@ const ProfilePage = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // SECURITY: Validate file before upload
+        const fileError = validateFile(file, { maxSize: MAX_RESUME_SIZE, allowedTypes: ALLOWED_RESUME_TYPES });
+        if (fileError) { setError(fileError); return; }
+
         setSaving(true);
         setMessage(null);
         setError(null);
@@ -167,10 +184,10 @@ const ProfilePage = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validation for Image/GIF
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
-            setError("Invalid format. Please upload a Static Image or GIF.");
+        // SECURITY: Validate file type, size, and extension (OWASP A04)
+        const fileError = validateFile(file, { maxSize: MAX_AVATAR_SIZE, allowedTypes: ALLOWED_AVATAR_TYPES });
+        if (fileError) {
+            setError(fileError);
             return;
         }
 
@@ -198,8 +215,8 @@ const ProfilePage = () => {
             await fetchProfile();
         } catch (err) {
             console.error('Avatar Sync Error:', err);
-            setError(`Avatar sync failed: ${err.message || err.error || JSON.stringify(err)}`);
-            alert("DEBUG ERROR: " + (err.message || JSON.stringify(err) || "Unknown error"));
+            setError(`Avatar sync failed: ${err.message || 'Unknown error'}`);
+            // Error is already shown via the setError() state above
         } finally {
             setUploadingAvatar(false);
         }
@@ -292,6 +309,7 @@ const ProfilePage = () => {
                                         type="text"
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
+                                        maxLength={LIMITS.FULL_NAME_MAX}
                                         className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
                                         placeholder="Full Name"
                                     />
@@ -308,6 +326,7 @@ const ProfilePage = () => {
                                             type="text"
                                             value={location}
                                             onChange={(e) => setLocation(e.target.value)}
+                                            maxLength={LIMITS.LOCATION_MAX}
                                             className="w-full bg-zinc-50 border-none rounded-2xl px-6 py-5 font-bold text-sm focus:bg-white focus:ring-4 focus:ring-black/5 transition-all outline-none"
                                             placeholder="City, Country"
                                         />
@@ -351,6 +370,7 @@ const ProfilePage = () => {
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
+                                    maxLength={LIMITS.PHONE_MAX}
                                     className="w-full bg-transparent border-0 border-b border-zinc-100 focus:border-black focus:ring-0 p-0 font-bold text-zinc-900 placeholder:text-zinc-200"
                                     placeholder="+1 (555) 000-0000"
                                 />
@@ -420,6 +440,7 @@ const ProfilePage = () => {
                                     value={newSkill}
                                     onChange={(e) => setNewSkill(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleAddSkill()}
+                                    maxLength={LIMITS.SKILL_MAX}
                                     className="flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 font-semibold text-sm focus:bg-white focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none"
                                     placeholder="Add a new competency (e.g. React, Docker)"
                                 />

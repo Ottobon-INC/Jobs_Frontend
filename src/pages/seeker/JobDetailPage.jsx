@@ -3,6 +3,7 @@ import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
+import { sanitizeHTML } from '../../utils/sanitize';
 import Loader from '../../components/ui/Loader';
 import MatchGauge from '../../components/ui/MatchGauge';
 import MatchIQModal from '../../components/ui/MatchIQModal';
@@ -313,7 +314,7 @@ const JobDetailPage = () => {
                                 </div>
                                 <div
                                     className="relative z-10 text-zinc-600 prose prose-zinc max-w-none"
-                                    dangerouslySetInnerHTML={{ __html: genZSummary }}
+                                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(genZSummary) }}
                                 />
                             </motion.div>
                         ) : null}
@@ -321,7 +322,7 @@ const JobDetailPage = () => {
                         <div className="w-full relative overflow-hidden">
                             <div
                                 className={`prose prose-zinc max-w-none text-zinc-600 font-medium leading-relaxed text-sm break-words text-left [&_*]:text-left [&_*]:break-words [&_*]:max-w-full [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:block [&_pre]:overflow-x-auto [&_img]:hidden w-full transition-all duration-500 will-change-[max-height] ${isSpecExpanded ? 'max-h-[8000px]' : 'max-h-[400px] overflow-hidden'}`}
-                                dangerouslySetInnerHTML={{ __html: job.description_raw }}
+                                dangerouslySetInnerHTML={{ __html: sanitizeHTML(job.description_raw) }}
                             />
                             {!isSpecExpanded && (
                                 <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none" />
