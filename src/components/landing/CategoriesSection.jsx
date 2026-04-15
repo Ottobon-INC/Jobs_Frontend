@@ -13,10 +13,6 @@ import {
 import { CategoryCard } from "../ui/CategoryCard";
 import { cn } from "../../utils/cn";
 
-/**
- * Enhanced CategoriesSection - Minimal, modern, and highly interactive.
- * Using a responsive grid (2 cols mobile / 4 cols desktop).
- */
 const categories = [
     { name: "Engineering", icon: Code2, count: "12k+ Jobs" },
     { name: "Design", icon: Palette, count: "5k+ Jobs" },
@@ -35,35 +31,54 @@ export function CategoriesSection() {
     };
 
     return (
-        <section id="categories" className="bg-zinc-50/50 py-40 overflow-hidden">
+        <section id="categories" className="py-32 overflow-hidden" style={{ backgroundColor: '#F6F3ED' }}>
             <div className="container mx-auto px-6 md:px-12 max-w-7xl">
-                {/* Asymmetrical Section Header */}
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between mb-32 gap-16">
-                    <div className="max-w-3xl space-y-8">
-                        <h2 className="text-5xl md:text-7xl font-bold text-black tracking-tight leading-zero">
+
+                {/* Section Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-20 gap-12">
+                    <div className="max-w-3xl">
+                        <p className="section-label mb-5">Job Categories</p>
+                        <h2
+                            className="font-extrabold tracking-tight leading-tight"
+                            style={{
+                                fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+                                fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+                                color: '#313851',
+                                fontStyle: 'normal',
+                            }}
+                        >
                             Browse by <br />
-                            <span className="text-zinc-200">Job Categories.</span>
+                            <span style={{ color: 'rgba(49, 56, 81, 0.30)' }}>Job Categories.</span>
                         </h2>
-                        <p className="text-xl text-zinc-400 font-medium leading-relaxed max-w-xl">
-                            Explore top-tier opportunities across global tech hubs. 
+                        <p
+                            className="mt-6 font-medium leading-relaxed max-w-xl"
+                            style={{ fontSize: '1.1rem', color: 'rgba(49, 56, 81, 0.60)' }}
+                        >
+                            Explore top-tier opportunities across global tech hubs.
                             We filter the noise, presenting only the elite professional matches.
                         </p>
                     </div>
-                    
-                    <div className="lg:pt-4">
-                        <button 
+
+                    <div className="lg:pb-2">
+                        <button
                             onClick={scrollToJobs}
                             className="group flex flex-col items-start gap-4"
                         >
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 group-hover:text-black transition-colors">
+                            <span
+                                className="font-bold uppercase transition-colors group-hover:opacity-100"
+                                style={{ fontSize: '0.68rem', letterSpacing: '0.36em', color: 'rgba(49, 56, 81, 0.45)' }}
+                            >
                                 Explore Jobs
                             </span>
-                            <div className="w-20 h-[2px] bg-zinc-100 group-hover:w-40 group-hover:bg-black transition-all duration-700" />
+                            <div
+                                className="h-[2px] transition-all duration-700 group-hover:w-40"
+                                style={{ width: '5rem', backgroundColor: 'rgba(49, 56, 81, 0.18)' }}
+                            />
                         </button>
                     </div>
                 </div>
 
-                {/* Staggered / Asymmetrical Grid */}
+                {/* Staggered Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {categories.map((category, index) => (
                         <motion.div
@@ -77,9 +92,9 @@ export function CategoriesSection() {
                                 index % 4 === 2 ? "lg:-mt-8" : "",
                                 index % 4 === 3 ? "lg:mt-4" : ""
                             )}
-                            transition={{ 
-                                duration: 1.2, 
-                                delay: (index % 4) * 0.15,
+                            transition={{
+                                duration: 1.0,
+                                delay: (index % 4) * 0.12,
                                 ease: [0.23, 1, 0.32, 1]
                             }}
                         >
@@ -93,8 +108,7 @@ export function CategoriesSection() {
                     ))}
                 </div>
 
-                {/* Bottom Decorative Element */}
-                <div className="mt-32 h-px w-full bg-gradient-to-r from-transparent via-black/5 to-transparent shadow-[0_1px_4px_rgba(0,0,0,0.02)]" />
+                <div className="mt-24 h-px w-full" style={{ background: 'linear-gradient(to right, transparent, rgba(49, 56, 81, 0.10), transparent)' }} />
             </div>
         </section>
     );

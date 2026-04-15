@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Briefcase } from "lucide-react";
+import { MapPin, Briefcase, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { JobFlipCard } from "../ui/JobFlipCard";
 
@@ -70,30 +70,44 @@ export function FeaturedJobs() {
     const navigate = useNavigate();
 
     return (
-        <section className="bg-white py-24">
+        <section className="py-24" style={{ backgroundColor: '#ffffff' }}>
             <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-14 gap-4">
                     <div>
-                        <h2 className="text-4xl font-bold text-black mb-4">
+                        <p className="section-label mb-3">Curated Picks</p>
+                        <h2
+                            className="font-extrabold tracking-tight mb-3"
+                            style={{
+                                fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+                                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                                color: '#313851',
+                                fontStyle: 'normal',
+                            }}
+                        >
                             Featured Opportunities
                         </h2>
-                        <p className="text-black/60 max-w-xl">
+                        <p
+                            className="max-w-xl font-medium"
+                            style={{ color: 'rgba(49, 56, 81, 0.58)', fontSize: '0.975rem' }}
+                        >
                             Discover roles at leading Indian startups and global tech giants.
-                            Find your next career move with Us.
+                            Find your next career move with us.
                         </p>
                     </div>
                     <div className="flex items-center gap-6">
                         <Link
                             to="/register"
-                            className="bg-black text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-black/90 transition-colors shadow-sm text-sm cursor-pointer inline-block"
+                            className="font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm transition-opacity hover:opacity-90 cursor-pointer inline-block text-white"
+                            style={{ backgroundColor: '#313851' }}
                         >
                             Get started
                         </Link>
                         <Link
                             to="/jobs"
-                            className="text-black font-semibold border-b-2 border-black pb-1 hover:text-black/60 hover:border-black/30 transition-all cursor-pointer"
+                            className="inline-flex items-center gap-2 font-semibold text-sm transition-colors cursor-pointer hover:opacity-70"
+                            style={{ color: '#313851', borderBottom: '2px solid #313851', paddingBottom: '2px' }}
                         >
-                            View All Jobs
+                            View All Jobs <ArrowRight size={14} />
                         </Link>
                     </div>
                 </div>
@@ -105,8 +119,8 @@ export function FeaturedJobs() {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ 
-                                duration: 0.8, 
+                            transition={{
+                                duration: 0.8,
                                 delay: index * 0.1,
                                 ease: [0.21, 0.47, 0.32, 0.98]
                             }}

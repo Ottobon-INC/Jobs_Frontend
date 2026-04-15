@@ -126,39 +126,42 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             className="group relative h-full"
         >
-            <div className="relative h-full overflow-hidden bg-white rounded-[32px] border border-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-500 ease-in-out hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.08)] hover:-translate-y-2 flex flex-col">
+            <div
+                className="relative h-full overflow-hidden rounded-[32px] border shadow-[0_10px_30px_-22px_rgba(49,56,81,0.28)] transition-all duration-500 ease-in-out hover:shadow-[0_24px_52px_-28px_rgba(49,56,81,0.35)] hover:-translate-y-2 flex flex-col"
+                style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
+            >
 
                 {/* 1. Status Bar: Active dot + Location · Date */}
                 <div className="px-8 pt-8 pb-3 relative z-10 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                    <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-accent)' }}>
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
                         <span>Active</span>
-                        <span className="text-zinc-200">·</span>
+                        <span>·</span>
                         <span>{displayLocation}</span>
                     </div>
-                    <span className="text-[11px] font-semibold text-zinc-400">{displayTime}</span>
+                    <span className="text-[11px] font-semibold" style={{ color: 'var(--color-accent)' }}>{displayTime}</span>
                 </div>
 
                 {/* 2. Company Row: Logo + Name */}
                 <div className="px-8 pb-3 relative z-10 flex items-center gap-3">
-                    <div className="shrink-0 w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center font-sans font-bold text-sm text-white shadow-md shadow-zinc-900/10">
+                    <div className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-sans font-bold text-sm text-white shadow-md shadow-zinc-900/10" style={{ backgroundColor: 'var(--color-primary)' }}>
                         {(job.company_name || 'O').charAt(0)}
                     </div>
-                    <span className="text-sm font-semibold text-zinc-500 uppercase tracking-wide truncate">
+                    <span className="text-sm font-semibold uppercase tracking-wide truncate" style={{ color: 'var(--color-accent)' }}>
                         {job.company_name || 'Company'}
                     </span>
                 </div>
 
                 {/* 3. Job Title — Standalone, Large */}
                 <div className="px-8 pb-4 relative z-10">
-                    <h3 className="font-sans font-bold text-zinc-900 tracking-tight leading-snug text-[22px] group-hover:text-zinc-600 transition-colors line-clamp-2">
+                    <h3 className="font-display font-extrabold tracking-tight leading-snug text-[22px] transition-colors line-clamp-2" style={{ color: 'var(--color-primary)' }}>
                         {cleanTitle}
                     </h3>
                 </div>
 
                 {job.salary_range && (
-                    <div className="px-8 pb-2 relative z-10 flex items-center gap-2 text-sm font-bold text-zinc-900">
-                        <DollarSign size={15} className="text-zinc-400" />
+                    <div className="px-8 pb-2 relative z-10 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
+                        <DollarSign size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>{job.salary_range}</span>
                     </div>
                 )}
@@ -169,7 +172,8 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                         {job.skills_required?.slice(0, 3).map((skill, idx) => (
                             <span
                                 key={idx}
-                                className="text-[10px] font-semibold px-4 py-2 bg-zinc-50 text-zinc-600 border border-zinc-200/50 rounded-full capitalize tracking-wide"
+                                className="text-[10px] font-medium px-4 py-2 border rounded-full capitalize tracking-wide"
+                                style={{ backgroundColor: 'var(--color-job-card)', color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}
                             >
                                 {skill}
                             </span>
@@ -180,18 +184,23 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 {/* 5. Bottom Action Bar: View details + Save + Match % */}
                 <div className="px-8 pb-8 relative z-10 flex items-center gap-3">
                     <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1">
-                        <button className="w-full bg-white border border-zinc-200 text-zinc-900 font-sans font-bold text-xs py-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.98]">
+                        <button className="w-full border font-sans font-medium text-xs py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)', color: 'var(--color-primary)' }}>
                             View details
                         </button>
                     </Link>
                     <button
                         onClick={handleToggleSave}
                         disabled={loading || !isAuthenticated}
-                        className={`px-5 py-4 rounded-2xl font-sans font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] ${
+                        className={`px-5 py-4 rounded-2xl font-sans font-medium text-xs transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] ${
                             saved
-                                ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/10'
-                                : 'bg-white border border-zinc-200 text-zinc-900 hover:bg-zinc-50'
+                                ? 'text-white shadow-lg shadow-zinc-900/10'
+                                : 'border'
                         } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        style={{
+                            backgroundColor: saved ? 'var(--color-primary)' : 'transparent',
+                            borderColor: 'var(--color-accent)',
+                            color: saved ? 'var(--color-on-primary)' : 'var(--color-primary)'
+                        }}
                     >
                         <Bookmark size={14} className={saved ? 'fill-white' : ''} />
                         {saved ? 'Saved' : 'Save'}

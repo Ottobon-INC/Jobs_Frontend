@@ -34,13 +34,16 @@ const Sidebar = () => {
     }, {});
 
     return (
-        <aside className="fixed left-8 top-32 bottom-8 w-64 glass-panel z-40 overflow-y-auto p-8 hidden md:flex flex-col gap-10 rounded-[32px] border-none shadow-2xl shadow-black/5">
+        <aside
+            className="fixed left-8 top-32 bottom-8 w-64 z-40 overflow-y-auto p-8 hidden md:flex flex-col gap-10 rounded-[32px] border-none shadow-2xl shadow-black/5"
+            style={{ backgroundColor: 'var(--color-primary)' }}
+        >
 
 
             <div className="flex flex-col gap-6">
                 {Object.entries(groupedLinks).map(([category, items], cIdx) => (
                     <div key={category} className="flex flex-col gap-1">
-                        <h4 className="text-[9px] font-black text-zinc-400 tracking-[0.2em] uppercase px-4 mb-2">
+                        <h4 className="text-[9px] font-black tracking-[0.2em] uppercase px-4 mb-2" style={{ color: 'var(--color-accent)' }}>
                             {category}
                         </h4>
                         <div className="flex flex-col gap-1">
@@ -58,10 +61,10 @@ const Sidebar = () => {
                                     <NavLink
                                         to={link.to}
                                         className={({ isActive }) => `
-                                            flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-700 text-[10px] font-black uppercase tracking-widest
+                                            sidebar-nav-link flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest
                                             ${isActive
-                                                ? 'bg-black text-white shadow-2xl shadow-black/20'
-                                                : 'text-zinc-400 hover:bg-zinc-50 hover:text-black'
+                                                ? 'is-active shadow-2xl shadow-black/20'
+                                                : ''
                                             }
                                         `}
                                     >
@@ -82,12 +85,12 @@ const Sidebar = () => {
             </div>
 
             <div className="mt-auto">
-                <div className="bg-zinc-50/50 p-6 rounded-[32px] border border-white/50 flex items-center justify-between group cursor-default">
+                <div className="p-6 rounded-[32px] border flex items-center justify-between group cursor-default" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)' }}>
                     <div className="flex items-center gap-4">
-                        <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)]"></div>
-                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em]">Active</span>
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }}></div>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-background-soft)' }}>Active</span>
                     </div>
-                    <div className="text-[8px] font-black text-zinc-300 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity duration-700">SIG_INT_04</div>
+                    <div className="text-[8px] font-black uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ color: 'var(--color-accent)' }}>SIG_INT_04</div>
                 </div>
             </div>
         </aside>

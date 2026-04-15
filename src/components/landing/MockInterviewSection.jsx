@@ -3,29 +3,54 @@ import { Bot, Users, Sparkles, MessageSquare, ShieldCheck, Zap } from 'lucide-re
 
 const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay }}
-        className="bg-white p-8 rounded-[32px] border-2 border-black hover:shadow-[12px_12px_0px_#000] transition-all group"
+        className="landing-card group flex flex-col p-8"
+        style={{ minHeight: '240px' }}
     >
-        <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <Icon className="text-white w-7 h-7" />
+        {/* Icon box */}
+        <div
+            className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-[#C2CBD3] transition-all duration-300 group-hover:border-[#313851] group-hover:bg-[#313851]"
+            style={{ backgroundColor: '#F6F3ED' }}
+        >
+            <Icon
+                className="h-6 w-6 transition-colors duration-300 group-hover:text-white"
+                style={{ color: '#313851' }}
+            />
         </div>
-        <h3 className="text-xl font-black uppercase tracking-tight mb-3 italic">{title}</h3>
-        <p className="text-sm font-medium text-black/60 leading-relaxed uppercase tracking-wider">{description}</p>
+
+        {/* Title */}
+        <h3
+            className="mb-3 font-semibold leading-snug tracking-tight"
+            style={{
+                fontFamily: "'Poppins', 'Inter', system-ui, sans-serif",
+                fontSize: '1.1rem',
+                color: '#313851',
+                fontStyle: 'normal',
+            }}
+        >
+            {title}
+        </h3>
+
+        {/* Description */}
+        <p
+            className="font-medium leading-7"
+            style={{ fontSize: '0.9rem', color: 'rgba(49, 56, 81, 0.62)' }}
+        >
+            {description}
+        </p>
     </motion.div>
 );
 
 export function MockInterviewSection() {
     return (
-        <section className="py-32 px-6 md:px-12 lg:px-20 bg-[#f9f9f9] overflow-hidden relative">
-            {/* Background elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-black/5 rounded-full blur-3xl -mr-48 -mt-48" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/5 rounded-full blur-3xl -ml-48 -mb-48" />
-
+        <section className="py-32 px-6 md:px-12 lg:px-20 overflow-hidden relative" style={{ backgroundColor: '#F6F3ED' }}>
             <div className="max-w-7xl mx-auto relative z-10">
                 <div className="flex flex-col lg:flex-row items-center gap-20">
+
+                    {/* Left — Intro copy */}
                     <div className="lg:w-1/2">
                         <motion.div
                             initial={{ opacity: 0, x: -30 }}
@@ -33,38 +58,65 @@ export function MockInterviewSection() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.7 }}
                         >
-                            <div className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.25em] mb-8">
-                                <Sparkles size={12} className="text-yellow-400" />
+                            {/* Badge */}
+                            <div
+                                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#C2CBD3] bg-white px-4 py-2"
+                                style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(49,56,81,0.65)' }}
+                            >
+                                <Sparkles size={12} style={{ color: '#313851' }} />
                                 <span>Next-Gen Preparation</span>
                             </div>
 
-                            <h2 className="text-5xl md:text-7xl font-black text-black leading-[1.1] uppercase tracking-tight mb-8 italic pr-4">
-                                Master Your <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-black via-black to-gray-500">
-                                    Mock Interview
-                                </span>
+                            {/* Heading */}
+                            <h2
+                                className="mb-8 pr-4 font-extrabold leading-tight tracking-tight"
+                                style={{
+                                    fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+                                    fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                                    color: '#313851',
+                                    fontStyle: 'normal',
+                                }}
+                            >
+                                Master Your<br />
+                                <span style={{ color: 'rgba(49, 56, 81, 0.72)' }}>Mock Interview</span>
                             </h2>
 
-                            <p className="text-xl font-medium text-black/80 mb-10 leading-relaxed max-w-lg">
+                            {/* Body */}
+                            <p
+                                className="font-medium leading-9 max-w-lg mb-10"
+                                style={{ fontSize: '1.1rem', color: 'rgba(49, 56, 81, 0.68)' }}
+                            >
                                 Experience a simulation so real, you'll forget it's AI. We've synthesized the collective
                                 wisdom of top industry professionals into a single, cohesive training partner.
                             </p>
 
-                            <div className="p-8 bg-black text-white rounded-[40px] shadow-2xl relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            {/* Dark quote panel */}
+                            <div
+                                className="group relative overflow-hidden rounded-xl p-8 text-white shadow-[0_24px_58px_-34px_rgba(49,56,81,0.55)]"
+                                style={{ backgroundColor: '#313851' }}
+                            >
+                                <div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
                                     <MessageSquare size={64} />
                                 </div>
-                                <h3 className="text-2xl font-black uppercase italic mb-4 flex items-center gap-3">
-                                    <Bot className="text-white" />
+                                <h3
+                                    className="mb-4 flex items-center gap-3 font-semibold tracking-tight text-white"
+                                    style={{
+                                        fontFamily: "'Poppins', 'Inter', system-ui, sans-serif",
+                                        fontSize: '1.25rem',
+                                        fontStyle: 'normal',
+                                    }}
+                                >
+                                    <Bot style={{ color: 'white' }} />
                                     The Core Message
                                 </h3>
-                                <p className="text-lg font-medium tracking-wide leading-relaxed opacity-90 italic">
+                                <p className="font-medium leading-8" style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.80)' }}>
                                     "Real insights are used from the people of the company and AI is used to present it."
                                 </p>
                             </div>
                         </motion.div>
                     </div>
 
+                    {/* Right — 4-card grid */}
                     <div className="lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FeatureCard
                             icon={Users}
