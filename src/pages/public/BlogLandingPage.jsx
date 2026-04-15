@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useBlogPosts } from '../../hooks/useBlogPosts';
 import Loader from '../../components/ui/Loader';
-import { BookOpen, Calendar, ArrowRight, Sparkles, TrendingUp, Cpu, Globe, DollarSign } from 'lucide-react';
+import { BookOpen, Calendar, ArrowRight, Sparkles, TrendingUp, Cpu, Globe, DollarSign, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BlogLandingPage = () => {

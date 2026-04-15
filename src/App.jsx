@@ -29,6 +29,7 @@ const MyListingsPage = lazy(() => import('./pages/provider/MyListingsPage'));
 const ControlTowerPage = lazy(() => import('./pages/admin/ControlTowerPage'));
 const IngestionPage = lazy(() => import('./pages/admin/IngestionPage'));
 const HelpDeskPage = lazy(() => import('./pages/admin/HelpDeskPage'));
+const InterviewReviewsPage = lazy(() => import('./pages/admin/InterviewReviewsPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -104,6 +105,7 @@ function App() {
                 <Route path="/admin/tower" element={<ControlTowerPage />} />
                 <Route path="/admin/ingest" element={<IngestionPage />} />
                 <Route path="/admin/helpdesk" element={<HelpDeskPage />} />
+                <Route path="/admin/interview-reviews" element={<InterviewReviewsPage />} />
               </Route>
 
             </Route>

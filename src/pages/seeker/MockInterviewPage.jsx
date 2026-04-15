@@ -1,18 +1,19 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { setMockJobContext, setMockMode, getMockEvaluation, uploadMockResume } from '../../api/mockInterviewApi';
+import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview } from '../../api/mockInterviewApi';
 import { useAuth } from '../../hooks/useAuth';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useMicrophone } from '../../hooks/useMicrophone';
 import { usePlayback } from '../../hooks/usePlayback';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { toJpeg } from 'html-to-image';
 import {
     ArrowLeft,
     Mic,
     MicOff,
     StopCircle,
-    Play,
-    CheckCircle,
     Clock,
     Zap,
     Activity,
@@ -25,14 +26,11 @@ import {
     FileText,
     Upload,
     Download,
+    CheckCircle,
 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { toJpeg } from 'html-to-image';
 
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
-const MOCK_BACKEND = import.meta.env.VITE_MOCK_API_URL || 'http://localhost:8001/mock';
 const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || 'ws://localhost:8001/mock/ws';
 
 
@@ -297,15 +295,15 @@ const MockInterviewPage = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [transcripts, setTranscripts] = useState([]);
     const [responses, setResponses] = useState([]);
+    const [conversationLog, setConversationLog] = useState([]);
     const [currentResponse, setCurrentResponse] = useState('');
-    const [evaluation, setEvaluation] = useState(null);
-    const [isEvaluating, setIsEvaluating] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [violationCount, setViolationCount] = useState(0);
     const [showViolationAlert, setShowViolationAlert] = useState(false);
     const [timeLeft, setTimeLeft] = useState(0);
     const [isTimerActive, setIsTimerActive] = useState(false);
-    const [forceResumeUpload, setForceResumeUpload] = useState(false);
+    const [isSavingInterview, setIsSavingInterview] = useState(false);
+    const [reviewTicket, setReviewTicket] = useState(null);
 
     // Compute safe session ID (default to 'default_session' if no job ID is in the URL)
     const sessionId = id || 'default_session';
@@ -323,6 +321,8 @@ const MockInterviewPage = () => {
     const responseRef = useRef(null);
     const forcedMuteRef = useRef(false);
     const stopSessionRef = useRef(null);
+    const endingRef = useRef(false);
+    const interviewRecordIdRef = useRef(crypto.randomUUID());
 
     // Auto-scroll transcript/response panels
     useEffect(() => {
@@ -341,6 +341,20 @@ const MockInterviewPage = () => {
         setStatusClass(cls);
     };
 
+    const appendConversationEntry = useCallback((role, content) => {
+        const normalizedContent = typeof content === 'string' ? content.trim() : '';
+        if (!normalizedContent) return;
+
+        setConversationLog((prev) => [
+            ...prev,
+            {
+                role,
+                content: normalizedContent,
+                created_at: new Date().toISOString(),
+            },
+        ]);
+    }, []);
+
     const { initPlayback, playPCMChunk, stopPlayback, isSpeaking } = usePlayback((speaking) => {
         forcedMuteRef.current = speaking;
     });
@@ -356,6 +370,7 @@ const MockInterviewPage = () => {
                     const parsed = JSON.parse(data);
                     if (parsed.type === 'transcript') {
                         setTranscripts((prev) => [...prev, parsed.text]);
+                        appendConversationEntry('user', parsed.text);
                     } else if (parsed.type === 'response_start') {
                         setCurrentResponse('');
                     } else if (parsed.type === 'response_chunk') {
@@ -363,17 +378,20 @@ const MockInterviewPage = () => {
                     } else if (parsed.type === 'response_done') {
                         setCurrentResponse('');
                         setResponses((prev) => [...prev, parsed.text]);
+                        appendConversationEntry('assistant', parsed.text);
                     } else if (parsed.type === 'response') {
                         setResponses((prev) => [...prev, parsed.text]);
+                        appendConversationEntry('assistant', parsed.text);
                     } else if (parsed.type === 'session_end_trigger') {
                         if (stopSessionRef.current) stopSessionRef.current();
                     }
                 } catch {
                     setResponses((prev) => [...prev, data]);
+                    appendConversationEntry('assistant', data);
                 }
             }
         },
-        [playPCMChunk]
+        [appendConversationEntry, playPCMChunk]
     );
 
     const { connect, sendAudioChunk, disconnect } = useWebSocket(
@@ -408,19 +426,30 @@ const MockInterviewPage = () => {
         isMuted
     );
 
-    const fetchEvaluation = async () => {
-        setIsEvaluating(true);
-        setErrorMsg('');
+    const persistInterviewForReview = useCallback(async () => {
+        if (!session?.user?.id || reviewTicket?.id) return;
+
+        setIsSavingInterview(true);
         try {
-            const data = await getMockEvaluation(sessionId);
-            if (data.error) throw new Error(data.error);
-            setEvaluation(data);
+            const record = await createMockInterviewReview({
+                id: interviewRecordIdRef.current,
+                userId: session.user.id,
+                jobId: id || null,
+                interviewType,
+                durationMinutes: duration,
+                transcript: conversationLog,
+                userTranscript: transcripts,
+                aiTranscript: responses,
+            });
+
+            setReviewTicket(record);
         } catch (err) {
-            setErrorMsg('Failed to fetch evaluation: ' + err.message);
+            console.error('Failed to queue interview for admin review:', err);
+            setErrorMsg('Your interview ended, but we could not queue the review yet. Please try again.');
         } finally {
-            setIsEvaluating(false);
+            setIsSavingInterview(false);
         }
-    };
+    }, [conversationLog, duration, id, interviewType, responses, reviewTicket?.id, session?.user?.id, transcripts]);
 
     const handleResumeUpload = async (e) => {
         const file = e.target.files[0];
@@ -442,11 +471,14 @@ const MockInterviewPage = () => {
     const handleStart = async () => {
         setIsStarting(true);
         setErrorMsg('');
-        setEvaluation(null);
         setTranscripts([]);
         setResponses([]);
+        setConversationLog([]);
+        setReviewTicket(null);
         setViolationCount(0);
         setShowViolationAlert(false);
+        endingRef.current = false;
+        interviewRecordIdRef.current = crypto.randomUUID();
 
         try {
             // Push job context to mock backend (runs on the same server as jobs backend)
@@ -476,7 +508,9 @@ const MockInterviewPage = () => {
         setStep('interview');
     };
 
-    const handleStop = (isTimeout = false) => {
+    const handleStop = useCallback(async (isTimeout = false) => {
+        if (endingRef.current) return;
+        endingRef.current = true;
         setIsActive(false);
         setIsTimerActive(false);
         setIsMuted(false);
@@ -490,8 +524,8 @@ const MockInterviewPage = () => {
                 'Thank you for the interview. The allocated time has ended. Analysing your performance now…',
             ]);
         }
-        fetchEvaluation();
-    };
+        await persistInterviewForReview();
+    }, [disconnect, persistInterviewForReview, stopMic, stopPlayback]);
 
     // Keep stopSessionRef in sync
     useEffect(() => {
@@ -522,7 +556,7 @@ const MockInterviewPage = () => {
             handleStop(true);
         }
         return () => clearInterval(interval);
-    }, [isTimerActive, timeLeft]);
+    }, [handleStop, isTimerActive, timeLeft]);
 
     const formatTime = (s) =>
         `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
@@ -801,6 +835,37 @@ const MockInterviewPage = () => {
                         </div>
                     )}
 
+                    {!isActive && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
+                        >
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                                <div className="max-w-3xl">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-4">Interview Submitted</p>
+                                    <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Thank you for completing your mock interview.</h2>
+                                    <p className="text-base text-zinc-500 leading-relaxed">
+                                        Your analysis will be ready in some time. We have shared your interview transcript and the AI interviewer transcript with our admin review team.
+                                    </p>
+                                </div>
+
+                                <div className="min-w-[260px] bg-[#FAFAFA] border border-zinc-100 rounded-[28px] p-8">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-3">Review Status</p>
+                                    <div className="flex items-center gap-3 text-zinc-900 font-bold text-sm">
+                                        {isSavingInterview ? <Activity size={18} className="animate-pulse" /> : <CheckCircle size={18} />}
+                                        {isSavingInterview ? 'Sending transcript to admin...' : reviewTicket?.status === 'pending_review' ? 'Queued for admin review' : 'Awaiting review'}
+                                    </div>
+                                    {reviewTicket?.id && (
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300 mt-4 break-all">
+                                            Ticket {reviewTicket.id}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
                     {/* Transcript + Response panels */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {/* Participant Transcript */}
@@ -865,17 +930,6 @@ const MockInterviewPage = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Evaluation */}
-                    {isEvaluating && (
-                        <div className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 flex items-center justify-center gap-6">
-                            <BarChart2 size={28} className="text-zinc-300 animate-pulse" />
-                            <p className="font-bold uppercase tracking-[0.4em] text-[11px] text-zinc-400 animate-pulse">
-                                Synthesizing job match analysis...
-                            </p>
-                        </div>
-                    )}
-                    {evaluation && !isEvaluating && <EvalReport evaluation={evaluation} />}
                 </div>
             </div>
 
