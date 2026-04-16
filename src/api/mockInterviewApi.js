@@ -122,8 +122,9 @@ export const getAdminMockInterviewReviews = async ({ status = 'all', search = ''
             expert_feedback,
             status,
             created_at,
-            user:users_jobs(id, full_name, email),
-            job:jobs_jobs(id, title, company_name)
+            updated_at,
+            user:users_jobs!user_id(id, full_name, email),
+            job:jobs_jobs!job_id(id, title, company_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -132,8 +133,19 @@ export const getAdminMockInterviewReviews = async ({ status = 'all', search = ''
     }
 
     const { data, error } = await query;
-    if (error) throw error;
-    console.log('Raw Admin Data from Supabase:', data);
+    if (error) {
+        console.error('Supabase Query Error (List):', error);
+        throw error;
+    }
+    console.log('Available IDs in List:', data?.map(item => item.id));
+    if (data?.length > 0) {
+        console.log('Sample Item (List):', {
+            id: data[0].id,
+            userFound: !!data[0].user,
+            jobFound: !!data[0].job,
+            userRole: data[0].user?.role
+        });
+    }
 
     const normalizedSearch = search.trim().toLowerCase();
     if (!normalizedSearch) return data || [];
@@ -162,13 +174,19 @@ export const getAdminMockInterviewReview = async (reviewId) => {
             expert_feedback,
             status,
             created_at,
-            user:users_jobs(id, full_name, email),
-            job:jobs_jobs(id, title, company_name)
+            updated_at,
+            user:users_jobs!user_id(id, full_name, email),
+            job:jobs_jobs!job_id(id, title, company_name)
         `)
         .eq('id', reviewId)
-        .single();
+        .maybeSingle();
 
-    if (error) throw error;
+    console.log('Single Review Result:', { id: reviewId, hasData: !!data, error: error?.message });
+
+    if (error) {
+        console.error('Supabase Query Error (Single):', error);
+        throw error;
+    }
     return data;
 };
 
@@ -199,10 +217,65 @@ export const submitAdminMockInterviewReview = async (reviewId, adminReview) => {
             expert_feedback,
             status,
             created_at,
-            user:users_jobs(id, full_name, email),
-            job:jobs_jobs(id, title, company_name)
+            updated_at
         `)
         .single();
+
+    if (error) {
+        console.error('Supabase Update Error:', error);
+        throw error;
+    }
+    return data;
+};
+
+export const getMyMockInterviews = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+        .from('mock_interviews_jobs')
+        .select(`
+            id,
+            status,
+            created_at,
+            updated_at,
+            reviewed_at,
+            job:jobs_jobs!job_id(title, company_name),
+            expert_feedback
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getMockInterviewDetails = async (id) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    let query = supabase
+        .from('mock_interviews_jobs')
+        .select(`
+            id,
+            status,
+            created_at,
+            updated_at,
+            reviewed_at,
+            transcript,
+            ai_scorecard,
+            expert_feedback,
+            job:jobs_jobs!job_id(title, company_name)
+        `)
+        .eq('id', id);
+
+    // If seeker, double protect by user_id check
+    // If admin is doing it via a seeker route, we might need flexibility, 
+    // but usually getMockInterviewDetails is seeker-side only.
+    if (user?.user_metadata?.role !== 'admin') {
+        query = query.eq('user_id', user?.id);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) throw error;
     return data;

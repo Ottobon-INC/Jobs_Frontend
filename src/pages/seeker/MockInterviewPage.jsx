@@ -1,7 +1,8 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview } from '../../api/mockInterviewApi';
 import { useAuth } from '../../hooks/useAuth';
+import { useNotifications } from '../../context/NotificationContext';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useMicrophone } from '../../hooks/useMicrophone';
 import { usePlayback } from '../../hooks/usePlayback';
@@ -274,6 +275,7 @@ const EvalReport = ({ evaluation }) => {
 const MockInterviewPage = () => {
     const { id } = useParams();
     const location = useLocation();
+    const { addNotification } = useNotifications();
     const jobTitle = location.state?.jobTitle || '';
     const companyName = location.state?.companyName || '';
 
@@ -304,6 +306,8 @@ const MockInterviewPage = () => {
     const [isTimerActive, setIsTimerActive] = useState(false);
     const [isSavingInterview, setIsSavingInterview] = useState(false);
     const [reviewTicket, setReviewTicket] = useState(null);
+    const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
+    const [showCompletionOptions, setShowCompletionOptions] = useState(false);
 
     // Compute safe session ID (default to 'default_session' if no job ID is in the URL)
     const sessionId = id || 'default_session';
@@ -521,11 +525,41 @@ const MockInterviewPage = () => {
         if (isTimeout) {
             setResponses((prev) => [
                 ...prev,
-                'Thank you for the interview. The allocated time has ended. Analysing your performance now…',
+                'Thank you for the interview. The allocated time has ended.',
             ]);
         }
+        
+        // Instead of auto-persisting, we show options
+        setShowCompletionOptions(true);
+    }, [disconnect, stopMic, stopPlayback]);
+
+    const handleFinalSubmit = async () => {
         await persistInterviewForReview();
-    }, [disconnect, persistInterviewForReview, stopMic, stopPlayback]);
+        setIsReviewSubmitted(true);
+        setShowCompletionOptions(false);
+
+        // Add local notification
+        addNotification({
+            title: 'Review Submitted',
+            message: `Your interview for ${jobTitle || 'selected role'} has been sent to our experts.`,
+            type: 'info',
+            link: '/interview-reviews'
+        });
+    };
+
+    const handleFinalCancel = () => {
+        if (window.confirm('Are you sure you want to discard this practice session? Your progress will not be saved for review.')) {
+            // Reset everything and go back to entry
+            setStep('entry');
+            setIsActive(false);
+            setTranscripts([]);
+            setResponses([]);
+            setConversationLog([]);
+            setReviewTicket(null);
+            setShowCompletionOptions(false);
+            setIsReviewSubmitted(false);
+        }
+    };
 
     // Keep stopSessionRef in sync
     useEffect(() => {
@@ -841,28 +875,69 @@ const MockInterviewPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
                         >
-                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                                <div className="max-w-3xl">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-4">Interview Submitted</p>
-                                    <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Thank you for completing your mock interview.</h2>
-                                    <p className="text-base text-zinc-500 leading-relaxed">
-                                        Your analysis will be ready in some time. We have shared your interview transcript and the AI interviewer transcript with our admin review team.
-                                    </p>
-                                </div>
-
-                                <div className="min-w-[260px] bg-[#FAFAFA] border border-zinc-100 rounded-[28px] p-8">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-3">Review Status</p>
-                                    <div className="flex items-center gap-3 text-zinc-900 font-bold text-sm">
-                                        {isSavingInterview ? <Activity size={18} className="animate-pulse" /> : <CheckCircle size={18} />}
-                                        {isSavingInterview ? 'Sending transcript to admin...' : reviewTicket?.status === 'pending_review' ? 'Queued for admin review' : 'Awaiting review'}
-                                    </div>
-                                    {reviewTicket?.id && (
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300 mt-4 break-all">
-                                            Ticket {reviewTicket.id}
+                            {showCompletionOptions ? (
+                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+                                    <div className="max-w-2xl">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-2 h-2 bg-zinc-900 rounded-full animate-pulse" />
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-900">Session Completed</p>
+                                        </div>
+                                        <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Ready to Submit?</h2>
+                                        <p className="text-base text-zinc-500 leading-relaxed">
+                                            You've completed your practice session. Choose whether to submit your transcript for a detailed expert review or discard this session and try again.
                                         </p>
-                                    )}
+                                        <div className="flex items-center gap-8 mt-8">
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Duration</span>
+                                                <span className="text-sm font-bold text-zinc-900">{duration} Minutes</span>
+                                            </div>
+                                            <div className="w-px h-8 bg-zinc-100" />
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Transcript</span>
+                                                <span className="text-sm font-bold text-zinc-900">{conversationLog.length} Exchanges</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 min-w-[400px]">
+                                        <button
+                                            onClick={handleFinalSubmit}
+                                            className="flex-1 w-full py-5 bg-zinc-900 text-white rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95"
+                                        >
+                                            Submit for Expert Review
+                                        </button>
+                                        <button
+                                            onClick={handleFinalCancel}
+                                            className="flex-1 w-full py-5 bg-white text-zinc-400 border border-zinc-100 rounded-full font-bold text-[11px] uppercase tracking-widest hover:border-zinc-900 hover:text-zinc-900 transition-all active:scale-95"
+                                        >
+                                            Discard Session
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                                    <div className="max-w-3xl">
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-4">Interview Submitted</p>
+                                        <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Thank you for completing your mock interview.</h2>
+                                        <p className="text-base text-zinc-500 leading-relaxed">
+                                            Your analysis will be ready in some time. We have shared your interview transcript and the AI interviewer transcript with our admin review team.
+                                        </p>
+                                    </div>
+
+                                    <div className="min-w-[260px] bg-[#FAFAFA] border border-zinc-100 rounded-[28px] p-8">
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-3">Review Status</p>
+                                        <div className="flex items-center gap-3 text-zinc-900 font-bold text-sm">
+                                            {isSavingInterview ? <Activity size={18} className="animate-pulse" /> : <CheckCircle size={18} />}
+                                            {isSavingInterview ? 'Sending transcript to admin...' : reviewTicket?.status === 'pending_review' ? 'Queued for admin review' : 'Awaiting review'}
+                                        </div>
+                                        {reviewTicket?.id && (
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300 mt-4 break-all">
+                                                Ticket {reviewTicket.id}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </motion.div>
                     )}
 

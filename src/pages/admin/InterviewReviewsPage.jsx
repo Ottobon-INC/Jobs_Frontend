@@ -156,6 +156,15 @@ const InterviewReviewsPage = () => {
         }
     };
 
+    const displayedReviews = useMemo(() => {
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        return reviews.filter(review => {
+            if (review.status !== 'reviewed') return true;
+            const completedAt = new Date(review.updated_at || review.created_at);
+            return completedAt > oneDayAgo;
+        });
+    }, [reviews]);
+
     return (
         <div className="max-w-7xl mx-auto py-12 px-8">
             <div className="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -205,27 +214,39 @@ const InterviewReviewsPage = () => {
                     </div>
                     <div className="mt-3 space-y-3 max-h-[70vh] overflow-y-auto pr-1">
                         {loading && <div className="p-6 text-sm text-zinc-400">Loading reviews...</div>}
-                        {!loading && reviews.length === 0 && <div className="p-6 text-sm text-zinc-400">No interview reviews found.</div>}
-                        {reviews.map((review) => (
+                        {!loading && displayedReviews.length === 0 && <div className="p-6 text-sm text-zinc-400">No interview reviews found.</div>}
+                        {displayedReviews.map((review) => (
                             <button
                                 key={review.id}
                                 onClick={() => setSelectedReviewId(review.id)}
-                                className={`w-full text-left rounded-[24px] border p-5 transition-all ${selectedReviewId === review.id ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-[#FAFAFA] border-zinc-100 hover:border-zinc-300'}`}
+                                className={`group relative w-full text-left rounded-[24px] border p-5 transition-all ${selectedReviewId === review.id ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/20' : 'bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-lg'}`}
                             >
-                                <p className="text-lg font-bold tracking-tight">
-                                    {review.user?.full_name || review.user?.email || `ID: ${review.user_id?.substring(0, 8)}...`}
-                                </p>
-                                <p className={`text-xs mt-1 ${selectedReviewId === review.id ? 'text-white/60' : 'text-zinc-400'}`}>
-                                    {review.user?.email || (review.user ? 'No email' : 'Relation Missing')}
-                                </p>
-                                <p className={`text-[10px] uppercase tracking-[0.25em] mt-4 ${selectedReviewId === review.id ? 'text-white/50' : 'text-zinc-300'}`}>
-                                    Company: {review.job?.company_name || 'None'}
-                                </p>
-                                {review.job?.title && (
-                                    <p className={`text-[9px] font-bold mt-1 ${selectedReviewId === review.id ? 'text-white/40' : 'text-zinc-400'}`}>
-                                        Role: {review.job.title}
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="min-w-0">
+                                        <p className="text-lg font-bold tracking-tight truncate">
+                                            {review.user?.full_name || review.user?.email || `ID: ${review.user_id?.substring(0, 8)}...`}
+                                        </p>
+                                        <p className={`text-xs mt-0.5 truncate ${selectedReviewId === review.id ? 'text-white/60' : 'text-zinc-400'}`}>
+                                            {review.user?.email || (review.user ? 'No email' : 'Relation Missing')}
+                                        </p>
+                                    </div>
+                                    <div className={`shrink-0 w-2.5 h-2.5 rounded-full mt-1.5 transition-all duration-500 ${
+                                        review.status === 'reviewed' 
+                                        ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' 
+                                        : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
+                                    }`} />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className={`text-[10px] uppercase tracking-[0.25em] ${selectedReviewId === review.id ? 'text-white/50' : 'text-zinc-300'}`}>
+                                        Company: {review.job?.company_name || 'None'}
                                     </p>
-                                )}
+                                    {review.job?.title && (
+                                        <p className={`text-[9px] font-bold ${selectedReviewId === review.id ? 'text-white/40' : 'text-zinc-400'}`}>
+                                            Role: {review.job.title}
+                                        </p>
+                                    )}
+                                </div>
                             </button>
                         ))}
                     </div>
@@ -247,9 +268,18 @@ const InterviewReviewsPage = () => {
                                             {selectedReview.user?.email || 'The database could not join the user profile for this interview.'}
                                         </p>
                                     </div>
-                                    <div className="rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-6 py-4">
+                                    <div className="rounded-[24px] border border-zinc-100 bg-white px-6 py-4 shadow-sm min-w-[140px]">
                                         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Status</p>
-                                        <p className="mt-2 text-sm font-bold text-zinc-900">{selectedReview.status}</p>
+                                        <div className="flex items-center gap-3 mt-2">
+                                            <div className={`w-2.5 h-2.5 rounded-full ${
+                                                selectedReview.status === 'reviewed' 
+                                                ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' 
+                                                : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
+                                            }`} />
+                                            <p className="text-sm font-bold text-zinc-900 capitalize">
+                                                {selectedReview.status.replace('_', ' ')}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 

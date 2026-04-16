@@ -36,10 +36,10 @@ const BlogLandingPage = () => {
                         >
                             Market <span className="text-zinc-200">Signals</span>
                         </motion.h1>
-                        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-8 flex items-center gap-3">
+                        <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-8 flex items-center gap-3">
                             <div className="w-8 h-[1px] bg-zinc-200" />
                             Intelligence Synthesis / Unfiltered Analysis
-                        </p>
+                        </div>
                     </div>
                     {user?.role === 'admin' && (
                         <button
