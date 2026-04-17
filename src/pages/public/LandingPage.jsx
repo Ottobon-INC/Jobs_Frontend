@@ -22,7 +22,9 @@ export default function LandingPage() {
         <main style={{ backgroundColor: '#F6F3ED' }}>
             {/* ── Hero Section ─────────────────────────── */}
             <div className="relative flex h-dvh w-full flex-col items-center overflow-hidden">
-                <GLSLHills />
+                <div className="pointer-events-none">
+                    <GLSLHills />
+                </div>
 
                 {/* Gradient fade into next section */}
                 <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[#313851] via-[#313851]/20 to-transparent z-20 pointer-events-none" />
@@ -36,14 +38,14 @@ export default function LandingPage() {
 
                     {/* Main headline */}
                     <h1
-                        className="text-center font-extrabold leading-[1.0] tracking-tight"
+                        className="hero-headline text-center font-extrabold leading-[1.0] tracking-tight"
                         style={{
                             fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
-                            fontSize: 'clamp(2.75rem, 8.5vw, 7rem)',
+                            fontSize: 'clamp(2.25rem, 6vw, 4.75rem)',
                             color: '#313851',
                             fontStyle: 'normal',
                             textShadow: '0 8px 32px rgba(246,243,237,0.5)',
-                            marginBottom: '0.35rem',
+                            marginBottom: '0.5rem',
                         }}
                     >
                         Land Your Dream Job
@@ -51,7 +53,7 @@ export default function LandingPage() {
 
                     {/* Sub-headline */}
                     <p
-                        className="text-center font-semibold"
+                        className="hero-subheadline text-center font-semibold"
                         style={{
                             fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
                             fontSize: 'clamp(1.1rem, 2.5vw, 1.75rem)',
@@ -66,7 +68,7 @@ export default function LandingPage() {
 
                     {/* Body copy */}
                     <p
-                        className="text-center font-medium leading-relaxed max-w-md"
+                        className="hero-description text-center font-medium leading-relaxed max-w-md"
                         style={{
                             fontFamily: "'Inter', system-ui, sans-serif",
                             fontSize: '0.975rem',
@@ -78,10 +80,10 @@ export default function LandingPage() {
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             to="/register"
-                            className="hero-cta hero-cta-primary"
+                            className="hero-cta hero-cta-primary hero-primary-btn"
                         >
                             Get Started
                         </Link>
@@ -96,8 +98,11 @@ export default function LandingPage() {
 
                 {/* 3D Robot — bottom portion */}
                 <div
-                    className="absolute bottom-[-100px] left-0 right-0 z-[2] h-[48%] grayscale opacity-85"
-                    style={{ clipPath: 'inset(0 0 100px 0)' }}
+                    className="hero-robot absolute bottom-[-100px] left-0 right-0 z-[2] h-[48%] grayscale opacity-85"
+                    style={{ 
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
+                        maskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)'
+                    }}
                 >
                     <InteractiveRobotSpline
                         scene={ROBOT_SCENE_URL}

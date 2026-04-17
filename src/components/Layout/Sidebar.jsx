@@ -35,7 +35,7 @@ const Sidebar = () => {
 
     return (
         <aside
-            className="fixed left-8 top-32 bottom-8 w-64 z-40 overflow-y-auto p-8 hidden md:flex flex-col gap-10 rounded-[32px] border-none shadow-2xl shadow-black/5"
+            className="sidebar fixed left-8 top-32 bottom-8 w-64 z-40 overflow-y-auto p-8 hidden md:flex flex-col gap-10 rounded-[32px] border-none shadow-2xl shadow-black/5"
             style={{ backgroundColor: 'var(--color-primary)' }}
         >
 
@@ -61,11 +61,8 @@ const Sidebar = () => {
                                     <NavLink
                                         to={link.to}
                                         className={({ isActive }) => `
-                                            sidebar-nav-link flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest
-                                            ${isActive
-                                                ? 'is-active shadow-2xl shadow-black/20'
-                                                : ''
-                                            }
+                                            sidebar-item flex items-center justify-between transition-all duration-300
+                                            ${isActive ? 'is-active' : ''}
                                         `}
                                     >
                                         {({ isActive }) => (

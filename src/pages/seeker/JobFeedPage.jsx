@@ -252,24 +252,42 @@ const JobFeedPage = () => {
     return (
         <div className="min-h-screen bg-[#FBFBFB]">
             {/* Minimalist Header Section */}
-            <header className="relative z-20 pt-24 pb-6 px-6">
+            <header className="relative z-20 pt-8 pb-1 px-6">
                 {/* Refined Background Accent */}
-                <div className="absolute inset-x-0 top-0 h-96 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-50" />
+                <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-40" />
 
                 <div className="max-w-7xl mx-auto relative z-10 text-center">
-                    {/* Neu-Minimalist Search Bar & Filters */}
+                    {/* 1. Title Section - Moved to top for UX hierarchy */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                        className="mb-8"
+                    >
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-zinc-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-6 border border-zinc-100 shadow-sm">
+                            <Sparkles size={11} className="text-zinc-400" />
+                            Market Feed
+                        </div>
+                        <h1 className="text-5xl md:text-6xl font-sans font-bold mb-4 tracking-tight text-zinc-900">
+                            Opportunities
+                        </h1>
+                        <p className="text-zinc-500 max-w-2xl mx-auto text-lg mb-4 leading-relaxed font-medium">
+                            Access the latest listings and career opportunities across our global network.
+                        </p>
+                    </motion.div>
+
+                    {/* 2. Neu-Minimalist Search Bar & Filters */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="max-w-4xl mx-auto mb-16"
+                        className="max-w-4xl mx-auto mb-10"
                     >
                         <div className="flex flex-col gap-4">
 
                             {/* Hover-open Filter Dropdowns */}
                             <div className="flex flex-col md:flex-row gap-3">
-
-                                {/* Location Dropdown — hover to open */}
+                                {/* Location Dropdown */}
                                 <div
                                     className="relative flex-1"
                                     onMouseEnter={() => setIsLocationOpen(true)}
@@ -298,13 +316,7 @@ const JobFeedPage = () => {
                                                     <button
                                                         key={loc}
                                                         onClick={() => { setSelectedLocation(loc); setIsLocationOpen(false); }}
-                                                        className="w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150"
-                                                        style={{
-                                                            backgroundColor: selectedLocation === loc ? '#313851' : 'transparent',
-                                                            color: selectedLocation === loc ? '#ffffff' : '#313851',
-                                                        }}
-                                                        onMouseEnter={e => { if (selectedLocation !== loc) e.currentTarget.style.backgroundColor = '#C2CBD3'; }}
-                                                        onMouseLeave={e => { if (selectedLocation !== loc) e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                                        className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold premium-tag ${selectedLocation === loc ? 'is-active' : ''}`}
                                                     >
                                                         {loc}
                                                     </button>
@@ -314,7 +326,7 @@ const JobFeedPage = () => {
                                     </AnimatePresence>
                                 </div>
 
-                                {/* Experience Dropdown — hover to open */}
+                                {/* Experience Dropdown */}
                                 <div
                                     className="relative flex-1"
                                     onMouseEnter={() => setIsExperienceOpen(true)}
@@ -343,13 +355,7 @@ const JobFeedPage = () => {
                                                     <button
                                                         key={exp}
                                                         onClick={() => { setSelectedExperience(exp); setIsExperienceOpen(false); }}
-                                                        className="w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150"
-                                                        style={{
-                                                            backgroundColor: selectedExperience === exp ? '#313851' : 'transparent',
-                                                            color: selectedExperience === exp ? '#ffffff' : '#313851',
-                                                        }}
-                                                        onMouseEnter={e => { if (selectedExperience !== exp) e.currentTarget.style.backgroundColor = '#C2CBD3'; }}
-                                                        onMouseLeave={e => { if (selectedExperience !== exp) e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                                        className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold premium-tag ${selectedExperience === exp ? 'is-active' : ''}`}
                                                     >
                                                         {exp}
                                                     </button>
@@ -359,7 +365,7 @@ const JobFeedPage = () => {
                                     </AnimatePresence>
                                 </div>
 
-                                {/* Category Dropdown — hover to open */}
+                                {/* Category Dropdown */}
                                 <div
                                     className="relative flex-1"
                                     onMouseEnter={() => setIsCategoryOpen(true)}
@@ -388,13 +394,7 @@ const JobFeedPage = () => {
                                                     <button
                                                         key={cat}
                                                         onClick={() => { setSelectedCategory(cat); setIsCategoryOpen(false); }}
-                                                        className="w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150"
-                                                        style={{
-                                                            backgroundColor: selectedCategory === cat ? '#313851' : 'transparent',
-                                                            color: selectedCategory === cat ? '#ffffff' : '#313851',
-                                                        }}
-                                                        onMouseEnter={e => { if (selectedCategory !== cat) e.currentTarget.style.backgroundColor = '#C2CBD3'; }}
-                                                        onMouseLeave={e => { if (selectedCategory !== cat) e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                                        className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold premium-tag ${selectedCategory === cat ? 'is-active' : ''}`}
                                                     >
                                                         {cat}
                                                     </button>
@@ -403,26 +403,18 @@ const JobFeedPage = () => {
                                         )}
                                     </AnimatePresence>
                                 </div>
-
                             </div>
                         </div>
 
-                        {/* Skill Pill Tags */}
-                        <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+                        {/* Skill Pill Tags - Increased margin for professional spacing */}
+                        <div className="flex flex-wrap items-center justify-center gap-2 mt-10">
                             {topSkills.map(skill => {
                                 const isActive = selectedSkills.includes(skill);
                                 return (
                                     <button
                                         key={skill}
                                         onClick={() => toggleSkill(skill)}
-                                        className="px-5 py-2 rounded-full text-xs font-bold border transition-all duration-200 active:scale-[0.95]"
-                                        style={{
-                                            backgroundColor: isActive ? '#ffffff' : 'transparent',
-                                            borderColor: isActive ? '#313851' : '#C2CBD3',
-                                            color: isActive ? '#313851' : '#313851',
-                                        }}
-                                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.backgroundColor = '#C2CBD3'; e.currentTarget.style.borderColor = '#C2CBD3'; } }}
-                                        onMouseLeave={e => { if (!isActive) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = '#C2CBD3'; } }}
+                                        className={`premium-pill border transition-all duration-200 active:scale-[0.95] ${isActive ? 'is-active' : ''}`}
                                     >
                                         {skill}
                                     </button>
@@ -438,31 +430,12 @@ const JobFeedPage = () => {
                                 </button>
                             )}
                         </div>
-
-
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-10 border border-zinc-100 shadow-sm">
-                            <Sparkles size={12} className="text-zinc-400" />
-                            Market Feed
-                        </div>
-                        <h1 className="text-7xl md:text-8xl font-sans font-bold mb-6 tracking-tight text-zinc-900">
-                            Opportunities
-                        </h1>
-                        <p className="text-zinc-500 max-w-2xl mx-auto text-xl mb-5 leading-relaxed font-medium">
-                            Access the latest job listings and career opportunities across our global network.
-                        </p>
                     </motion.div>
                 </div>
             </header>
 
             {/* Content Container */}
-            <main className="max-w-7xl mx-auto pt-8 pb-32 px-6">
+            <main className="max-w-7xl mx-auto pt-6 pb-24 px-6">
                 
                 {/* 3. Matched Roles Section ABOVE Available Roles */}
                 {matchedJobs !== null && (
@@ -483,7 +456,7 @@ const JobFeedPage = () => {
                     </span>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {visibleJobs.length > 0 ? (
                         visibleJobs.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (

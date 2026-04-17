@@ -28,9 +28,9 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
     // Color logic for gauge
     // Dynamic color logic for premium aesthetic
     const getScoreColors = (val) => {
-        if (val > 75) return { primary: '#00bf63', secondary: '#008e4a', glow: 'rgba(0, 191, 99, 0.4)' }; // Green
-        if (val >= 25) return { primary: '#ffde59', secondary: '#c9a800', glow: 'rgba(255, 222, 89, 0.4)' }; // Yellow
-        return { primary: '#ff3131', secondary: '#b30000', glow: 'rgba(255, 49, 49, 0.4)' }; // Red
+        if (val > 70) return { primary: '#22C55E', tertiary: '#16a34a', glow: 'rgba(34, 197, 94, 0.4)' }; // Green
+        if (val > 40) return { primary: '#F59E0B', tertiary: '#d97706', glow: 'rgba(245, 158, 11, 0.4)' }; // Orange
+        return { primary: '#EF4444', tertiary: '#dc2626', glow: 'rgba(239, 68, 68, 0.4)' }; // Red
     };
 
     const colors = getScoreColors(score);
@@ -53,7 +53,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                         <div className="flex items-center gap-6">
                             <button 
                                 onClick={onClose}
-                                className="flex items-center gap-2.5 px-5 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-[11px] font-bold text-zinc-600 hover:bg-zinc-900 hover:text-white transition-all group"
+                                className="premium-tag flex items-center gap-2.5 px-5 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-[11px] font-bold text-zinc-600 hover:bg-zinc-900 transition-all group"
                             >
                                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Job Board
                             </button>
@@ -82,22 +82,23 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     <div className="relative w-64 h-64 flex items-center justify-center">
                                         <svg className="w-full h-full transform -rotate-90 scale-110" viewBox="0 0 200 200">
                                             {/* Track 1: Outer subtle track */}
-                                            <circle cx="100" cy="100" r={radius} stroke="#F0F0F0" strokeWidth="12" fill="transparent" />
+                                            <circle cx="100" cy="100" r={radius} stroke="#F0F0F0" strokeWidth="18" fill="transparent" />
                                             
                                             <motion.circle
                                                 cx="100" cy="100" r={radius}
-                                                stroke="#18181b" strokeWidth="12" fill="transparent"
+                                                stroke={colors.primary} strokeWidth="18" fill="transparent"
                                                 strokeDasharray={circumference}
                                                 initial={{ strokeDashoffset: circumference }}
                                                 animate={{ strokeDashoffset }}
                                                 transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
                                                 strokeLinecap="round"
+                                                style={{ filter: `drop-shadow(0 0 10px ${colors.glow})` }}
                                             />
                                         </svg>
                                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                                             <div className="flex flex-col items-center">
-                                                <span className="text-6xl font-sans font-bold text-zinc-900 tracking-tighter leading-tight">{score}</span>
-                                                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mt-2">PERCENT</span>
+                                                <span className="text-6xl font-sans font-bold tracking-tighter leading-tight" style={{ color: colors.primary }}>{score}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] mt-2" style={{ color: '#313851' }}>PERCENT</span>
                                             </div>
                                         </div>
                                     </div>
@@ -107,12 +108,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Skills Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Skills Match</span>
-                                            <span className="text-sm font-bold text-zinc-900">{skills_score}%</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Skills Match</span>
+                                            <span className="text-sm font-bold" style={{ color: getScoreColors(skills_score).primary }}>{skills_score}%</span>
                                         </div>
-                                        <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
+                                        <div className="h-3.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
                                             <motion.div 
-                                                className="h-full bg-zinc-900 rounded-full"
+                                                className="h-full rounded-full"
+                                                style={{ backgroundColor: getScoreColors(skills_score).primary }}
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${skills_score}%` }}
                                                 transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -123,12 +125,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Experience Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Experience Match</span>
-                                            <span className="text-sm font-bold text-zinc-900">{experience_score}%</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Experience Match</span>
+                                            <span className="text-sm font-bold" style={{ color: getScoreColors(experience_score).primary }}>{experience_score}%</span>
                                         </div>
-                                        <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
+                                        <div className="h-3.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
                                             <motion.div 
-                                                className="h-full bg-zinc-900 rounded-full"
+                                                className="h-full rounded-full"
+                                                style={{ backgroundColor: getScoreColors(experience_score).primary }}
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${experience_score}%` }}
                                                 transition={{ duration: 1.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -139,12 +142,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Interests Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Goals Alignment</span>
-                                            <span className="text-sm font-bold text-zinc-900">{interests_score}%</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Goals Alignment</span>
+                                            <span className="text-sm font-bold" style={{ color: getScoreColors(interests_score).primary }}>{interests_score}%</span>
                                         </div>
-                                        <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
+                                        <div className="h-3.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
                                             <motion.div 
-                                                className="h-full bg-zinc-400 rounded-full"
+                                                className="h-full rounded-full"
+                                                style={{ backgroundColor: getScoreColors(interests_score).primary }}
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${interests_score}%` }}
                                                 transition={{ duration: 1.5, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -155,12 +159,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Work Preference Align */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Work Preference</span>
-                                            <span className="text-sm font-bold text-zinc-900">{work_preference_score}%</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Work Preference</span>
+                                            <span className="text-sm font-bold" style={{ color: getScoreColors(work_preference_score).primary }}>{work_preference_score}%</span>
                                         </div>
-                                        <div className="h-2 w-full bg-zinc-50 rounded-full border border-zinc-100 overflow-hidden relative">
+                                        <div className="h-3.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
                                             <motion.div 
-                                                className="h-full bg-zinc-400 rounded-full"
+                                                className="h-full rounded-full"
+                                                style={{ backgroundColor: getScoreColors(work_preference_score).primary }}
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${work_preference_score}%` }}
                                                 transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}

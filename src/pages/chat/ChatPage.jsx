@@ -4,7 +4,7 @@ import { useChatWebSocket } from '../../hooks/useChatWebSocket';
 import { createChatSession, getMySessions } from '../../api/chatApi';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import Loader from '../../components/ui/Loader';
-import { Send, User, Bot, Briefcase, ArrowLeft, MessageSquare, Plus, Clock, Shield, Sparkles } from 'lucide-react';
+import { Send, User, Bot, Briefcase, ArrowLeft, MessageSquare, Plus, Clock, Shield, Sparkles, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -64,10 +64,11 @@ const ChatPage = () => {
 
                 <Link to="/jobs">
                     <motion.button 
-                        whileHover={{ x: -4 }}
-                        className="text-[10px] font-bold text-zinc-400 hover:text-zinc-900 flex items-center gap-2 transition-all uppercase tracking-[0.2em] bg-white px-6 py-3 rounded-2xl border border-zinc-100 shadow-sm"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="text-[10px] font-extrabold text-[#313851] flex items-center gap-2.5 transition-all uppercase tracking-[0.2em] bg-white px-7 py-3.5 rounded-2xl border border-[#C2CBD3] premium-shadow-hover"
                     >
-                        <ArrowLeft size={14} /> Back to Market
+                        <ArrowLeft size={16} /> Back to Market
                     </motion.button>
                 </Link>
             </header>
@@ -95,24 +96,44 @@ const ChatPage = () => {
                                     No active streams.
                                 </div>
                             ) : (
-                                sessions.map(session => {
+                                sessions.map((session, idx) => {
                                     const isActive = session.id === sessionId;
+                                    const isMostRecent = idx === 0;
                                     return (
                                         <button
                                             key={session.id}
                                             onClick={() => handleSelectSession(session.id)}
-                                            className={`w-full text-left p-5 rounded-2xl transition-all duration-300 border ${isActive
-                                                ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10 scale-[1.02]'
-                                                : 'text-zinc-600 border-transparent hover:bg-zinc-50 hover:text-zinc-900'
+                                            className={`relative w-full text-left p-5 rounded-2xl transition-all duration-300 border flex items-center justify-between group cursor-pointer ${isActive
+                                                ? 'bg-[#313851] text-white border-[#313851] shadow-lg shadow-zinc-900/10 scale-[1.02]'
+                                                : isMostRecent 
+                                                    ? 'bg-[#F6F3ED] text-[#313851] border-[#C2CBD3] hover:bg-[#E5E9F0]'
+                                                    : 'bg-white text-zinc-600 border-transparent hover:bg-[#E5E9F0] hover:text-[#313851]'
                                                 }`}
                                         >
-                                            <div className="text-xs font-bold truncate">
-                                                {session.job_title || "General Coach"}
+                                            {/* Hover Accent Bar */}
+                                            {!isActive && (
+                                                <div className="absolute left-0 top-4 bottom-4 w-1 bg-[#313851] opacity-0 group-hover:opacity-100 transition-opacity rounded-r-full" />
+                                            )}
+
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-1.5">
+                                                    <div className={`text-xs font-bold truncate ${isActive ? 'text-white' : 'text-[#313851]'}`}>
+                                                        {session.job_title || "General Coach"}
+                                                    </div>
+                                                    {isMostRecent && !isActive && (
+                                                        <span className="px-2 py-0.5 rounded-full bg-[#313851] text-[7px] text-white font-extrabold tracking-widest uppercase">Latest</span>
+                                                    )}
+                                                </div>
+                                                <div className={`text-[9px] font-bold uppercase tracking-[0.1em] flex items-center gap-2 ${isActive ? 'text-white/60' : 'text-zinc-400 opacity-60'}`}>
+                                                    <Clock size={12} />
+                                                    {session.created_at ? new Date(session.created_at).toLocaleDateString() : 'Initial'}
+                                                </div>
                                             </div>
-                                            <div className={`text-[9px] mt-2 font-bold uppercase tracking-[0.1em] flex items-center gap-2 ${isActive ? 'opacity-50' : 'opacity-30'}`}>
-                                                <Clock size={12} />
-                                                {session.created_at ? new Date(session.created_at).toLocaleDateString() : 'Initial'}
-                                            </div>
+
+                                            <ChevronRight 
+                                                size={16} 
+                                                className={`transition-all duration-300 ${isActive ? 'text-white translate-x-0' : 'text-[#C2CBD3] opacity-0 group-hover:opacity-100 group-hover:translate-x-1'}`}
+                                            />
                                         </button>
                                     );
                                 })

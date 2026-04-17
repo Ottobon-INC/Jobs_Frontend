@@ -169,7 +169,7 @@ const EvalReport = ({ evaluation }) => {
             ref={reportRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5 space-y-12 relative overflow-hidden"
+            className="bg-white rounded-[40px] border border-zinc-100 p-8 shadow-xl shadow-zinc-900/5 space-y-8 relative overflow-hidden"
         >
             {/* Download Action Bar */}
             <div id="download-action-bar" className="absolute top-8 right-8 z-10">
@@ -192,7 +192,7 @@ const EvalReport = ({ evaluation }) => {
             </h2>
 
             {/* Score */}
-            <div className="flex flex-col md:flex-row items-center gap-12">
+            <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="text-8xl font-bold font-sans tracking-tighter text-zinc-900 leading-none">
                     {overall_score}<span className="text-2xl text-zinc-300 ml-1">%</span>
                 </div>
@@ -217,7 +217,7 @@ const EvalReport = ({ evaluation }) => {
                 <>
                     {/* Fallback to legacy structure if no markdown */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                        <div className="p-6 bg-[#FAFAFA] rounded-[24px] border border-zinc-100">
                             <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Strengths</h3>
                             <ul className="space-y-4">
                                 {strengths.length > 0 ? (
@@ -231,7 +231,7 @@ const EvalReport = ({ evaluation }) => {
                                 )}
                             </ul>
                         </div>
-                        <div className="p-8 bg-[#FAFAFA] rounded-[32px] border border-zinc-100">
+                        <div className="p-6 bg-[#FAFAFA] rounded-[24px] border border-zinc-100">
                             <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Areas for Improvement</h3>
                             <ul className="space-y-4">
                                 {areas_for_improvement.length > 0 ? (
@@ -259,7 +259,7 @@ const EvalReport = ({ evaluation }) => {
                             <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Recommended Topics to Review</h3>
                             <div className="flex flex-wrap gap-3">
                                 {recommended_topics_to_review.map((t, i) => (
-                                    <span key={i} className="px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
+                                    <span key={i} className="premium-tag px-5 py-3 bg-white border border-zinc-100 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest shadow-sm">
                                         {t}
                                     </span>
                                 ))}
@@ -540,18 +540,18 @@ const MockInterviewPage = () => {
     // ── ENTRY SCREEN ──────────────────────────────────────────
     if (step === 'entry') {
         return (
-            <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 bg-[#FBFBFB] flex flex-col items-center justify-center">
+            <div className="min-h-screen pt-12 pb-24 px-4 md:px-8 bg-[#FBFBFB] flex flex-col items-center justify-center">
                 <div className="w-full max-w-2xl">
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="mb-12"
+                        className="mb-8"
                     >
                         <Link
                             to={id ? `/jobs/${id}` : '/jobs'}
-                            className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[11px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
+                            className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[10px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
                         >
-                            <ArrowLeft size={16} /> Back to Job Details
+                            <ArrowLeft size={14} /> Back
                         </Link>
                     </motion.div>
 
@@ -559,20 +559,20 @@ const MockInterviewPage = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="bg-white rounded-[48px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
+                        className="bg-white rounded-[40px] border border-zinc-100 p-8 shadow-xl shadow-zinc-900/5"
                     >
                         {/* Header */}
-                        <div className="mb-12">
+                        <div className="mb-8">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center">
                                     <Radio size={20} className="text-white" />
                                 </div>
-                                <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">
+                                <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">
                                     Mock Interview
                                 </h1>
                             </div>
                             {(companyName || jobTitle) && (
-                                <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-4 flex items-center gap-3">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-4 flex items-center gap-3">
                                     <div className="w-8 h-[1px] bg-zinc-100" />
                                     {companyName && `${companyName} • `}{jobTitle}
                                 </p>
@@ -589,9 +589,9 @@ const MockInterviewPage = () => {
                                     <button
                                         key={type}
                                         onClick={() => setInterviewType(type)}
-                                        className={`py-5 rounded-full border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${interviewType === type
+                                        className={`py-5 rounded-full border transition-all duration-300 font-bold text-[11px] uppercase tracking-widest ${interviewType === type
                                                 ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
-                                                : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
+                                                : 'bg-zinc-50 text-zinc-400 border-zinc-100 premium-tag'
                                             }`}
                                     >
                                         {type === 'technical' ? 'Technical Interview' : 'Behavioral Interview'}
@@ -728,9 +728,9 @@ const MockInterviewPage = () => {
     return (
         <>
             <div className="min-h-screen pt-24 pb-32 px-4 md:px-8 bg-[#FBFBFB]">
-                <div className="max-w-7xl mx-auto space-y-12">
+                <div className="max-w-7xl mx-auto space-y-8">
                     {/* Top bar */}
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-12 border-b border-zinc-100">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-zinc-100">
                         <div className="flex items-center gap-6">
                             <SiriVisualizer isActive={isSpeaking} />
                             <div>
@@ -761,7 +761,7 @@ const MockInterviewPage = () => {
                             <button
                                 onClick={() => setIsMuted((prev) => !prev)}
                                 disabled={!isActive}
-                                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${isMuted
+                                className={`premium-tag flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${isMuted
                                         ? 'bg-zinc-900 text-white border-zinc-900'
                                         : 'bg-white text-zinc-900 border-zinc-100 hover:border-zinc-900'
                                     }`}

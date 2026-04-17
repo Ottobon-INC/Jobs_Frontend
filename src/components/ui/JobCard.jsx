@@ -127,7 +127,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             className="group relative h-full"
         >
             <div
-                className="relative h-full overflow-hidden rounded-[32px] border shadow-[0_10px_30px_-22px_rgba(49,56,81,0.28)] transition-all duration-500 ease-in-out hover:shadow-[0_24px_52px_-28px_rgba(49,56,81,0.35)] hover:-translate-y-2 flex flex-col"
+                className="relative h-full overflow-hidden rounded-[32px] border premium-shadow premium-hover flex flex-col pt-0"
                 style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
             >
 
@@ -184,7 +184,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 {/* 5. Bottom Action Bar: View details + Save + Match % */}
                 <div className="px-8 pb-8 relative z-10 flex items-center gap-3">
                     <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1">
-                        <button className="w-full border font-sans font-medium text-xs py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)', color: 'var(--color-primary)' }}>
+                        <button className="w-full premium-pill border transition-all duration-300 active:scale-[0.98] py-4" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)', color: 'var(--color-primary)' }}>
                             View details
                         </button>
                     </Link>
