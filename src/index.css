@@ -107,29 +107,14 @@
     font-family: var(--font-sans);
   }
 
-  /* Global Hover-Reveal Scrollbar */
-  * {
+  /* Hide main window scrollbar globally */
+  html, body {
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
   }
 
-  *::-webkit-scrollbar {
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: none !important;
-  }
-
-  *:hover {
-    scrollbar-width: thin !important;
-    scrollbar-color: rgba(194, 203, 211, 0.4) transparent !important;
-  }
-
-  *:hover::-webkit-scrollbar {
-    display: block !important;
-    width: 4px !important;
-  }
-
-  *:hover::-webkit-scrollbar-thumb {
-    background: rgba(194, 203, 211, 0.4) !important;
-    border-radius: 20px !important;
   }
 
   /* Custom Scrollbar Utility */
@@ -678,30 +663,6 @@ canvas~div>a {
   opacity: 1;
 }
 
-/* Global Hover-Reveal Scrollbar Logic */
-* {
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-*::-webkit-scrollbar {
-  display: none !important;
-}
-
-*:hover {
-  scrollbar-width: thin !important;
-  scrollbar-color: #C2CBD3 transparent !important;
-}
-
-*:hover::-webkit-scrollbar {
-  display: block !important;
-  width: 4px !important;
-}
-
-*:hover::-webkit-scrollbar-thumb {
-  background: #C2CBD3 !important;
-  border-radius: 20px !important;
-}
 
 /* Specific Sidebar Scrollbar Fix: 100% Inside Container */
 .sidebar {
