@@ -240,6 +240,7 @@ export const getMyMockInterviews = async () => {
             created_at,
             updated_at,
             reviewed_at,
+            viewed_at,
             job:jobs_jobs!job_id(title, company_name),
             expert_feedback
         `)
@@ -261,6 +262,7 @@ export const getMockInterviewDetails = async (id) => {
             created_at,
             updated_at,
             reviewed_at,
+            viewed_at,
             transcript,
             ai_scorecard,
             expert_feedback,
@@ -278,5 +280,22 @@ export const getMockInterviewDetails = async (id) => {
     const { data, error } = await query.single();
 
     if (error) throw error;
+    return data;
+};
+
+export const markMockInterviewAsViewed = async (id) => {
+    const { data, error } = await supabase
+        .from('mock_interviews_jobs')
+        .update({ viewed_at: new Date().toISOString() })
+        .eq('id', id)
+        .is('viewed_at', null)
+        .select('id, viewed_at')
+        .single();
+
+    // If already viewed, nothing was updated (single() errors on empty), so we ignore the "not found" error
+    if (error && error.code !== 'PGRST116') {
+        console.error('Failed to mark mock interview as viewed:', error);
+        // We don't necessarily want to break the UI for this
+    }
     return data;
 };

@@ -12,10 +12,13 @@ import {
     User,
     ArrowRight,
     ChevronRight,
-    Sparkles
+    Sparkles,
+    ChevronDown,
+    ChevronUp,
+    History
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getMyMockInterviews, getMockInterviewDetails } from '../../api/mockInterviewApi';
+import { getMyMockInterviews, getMockInterviewDetails, markMockInterviewAsViewed } from '../../api/mockInterviewApi';
 import Loader from '../../components/ui/Loader';
 
 const StatusBadge = ({ status }) => {
@@ -57,6 +60,7 @@ const InterviewReviewsPage = () => {
     const [loading, setLoading] = useState(true);
     const [detailLoading, setDetailLoading] = useState(false);
     const [search, setSearch] = useState('');
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
     useEffect(() => {
         loadInterviews();
@@ -68,8 +72,11 @@ const InterviewReviewsPage = () => {
             const data = await getMyMockInterviews();
             setInterviews(data || []);
             if (data?.length > 0) {
-                const firstReviewed = data.find(i => i.status === 'reviewed') || data[0];
-                setSelectedId(firstReviewed.id);
+                // Priority: First unviewed reviewed, then first pending_review, then just first
+                const target = data.find(i => i.status === 'reviewed' && !i.viewed_at) || 
+                             data.find(i => i.status === 'pending_review') || 
+                             data[0];
+                setSelectedId(target.id);
             }
         } catch (err) {
             console.error('Failed to load interviews:', err);
@@ -86,6 +93,15 @@ const InterviewReviewsPage = () => {
             try {
                 const data = await getMockInterviewDetails(selectedId);
                 setSelectedData(data);
+                
+                // Auto-mark as viewed if it's reviewed but not yet viewed
+                if (data?.status === 'reviewed' && !data?.viewed_at) {
+                    await markMockInterviewAsViewed(selectedId);
+                    // Update local state to reflect it's viewed without a full reload
+                    setInterviews(prev => prev.map(i => 
+                        i.id === selectedId ? { ...i, viewed_at: new Date().toISOString() } : i
+                    ));
+                }
             } catch (err) {
                 console.error('Failed to load interview details:', err);
             } finally {
@@ -101,11 +117,46 @@ const InterviewReviewsPage = () => {
         (i.job?.company_name || '').toLowerCase().includes(search.toLowerCase())
     );
 
+    const activeInterviews = filteredInterviews.filter(i => 
+        i.status !== 'reviewed' || !i.viewed_at
+    );
+    
+    const viewedInterviews = filteredInterviews.filter(i => 
+        i.status === 'reviewed' && i.viewed_at
+    );
+
     if (loading) return <Loader fullScreen variant="logo" />;
+
+    const renderInterviewCard = (item, idx) => (
+        <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: idx * 0.05 }}
+            key={item.id}
+            onClick={() => setSelectedId(item.id)}
+            className={`group relative w-full text-left px-6 py-4 rounded-[32px] border transition-all duration-500 overflow-hidden ${selectedId === item.id
+                ? 'bg-zinc-900 border-zinc-900 shadow-xl shadow-zinc-900/20'
+                : 'bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-lg'
+                }`}
+        >
+            <div className="flex justify-between items-center group-hover:px-2 transition-all duration-500">
+                <div className="flex items-center gap-4 min-w-0">
+                    <StatusBadge status={item.status} />
+                    <h4 className={`text-sm font-bold tracking-tight truncate ${selectedId === item.id ? 'text-white' : 'text-zinc-900'}`}>
+                        {item.job?.title || 'General Interview'}
+                    </h4>
+                </div>
+                <span className={`text-[9px] font-black uppercase tracking-wider shrink-0 ${selectedId === item.id ? 'text-zinc-500' : 'text-zinc-300'}`}>
+                    {new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </span>
+            </div>
+        </motion.button>
+    );
 
     return (
         <div className="max-w-[1600px] mx-auto min-h-[calc(100vh-120px)] flex flex-col gap-8">
-            {/* Header */}
+            {/* Header omitted for brevity in diff but included in final */}
+            {/* ... same header ... */}
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-zinc-100">
                 <div>
                     <motion.div
@@ -136,39 +187,60 @@ const InterviewReviewsPage = () => {
 
             <div className="flex-1 grid grid-cols-1 xl:grid-cols-[400px_1fr] gap-8">
                 {/* Left Column: History */}
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between px-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Interview History</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">{filteredInterviews.length} Sessions</span>
+                <div className="flex flex-col gap-6">
+                    {/* Active/Recent Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 flex items-center gap-2">
+                                <Sparkles size={12} className="text-zinc-400" />
+                                Active & Recent
+                            </span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">{activeInterviews.length}</span>
+                        </div>
+                        <div className="flex flex-col gap-3 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                            {activeInterviews.length > 0 ? (
+                                activeInterviews.map((item, idx) => renderInterviewCard(item, idx))
+                            ) : (
+                                <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest text-center py-8 bg-zinc-50/50 rounded-3xl border border-dashed border-zinc-200">
+                                    No active reviews
+                                </p>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-3 overflow-y-auto max-h-[70vh] custom-scrollbar pr-2">
-                        {filteredInterviews.map((item, idx) => (
-                            <motion.button
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: idx * 0.05 }}
-                                key={item.id}
-                                onClick={() => setSelectedId(item.id)}
-                                className={`group relative w-full text-left px-6 py-4 rounded-[32px] border transition-all duration-500 overflow-hidden ${selectedId === item.id
-                                    ? 'bg-zinc-900 border-zinc-900 shadow-xl shadow-zinc-900/20'
-                                    : 'bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-lg'
-                                    }`}
+                    {/* Viewed/History Section */}
+                    {viewedInterviews.length > 0 && (
+                        <div className="space-y-4">
+                            <button 
+                                onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                                className="w-full flex items-center justify-between px-2 group"
                             >
-                                <div className="flex justify-between items-center group-hover:px-2 transition-all duration-500">
-                                    <div className="flex items-center gap-4 min-w-0">
-                                        <StatusBadge status={item.status} />
-                                        <h4 className={`text-sm font-bold tracking-tight truncate ${selectedId === item.id ? 'text-white' : 'text-zinc-900'}`}>
-                                            {item.job?.title || 'General Interview'}
-                                        </h4>
-                                    </div>
-                                    <span className={`text-[9px] font-black uppercase tracking-wider shrink-0 ${selectedId === item.id ? 'text-zinc-500' : 'text-zinc-300'}`}>
-                                        {new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                                    </span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 flex items-center gap-2 group-hover:text-zinc-900 transition-colors">
+                                    <History size={12} />
+                                    Viewed History
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-300">{viewedInterviews.length}</span>
+                                    {isHistoryOpen ? <ChevronUp size={14} className="text-zinc-400" /> : <ChevronDown size={14} className="text-zinc-400" />}
                                 </div>
-                            </motion.button>
-                        ))}
-                    </div>
+                            </button>
+                            
+                            <AnimatePresence>
+                                {isHistoryOpen && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="flex flex-col gap-3 py-2 pr-2 max-h-[30vh] overflow-y-auto custom-scrollbar">
+                                            {viewedInterviews.map((item, idx) => renderInterviewCard(item, idx + activeInterviews.length))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right Column: Details */}
