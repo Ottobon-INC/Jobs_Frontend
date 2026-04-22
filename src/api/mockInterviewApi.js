@@ -8,7 +8,7 @@ import axios from 'axios';
 // to ensure auth is consistently applied (OWASP A07)
 import { supabase } from './client';
 
-const MOCK_BASE = import.meta.env.VITE_MOCK_API_URL || '';
+const MOCK_BASE = import.meta.env.VITE_MOCK_API_URL || `http://${window.location.hostname}:8200/mock`;
 
 const mockClient = axios.create({
     baseURL: MOCK_BASE,

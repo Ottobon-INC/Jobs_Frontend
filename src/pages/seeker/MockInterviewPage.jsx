@@ -33,7 +33,7 @@ import {
 
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
-const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || '';
+const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `ws://${window.location.hostname}:8200/mock/ws`;
 
 
 // ── Sub-components ────────────────────────────────────────────
