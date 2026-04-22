@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { toJpeg } from 'html-to-image';
+import { generateUUID } from '../../utils/uuid';
 import {
     ArrowLeft,
     Mic,
@@ -146,7 +147,7 @@ const MockInterviewPage = () => {
     const forcedMuteRef = useRef(false);
     const stopSessionRef = useRef(null);
     const endingRef = useRef(false);
-    const interviewRecordIdRef = useRef(crypto.randomUUID());
+    const interviewRecordIdRef = useRef(generateUUID());
 
     // Auto-scroll transcript/response panels
     useEffect(() => {
@@ -302,7 +303,7 @@ const MockInterviewPage = () => {
         setViolationCount(0);
         setShowViolationAlert(false);
         endingRef.current = false;
-        interviewRecordIdRef.current = crypto.randomUUID();
+        interviewRecordIdRef.current = generateUUID();
 
         try {
             // Push job context to mock backend (runs on the same server as jobs backend)

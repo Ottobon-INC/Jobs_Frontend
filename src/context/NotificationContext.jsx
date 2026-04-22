@@ -4,6 +4,8 @@ import { useAuth } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { ROLES } from '../utils/constants';
 
+import { generateUUID } from '../utils/uuid';
+
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
@@ -15,7 +17,7 @@ export const NotificationProvider = ({ children }) => {
 
     const addNotification = useCallback((notification) => {
         const newNotif = {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             timestamp: new Date().toISOString(),
             isRead: false,
             ...notification
