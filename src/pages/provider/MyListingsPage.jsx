@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from '../../components/ui/Loader';
-import { Trash2, AlertCircle, Briefcase, Eye, PlusCircle, Clock, Sparkles } from 'lucide-react';
+import { Trash2, AlertCircle, Briefcase, Eye, PlusCircle, Clock, Sparkles, Building2 } from 'lucide-react';
 import { deleteJob, getProviderJobs } from '../../api/jobsApi';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -114,20 +114,30 @@ const MyListingsPage = () => {
                             >
                                 <div
                                     className="relative h-full overflow-hidden glass-card premium-shadow premium-hover flex flex-col pt-0"
-                                    style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
+                                    style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
                                 >
                                     {/* Status Bar */}
                                     <div className="px-8 pt-8 pb-3 relative z-10 flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-accent)' }}>
-                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+                                        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'rgba(49, 56, 81, 0.65)' }}>
+                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'rgba(49, 56, 81, 0.65)' }} />
                                             <span>{job.status === 'active' ? 'Active' : 'Archived'}</span>
                                         </div>
-                                        <span className="text-[11px] font-semibold" style={{ color: 'var(--color-accent)' }}>
+                                        <span className="text-[11px] font-semibold" style={{ color: 'rgba(49, 56, 81, 0.65)' }}>
                                             {job.created_at ? new Date(job.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'N/A'}
-                                        </span>
-                                    </div>
+                                         </span>
+                                     </div>
 
-                                    {/* Job Title */}
+                                     {/* Company Name */}
+                                     {job.company_name && (
+                                         <div className="px-8 pb-1 relative z-10 flex items-center gap-2">
+                                             <Building2 size={12} className="text-zinc-400" />
+                                             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                                                 {job.company_name}
+                                             </span>
+                                         </div>
+                                     )}
+
+                                     {/* Job Title */}
                                     <div className="px-8 pb-4 relative z-10">
                                         <h3 className="font-display font-extrabold tracking-tight leading-snug text-[22px] transition-colors line-clamp-2" style={{ color: 'var(--color-primary)' }}>
                                             {job.title}
@@ -141,7 +151,7 @@ const MyListingsPage = () => {
                                                 <span
                                                     key={sIdx}
                                                     className="text-[10px] font-medium px-4 py-2 border rounded-full capitalize tracking-wide"
-                                                    style={{ backgroundColor: 'var(--color-job-card)', color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}
+                                                    style={{ backgroundColor: 'var(--color-job-card)', color: 'rgba(49, 56, 81, 0.85)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
                                                 >
                                                     {skill}
                                                 </span>
@@ -152,7 +162,7 @@ const MyListingsPage = () => {
                                     {/* Bottom Action Bar */}
                                     <div className="px-8 pb-8 relative z-10 flex items-center gap-3">
                                         <Link to={`/jobs/${job.id}`} className="flex-1">
-                                            <button className="w-full premium-pill border transition-all duration-300 active:scale-[0.98] py-4" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)', color: 'var(--color-primary)' }}>
+                                            <button className="w-full premium-pill border transition-all duration-300 active:scale-[0.98] py-4" style={{ backgroundColor: 'transparent', borderColor: 'rgba(49, 56, 81, 0.45)', color: 'var(--color-primary)' }}>
                                                 View details
                                             </button>
                                         </Link>

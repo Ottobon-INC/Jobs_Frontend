@@ -62,14 +62,12 @@ const JobCard = ({ job, isAuthenticated = true }) => {
         const titleLoc = `${cleanTitle} ${displayLocation}`.toLowerCase();
         if (titleLoc.includes('remote')) return 'Remote';
         if (titleLoc.includes('hybrid')) return 'Hybrid';
-        
         const descText = `${job.short_description || ''} ${Array.isArray(job.role_overview) ? job.role_overview.join(' ') : ''}`.toLowerCase();
         if (/\bhybrid\b/.test(descText)) return 'Hybrid';
         if (/\bremote\b/.test(descText)) return 'Remote';
-        
         return 'Onsite';
     };
-    const workMode = getWorkMode();
+    const workMode = job.work_mode || getWorkMode();
 
     // Match score from job data (if available from matchAllJobs)
     const rawScore = job.match_score ?? job.similarity_score;
@@ -107,7 +105,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
         >
             <div
                 className="relative h-full overflow-hidden card border premium-shadow premium-hover flex flex-col pt-0"
-                style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
+                style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
             >
 
                 {/* 1. Status Bar: Active dot + Location · Date */}
@@ -179,35 +177,31 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                     </div>
                 </div>
 
-                {/* 6. Footer: Visit website CTA */}
-                {job.external_apply_url && (
-                    <div className="px-8 pb-3 relative z-10">
-                        <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <ExternalLink size={11} />
-                            Visit website for full details
-                        </span>
-                    </div>
-                )}
+
 
                 {/* 7. Bottom Action Bar: View details + Save */}
-                <div className="px-8 pb-8 relative z-10 flex items-center gap-3">
-                    <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1">
-                        <button className="w-full premium-pill border border-zinc-900 transition-all duration-300 active:scale-[0.98] py-4 bg-zinc-900 text-white font-black uppercase tracking-widest text-[11px]">
-                            View details
+                <div className="px-8 pb-8 relative z-10 flex flex-col gap-3">
+                    <div className="flex items-center gap-3 w-full">
+                        <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1">
+                            <button className="w-full premium-pill border border-zinc-900 transition-all duration-300 active:scale-[0.98] py-4 bg-transparent text-zinc-900 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-50">
+                                View details
+                            </button>
+                        </Link>
+                        <button
+                            onClick={handleToggleSave}
+                            disabled={loading || !isAuthenticated}
+                            className={`px-5 py-4 rounded-2xl font-sans font-black text-[11px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] ${
+                                saved
+                                    ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/10'
+                                    : 'bg-white border border-zinc-900 text-zinc-900'
+                            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            <Bookmark size={14} className={saved ? 'fill-white' : ''} />
+                            {saved ? 'Saved' : 'Save'}
                         </button>
-                    </Link>
-                    <button
-                        onClick={handleToggleSave}
-                        disabled={loading || !isAuthenticated}
-                        className={`px-5 py-4 rounded-2xl font-sans font-black text-[11px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] ${
-                            saved
-                                ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/10'
-                                : 'bg-white border border-zinc-900 text-zinc-900'
-                        } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        <Bookmark size={14} className={saved ? 'fill-white' : ''} />
-                        {saved ? 'Saved' : 'Save'}
-                    </button>
+                    </div>
+
+
                 </div>
             </div>
         </motion.div>

@@ -7,6 +7,7 @@ const JobOverviewCard = ({
   experience = 'Not Specified',
   qualification = null,
   salary = null,
+  workMode = 'Onsite',
 }) => (
   <div className="w-full mb-12 p-10 rounded-[32px] border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm">
     <div className="absolute -top-6 -right-6 p-6 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
@@ -45,6 +46,10 @@ const JobOverviewCard = ({
               <span>{salary}</span>
             </div>
           )}
+          <div className="flex items-center gap-3">
+            <div className={`w-2 h-2 rounded-full ${workMode === 'Remote' ? 'bg-sky-500' : workMode === 'Hybrid' ? 'bg-purple-500' : 'bg-emerald-500'}`} />
+            <span className="font-bold text-zinc-900 uppercase text-[10px] tracking-widest">{workMode}</span>
+          </div>
         </div>
       </div>
 

@@ -6,7 +6,7 @@ import LoadingLogo from './LoadingLogo';
  * Loader - A global wrapper component that displays either the Terminal Loader or Brand Logo.
  * Supports switching between "terminal" and "logo" variants.
  */
-const Loader = ({ fullScreen = false, text = "Initializing...", variant = "terminal" }) => {
+const Loader = ({ fullScreen = false, text = "Initializing...", variant = "logo" }) => {
     const renderContent = () => {
         if (variant === "logo") {
             return <LoadingLogo />;

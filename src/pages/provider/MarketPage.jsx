@@ -14,7 +14,7 @@ const COLORS = ['#313851', '#C2CBD3', '#F6F3ED'];
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="glass-card premium-shadow px-4 py-3" style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}>
+            <div className="glass-card premium-shadow px-4 py-3" style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}>
                 <p className="text-[10px] font-bold mb-2 uppercase tracking-widest" style={{ color: 'var(--color-accent)' }}>{label}</p>
                 {payload.map((entry, index) => (
                     <p key={index} className="text-xs font-bold flex items-center gap-2" style={{ color: 'var(--color-primary)' }}>
@@ -46,7 +46,7 @@ const MarketPage = () => {
         fetchStats();
     }, []);
 
-    if (loading) return <Loader fullScreen variant="logo" />;
+    if (loading) return <Loader fullScreen />;
     if (!stats) return (
         <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-20 h-20 bg-zinc-50 rounded-[32px] grid place-items-center mb-6">
@@ -183,12 +183,12 @@ const StatCard = ({ icon, label, value, sub, delay }) => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay }}
         className="glass-card premium-shadow-sm premium-hover p-5 overflow-hidden relative group"
-        style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
+        style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
     >
         <div className="absolute top-0 right-0 w-20 h-20 rounded-bl-[48px] transition-transform duration-500 group-hover:scale-110 -z-0" style={{ backgroundColor: '#F6F3ED', opacity: 0.1 }} />
         
         <div className="relative z-10">
-            <div className="w-10 h-10 border rounded-xl grid place-items-center mb-4 transition-colors" style={{ backgroundColor: 'transparent', borderColor: 'var(--color-accent)', color: 'var(--color-primary)' }}>
+            <div className="w-10 h-10 border rounded-xl grid place-items-center mb-4 transition-colors" style={{ backgroundColor: 'transparent', borderColor: 'rgba(49, 56, 81, 0.45)', color: 'var(--color-primary)' }}>
                 {icon}
             </div>
             <div>
@@ -205,9 +205,9 @@ const ChartCard = ({ title, children }) => (
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         className="glass-card premium-shadow-sm premium-hover p-5"
-        style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'var(--color-accent)' }}
+        style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
     >
-        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 border-b pb-3" style={{ color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}>
+        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 border-b pb-3" style={{ color: 'var(--color-accent)', borderColor: 'rgba(49, 56, 81, 0.45)' }}>
             {title}
         </h3>
         {children}

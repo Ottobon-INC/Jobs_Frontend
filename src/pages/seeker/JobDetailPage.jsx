@@ -17,7 +17,8 @@ const BentoCard = ({ children, className = "", delay = 0 }) => (
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
-        className={`bg-white rounded-xl border border-zinc-100 p-5 md:p-5 flex flex-col shadow-xl shadow-zinc-900/5 overflow-hidden min-w-0 ${className}`}
+        className={`bg-white rounded-xl border p-5 md:p-5 flex flex-col shadow-xl shadow-zinc-900/5 overflow-hidden min-w-0 ${className}`}
+        style={{ borderColor: 'rgba(49, 56, 81, 0.25)' }}
     >
         {children}
     </motion.div>
@@ -162,7 +163,7 @@ const JobDetailPage = () => {
                                 <div className="flex flex-wrap justify-start gap-4 text-zinc-400 font-bold uppercase text-[10px] tracking-[0.2em]">
                                     <span className="flex items-center gap-2">
                                         <Building2 size={16} className="text-zinc-300" />
-                                        {job.company_name || 'CONFIDENTIAL'}
+                                        {job.company_name || 'Company'}
                                     </span>
                                     <span className="flex items-center gap-2">
                                         <MapPin size={16} className="text-zinc-300" />
@@ -203,7 +204,12 @@ const JobDetailPage = () => {
                                             </Link>
                                         )}
                                         {job.external_apply_url && (
-                                            <a href={job.external_apply_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto bg-white border border-zinc-100 text-zinc-900 px-10 py-4 rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95">
+                                            <a 
+                                                href={job.external_apply_url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="w-full sm:w-auto bg-zinc-900 text-white px-12 py-4 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl shadow-zinc-900/20 active:scale-95"
+                                            >
                                                 <ExternalLink size={16} /> Apply Now
                                             </a>
                                         )}
@@ -234,9 +240,10 @@ const JobDetailPage = () => {
                             experience={displayExperience}
                             qualification={displayQualification}
                             salary={displaySalary}
+                            workMode={job.work_mode}
                         />
 
-                        <h2 className="text-[10px] font-bold text-zinc-400 mt-10 mb-6 pb-2 border-b border-zinc-100 flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">
+                        <h2 className="text-[10px] font-bold text-zinc-400 mt-10 mb-6 pb-2 border-b flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full" style={{ borderColor: 'rgba(49, 56, 81, 0.15)' }}>
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
                             Job Description & Smart Analysis
                         </h2>

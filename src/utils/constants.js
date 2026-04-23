@@ -1,7 +1,7 @@
 const getBaseUrl = () => {
     if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-    // Fallback: Use current hostname but port 8200 (default backend port)
-    return `http://${window.location.hostname}:8200`;
+    // Fallback: Use current hostname but port 8001 (matching your running backend)
+    return `http://${window.location.hostname}:8001`;
 };
 
 export const API_BASE_URL = getBaseUrl();
