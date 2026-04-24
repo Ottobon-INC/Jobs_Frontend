@@ -23,6 +23,7 @@ const SavedJobsPage = lazy(() => import('./pages/seeker/SavedJobsPage'));
 const CoursesPage = lazy(() => import('./pages/seeker/CoursesPage'));
 const MockInterviewPage = lazy(() => import('./pages/seeker/MockInterviewPage'));
 const InterviewReviewsPage = lazy(() => import('./pages/seeker/InterviewReviewsPage'));
+const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -33,6 +34,7 @@ const ControlTowerPage = lazy(() => import('./pages/admin/ControlTowerPage'));
 const IngestionPage = lazy(() => import('./pages/admin/IngestionPage'));
 const HelpDeskPage = lazy(() => import('./pages/admin/HelpDeskPage'));
 const AdminInterviewReviewsPage = lazy(() => import('./pages/admin/InterviewReviewsPage'));
+const FeedbackDashboard = lazy(() => import('./pages/admin/FeedbackDashboard'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -91,6 +93,7 @@ function App() {
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/courses" element={<CoursesPage />} />
                   <Route path="/chat" element={<ChatPage />} />
+                  <Route path="/feedback" element={<FeedbackPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -104,7 +107,8 @@ function App() {
                   <Route path="/admin/tower" element={<ControlTowerPage />} />
                   <Route path="/admin/ingest" element={<IngestionPage />} />
                   <Route path="/admin/helpdesk" element={<HelpDeskPage />} />
-                  <Route path="/admin/interview-reviews" element={<AdminInterviewReviewsPage />} />
+                   <Route path="/admin/interview-reviews" element={<AdminInterviewReviewsPage />} />
+                  <Route path="/admin/feedback" element={<FeedbackDashboard />} />
                 </Route>
 
               </Route>
