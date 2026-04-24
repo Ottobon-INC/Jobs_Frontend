@@ -128,11 +128,12 @@ const JobDetailPage = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
     if (!job) return <div className="min-h-screen grid place-items-center text-zinc-900 font-bold uppercase tracking-widest">Protocol Null / Object Not Found</div>;
 
-    const displayExperience = job.experience_range || (
-        job.experience === 0 || String(job.experience).toLowerCase() === '0'
-            ? 'Fresher'
-            : (job.experience || job.experience_level || 'Not Specified')
-    );
+    const displayExperience = (job.experience && !['not specified', '0', 0].includes(String(job.experience).toLowerCase()))
+        ? job.experience
+        : (job.experience_range && job.experience_range !== 'Not specified' 
+            ? job.experience_range 
+            : (job.experience === 0 || String(job.experience).toLowerCase() === '0' ? 'Fresher' : 'Not Specified')
+        );
     const displayQualification = job.qualification || null;
     const displaySalary = job.salary_range || null;
     const overviewSentences = job.role_overview || getRoleOverview(job);
@@ -243,57 +244,6 @@ const JobDetailPage = () => {
                             workMode={job.work_mode}
                         />
 
-                        <h2 className="text-[10px] font-bold text-zinc-400 mt-10 mb-6 pb-2 border-b flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full" style={{ borderColor: 'rgba(49, 56, 81, 0.15)' }}>
-                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                            Job Description & Smart Analysis
-                        </h2>
-                        
-                        {/* Gen Z Summary Display */}
-                        {isSummarizing ? (
-                            <div className="w-full mb-6 p-5 rounded-xl border border-zinc-100 bg-zinc-50/50 flex flex-col gap-3 relative overflow-hidden">
-                                <div className="absolute inset-0 z-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.03)_50%,transparent_100%)] animate-[shimmer_2s_infinite] w-[200%] -ml-[100%]" />
-                                <div className="h-3 bg-zinc-200 rounded-full w-1/4 relative z-10"></div>
-                                <div className="h-3 bg-zinc-200 rounded-full w-full relative z-10 mt-2"></div>
-                                <div className="h-3 bg-zinc-200 rounded-full w-5/6 relative z-10"></div>
-                            </div>
-                        ) : genZSummary ? (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                                className="w-full mb-6 p-5 rounded-xl border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm"
-                            >
-                                <div className="absolute -top-6 -right-6 p-6 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
-                                    <Sparkles size={160} className="text-zinc-900" />
-                                </div>
-                                <div className="flex items-center gap-2 text-zinc-400 mb-4 border-b border-zinc-100 pb-2 inline-flex w-full">
-                                    <Sparkles size={12} className="text-zinc-900" />
-                                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]">Smart Summary Analysis</span>
-                                </div>
-                                <div
-                                    className="relative z-10 text-zinc-600 prose prose-zinc max-w-none text-[13px]"
-                                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(genZSummary) }}
-                                />
-                            </motion.div>
-                        ) : null}
-
-                        <div className="w-full relative overflow-hidden">
-                            <div
-                                className={`prose prose-zinc max-w-none text-zinc-600 font-medium leading-relaxed text-[13px] break-words text-left [&_*]:text-left [&_*]:break-words [&_*]:max-w-full [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:block [&_pre]:overflow-x-auto [&_img]:hidden w-full transition-all duration-500 will-change-[max-height] ${isSpecExpanded ? 'max-h-[8000px]' : 'max-h-[300px] overflow-hidden'}`}
-                                dangerouslySetInnerHTML={{ __html: sanitizeHTML(job.description_raw) }}
-                            />
-                            {!isSpecExpanded && (
-                                <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-                            )}
-                        </div>
-                        <button
-                            onClick={() => setIsSpecExpanded(!isSpecExpanded)}
-                            className="w-full mt-6 py-2.5 bg-white border border-zinc-100 rounded-xl text-zinc-900 font-bold uppercase tracking-widest text-[9px] hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 shadow-sm"
-                        >
-                            {isSpecExpanded ? (
-                                <>View Less <ChevronUp size={12} /></>
-                            ) : (
-                                <>View Full Specification <ChevronDown size={12} /></>
-                            )}
-                        </button>
                     </BentoCard>
 
                     <BentoCard delay={0.2} className="border border-zinc-100">
@@ -311,7 +261,7 @@ const JobDetailPage = () => {
                                             return (
                                                 <div key={idx} className="p-5 bg-white rounded-xl border border-zinc-100 hover:border-zinc-200 transition-all flex flex-col items-start text-left shadow-sm">
                                                     <div className="px-3 py-1 bg-zinc-900 text-white rounded-lg text-[9px] font-bold uppercase tracking-widest mb-4">
-                                                        Vector {idx + 1}
+                                                        Question {idx + 1}
                                                     </div>
                                                     <p className="font-bold text-zinc-900 mb-6 text-sm leading-relaxed">{question}</p>
                                                     <div className="text-[10px] text-zinc-500 font-medium flex items-start justify-start gap-3 p-4 bg-zinc-50 rounded-xl border border-zinc-100/50 leading-[1.8] w-full">
@@ -349,7 +299,7 @@ const JobDetailPage = () => {
                                     </div>
                                     <h3 className="text-2xl font-bold text-zinc-900 tracking-tight mb-3">Protocol Locked</h3>
                                     <p className="text-sm font-medium text-zinc-500 max-w-[280px] leading-relaxed mb-12">
-                                        Interview vectors require a valid authentication session to decrypt.
+                                        Interview questions require a valid authentication session to decrypt.
                                     </p>
                                     <Link to="/login">
                                         <button className="px-12 py-5 bg-zinc-900 text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10 active:scale-95">

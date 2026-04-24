@@ -46,7 +46,12 @@ const JobCard = ({ job, isAuthenticated = true }) => {
 
     // Prefer backend fields, fallback to client-side computation
     const displayLocation = job.location || job.cleanLocation || 'Remote';
-    const displayExperience = job.experience_range || 'Not specified';
+    const displayExperience = (job.experience && !['not specified', '0', 0].includes(String(job.experience).toLowerCase()))
+        ? job.experience
+        : (job.experience_range && job.experience_range !== 'Not specified' 
+            ? job.experience_range 
+            : (job.experience === 0 || String(job.experience).toLowerCase() === '0' ? 'Fresher' : 'Not specified')
+        );
     const displayQualification = job.qualification || null;
     const displaySalary = job.salary_range && job.salary_range !== 'Not specified' ? job.salary_range : null;
 
