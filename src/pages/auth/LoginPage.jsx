@@ -77,7 +77,6 @@ const LoginPage = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 className="w-full px-5 py-3 pr-14 bg-zinc-50/50 border border-zinc-100 rounded-2xl text-zinc-900 font-semibold text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all duration-300"
-                                placeholder="••••••••"
                             />
                             <button
                                 type="button"

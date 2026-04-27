@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar } from '../../api/usersApi';
+import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar, getResumeDownloadUrl } from '../../api/usersApi';
 import { supabase } from '../../api/client';
 import { LIMITS, isValidText, isValidPhone, validateSkills, validateAspirations, validateFile, MAX_AVATAR_SIZE, MAX_RESUME_SIZE, ALLOWED_AVATAR_TYPES, ALLOWED_RESUME_TYPES } from '../../utils/validators';
 import Loader from '../../components/ui/Loader';
@@ -50,6 +50,7 @@ const ProfilePage = () => {
     const [customPosition, setCustomPosition] = useState('');
     const [workExperienceDescription, setWorkExperienceDescription] = useState('');
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
+    const [viewingResume, setViewingResume] = useState(false);
 
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -201,6 +202,22 @@ const ProfilePage = () => {
             setError(err.response?.data?.detail || 'Resume injection failed.');
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleViewResume = async () => {
+        try {
+            setViewingResume(true);
+            const { download_url } = await getResumeDownloadUrl();
+            if (download_url) {
+                window.open(download_url, '_blank');
+            } else {
+                setError("Could not retrieve resume URL.");
+            }
+        } catch (err) {
+            setError(err.response?.data?.detail || "Failed to fetch resume link.");
+        } finally {
+            setViewingResume(false);
         }
     };
 
@@ -378,6 +395,32 @@ const ProfilePage = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* View Resume Shortcut */}
+                        {profile?.resume_file_url && (
+                            <div className="pt-2">
+                                <button
+                                    onClick={handleViewResume}
+                                    disabled={viewingResume}
+                                    className="w-full flex items-center justify-between p-4 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition-all group/resume"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover/resume:text-black transition-colors">
+                                            <FileText size={16} />
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-black">Active Resume</p>
+                                            <p className="text-[9px] font-bold text-zinc-400">View current payload</p>
+                                        </div>
+                                    </div>
+                                    {viewingResume ? (
+                                        <RefreshCw size={14} className="animate-spin text-zinc-400" />
+                                    ) : (
+                                        <ChevronRight size={14} className="text-zinc-300 group-hover/resume:translate-x-1 transition-transform" />
+                                    )}
+                                </button>
+                            </div>
+                        )}
                     </motion.div>
 
                     {/* Quick Stats - Low Contrast Tiles */}
@@ -801,10 +844,22 @@ const ProfilePage = () => {
                                         className="hidden"
                                         onChange={handleResumeUpload}
                                         accept=".pdf,.docx"
+                                        disabled={saving}
                                     />
-                                    <Upload size={18} className="group-hover:-translate-y-1 transition-transform" />
-                                    Update Resume
+                                    {saving ? <RefreshCw size={18} className="animate-spin" /> : <Upload size={18} className="group-hover:-translate-y-1 transition-transform" />}
+                                    {saving ? 'Processing...' : 'Update Resume'}
                                 </label>
+
+                                {profile?.resume_file_url && (
+                                    <button
+                                        onClick={handleViewResume}
+                                        disabled={viewingResume}
+                                        className="px-6 py-2 bg-white border-2 border-black text-black rounded-full font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3 hover:bg-black hover:text-white active:scale-95 shadow-xl shadow-black/5"
+                                    >
+                                        {viewingResume ? <RefreshCw size={14} className="animate-spin" /> : <FileText size={14} />}
+                                        {viewingResume ? 'Fetching...' : 'View Resume'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </motion.div>

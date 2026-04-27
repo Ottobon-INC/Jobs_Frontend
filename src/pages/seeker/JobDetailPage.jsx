@@ -327,7 +327,7 @@ const JobDetailPage = () => {
                     <BentoCard delay={0.1} className="flex flex-col items-start border border-zinc-100">
                         <h2 className="text-xs font-bold text-zinc-400 mb-10 pb-4 border-b border-zinc-100 flex items-center justify-start gap-3 uppercase tracking-[0.3em] w-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                            Competency Matrix
+                            Required Skills
                         </h2>
                         {keySkills.length > 0 ? (
                             <div className="flex flex-wrap justify-start gap-2.5">

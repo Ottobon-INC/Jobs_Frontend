@@ -80,7 +80,6 @@ const AdminLoginPage = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 className="w-full px-6 py-4 pr-14 bg-white/5 border border-white/10 rounded-2xl text-white font-semibold text-sm placeholder:text-white/10 focus:outline-none focus:ring-4 focus:ring-white/5 transition-all duration-300"
-                                placeholder="••••••••"
                             />
                             <button
                                 type="button"
