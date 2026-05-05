@@ -28,20 +28,41 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // 1. Check active session first, then register the listener
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            if (session?.user) {
-                setUser(session.user);
-                fetchProfile();
-            } else {
+        const checkSession = async () => {
+            try {
+                // Try Supabase session first
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                // If no Supabase session, check for our custom standalone JWT
+                let activeSession = session;
+                let userObj = session?.user;
+
+                if (!activeSession) {
+                    const customToken = localStorage.getItem('ottobon_custom_token');
+                    if (customToken) {
+                        // Mock a session object to satisfy the AuthContext
+                        activeSession = { access_token: customToken };
+                        // Create a mock user object so the rest of the app thinks we are logged in
+                        userObj = { id: 'custom-jwt-user' };
+                    }
+                }
+
+                setSession(activeSession);
+                if (userObj) {
+                    setUser(userObj);
+                    await fetchProfile();
+                } else {
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error("Auth session check failed:", err);
                 setLoading(false);
+            } finally {
+                initialised.current = true;
             }
-            initialised.current = true;
-        }).catch(err => {
-            console.error("Auth session check failed:", err);
-            setLoading(false);
-            initialised.current = true;
-        });
+        };
+
+        checkSession();
 
         // 2. Listen for auth changes (login/logout after initial load)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {

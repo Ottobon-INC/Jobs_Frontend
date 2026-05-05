@@ -2,25 +2,37 @@ import { supabase } from './client';
 import api from './client';
 
 /**
- * Sign up via the backend Admin API — bypasses Supabase email rate limits.
- * The backend creates the user, auto-confirms, stores password, and
- * returns tokens which we set on the Supabase client for session continuity.
+ * Sign up directly via Supabase Auth.
+ * User metadata is passed to options.data so the Postgres trigger can safely copy it to the users_jobs table.
  */
 export const signUp = async (email, password, role, full_name, phone, location, skills = [], interests = "", dob = "", aspirations = [], avatar_url = "", work_preference = "Hybrid / Both", experience = "", work_experience_position = "", work_experience_description = "") => {
-    const { data } = await api.post('/auth/signup', { 
-        email, password, role, full_name, phone, location, skills, interests, dob, aspirations, avatar_url, work_preference, experience, work_experience_position, work_experience_description
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                role,
+                full_name,
+                phone,
+                location,
+                skills,
+                interests,
+                dob,
+                aspirations,
+                avatar_url,
+                work_preference,
+                experience,
+                work_experience_position,
+                work_experience_description
+            }
+        }
     });
 
-
-    // Set the session on the Supabase client so AuthContext picks it up
-    await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-    });
-
+    if (error) throw error;
+    
     return {
-        user: { id: data.user_id, email: data.email },
-        session: { access_token: data.access_token, refresh_token: data.refresh_token },
+        user: data.user,
+        session: data.session,
     };
 };
 
@@ -38,6 +50,7 @@ export const signIn = async (email, password) => {
 };
 
 export const signOut = async () => {
+    localStorage.removeItem('ottobon_custom_token');
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
 };
@@ -52,4 +65,11 @@ export const getUser = async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error) throw error;
     return data.user;
+};
+
+export const initiateGoogleLogin = (role = 'seeker') => {
+    // Redirect browser to the FastAPI Google login endpoint
+    // Assuming backend runs on port 8001
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    window.location.href = `${backendUrl}/auth/google/login?role=${role}`;
 };
