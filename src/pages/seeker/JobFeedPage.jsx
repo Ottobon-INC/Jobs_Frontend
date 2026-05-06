@@ -429,7 +429,7 @@ const JobFeedPage = () => {
                     </span>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
                     {visibleJobs.length > 0 ? (
                         visibleJobs.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (
