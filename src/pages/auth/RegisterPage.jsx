@@ -733,6 +733,15 @@ const RegisterPage = () => {
                     <Link to="/login" className="text-base font-bold text-zinc-900 border-b-2 border-zinc-900 hover:pb-1 transition-all tracking-widest uppercase">
                         Sign In
                     </Link>
+
+                    <div className="mt-4 pt-6 border-t border-zinc-100 w-full flex flex-col items-center">
+                        <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.2em] mb-3">
+                            Fresh out of college?
+                        </p>
+                        <Link to="/new-grad" className="group flex items-center gap-2 px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-full text-[10px] font-black text-zinc-900 uppercase tracking-[0.2em] hover:bg-zinc-900 hover:text-white transition-all">
+                            Explore New Grad Page <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ import { LandingFooter } from '../../components/landing/LandingFooter';
 import { MockInterviewSection } from '../../components/landing/MockInterviewSection';
 import { BlogHighlights } from '../../components/landing/BlogHighlights';
 import { UpskillSection } from '../../components/landing/UpskillSection';
+import { NewGradSection } from '../../components/landing/NewGradSection';
 import { Link } from 'react-router-dom';
 
 const ROBOT_SCENE_URL = "https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode";
@@ -24,6 +25,22 @@ export default function LandingPage() {
             <div className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-[#313851]">
                 <div className="pointer-events-none absolute inset-0">
                     <BackgroundPaths />
+                </div>
+
+                {/* ── Top Nav ────────────────────────── */}
+                <div className="absolute top-6 right-6 lg:right-12 z-50 flex items-center gap-6">
+                    <Link
+                        to="/login"
+                        className="text-white/80 hover:text-white font-semibold transition-colors text-sm tracking-wide"
+                    >
+                        Sign In
+                    </Link>
+                    <Link
+                        to="/register"
+                        className="px-6 py-2.5 bg-white text-[#313851] rounded-full font-bold transition-all hover:scale-105 active:scale-95 text-sm shadow-[0_10px_20px_-10px_rgba(255,255,255,0.3)]"
+                    >
+                        Sign Up
+                    </Link>
                 </div>
 
                 {/* No gradient fade into next section */}
@@ -44,9 +61,9 @@ export default function LandingPage() {
                             marginBottom: '1rem',
                         }}
                     >
-                        <span className="text-[#F6F3ED]">Your skills, your career, </span>
+                        <span className="text-[#F6F3ED]">Unlock your ultimate </span>
                         <span className="bg-gradient-to-r from-[#F6F3ED] to-[#C2CBD3] bg-clip-text text-transparent">
-                            zero friction.
+                            career potential.
                         </span>
                     </h1>
 
@@ -61,7 +78,7 @@ export default function LandingPage() {
                             letterSpacing: '-0.01em',
                         }}
                     >
-                        Access exclusive roles, track your applications, and step into the career you've been building toward.
+                        Access exclusive roles and step into the career you've been building toward.
                     </p>
 
                     {/* CTA Buttons */}
@@ -98,6 +115,7 @@ export default function LandingPage() {
             </div>
 
             {/* Removed Stats Section */}
+            <NewGradSection />
 
             <div id="path-to-hired" className="section-optimize">
                 <PathToHired />

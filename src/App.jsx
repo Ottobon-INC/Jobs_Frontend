@@ -7,6 +7,8 @@ import AppShell from './components/Layout/AppShell';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
+import { useAuth } from './hooks/useAuth';
+import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
 
 // Auth Pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -24,6 +26,7 @@ const CoursesPage = lazy(() => import('./pages/seeker/CoursesPage'));
 const MockInterviewPage = lazy(() => import('./pages/seeker/MockInterviewPage'));
 const InterviewReviewsPage = lazy(() => import('./pages/seeker/InterviewReviewsPage'));
 const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
+const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -35,6 +38,7 @@ const IngestionPage = lazy(() => import('./pages/admin/IngestionPage'));
 const HelpDeskPage = lazy(() => import('./pages/admin/HelpDeskPage'));
 const AdminInterviewReviewsPage = lazy(() => import('./pages/admin/InterviewReviewsPage'));
 const FeedbackDashboard = lazy(() => import('./pages/admin/FeedbackDashboard'));
+const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewMaterialsPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -48,6 +52,14 @@ const MarketPage = lazy(() => import('./pages/provider/MarketPage'));
 
 // Landing Page
 const LandingPage = lazy(() => import('./pages/public/LandingPage'));
+const NewGradPage = lazy(() => import('./pages/public/NewGradPage'));
+const NewGradDetailPage = lazy(() => import('./pages/public/NewGradDetailPage'));
+const HiringTimelinePage = lazy(() => import('./pages/public/HiringTimelinePage'));
+
+const GlobalWidgets = () => {
+  const { isAuthenticated } = useAuth();
+  return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+};
 
 function App() {
   return (
@@ -55,10 +67,14 @@ function App() {
       <NotificationProvider>
         <Toaster position="top-right" />
         <BrowserRouter>
+          <GlobalWidgets />
           <Suspense fallback={<Loader fullScreen variant="logo" />}>
             <Routes>
               {/* Landing Page — standalone, outside AppShell */}
               <Route path="/" element={<LandingPage />} />
+              <Route path="/new-grad" element={<NewGradPage />} />
+              <Route path="/new-grad/timeline" element={<HiringTimelinePage />} />
+              <Route path="/new-grad/:slug" element={<NewGradDetailPage />} />
 
               {/* Public Routes */}
               <Route path="/login" element={<LoginPage />} />
@@ -94,6 +110,7 @@ function App() {
                   <Route path="/courses" element={<CoursesPage />} />
                   <Route path="/chat" element={<ChatPage />} />
                   <Route path="/feedback" element={<FeedbackPage />} />
+                  <Route path="/materials" element={<InterviewMaterialsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -107,8 +124,9 @@ function App() {
                   <Route path="/admin/tower" element={<ControlTowerPage />} />
                   <Route path="/admin/ingest" element={<IngestionPage />} />
                   <Route path="/admin/helpdesk" element={<HelpDeskPage />} />
-                   <Route path="/admin/interview-reviews" element={<AdminInterviewReviewsPage />} />
+                  <Route path="/admin/interview-reviews" element={<AdminInterviewReviewsPage />} />
                   <Route path="/admin/feedback" element={<FeedbackDashboard />} />
+                  <Route path="/admin/add-data" element={<AddInterviewMaterialsPage />} />
                 </Route>
 
               </Route>

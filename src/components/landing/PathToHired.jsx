@@ -33,7 +33,7 @@ export function PathToHired() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20 max-w-4xl">
                     {[
                         {
                             icon: User,
@@ -46,13 +46,7 @@ export function PathToHired() {
                             title: "Instantly stand out",
                             body: "Showcase your projects, passions and work ethos with Ottobon Profile to stand out from the crowd.",
                             delay: 0.1,
-                        },
-                        {
-                            icon: Zap,
-                            title: "Real time feedback",
-                            body: "Don't get ghosted! Get feedback & notifications with every application, so that you're never left wondering.",
-                            delay: 0.2,
-                        },
+                        }
                     ].map(({ icon: Icon, title, body, delay }) => (
                         <motion.div
                             key={title}

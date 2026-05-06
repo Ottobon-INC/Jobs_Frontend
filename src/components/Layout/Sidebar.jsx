@@ -18,7 +18,9 @@ import {
     ClipboardList,
     Upload,
     BarChart3,
-    Heart
+    Heart,
+    Calendar,
+    FileText
 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 import { motion } from 'framer-motion';
@@ -41,7 +43,9 @@ const Sidebar = () => {
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/mock-interview', label: 'Interview Prep', icon: Radio, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/materials', label: 'Interview Materials', icon: FileText, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/chat', label: 'Messages', icon: MessageSquare, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/feedback', label: 'Share Feedback', icon: Heart, roles: [ROLES.SEEKER], category: 'Resources' },
@@ -53,6 +57,7 @@ const Sidebar = () => {
         { to: '/admin/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/feedback', label: 'User Feedback', icon: BarChart3, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/add-data', label: 'Add Data', icon: PlusCircle, roles: [ROLES.ADMIN], category: 'Administrative' },
     ];
 
     const filteredLinks = links.filter(link => link.roles.includes(role));
