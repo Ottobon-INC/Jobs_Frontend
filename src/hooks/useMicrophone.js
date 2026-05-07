@@ -1,9 +1,12 @@
 import { useRef, useCallback, useEffect } from 'react';
 
-export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMuteRef, isMuted = false) {
+export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMuteRef, isMuted = false, onPartialTranscript) {
   const mediaRecorderRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const micActiveRef = useRef(false);
   const streamRef = useRef(null);
   const audioCtxRef = useRef(null);
+  const micAnalyserRef = useRef(null);   // ← exported so visualizer can read frequency data
   const silenceTimerRef = useRef(null);
   const isSpeakingRef = useRef(false);
   const animationFrameRef = useRef(null);
@@ -40,6 +43,34 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
         } 
       });
       
+      micActiveRef.current = true;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = true;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = 'en-US';
+        
+        recognitionRef.current.onresult = (event) => {
+          let interimText = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (!event.results[i].isFinal) {
+              interimText += event.results[i][0].transcript;
+            }
+          }
+          if (onPartialTranscript && interimText) {
+            onPartialTranscript(interimText);
+          }
+        };
+
+        recognitionRef.current.onend = () => {
+          if (micActiveRef.current && recognitionRef.current) {
+            try { recognitionRef.current.start(); } catch (e) {}
+          }
+        };
+        try { recognitionRef.current.start(); } catch (e) {}
+      }
+      
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') {
         await audioCtx.resume();
@@ -50,6 +81,7 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
       analyser.fftSize = 512;
       analyser.smoothingTimeConstant = 0.4;
       source.connect(analyser);
+      micAnalyserRef.current = analyser;   // ← expose to callers
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
       // Reverting to default MediaRecorder to avoid "400 - Decoding Error" across different Browsers/Whisper
@@ -88,7 +120,7 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
         const sum = dataArray.reduce((S, v) => S + v, 0);
         const average = sum / dataArray.length;
 
-        if (average > 20) { // Bumped to 20 for extreme noise immunity
+        if (average > 15) { // Bumped to 15 for noise immunity
           if (!isSpeakingRef.current) {
             isSpeakingRef.current = true;
             const isCurrentlyMuted = isDisabledRef.current || (forcedMuteRef && forcedMuteRef.current);
@@ -114,7 +146,7 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
               if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
                 mediaRecorderRef.current.stop();
               }
-            }, 1500); 
+            }, 800); 
           }
         }
         animationFrameRef.current = requestAnimationFrame(detectSound);
@@ -140,6 +172,13 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
     }
     mediaRecorderRef.current = null;
     
+    micActiveRef.current = false;
+    if (recognitionRef.current) {
+      recognitionRef.current.onend = null;
+      try { recognitionRef.current.stop(); } catch (e) {}
+      recognitionRef.current = null;
+    }
+    
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
@@ -158,5 +197,5 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
     isSpeakingRef.current = false;
   }, []);
 
-  return { startMic, stopMic };
+  return { startMic, stopMic, micAnalyserRef };
 }

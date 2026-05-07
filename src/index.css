@@ -762,3 +762,15 @@ canvas~div>a {
   margin-top: 8px !important;   /* slight downward shift for perfect alignment */
   border-radius: 12px;
 }
+
+/* ── Mock Interview animations ───────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes micBar {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1); }
+}
+

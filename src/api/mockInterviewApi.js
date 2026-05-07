@@ -51,8 +51,46 @@ export const setMockJobContext = async (companyName, jobDescription, sessionId =
     return res.data;
 };
 
-export const setMockMode = async (mode, sessionId = 'default_session') => {
-    const res = await mockClient.post('/set_mode', { mode, session_id: sessionId });
+export const setMockMode = async (mode, sessionId = 'default_session', options = {}) => {
+    const res = await mockClient.post('/set_mode', { 
+        mode, 
+        session_id: sessionId,
+        duration_minutes: options.durationMinutes || 15,
+        interviewer_persona: options.interviewerPersona || 'Neutral',
+        whiteboard_mode: options.whiteboardMode || false
+    });
+    return res.data;
+};
+
+
+/**
+ * Push a multi-round interview structure to the backend for this session.
+ * @param {Array<{round_name: string, focus_description: string, question_limit: number}>} rounds
+ * @param {string} sessionId
+ */
+export const setMockInterviewStructure = async (rounds, sessionId = 'default_session') => {
+    // Client-side guard: never send empty or invalid rounds (prevents 422)
+    if (!rounds || !Array.isArray(rounds) || rounds.length === 0) {
+        console.warn('[mockInterviewApi] setMockInterviewStructure skipped: rounds is empty or invalid');
+        return { message: 'No rounds to set' };
+    }
+
+    // Validate each round has required fields with correct types
+    const validRounds = rounds.filter(r =>
+        r &&
+        typeof r.round_name === 'string' &&
+        r.round_name.trim() !== ''
+    );
+
+    if (validRounds.length === 0) {
+        console.warn('[mockInterviewApi] setMockInterviewStructure skipped: no valid rounds after filtering');
+        return { message: 'No valid rounds to set' };
+    }
+
+    const res = await mockClient.post('/set_interview_structure', {
+        rounds: validRounds,
+        session_id: sessionId,
+    });
     return res.data;
 };
 
@@ -81,6 +119,12 @@ export const createMockInterviewReview = async ({
     transcript = [],
     userTranscript = [],
     aiTranscript = [],
+    // ── Round fields (v2) — safe defaults for backward compat ──
+    roundNumber = 1,
+    roundLabel = 'General Interview',
+    roundType = 'technical',
+    roundsConfig = [],
+    roundsCompleted = 0,
 }) => {
     const payload = {
         id,
@@ -97,7 +141,19 @@ export const createMockInterviewReview = async ({
             combined_transcript: transcript,
             review_state: 'pending_admin_review',
             submitted_at: new Date().toISOString(),
+            // Round metadata stored inside scorecard JSONB
+            round_number: roundNumber,
+            round_label: roundLabel,
+            round_type: roundType,
+            rounds_config: roundsConfig,
+            rounds_completed: roundsCompleted,
         },
+        // Also written as top-level DB columns (schema v2)
+        round_number: roundNumber,
+        round_label: roundLabel,
+        round_type: roundType,
+        rounds_config: roundsConfig.length > 0 ? roundsConfig : null,
+        rounds_completed: roundsCompleted,
     };
 
     const { data, error } = await supabase

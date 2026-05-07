@@ -239,7 +239,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
 
                             <Link
                                 to={`/jobs/${jobId}/mock-interview`}
-                                state={{ jobTitle: job.cleanTitle, companyName: job.company_name }}
+                                state={{
+                                    jobTitle: job.cleanTitle,
+                                    companyName: job.company_name,
+                                    // Pass interview_structure rounds so MockInterviewPage can
+                                    // initialize the multi-round session automatically
+                                    interviewStructure: job.metadata?.interview_structure?.rounds || null,
+                                }}
                                 className="w-full"
                             >
                                 <motion.button 
