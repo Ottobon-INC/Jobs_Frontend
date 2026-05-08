@@ -66,8 +66,8 @@ const LOGO_MAP = {
 };
 
 export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 }) => {
-    const name = company?.name || 'Company';
-    const slug = company?.slug || name.toLowerCase().replace(/\s+/g, '-');
+    const name = (company?.name || 'Company').trim();
+    const slug = (company?.slug || name.toLowerCase().replace(/\s+/g, '-')).trim();
     const externalLogo = company?.logo || company?.logo_url || null;
     
     const [imgIdx, setImgIdx] = useState(0);
