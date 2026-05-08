@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Read the file content
-const filePath = path.join(__dirname, 'src', 'data', 'newGradData.js');
+const filePath = path.join(__dirname, '..', 'src', 'data', 'newGradData.js');
 let content = fs.readFileSync(filePath, 'utf8');
 
 // Remove 'export const COMPANIES =' and 'export const HIRING_TIMELINE =' to make it a script

@@ -1,7 +1,9 @@
 """Download company logos to public/logos/ for local serving."""
 import urllib.request, os, time, json
 
-OUT_DIR = r"c:\jobs_frontend\jobs.frontend\public\logos"
+# Determine script location and output directory relative to it
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.path.join(SCRIPT_DIR, '..', 'public', 'logos')
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # slug -> (url, extension)
