@@ -45,7 +45,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                         <div className="bg-white rounded-[2.5rem] border border-zinc-100 p-4 md:p-8 shadow-sm flex flex-col md:flex-row gap-8 items-center">
                             <div className="w-full md:w-1/2 aspect-video rounded-[2rem] overflow-hidden relative group">
                                 <img 
-                                    src={company.coverImage || "/tech_corp_office.png"} 
+                                    src={company.cover_image || company.coverImage || "/tech_corp_office.png"} 
                                     alt={company.name} 
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
@@ -55,7 +55,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Exam Date</p>
-                                        <p className="text-xs font-bold tracking-tight">TBA *</p>
+                                        <p className="text-xs font-bold tracking-tight">{company.exam_date || company.examDate || 'TBA *'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Hiring Frequency</p>
-                                    <p className="text-sm font-bold text-[#313851]">{company.hiringSeasons}</p>
+                                    <p className="text-sm font-bold text-[#313851]">{company.hiring_seasons || company.hiringSeasons}</p>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +140,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             }
 
             case 'process': {
-                const processSteps = company.selectionProcess || company.process || [];
+                const processSteps = company.selection_process || company.selectionProcess || company.process || [];
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -173,10 +173,11 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             }
 
             case 'test-pattern': {
+                const testPatternData = company.test_pattern || company.testPattern;
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <h3 className="text-3xl font-bold text-[#313851] mb-6">Test Pattern</h3>
-                        {company.testPattern ? (
+                        {testPatternData ? (
                             <div className="grid grid-cols-1 gap-6">
                                 <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
                                     <table className="w-full text-left border-collapse">
@@ -188,7 +189,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-zinc-50">
-                                            {company.testPattern.map((item, idx) => (
+                                            {testPatternData.map((item, idx) => (
                                                 <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
                                                     <td className="px-8 py-6 text-sm font-bold text-[#313851]">{item.section}</td>
                                                     <td className="px-8 py-6 text-sm text-zinc-500 font-medium">{item.questions}</td>
@@ -239,12 +240,13 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             }
 
             case 'registration': {
+                const regProcessData = company.registration_process || company.registrationProcess;
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <h3 className="text-3xl font-bold text-[#313851] mb-6">Registration Process</h3>
-                        {company.registrationProcess ? (
+                        {regProcessData ? (
                             <div className="space-y-6">
-                                {company.registrationProcess.map((step, idx) => (
+                                {regProcessData.map((step, idx) => (
                                     <div key={idx} className="flex items-start gap-6 p-6 bg-white border border-zinc-100 rounded-3xl shadow-sm">
                                         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black text-sm shrink-0">
                                             {idx + 1}
@@ -285,7 +287,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                 <div className="p-10 bg-[#313851] rounded-[2.5rem] text-center text-white relative overflow-hidden">
                                     <div className="relative z-10">
                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Total Year 1 Package</p>
-                                        <p className="text-5xl font-bold tracking-tight">{company.compensation.totalYear1}</p>
+                                        <p className="text-5xl font-bold tracking-tight">{company.compensation.totalYear1 || company.compensation.total_year_1}</p>
                                     </div>
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32" />
                                 </div>
@@ -312,13 +314,13 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                         <div className="relative p-10 bg-zinc-50 rounded-[3rem] border border-zinc-100">
                             <div className="absolute top-8 left-8 text-6xl text-zinc-200 font-serif leading-none">“</div>
                             <p className="text-2xl text-zinc-600 font-medium leading-relaxed italic relative z-10 px-8">
-                                {company.insiderScoop}
+                                {company.insider_scoop || company.insiderScoop}
                             </p>
                             <div className="absolute bottom-8 right-8 text-6xl text-zinc-200 font-serif leading-none rotate-180">“</div>
                         </div>
                         <div className="p-8 bg-amber-50 rounded-[2rem] border border-amber-100">
                             <h4 className="text-sm font-black text-amber-700 uppercase tracking-widest mb-4">Core Focus Areas</h4>
-                            <p className="text-lg text-amber-900 font-medium leading-relaxed">{company.prepFocus}</p>
+                            <p className="text-lg text-amber-900 font-medium leading-relaxed">{company.prep_focus || company.prepFocus}</p>
                         </div>
                     </motion.div>
                 );

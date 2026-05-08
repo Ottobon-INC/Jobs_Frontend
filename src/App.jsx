@@ -27,6 +27,7 @@ const MockInterviewPage = lazy(() => import('./pages/seeker/MockInterviewPage'))
 const InterviewReviewsPage = lazy(() => import('./pages/seeker/InterviewReviewsPage'));
 const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
+const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -39,6 +40,8 @@ const HelpDeskPage = lazy(() => import('./pages/admin/HelpDeskPage'));
 const AdminInterviewReviewsPage = lazy(() => import('./pages/admin/InterviewReviewsPage'));
 const FeedbackDashboard = lazy(() => import('./pages/admin/FeedbackDashboard'));
 const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewMaterialsPage'));
+const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
+const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -127,8 +130,16 @@ function App() {
                   <Route path="/admin/interview-reviews" element={<AdminInterviewReviewsPage />} />
                   <Route path="/admin/feedback" element={<FeedbackDashboard />} />
                   <Route path="/admin/add-data" element={<AddInterviewMaterialsPage />} />
+                  <Route path="/admin/playbooks" element={<ManagePlaybooksPage />} />
+                  <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
+                  <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                 </Route>
 
+              </Route>
+
+              {/* Standalone Protected Routes (No AppShell) */}
+              <Route element={<ProtectedRoute allowedRoles={[ROLES.SEEKER]} />}>
+                <Route path="/materials/view/:id" element={<MaterialViewPage />} />
               </Route>
 
               <Route path="*" element={<NotFoundPage />} />

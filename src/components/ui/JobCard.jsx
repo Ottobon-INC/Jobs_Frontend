@@ -114,7 +114,11 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 {/* 1. Top Row: Logo & Badges */}
                 <div className="flex items-start justify-between mb-8">
                     <CompanyLogo 
-                        company={{ name: job.company_name, logo: job.company_logo }} 
+                        company={{ 
+                            name: job.company_name, 
+                            logo: job.company_logo,
+                            slug: job.company_name?.toLowerCase().replace(/\s+/g, '-')
+                        }} 
                         className="w-16 h-16 group-hover/job:scale-110 transition-transform duration-500" 
                     />
                     
