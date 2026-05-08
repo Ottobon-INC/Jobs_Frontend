@@ -17,7 +17,7 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        navigate('/login');
+        navigate('/');
     };
 
     // Close dropdown on click outside

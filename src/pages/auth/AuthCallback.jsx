@@ -28,7 +28,9 @@ const AuthCallback = () => {
                     } else if (profile.role === ROLES.PROVIDER) {
                         navigate('/provider/listings');
                     } else {
-                        navigate('/jobs');
+                        // Seekers land on profile page first to complete details,
+                        // then get redirected to /jobs after saving their profile.
+                        navigate('/profile');
                     }
                 } catch (error) {
                     console.error("Failed to set session or fetch profile:", error);

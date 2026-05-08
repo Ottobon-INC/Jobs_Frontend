@@ -2,8 +2,16 @@ import axios from 'axios';
 import { createClient } from '@supabase/supabase-js';
 import { API_BASE_URL, SUPABASE_URL, SUPABASE_KEY } from '../utils/constants';
 
-// Initialize Supabase client for auth
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+// Singleton Supabase instance to prevent multiple GoTrueClient warnings
+let _supabaseInstance = null;
+const getSupabaseClient = () => {
+    if (!_supabaseInstance) {
+        _supabaseInstance = createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+    return _supabaseInstance;
+};
+
+export const supabase = getSupabaseClient();
 
 // ── Cached auth token ────────────────────────────────────────
 // Instead of calling getSession() on every request (slow!),
@@ -14,6 +22,8 @@ export const setToken = (token) => {
     _cachedToken = token;
     if (token) {
         localStorage.setItem('ottobon_custom_token', token);
+        // Sync to supabase client so direct DB calls work immediately
+        supabase.auth.setSession({ access_token: token, refresh_token: '' });
     } else {
         localStorage.removeItem('ottobon_custom_token');
     }
@@ -21,7 +31,15 @@ export const setToken = (token) => {
 
 // Prime the cache from the current session
 supabase.auth.getSession().then(({ data }) => {
-    _cachedToken = data?.session?.access_token || localStorage.getItem('ottobon_custom_token') || null;
+    const sessionToken = data?.session?.access_token;
+    const customToken = localStorage.getItem('ottobon_custom_token');
+    
+    _cachedToken = sessionToken || customToken || null;
+
+    // If we have a custom token but Supabase doesn't know about it, set it
+    if (!sessionToken && customToken) {
+        supabase.auth.setSession({ access_token: customToken, refresh_token: '' });
+    }
 });
 
 // Keep cache in sync when user logs in/out/refreshes token
@@ -73,7 +91,12 @@ api.interceptors.response.use(
             return api(config);
         }
 
-        console.error('API Error:', error.response?.data?.detail || error.message);
+        const isSavedCheck = error.config?.url?.includes('/is-saved');
+        
+        // Log error except for expected noise like network errors during mass is-saved checks
+        if (!isSavedCheck || error.response) {
+            console.error('API Error:', error.response?.data?.detail || error.message);
+        }
         return Promise.reject(error);
     }
 );

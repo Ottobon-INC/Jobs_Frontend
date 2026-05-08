@@ -56,49 +56,28 @@ export const matchAllJobs = async () => {
 
 // --- Saved Jobs (Supabase Persistent) ---
 
+/** Helper: get the current Supabase auth user ID */
 export const getSavedJobs = async () => {
-    const { data: saved, error } = await supabase
-        .from('saved_jobs')
-        .select('job_id')
-        .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    if (!saved || saved.length === 0) return [];
-
-    // Fetch details for each saved job from the backend
-    // Note: This could be optimized if the backend supports batch fetching
-    const detailPromises = saved.map(s => getJobDetails(s.job_id).catch(() => null));
-    const details = await Promise.all(detailPromises);
-    
-    return details.filter(d => d !== null);
+    const response = await api.get('/jobs/saved');
+    return response.data;
 };
 
 export const saveJob = async (jobId) => {
-    const { error } = await supabase
-        .from('saved_jobs')
-        .insert([{ job_id: jobId }]);
-    
-    if (error && error.code !== '23505') throw error; // Ignore if already saved
-    return true;
+    const response = await api.post(`/jobs/${jobId}/save`);
+    return response.data;
 };
 
 export const unsaveJob = async (jobId) => {
-    const { error } = await supabase
-        .from('saved_jobs')
-        .delete()
-        .eq('job_id', jobId);
-    
-    if (error) throw error;
-    return true;
+    const response = await api.delete(`/jobs/${jobId}/save`);
+    return response.data;
 };
 
 export const isJobSaved = async (jobId) => {
-    const { data, error } = await supabase
-        .from('saved_jobs')
-        .select('id')
-        .eq('job_id', jobId)
-        .maybeSingle();
-    
-    if (error) return false;
-    return !!data;
+    try {
+        const response = await api.get(`/jobs/${jobId}/is-saved`);
+        return response.data.is_saved;
+    } catch (err) {
+        // If 401 or other error, assume not saved
+        return false;
+    }
 };

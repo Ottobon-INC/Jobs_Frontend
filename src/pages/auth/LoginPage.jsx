@@ -1,19 +1,28 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { signIn, initiateGoogleLogin } from '../../api/authApi';
 import { getMyProfile } from '../../api/usersApi';
 import { ROLES } from '../../utils/constants';
 import { Briefcase, Eye, EyeOff, Sparkles, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const { user, role } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    // If already authenticated, redirect to appropriate dashboard
+    if (user) {
+        if (role === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
+        if (role === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
+        return <Navigate to="/jobs" replace />;
+    }
 
     const handleGoogleLogin = () => {
         initiateGoogleLogin();

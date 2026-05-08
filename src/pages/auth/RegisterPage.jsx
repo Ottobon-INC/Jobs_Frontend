@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { signUp, initiateGoogleLogin } from '../../api/authApi';
 import { extractSkills, uploadAvatar } from '../../api/usersApi';
 import { 
@@ -23,10 +23,19 @@ import {
 import { ROLES, DESIRED_JOB_ROLES, WORK_PREFERENCES, EXPERIENCE_LEVELS, JOB_TITLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
+    const { user, role: authRole } = useAuth();
     const [step, setStep] = useState(1);
+
+    // If already authenticated, redirect to appropriate dashboard
+    if (user) {
+        if (authRole === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
+        if (authRole === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
+        return <Navigate to="/jobs" replace />;
+    }
     
     // Auth Data
     const [email, setEmail] = useState('');
@@ -150,7 +159,7 @@ const RegisterPage = () => {
                 // Or better, upload it to a 'temp' folder and have the backend move it.
                 // For simplicity here, I'll use the email as a unique identifier.
                 const tempId = email.replace(/[^a-zA-Z0-9]/g, '_');
-                finalAvatarUrl = await uploadAvatar(tempId, avatarFile);
+                finalAvatarUrl = await uploadAvatar(avatarFile);
                 setUploadingAvatar(false);
             }
 

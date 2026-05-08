@@ -1,13 +1,12 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { Toaster } from 'react-hot-toast';
 import AppShell from './components/Layout/AppShell';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
-import { useAuth } from './hooks/useAuth';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
 
 // Auth Pages
@@ -58,8 +57,12 @@ const NewGradDetailPage = lazy(() => import('./pages/public/NewGradDetailPage'))
 const HiringTimelinePage = lazy(() => import('./pages/public/HiringTimelinePage'));
 
 const GlobalWidgets = () => {
-  const { isAuthenticated } = useAuth();
-  return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+  try {
+    const { isAuthenticated } = useAuth();
+    return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+  } catch (err) {
+    return null;
+  }
 };
 
 function App() {

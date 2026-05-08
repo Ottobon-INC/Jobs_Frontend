@@ -40,10 +40,19 @@ export const AuthProvider = ({ children }) => {
                 if (!activeSession) {
                     const customToken = localStorage.getItem('ottobon_custom_token');
                     if (customToken) {
-                        // Mock a session object to satisfy the AuthContext
-                        activeSession = { access_token: customToken };
-                        // Create a mock user object so the rest of the app thinks we are logged in
-                        userObj = { id: 'custom-jwt-user' };
+                        try {
+                            const payload = JSON.parse(atob(customToken.split('.')[1]));
+                            const userId = payload.sub || payload.user_id;
+                            
+                            activeSession = { access_token: customToken };
+                            userObj = { 
+                                id: userId,
+                                email: payload.email,
+                                user_metadata: payload.user_metadata || {}
+                            };
+                        } catch (err) {
+                            console.error("Failed to decode custom token:", err);
+                        }
                     }
                 }
 
@@ -142,7 +151,7 @@ export const AuthProvider = ({ children }) => {
         profile,
         role,
         loading,
-        isAuthenticated: !!session?.user,
+        isAuthenticated: !!user,
     }), [session, user, profile, role, loading]);
 
     return (

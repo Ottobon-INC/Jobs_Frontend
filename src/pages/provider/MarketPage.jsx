@@ -88,7 +88,7 @@ const MarketPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Skills Bar Chart */}
                     <ChartCard title="Skill Demand">
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" height={300} minWidth={0}>
                             <BarChart data={top_skills} layout="vertical" margin={{ left: 40, right: 20 }}>
                                 <defs>
                                     <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
@@ -111,7 +111,7 @@ const MarketPage = () => {
 
                     {/* Salary Trends */}
                     <ChartCard title="Salary Trends">
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" height={300} minWidth={0}>
                             <BarChart data={salary_trends}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
                                 <XAxis
@@ -138,7 +138,7 @@ const MarketPage = () => {
                     {/* Work Style Pie */}
                     <ChartCard title="Employment Types">
                         <div className="h-[300px] flex items-center justify-center">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                                 <PieChart>
                                     <Pie
                                         data={work_styles} cx="50%" cy="50%"
@@ -161,7 +161,7 @@ const MarketPage = () => {
 
                     {/* Experience Radar */}
                     <ChartCard title="Experience Distribution">
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" height={300} minWidth={0}>
                             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={experience_levels}>
                                 <PolarGrid stroke="#e4e4e7" />
                                 <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }} />
@@ -204,7 +204,7 @@ const ChartCard = ({ title, children }) => (
     <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="glass-card premium-shadow-sm premium-hover p-5"
+        className="glass-card premium-shadow-sm premium-hover p-5 min-w-0"
         style={{ backgroundColor: 'var(--color-job-card)', borderColor: 'rgba(49, 56, 81, 0.45)' }}
     >
         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 border-b pb-3" style={{ color: 'var(--color-accent)', borderColor: 'rgba(49, 56, 81, 0.45)' }}>

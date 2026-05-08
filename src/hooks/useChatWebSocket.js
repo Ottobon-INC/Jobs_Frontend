@@ -112,8 +112,13 @@ export function useChatWebSocket(sessionId) {
             reconnectTimerRef.current = null;
         }
         if (socketRef.current) {
-            socketRef.current.close();
-            socketRef.current = null;
+            const ws = socketRef.current;
+            socketRef.current = null; // Clear ref first to prevent race
+            
+            // Only close if it's not already closing or closed
+            if (ws.readyState !== WebSocket.CLOSED && ws.readyState !== WebSocket.CLOSING) {
+                ws.close();
+            }
         }
         setIsConnected(false);
     }, []);

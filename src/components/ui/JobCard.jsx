@@ -18,7 +18,9 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 const isSaved = await isJobSaved(job.id);
                 setSaved(isSaved);
             } catch (err) {
-                console.error('Failed to check saved status', err);
+                if (err.name !== 'AbortError' && !err.message?.includes('Lock broken')) {
+                    console.error('Failed to check saved status', err);
+                }
             }
         };
         checkSaved();

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar, getResumeDownloadUrl } from '../../api/usersApi';
 import { supabase } from '../../api/client';
@@ -28,6 +29,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfilePage = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -170,9 +172,11 @@ const ProfilePage = () => {
                 work_experience_position: workExperiencePosition === 'Other' ? customPosition : workExperiencePosition,
                 work_experience_description: workExperienceDescription
             });
-            setMessage("Profile updated successfully.");
+            setMessage("Profile updated successfully. Redirecting to your matched jobs...");
             setEditMode(false);
             try { sessionStorage.removeItem('jobFeedMatchedJobs'); } catch {}
+            // Brief delay so the user sees the success message, then redirect to jobs
+            setTimeout(() => navigate('/jobs'), 1200);
             fetchProfile(); // Refresh underlying profile data
         } catch (err) {
             setError(err.response?.data?.detail || "Update failed. Please try again.");
@@ -237,8 +241,8 @@ const ProfilePage = () => {
         setMessage("Uploading identity payload...");
 
         try {
-            // 1. Upload to Supabase Storage
-            const publicUrl = await uploadAvatar(user.id, file);
+            // 1. Upload to backend (which handles storage)
+            const publicUrl = await uploadAvatar(file);
 
             // 2. Update Profile in DB (if backend eventually supports it)
             await updateProfile({ avatar_url: publicUrl });
