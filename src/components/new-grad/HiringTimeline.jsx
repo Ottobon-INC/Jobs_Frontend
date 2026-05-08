@@ -28,7 +28,7 @@ const getEventColor = (type) => {
 
 export const HiringTimeline = () => {
     const scrollRef = useRef(null);
-    const [hiringZone, setHiringZone] = useState('off-campus');
+    const [hiringZone, setHiringZone] = useState('on-campus');
 
     return (
         <section className="py-20 bg-[#313851] text-white overflow-hidden relative border-y border-white/10">
@@ -49,16 +49,16 @@ export const HiringTimeline = () => {
 
                 <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1.5 rounded-[20px] w-fit backdrop-blur-md shadow-2xl">
                     <button 
-                        onClick={() => setHiringZone('off-campus')}
-                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-white text-[#313851] shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
-                    >
-                        Off-Campus
-                    </button>
-                    <button 
                         onClick={() => setHiringZone('on-campus')}
                         className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-white text-[#313851] shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
                     >
                         On-Campus
+                    </button>
+                    <button 
+                        onClick={() => setHiringZone('off-campus')}
+                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-white text-[#313851] shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
+                    >
+                        Off-Campus
                     </button>
                 </div>
             </div>

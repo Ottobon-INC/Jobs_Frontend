@@ -14,25 +14,36 @@ import {
     DollarSign,
     Briefcase,
     Calendar,
-    MapPin,
     Star,
-    FileText
+    FileText,
+    MapPin
 } from 'lucide-react';
-import { COMPANIES } from '../../data/newGradData';
+import { fetchPlaybookBySlug } from '../../api/playbooksApi';
 import { CompanyDetailContent } from '../../components/new-grad/CompanyDetailContent';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
 import CompanyDashboardSidebar from '../../components/new-grad/CompanyDashboardSidebar';
 import NotFoundPage from '../NotFoundPage';
+import Loader from '../../components/ui/Loader';
 
 const NewGradDetailPage = () => {
     const { slug } = useParams();
     const [activeSection, setActiveSection] = useState('overview');
-
-    const company = useMemo(() => {
-        return COMPANIES.find(c => c.slug === slug);
-    }, [slug]);
+    const [company, setCompany] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const loadCompany = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchPlaybookBySlug(slug);
+                setCompany(data);
+            } catch (error) {
+                console.error('Failed to load company:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadCompany();
         window.scrollTo(0, 0);
     }, [slug]);
 
@@ -47,6 +58,10 @@ const NewGradDetailPage = () => {
         { id: 'tips', label: 'Insider Tips', icon: <Lightbulb size={16} /> },
         { id: 'materials', label: 'Interview Materials', icon: <FileText size={16} />, isNav: true },
     ];
+
+    if (loading) {
+        return <Loader fullScreen />;
+    }
 
     if (!company) {
         return <NotFoundPage />;
@@ -77,9 +92,9 @@ const NewGradDetailPage = () => {
                             <span className="px-4 py-1.5 bg-white/10 text-white rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md border border-white/10">
                                 {company.category}
                             </span>
-                            <div className="flex items-center gap-1 text-amber-400">
+                        <div className="flex items-center gap-1 text-amber-400">
                                 {[...Array(5)].map((_, i) => (
-                                    <Star key={i} size={12} fill={i < company.difficultyLevel ? 'currentColor' : 'none'} className={i < company.difficultyLevel ? 'text-amber-400' : 'text-white/20'} />
+                                    <Star key={i} size={12} fill={i < (company.difficulty_level || company.difficultyLevel || 0) ? 'currentColor' : 'none'} className={i < (company.difficulty_level || company.difficultyLevel || 0) ? 'text-amber-400' : 'text-white/20'} />
                                 ))}
                             </div>
                         </div>
@@ -128,7 +143,7 @@ const NewGradDetailPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Hiring Cycle</p>
-                                    <p className="text-xs font-bold text-[#313851]">{company.hiringSeasons}</p>
+                                    <p className="text-xs font-bold text-[#313851]">{company.hiring_seasons || company.hiringSeasons}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 border-l border-zinc-50 pl-6">
@@ -141,7 +156,7 @@ const NewGradDetailPage = () => {
                                 </div>
                             </div>
                             <Link 
-                                to={company.jobsLink}
+                                to={company.jobs_link || company.jobsLink || '#'}
                                 className="px-6 py-3 bg-[#313851] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-[#313851]/20"
                             >
                                 View Jobs

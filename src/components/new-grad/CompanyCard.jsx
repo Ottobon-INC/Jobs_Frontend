@@ -27,7 +27,7 @@ export const CompanyCard = ({ company }) => {
                         {company.difficulty}
                     </div>
                     <div className="px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-[8px] font-black uppercase tracking-widest border border-zinc-200 shadow-sm">
-                        {company.hiringZone}
+                        {company.hiring_zone || company.hiringZone}
                     </div>
                 </div>
             </div>
@@ -40,14 +40,14 @@ export const CompanyCard = ({ company }) => {
                     <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Total Year 1</p>
                     <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-sm">
                         <DollarSign size={14} className="text-green-500" />
-                        {company.compensation.totalYear1}
+                        {company.compensation?.totalYear1 || company.compensation?.total_year_1}
                     </div>
                 </div>
                 <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
                     <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Interview</p>
                     <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-sm">
                         <Layers size={14} className="text-[#313851]" />
-                        {company.roundsCount} Rounds
+                        {company.rounds_count || company.roundsCount} Rounds
                     </div>
                 </div>
             </div>

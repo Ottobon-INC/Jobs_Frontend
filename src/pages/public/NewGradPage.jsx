@@ -1,31 +1,50 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
 import { NewGradHero } from '../../components/new-grad/NewGradHero';
 import { NewGradFilters } from '../../components/new-grad/NewGradFilters';
 import { CompanyCard } from '../../components/new-grad/CompanyCard';
-import { COMPANIES } from '../../data/newGradData';
+import { fetchPlaybooks } from '../../api/playbooksApi';
+import Loader from '../../components/ui/Loader';
 
 const NewGradPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [category, setCategory] = useState('All Categories');
     const [role, setRole] = useState('All Roles');
     const [difficulty, setDifficulty] = useState('All Levels');
-    const [hiringZone, setHiringZone] = useState('off-campus');
+    const [hiringZone, setHiringZone] = useState('on-campus');
+
+    const [companies, setCompanies] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadCompanies = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchPlaybooks();
+                setCompanies(data);
+            } catch (error) {
+                console.error('Failed to load companies:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadCompanies();
+    }, []);
 
     const filteredCompanies = useMemo(() => {
-        return COMPANIES.filter(company => {
+        return companies.filter(company => {
             const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                  company.roles.some(r => r.toLowerCase().includes(searchQuery.toLowerCase()));
             const matchesCategory = category === 'All Categories' || company.category === category;
             const matchesRole = role === 'All Roles' || company.roles.includes(role);
             const matchesDifficulty = difficulty === 'All Levels' || company.difficulty === difficulty;
-            const matchesZone = company.hiringZone === hiringZone;
+            const matchesZone = company.hiring_zone === hiringZone;
 
             return matchesSearch && matchesCategory && matchesRole && matchesDifficulty && matchesZone;
         });
-    }, [searchQuery, category, role, difficulty, hiringZone]);
+    }, [companies, searchQuery, category, role, difficulty, hiringZone]);
 
     return (
         <div className="min-h-screen bg-[#F6F3ED]">
@@ -61,22 +80,26 @@ const NewGradPage = () => {
 
                     <div className="flex items-center gap-1 bg-white border border-zinc-200 p-1.5 rounded-[20px] w-fit shadow-sm">
                         <button 
-                            onClick={() => setHiringZone('off-campus')}
-                            className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-[#313851] text-white shadow-md' : 'text-zinc-400 hover:text-[#313851] hover:bg-zinc-50'}`}
-                        >
-                            Off-Campus
-                        </button>
-                        <button 
                             onClick={() => setHiringZone('on-campus')}
                             className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-[#313851] text-white shadow-md' : 'text-zinc-400 hover:text-[#313851] hover:bg-zinc-50'}`}
                         >
                             On-Campus
                         </button>
+                        <button 
+                            onClick={() => setHiringZone('off-campus')}
+                            className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-[#313851] text-white shadow-md' : 'text-zinc-400 hover:text-[#313851] hover:bg-zinc-50'}`}
+                        >
+                            Off-Campus
+                        </button>
                     </div>
                 </div>
 
                 <AnimatePresence mode="popLayout">
-                    {filteredCompanies.length > 0 ? (
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <Loader />
+                        </div>
+                    ) : filteredCompanies.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredCompanies.map(company => (
                                 <CompanyCard key={company.id} company={company} />
