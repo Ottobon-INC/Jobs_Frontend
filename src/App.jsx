@@ -14,6 +14,7 @@ import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidg
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const AdminLoginPage = lazy(() => import('./pages/auth/AdminLoginPage'));
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
+const AuthCallback = lazy(() => import('./pages/auth/AuthCallback'));
 
 // Seeker Pages
 const JobFeedPage = lazy(() => import('./pages/seeker/JobFeedPage'));
@@ -83,6 +84,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
 
               {/* Protected Routes wrapped in AppShell */}
               <Route element={<AppShell />}>
