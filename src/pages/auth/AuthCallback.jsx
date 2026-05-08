@@ -28,8 +28,7 @@ const AuthCallback = () => {
                     } else if (profile.role === ROLES.PROVIDER) {
                         navigate('/provider/listings');
                     } else {
-                        // Seekers land on profile page first to complete details,
-                        // then get redirected to /jobs after saving their profile.
+                        // Redirect to profile page so user can fill in additional details
                         navigate('/profile');
                     }
                 } catch (error) {
