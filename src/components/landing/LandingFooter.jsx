@@ -8,11 +8,11 @@ export function LandingFooter() {
                 {/* Brand Logo */}
                 <div className="mb-16">
                     <Link to="/" className="flex items-center gap-3 group w-fit">
-                        <div
-                            className="w-10 h-10 rounded-xl grid place-items-center group-hover:scale-110 transition-all duration-500 bg-[#C2CBD3]"
-                        >
-                            <Briefcase size={20} className="text-[#313851]" />
-                        </div>
+                        <img 
+                            src="/favicon.png" 
+                            alt="Ottobon Jobs" 
+                            className="w-10 h-10 rounded-xl group-hover:scale-110 transition-all duration-500 shadow-xl shadow-black/10" 
+                        />
                         <span
                             className="font-medium text-2xl tracking-tighter uppercase text-[#F6F3ED]"
                             style={{

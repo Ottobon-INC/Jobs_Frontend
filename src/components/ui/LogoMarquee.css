@@ -1,0 +1,114 @@
+.trust-bar {
+  background-color: #ffffff;
+  padding: 3rem 0;
+  overflow: hidden;
+  border: 1px solid rgba(49, 56, 81, 0.08);
+  border-radius: 2.5rem; /* Large curved edges for the whole section */
+  margin: 2rem; /* Margin to make the curved edges visible */
+  box-shadow: 0 10px 40px -20px rgba(49, 56, 81, 0.1);
+}
+
+.trust-bar h2 {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(49, 56, 81, 0.5);
+  margin-bottom: 3rem;
+}
+
+.marquee-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Side Gradients for Fade effect */
+.marquee-wrapper::before,
+.marquee-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 10%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, #ffffff 20%, transparent);
+}
+
+.marquee-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, #ffffff 20%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 6rem; /* 96px for ample spacing */
+  width: max-content;
+  animation: scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.marquee-wrapper:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-logo-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marquee-logo {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.7; /* Increased from 0.4 for better visibility of colors */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marquee-logo:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .trust-bar {
+    padding: 3rem 0;
+  }
+  
+  .marquee-track {
+    gap: 3rem;
+    animation-duration: 40s; /* Slower on mobile as requested */
+  }
+
+  .marquee-logo {
+    height: 24px;
+  }
+  
+  .marquee-wrapper::before,
+  .marquee-wrapper::after {
+    width: 20%;
+  }
+}

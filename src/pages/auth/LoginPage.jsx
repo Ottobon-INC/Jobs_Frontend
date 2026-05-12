@@ -50,8 +50,12 @@ const LoginPage = () => {
                 className="w-full max-w-md bg-white card border border-zinc-100 p-8 shadow-xl shadow-zinc-900/5"
             >
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 card grid place-items-center mx-auto mb-4 shadow-sm">
-                        <Briefcase size={28} className="text-zinc-400" />
+                    <div className="w-16 h-16 mx-auto mb-4">
+                        <img 
+                            src="/favicon.png" 
+                            alt="Logo" 
+                            className="w-full h-full rounded-2xl shadow-lg shadow-black/5"
+                        />
                     </div>
                     <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-zinc-50 text-zinc-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 border border-zinc-100">
                         <Sparkles size={12} className="text-zinc-400" />

@@ -237,13 +237,10 @@ const ProfilePage = () => {
         setMessage("Uploading identity payload...");
 
         try {
-            // 1. Upload to Supabase Storage
-            const publicUrl = await uploadAvatar(user.id, file);
+            // 1. Upload to Storage via Backend (handles DB update too)
+            const publicUrl = await uploadAvatar(file);
 
-            // 2. Update Profile in DB (if backend eventually supports it)
-            await updateProfile({ avatar_url: publicUrl });
-
-            // 3. Update Supabase Auth user_metadata since backend drops avatar_url
+            // 2. Update Supabase Auth user_metadata so the client-side user object stays in sync
             const { error: authError } = await supabase.auth.updateUser({
                 data: { avatar_url: publicUrl }
             });

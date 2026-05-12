@@ -29,6 +29,7 @@ const InterviewReviewsPage = lazy(() => import('./pages/seeker/InterviewReviewsP
 const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
 const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
+const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -116,6 +117,7 @@ function App() {
                   <Route path="/chat" element={<ChatPage />} />
                   <Route path="/feedback" element={<FeedbackPage />} />
                   <Route path="/materials" element={<InterviewMaterialsPage />} />
+                  <Route path="/jobs-ai" element={<JobsAIPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}

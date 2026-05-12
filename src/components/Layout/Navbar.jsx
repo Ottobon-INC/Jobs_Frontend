@@ -36,9 +36,11 @@ const Navbar = () => {
             <div className="h-full px-6 flex items-center justify-between">
                 {/* Logo - Refined Branding */}
                 <Link to="/" className="flex items-center gap-3 group">
-                    <div className="w-8 h-8 bg-black rounded-xl grid place-items-center group-hover:rotate-[10deg] transition-all duration-700 shadow-2xl shadow-black/20">
-                        <Briefcase size={16} className="text-white" />
-                    </div>
+                    <img 
+                        src="/favicon.png" 
+                        alt="Ottobon Jobs" 
+                        className="w-8 h-8 rounded-xl group-hover:rotate-[10deg] transition-all duration-700 shadow-2xl shadow-black/10" 
+                    />
                     <span className="font-bold text-lg tracking-tight text-black flex items-center">
                         Ottobon<span className="text-zinc-300 font-light mx-1">|</span>Jobs
                     </span>
