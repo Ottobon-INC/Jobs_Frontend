@@ -54,7 +54,7 @@ export const matchAllJobs = async () => {
     return response.data;
 };
 
-// --- Saved Jobs (Supabase Persistent) ---
+// --- Saved Jobs (Backend Proxied) ---
 
 /** Helper: get the current Supabase auth user ID */
 export const getSavedJobs = async () => {
@@ -63,19 +63,19 @@ export const getSavedJobs = async () => {
 };
 
 export const saveJob = async (jobId) => {
-    const response = await api.post(`/jobs/${jobId}/save`);
+    const response = await api.post(`/jobs/saved/${jobId}`);
     return response.data;
 };
 
 export const unsaveJob = async (jobId) => {
-    const response = await api.delete(`/jobs/${jobId}/save`);
+    const response = await api.delete(`/jobs/saved/${jobId}`);
     return response.data;
 };
 
 export const isJobSaved = async (jobId) => {
     try {
-        const response = await api.get(`/jobs/${jobId}/is-saved`);
-        return response.data.is_saved;
+        const response = await api.get(`/jobs/saved/${jobId}/check`);
+        return response.data.saved;
     } catch (err) {
         // If 401 or other error, assume not saved
         return false;

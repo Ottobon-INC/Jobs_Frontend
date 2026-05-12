@@ -10,8 +10,10 @@ const AuthCallback = () => {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const params = new URLSearchParams(location.search);
-            const accessToken = params.get('access_token');
+            const searchParams = new URLSearchParams(location.search);
+            const hashParams = new URLSearchParams(location.hash.replace('#', '?'));
+            
+            const accessToken = searchParams.get('access_token') || hashParams.get('access_token');
             
             if (accessToken) {
                 try {

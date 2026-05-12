@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
 import { getKeySkills } from '../../utils/jobOverview';
+import LogoMarquee from '../../components/ui/LogoMarquee';
 
 const JobFeedPage = () => {
     const { isAuthenticated, role } = useAuth();
@@ -406,6 +407,9 @@ const JobFeedPage = () => {
                     </motion.div>
                 </div>
             </header>
+            
+            {/* Industry Trust Bar */}
+            <LogoMarquee />
 
             {/* Content Container */}
             <main className="max-w-[1600px] mx-auto pt-6 pb-20 px-6 md:px-10">
