@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
-    const { user, role, profile } = useAuth();
+    const { user, role, profile, logout } = useAuth();
     const { notifications, unreadCount, markAsRead, clearAll } = useNotifications();
     const navigate = useNavigate();
     const location = useLocation();
@@ -16,7 +16,7 @@ const Navbar = () => {
     const notifRef = useRef(null);
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        await logout();
         navigate('/login');
     };
 

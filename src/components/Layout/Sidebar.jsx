@@ -29,14 +29,14 @@ import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
 
 const Sidebar = () => {
-    const { role } = useAuth();
+    const { role, logout } = useAuth();
     const { unreadCount } = useNotifications();
     const navigate = useNavigate();
 
     if (!role) return null;
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        await logout();
         navigate('/login');
     };
 

@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { supabase, setToken } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
+import { setToken } from '../../api/client';
 import { getMyProfile } from '../../api/usersApi';
 import { ROLES } from '../../utils/constants';
 
 const AuthCallback = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { refreshSession } = useAuth();
 
     useEffect(() => {
         const handleCallback = async () => {
@@ -17,12 +19,11 @@ const AuthCallback = () => {
             
             if (accessToken) {
                 try {
-                    // Manually set token to ensure our API interceptor works
-                    // We DO NOT call supabase.auth.setSession here because GoTrue will 
-                    // reject our custom FastAPI JWT and log a 403 Forbidden error.
                     setToken(accessToken);
-
-                    // Fetch profile to determine routing
+                    
+                    // Force the AuthContext to recognize the new session
+                    await refreshSession();
+                    
                     const profile = await getMyProfile();
                     
                     if (profile.role === ROLES.ADMIN) {

@@ -6,9 +6,7 @@ import { API_BASE_URL, SUPABASE_URL, SUPABASE_KEY } from '../utils/constants';
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── Cached auth token ────────────────────────────────────────
-// Instead of calling getSession() on every request (slow!),
-// we cache the token and update it via the auth state listener.
-let _cachedToken = null;
+let _cachedToken = localStorage.getItem('ottobon_custom_token') || null;
 
 export const setToken = (token) => {
     _cachedToken = token;
@@ -18,18 +16,6 @@ export const setToken = (token) => {
         localStorage.removeItem('ottobon_custom_token');
     }
 };
-
-// Prime the cache from the current session
-supabase.auth.getSession().then(({ data }) => {
-    _cachedToken = data?.session?.access_token || localStorage.getItem('ottobon_custom_token') || null;
-});
-
-// Keep cache in sync when user logs in/out/refreshes token
-supabase.auth.onAuthStateChange((_event, session) => {
-    if (session?.access_token) {
-        setToken(session.access_token);
-    }
-});
 
 // Axios instance for backend API
 const api = axios.create({

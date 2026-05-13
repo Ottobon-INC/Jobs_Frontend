@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { signIn, initiateGoogleLogin } from '../../api/authApi';
 import { getMyProfile } from '../../api/usersApi';
 import { ROLES } from '../../utils/constants';
@@ -9,6 +10,7 @@ import { supabase } from '../../api/client';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const { refreshSession } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -25,6 +27,7 @@ const LoginPage = () => {
         setError(null);
         try {
             await signIn(email, password);
+            await refreshSession();
             const profile = await getMyProfile();
             
             if (profile.role === ROLES.ADMIN) {

@@ -1,23 +1,9 @@
-import { createContext, useState, useEffect, useRef, useMemo, useContext } from 'react';
+import { createContext, useState, useEffect, useRef, useMemo, useContext, useCallback } from 'react';
 import { supabase } from '../api/client';
 import { getMyProfile } from '../api/usersApi';
 
 export const AuthContext = createContext();
 
-/**
- * AuthProvider — wraps the app to provide auth state.
- *
- * Performance optimization:
- *   - Context value is memoized with useMemo to prevent unnecessary
- *     re-renders of every consumer when unrelated state changes.
- *   - Only session/user/role/loading changes trigger re-renders.
- *
- * Architectural note:
- *   - High-frequency UI state (e.g., chat typing indicators, real-time
- *     presence) should NEVER be placed in this context. Those belong
- *     in a separate ChatContext/PresenceContext scoped to the chat
- *     subtree, avoiding full AppShell re-renders on every keystroke.
- */
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [session, setSession] = useState(null);
@@ -27,125 +13,58 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const initialised = useRef(false);
 
-    useEffect(() => {
-        // 1. Check active session first, then register the listener
-        const checkSession = async () => {
-            try {
-                // Try Supabase session first
-                const { data: { session } } = await supabase.auth.getSession();
-                
-                // If no Supabase session, check for our custom standalone JWT
-                let activeSession = session;
-                let userObj = session?.user;
-
-                if (!activeSession) {
-                    const customToken = localStorage.getItem('ottobon_custom_token');
-                    if (customToken) {
-                        // Mock a session object to satisfy the AuthContext
-                        activeSession = { access_token: customToken };
-                        // Create a mock user object so the rest of the app thinks we are logged in
-                        userObj = { id: 'custom-jwt-user' };
-                    }
-                }
-
-                setSession(activeSession);
-                if (userObj) {
-                    setUser(userObj);
-                    await Promise.all([
-                        fetchProfile(),
-                        fetchSavedJobs()
-                    ]);
-                } else {
-                    setLoading(false);
-                }
-            } catch (err) {
-                console.error("Auth session check failed:", err);
-                setLoading(false);
-            } finally {
-                initialised.current = true;
-            }
-        };
-
-        checkSession();
-
-        // 2. Listen for auth changes (login/logout after initial load)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-            // Skip the initial event — already handled by getSession above
-            if (!initialised.current) return;
-
-            setSession(session);
-            setUser(session?.user ?? null);
-            if (session?.user) {
-                await Promise.all([
-                    fetchProfile(),
-                    fetchSavedJobs()
-                ]);
-            } else {
-                // User logged out — clear chat sessions from localStorage
-                Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('ottobon_chat_session_')) {
-                        localStorage.removeItem(key);
-                    }
-                });
-                setRole(null);
-                setProfile(null);
-                setLoading(false);
-            }
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
-
-    const fetchProfile = async (retries = 3) => {
+    const fetchSavedJobs = useCallback(async () => {
         try {
-            const data = await getMyProfile();
-            setProfile(data);
-            setRole(data.role);
-        } catch (error) {
-            const status = error?.response?.status;
-            const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
-
-            if (isTimeout) {
-                console.warn('fetchProfile: Request timed out. Skipping retries and using fallback.');
-            }
-
-            // Retry on 503 (server overloaded) or 404 (user row not yet created by trigger)
-            // But NEVER retry on timeouts to prevent long hangs.
-            if (!isTimeout && retries > 0 && (status === 503 || status === 404)) {
-                const delay = status === 404 ? 1500 : 1000;
-                console.warn(`fetchProfile: ${status} error, retrying in ${delay}ms (${retries} retries left)`);
-                await new Promise(r => setTimeout(r, delay));
-                return fetchProfile(retries - 1);
-            }
-
-            console.error('Failed to fetch user profile:', error);
-
-            // Fallback: Supabase metadata
-            try {
-                const { data } = await supabase.auth.getUser();
-                const metaRole = data?.user?.user_metadata?.role;
-                if (metaRole) {
-                    setRole(metaRole);
-                    setProfile({ role: metaRole });
-                }
-            } catch (fallbackErr) {
-                console.error('Fallback profile fetch also failed:', fallbackErr);
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-    const fetchSavedJobs = async () => {
-        try {
-            // Lazy load the API to avoid circular deps if any
             const { getSavedJobs } = await import('../api/jobsApi');
             const saved = await getSavedJobs();
             setSavedJobIds(new Set(saved.map(j => j.id)));
         } catch (error) {
             console.error('Failed to fetch saved job IDs:', error);
         }
-    };
+    }, []);
+
+    const fetchProfile = useCallback(async (retries = 3) => {
+        try {
+            const data = await getMyProfile();
+            setProfile(data);
+            setRole(data.role);
+            setUser({ id: data.id, email: data.email });
+        } catch (error) {
+            const status = error?.response?.status;
+            if (retries > 0 && (status === 503 || status === 404)) {
+                const delay = status === 404 ? 1500 : 1000;
+                await new Promise(r => setTimeout(r, delay));
+                return fetchProfile(retries - 1);
+            }
+            console.error('Failed to fetch user profile:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const checkSession = useCallback(async () => {
+        try {
+            const token = localStorage.getItem('ottobon_custom_token');
+            if (token) {
+                setSession({ access_token: token });
+                await Promise.all([
+                    fetchProfile(),
+                    fetchSavedJobs()
+                ]);
+            } else {
+                setLoading(false);
+            }
+        } catch (err) {
+            console.error("Auth session check failed:", err);
+            setLoading(false);
+        } finally {
+            initialised.current = true;
+        }
+    }, [fetchProfile, fetchSavedJobs]);
+
+    useEffect(() => {
+        checkSession();
+    }, [checkSession]);
 
     const toggleJobSavedLocal = (jobId, isSaved) => {
         setSavedJobIds(prev => {
@@ -156,13 +75,15 @@ export const AuthProvider = ({ children }) => {
         });
     };
 
-    // ── Memoized context value ────────────────────────────────
-    // Without useMemo, every state setter call creates a new `value`
-    // object reference → every useAuth() consumer re-renders, even
-    // if the values they depend on haven't changed.
-    //
-    // With useMemo, the object reference stays stable unless one of
-    // the dependency values actually changes.
+    const logout = async () => {
+        const { signOut } = await import('../api/authApi');
+        await signOut();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setRole(null);
+    };
+
     const value = useMemo(() => ({
         session,
         user,
@@ -172,8 +93,10 @@ export const AuthProvider = ({ children }) => {
         fetchSavedJobs,
         toggleJobSavedLocal,
         loading,
-        isAuthenticated: !!session?.user,
-    }), [session, user, profile, role, savedJobIds, loading]);
+        logout,
+        refreshSession: checkSession,
+        isAuthenticated: !!session?.access_token,
+    }), [session, user, profile, role, savedJobIds, loading, checkSession, fetchSavedJobs]);
 
     return (
         <AuthContext.Provider value={value}>
