@@ -2,27 +2,17 @@ import { motion } from 'framer-motion';
 import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { saveJob, unsaveJob, isJobSaved } from '../../api/jobsApi';
+import { saveJob, unsaveJob } from '../../api/jobsApi';
+import { useAuth } from '../../context/AuthContext';
 import { CompanyLogo } from '../new-grad/CompanyLogo';
 import { getKeySkills, getOverviewPreview } from '../../utils/jobOverview';
 
 const JobCard = ({ job, isAuthenticated = true }) => {
-    const [saved, setSaved] = useState(false);
+    const { savedJobIds, toggleJobSavedLocal } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    // Check if the job is already saved on mount
-    useEffect(() => {
-        const checkSaved = async () => {
-            if (!isAuthenticated) return;
-            try {
-                const isSaved = await isJobSaved(job.id);
-                setSaved(isSaved);
-            } catch (err) {
-                console.error('Failed to check saved status', err);
-            }
-        };
-        checkSaved();
-    }, [job.id, isAuthenticated]);
+    // Check saved status from global state
+    const saved = savedJobIds.has(job.id);
 
     // Utility for date formatting
     const formattedDate = new Date(job.created_at).toLocaleDateString(undefined, {
@@ -89,10 +79,10 @@ const JobCard = ({ job, isAuthenticated = true }) => {
         try {
             if (saved) {
                 await unsaveJob(job.id);
-                setSaved(false);
+                toggleJobSavedLocal(job.id, false);
             } else {
                 await saveJob(job.id);
-                setSaved(true);
+                toggleJobSavedLocal(job.id, true);
             }
         } catch (err) {
             console.error('Failed to toggle save status', err);

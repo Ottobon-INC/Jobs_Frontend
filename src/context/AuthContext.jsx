@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     const [session, setSession] = useState(null);
     const [profile, setProfile] = useState(null);
     const [role, setRole] = useState(null);
+    const [savedJobIds, setSavedJobIds] = useState(new Set());
     const [loading, setLoading] = useState(true);
     const initialised = useRef(false);
 
@@ -50,7 +51,10 @@ export const AuthProvider = ({ children }) => {
                 setSession(activeSession);
                 if (userObj) {
                     setUser(userObj);
-                    await fetchProfile();
+                    await Promise.all([
+                        fetchProfile(),
+                        fetchSavedJobs()
+                    ]);
                 } else {
                     setLoading(false);
                 }
@@ -72,7 +76,10 @@ export const AuthProvider = ({ children }) => {
             setSession(session);
             setUser(session?.user ?? null);
             if (session?.user) {
-                await fetchProfile();
+                await Promise.all([
+                    fetchProfile(),
+                    fetchSavedJobs()
+                ]);
             } else {
                 // User logged out — clear chat sessions from localStorage
                 Object.keys(localStorage).forEach(key => {
@@ -128,6 +135,26 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         }
     };
+    
+    const fetchSavedJobs = async () => {
+        try {
+            // Lazy load the API to avoid circular deps if any
+            const { getSavedJobs } = await import('../api/jobsApi');
+            const saved = await getSavedJobs();
+            setSavedJobIds(new Set(saved.map(j => j.id)));
+        } catch (error) {
+            console.error('Failed to fetch saved job IDs:', error);
+        }
+    };
+
+    const toggleJobSavedLocal = (jobId, isSaved) => {
+        setSavedJobIds(prev => {
+            const next = new Set(prev);
+            if (isSaved) next.add(jobId);
+            else next.delete(jobId);
+            return next;
+        });
+    };
 
     // ── Memoized context value ────────────────────────────────
     // Without useMemo, every state setter call creates a new `value`
@@ -141,9 +168,12 @@ export const AuthProvider = ({ children }) => {
         user,
         profile,
         role,
+        savedJobIds,
+        fetchSavedJobs,
+        toggleJobSavedLocal,
         loading,
         isAuthenticated: !!session?.user,
-    }), [session, user, profile, role, loading]);
+    }), [session, user, profile, role, savedJobIds, loading]);
 
     return (
         <AuthContext.Provider value={value}>

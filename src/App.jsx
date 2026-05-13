@@ -30,6 +30,7 @@ const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
 const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
+const CommunityJobsPage = lazy(() => import('./pages/seeker/CommunityJobsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -44,6 +45,7 @@ const FeedbackDashboard = lazy(() => import('./pages/admin/FeedbackDashboard'));
 const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewMaterialsPage'));
 const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
+const CommunityModerationPage = lazy(() => import('./pages/admin/CommunityModerationPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -118,6 +120,7 @@ function App() {
                   <Route path="/feedback" element={<FeedbackPage />} />
                   <Route path="/materials" element={<InterviewMaterialsPage />} />
                   <Route path="/jobs-ai" element={<JobsAIPage />} />
+                  <Route path="/community-jobs" element={<CommunityJobsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -137,6 +140,7 @@ function App() {
                   <Route path="/admin/playbooks" element={<ManagePlaybooksPage />} />
                   <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
+                  <Route path="/admin/community-jobs" element={<CommunityModerationPage />} />
                 </Route>
 
               </Route>

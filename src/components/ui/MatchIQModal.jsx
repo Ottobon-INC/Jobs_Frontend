@@ -194,6 +194,13 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     )}
 
                                     <div className="mt-8 p-6 bg-zinc-50/50 card border border-zinc-100 relative overflow-hidden group">
+                                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-4 text-zinc-400">Strategic Analysis</h4>
+                                        <p className="text-[11px] font-medium text-zinc-600 leading-relaxed italic">
+                                            {gap_analysis || "AI Match Engine: Analysis Stream Optimized."}
+                                        </p>
+                                    </div>
+
+                                    <div className="mt-8 p-6 bg-zinc-50/50 card border border-zinc-100 relative overflow-hidden group">
                                         <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-4 text-zinc-400">Recommended Learning</h4>
                                         <div className="space-y-3">
                                             {missing_skills.slice(0, 3).map((skill, idx) => (

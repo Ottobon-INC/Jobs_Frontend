@@ -178,43 +178,43 @@ const JobDetailPage = () => {
                             </div>
 
                             <div className="flex flex-wrap justify-start gap-3 shrink-0 w-full">
-                                {role === ROLES.SEEKER && (
+                                {user && (
                                     <>
-                                        {user ? (
-                                            <button
-                                                onClick={handleRunMatchIQ}
-                                                disabled={isMatching}
-                                                className={`w-full sm:w-auto px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl ${matchDetails && !isMatching
-                                                        ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
-                                                        : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
-                                                    } disabled:opacity-50 active:scale-95`}
-                                            >
-                                                {isMatching ? (
-                                                    <><RefreshCw size={14} className="animate-spin" /> Analyzing...</>
-                                                ) : matchDetails ? (
-                                                    <><RefreshCw size={14} /> Re-run Match Analysis</>
-                                                ) : (
-                                                    <><Sparkles size={14} /> Analyze Job Fit</>
-                                                )}
-                                            </button>
-                                        ) : (
-                                            <Link to="/login" className="w-full sm:w-auto">
-                                                <button className="w-full bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
-                                                    <Sparkles size={14} /> Analyze Job Fit <Lock size={12} className="opacity-40" />
-                                                </button>
-                                            </Link>
-                                        )}
-                                        {job.external_apply_url && (
-                                            <a 
-                                                href={job.external_apply_url} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                className="w-full sm:w-auto bg-zinc-900 text-white px-12 py-4 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl shadow-zinc-900/20 active:scale-95"
-                                            >
-                                                <ExternalLink size={16} /> Apply Now
-                                            </a>
-                                        )}
+                                        <button
+                                            onClick={handleRunMatchIQ}
+                                            disabled={isMatching}
+                                            className={`w-full sm:w-auto px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl ${matchDetails && !isMatching
+                                                    ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
+                                                    : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
+                                                } disabled:opacity-50 active:scale-95`}
+                                        >
+                                            {isMatching ? (
+                                                <><RefreshCw size={14} className="animate-spin" /> Analyzing...</>
+                                            ) : matchDetails ? (
+                                                <><RefreshCw size={14} /> Re-run Match Analysis</>
+                                            ) : (
+                                                <><Sparkles size={14} /> Analyze Job Fit</>
+                                            )}
+                                        </button>
                                     </>
+                                )}
+                                {!user && (
+                                    <Link to="/login" className="w-full sm:w-auto">
+                                        <button className="w-full bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
+                                            <Sparkles size={14} /> Analyze Job Fit <Lock size={12} className="opacity-40" />
+                                        </button>
+                                    </Link>
+                                )}
+                                {(job.external_apply_url || job.external_url) && (
+                                    <a 
+                                        href={job.external_apply_url || job.external_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="w-full sm:w-auto bg-[#313851] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#434c6d] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 border border-white/10"
+                                    >
+                                        <ExternalLink size={18} className="text-white" />
+                                        Apply Now
+                                    </a>
                                 )}
                             </div>
                         </div>
@@ -265,7 +265,6 @@ const JobDetailPage = () => {
                                                     </div>
                                                     <p className="font-bold text-zinc-900 mb-6 text-sm leading-relaxed">{question}</p>
                                                     <div className="text-[10px] text-zinc-500 font-medium flex items-start justify-start gap-3 p-4 bg-zinc-50 rounded-xl border border-zinc-100/50 leading-[1.8] w-full">
-                                                        <Sparkles size={14} className="mt-0.5 text-zinc-900 shrink-0" />
                                                         <span>
                                                             <span className="text-zinc-400 font-bold uppercase tracking-widest mr-2 text-[8px]">Strategy</span>
                                                             {strategy}
