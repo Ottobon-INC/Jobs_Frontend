@@ -31,3 +31,18 @@ export const releaseSession = async (sessionId) => {
     const response = await api.post(`/admin/sessions/${sessionId}/release`);
     return response.data;
 };
+
+export const getPendingCommunityJobs = async () => {
+    const response = await api.get('/admin/community/pending');
+    return response.data;
+};
+
+export const approveCommunityJob = async (jobId) => {
+    const response = await api.post(`/admin/community/approve/${jobId}`);
+    return response.data;
+};
+
+export const rejectCommunityJob = async (jobId) => {
+    const response = await api.post(`/admin/community/reject/${jobId}`);
+    return response.data;
+};

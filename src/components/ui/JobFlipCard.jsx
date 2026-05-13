@@ -86,7 +86,7 @@ export function JobFlipCard({ job }) {
                             navigate('/register');
                         }}
                         className={cn(
-                            "w-full py-4 bg-[#C2CBD3] text-[#313851] text-xs font-black uppercase tracking-[0.2em]",
+                            "w-full py-4 bg-[#C2CBD3] text-[#313851] text-xs font-black uppercase tracking-widest",
                             "rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300",
                             "shadow-[0_15px_35px_rgba(194,203,211,0.15)] flex items-center justify-center gap-2"
                         )}

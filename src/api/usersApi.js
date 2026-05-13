@@ -2,7 +2,7 @@ import api, { supabase } from './client';
 
 export const getMyProfile = async () => {
     const response = await api.get('/users/me', {
-        requestTimeout: 7000 // Ensure we fail fast for the initial profile sync
+        requestTimeout: 15000 // Increased to 15s to handle slower DB/cold starts
     });
     return response.data;
 };

@@ -9,17 +9,17 @@ export const NewGradFilters = ({
     difficulty, setDifficulty 
 }) => {
     return (
-        <section className="sticky top-0 z-40 py-6 px-6 bg-[#F6F3ED]/80 backdrop-blur-xl border-b border-zinc-200">
+        <section className="py-6 px-6 bg-transparent">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
                 {/* Search Bar */}
                 <div className="relative flex-1 w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]/40" size={18} />
                     <input 
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search company or role..."
-                        className="w-full pl-12 pr-4 py-3 bg-white border border-zinc-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#313851]/5 transition-all font-medium text-sm"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-[var(--color-primary)]/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-primary)]/5 transition-all font-medium text-sm text-[var(--color-primary)] placeholder:text-[var(--color-primary)]/30"
                     />
                 </div>
 
@@ -29,33 +29,33 @@ export const NewGradFilters = ({
                         <select 
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-zinc-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#313851]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer"
+                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-[var(--color-primary)]/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-primary)]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer text-[var(--color-primary)]"
                         >
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                            {CATEGORIES.map(c => <option key={c} value={c} className="bg-white">{c}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-primary)]/40 pointer-events-none" size={14} />
                     </div>
 
                     <div className="relative group">
                         <select 
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-zinc-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#313851]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer"
+                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-[var(--color-primary)]/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-primary)]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer text-[var(--color-primary)]"
                         >
-                            {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                            {ROLES.map(r => <option key={r} value={r} className="bg-white">{r}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-primary)]/40 pointer-events-none" size={14} />
                     </div>
 
                     <div className="relative group">
                         <select 
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value)}
-                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-zinc-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#313851]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer"
+                            className="appearance-none pl-4 pr-10 py-3 bg-white border border-[var(--color-primary)]/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-primary)]/5 transition-all font-bold text-[11px] uppercase tracking-widest cursor-pointer text-[var(--color-primary)]"
                         >
-                            {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
+                            {DIFFICULTIES.map(d => <option key={d} value={d} className="bg-white">{d}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-primary)]/40 pointer-events-none" size={14} />
                     </div>
                 </div>
             </div>

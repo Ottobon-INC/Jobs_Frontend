@@ -46,13 +46,21 @@ const NewGradPage = () => {
         });
     }, [companies, searchQuery, category, role, difficulty, hiringZone]);
 
+    const handleCompanySelect = (companyName) => {
+        setSearchQuery(companyName);
+        const element = document.getElementById('playbooks-section');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-[#F6F3ED]">
+        <div className="min-h-screen bg-[var(--color-background-soft)]">
             {/* Header Navigation */}
-            <div className="bg-[#313851] py-4 px-6 flex items-center justify-between border-b border-white/5">
+            <div className="bg-[#1a1f33] py-4 px-6 flex items-center justify-between border-b border-white/5">
                 <Link 
                     to="/" 
-                    className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
+                    className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
                 >
                     <ArrowLeft size={14} strokeWidth={3} /> Back to Home
                 </Link>
@@ -62,32 +70,34 @@ const NewGradPage = () => {
                 </div>
             </div>
 
-            <NewGradHero />
+            <NewGradHero onSelectCompany={handleCompanySelect} />
             
-            <NewGradFilters 
-                searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-                category={category} setCategory={setCategory}
-                role={role} setRole={setRole}
-                difficulty={difficulty} setDifficulty={setDifficulty}
-            />
+            <div className="bg-[var(--color-background-soft)]/80 backdrop-blur-md sticky top-0 z-50 border-y border-[var(--color-primary)]/10">
+                <NewGradFilters 
+                    searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+                    category={category} setCategory={setCategory}
+                    role={role} setRole={setRole}
+                    difficulty={difficulty} setDifficulty={setDifficulty}
+                />
+            </div>
 
-            <main className="max-w-7xl mx-auto px-6 py-16">
+            <main id="playbooks-section" className="max-w-7xl mx-auto px-6 py-16">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
                     <div>
-                        <h2 className="text-3xl font-bold text-[#313851] tracking-tight">Browse Playbooks</h2>
-                        <p className="text-sm font-medium text-zinc-400 mt-1">Showing {filteredCompanies.length} curated companies</p>
+                        <h2 className="text-3xl font-black text-[var(--color-primary)] tracking-tight uppercase tracking-tighter">Browse Playbooks</h2>
+                        <p className="text-[10px] font-black text-[var(--color-primary)]/40 uppercase tracking-widest mt-2">Showing {filteredCompanies.length} curated companies</p>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-white border border-zinc-200 p-1.5 rounded-[20px] w-fit shadow-sm">
+                    <div className="flex items-center gap-1 bg-white border border-[var(--color-primary)]/10 p-1.5 rounded-2xl w-fit shadow-sm">
                         <button 
                             onClick={() => setHiringZone('on-campus')}
-                            className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-[#313851] text-white shadow-md' : 'text-zinc-400 hover:text-[#313851] hover:bg-zinc-50'}`}
+                            className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-[var(--color-primary)] text-white shadow-md' : 'text-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5'}`}
                         >
                             On-Campus
                         </button>
                         <button 
                             onClick={() => setHiringZone('off-campus')}
-                            className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-[#313851] text-white shadow-md' : 'text-zinc-400 hover:text-[#313851] hover:bg-zinc-50'}`}
+                            className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-[var(--color-primary)] text-white shadow-md' : 'text-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5'}`}
                         >
                             Off-Campus
                         </button>
@@ -111,11 +121,11 @@ const NewGradPage = () => {
                             animate={{ opacity: 1 }}
                             className="flex flex-col items-center justify-center py-32 text-center"
                         >
-                            <div className="w-20 h-20 bg-zinc-100 rounded-3xl flex items-center justify-center mb-6">
-                                <AlertCircle size={40} className="text-zinc-300" />
+                            <div className="w-20 h-20 bg-[var(--color-primary)]/5 rounded-3xl flex items-center justify-center mb-6">
+                                <AlertCircle size={40} className="text-[var(--color-primary)]/20" />
                             </div>
-                            <h3 className="text-2xl font-bold text-[#313851]">No playbooks found</h3>
-                            <p className="text-zinc-400 mt-2 max-w-sm">Try adjusting your filters or search query to find what you're looking for.</p>
+                            <h3 className="text-2xl font-bold text-[var(--color-primary)]">No playbooks found</h3>
+                            <p className="text-[var(--color-primary)]/40 mt-2 max-w-sm">Try adjusting your filters or search query to find what you're looking for.</p>
                             <button 
                                 onClick={() => {
                                     setSearchQuery('');
@@ -123,7 +133,7 @@ const NewGradPage = () => {
                                     setRole('All Roles');
                                     setDifficulty('All Levels');
                                 }}
-                                className="mt-8 text-sm font-bold text-[#313851] border-b-2 border-[#313851] pb-1 hover:pb-2 transition-all uppercase tracking-widest"
+                                className="mt-8 text-[10px] font-black text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]/20 pb-1 hover:pb-2 transition-all uppercase tracking-[0.2em]"
                             >
                                 Reset All Filters
                             </button>
@@ -133,8 +143,8 @@ const NewGradPage = () => {
             </main>
 
             {/* Footer Placeholder */}
-            <footer className="bg-white py-20 px-6 border-t border-zinc-100 text-center">
-                <p className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.5em]">Ottobon Jobs • New Grad Playbook</p>
+            <footer className="bg-[var(--color-primary)] py-20 px-6 border-t border-white/5 text-center">
+                <p className="text-[10px] font-black text-white/10 uppercase tracking-[0.5em]">Ottobon Jobs • New Grad Playbook</p>
             </footer>
         </div>
     );
