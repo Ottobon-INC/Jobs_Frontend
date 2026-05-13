@@ -1,75 +1,77 @@
-import { supabase } from './client';
 import api from './client';
 
 /**
- * Sign up directly via Supabase Auth.
- * User metadata is passed to options.data so the Postgres trigger can safely copy it to the users_jobs table.
+ * Sign up via Backend Proxy.
  */
-export const signUp = async (email, password, role, full_name, phone, location, skills = [], interests = "", dob = "", aspirations = [], avatar_url = "", work_preference = "Hybrid / Both", experience = "", work_experience_position = "", work_experience_description = "") => {
-    const { data, error } = await supabase.auth.signUp({
+export const signUp = async (email, password, role, fullName, phone, location, skills, interests, dob, aspirations, avatarUrl, workPreference, experience, position, description) => {
+    const res = await api.post('/auth/register', {
         email,
         password,
-        options: {
-            data: {
-                role,
-                full_name,
-                phone,
-                location,
-                skills,
-                interests,
-                dob,
-                aspirations,
-                avatar_url,
-                work_preference,
-                experience,
-                work_experience_position,
-                work_experience_description
-            }
+        metadata: {
+            role,
+            full_name: fullName,
+            phone,
+            location,
+            skills,
+            interests,
+            dob,
+            aspirations,
+            avatar_url: avatarUrl,
+            work_preference: workPreference,
+            experience,
+            position,
+            description
         }
     });
 
-    if (error) throw error;
+    const data = res.data;
+    if (data.access_token) {
+        const { setToken } = await import('./client');
+        setToken(data.access_token);
+    }
     
-    return {
-        user: data.user,
-        session: data.session,
-    };
+    return data;
 };
 
 /**
- * Sign in directly via Supabase — no rate limit issues for login.
- * (Rate limit was only on signup emails, not login.)
+ * Sign in via Backend Proxy.
  */
 export const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    });
-    if (error) throw error;
+    const res = await api.post('/auth/login', { email, password });
+    const data = res.data;
+    
+    if (data.access_token) {
+        const { setToken } = await import('./client');
+        setToken(data.access_token);
+    }
+    
     return data;
 };
 
 export const signOut = async () => {
-    localStorage.removeItem('ottobon_custom_token');
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    const { setToken } = await import('./client');
+    setToken(null);
+    // User logged out — clear chat sessions from localStorage
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('ottobon_chat_session_')) {
+            localStorage.removeItem(key);
+        }
+    });
 };
 
 export const getSession = async () => {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    return data.session;
+    const token = localStorage.getItem('ottobon_custom_token');
+    if (!token) return null;
+    return { access_token: token };
 };
 
 export const getUser = async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    return data.user;
+    const session = await getSession();
+    if (!session) return null;
+    return { id: 'session-user' };
 };
 
 export const initiateGoogleLogin = (role = 'seeker') => {
-    // Redirect browser to the FastAPI Google login endpoint
-    // Assuming backend runs on port 8001
     const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
     window.location.href = `${backendUrl}/auth/google/login?role=${role}`;
 };

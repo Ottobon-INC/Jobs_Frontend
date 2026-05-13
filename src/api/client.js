@@ -14,9 +14,7 @@ const getSupabaseClient = () => {
 export const supabase = getSupabaseClient();
 
 // ── Cached auth token ────────────────────────────────────────
-// Instead of calling getSession() on every request (slow!),
-// we cache the token and update it via the auth state listener.
-let _cachedToken = null;
+let _cachedToken = localStorage.getItem('ottobon_custom_token') || null;
 
 export const setToken = (token) => {
     _cachedToken = token;

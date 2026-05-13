@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { signIn, initiateGoogleLogin } from '../../api/authApi';
 import { getMyProfile } from '../../api/usersApi';
 import { ROLES } from '../../utils/constants';
 import { Briefcase, Eye, EyeOff, Sparkles, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
-import { useAuth } from '../../hooks/useAuth';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { user, role } = useAuth();
+    const { user, role, refreshSession } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -34,6 +34,7 @@ const LoginPage = () => {
         setError(null);
         try {
             await signIn(email, password);
+            await refreshSession();
             const profile = await getMyProfile();
             
             if (profile.role === ROLES.ADMIN) {
