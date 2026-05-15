@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
+import { MOCK_JOBS } from '../../data/mockJobs';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
 import { sanitizeHTML } from '../../utils/sanitize';
@@ -69,7 +70,14 @@ const JobDetailPage = () => {
             setGenZSummary(data.gen_z_summary || null);
             setJob(data);
         } catch (error) {
-            console.error('Failed to fetch job:', error);
+            console.error('Failed to fetch job, using fallback data:', error);
+            const fallbackJob = MOCK_JOBS.find(j => j.id === id);
+            if (fallbackJob) {
+                fallbackJob.cleanLocation = fallbackJob.location;
+                fallbackJob.cleanTitle = fallbackJob.title;
+                setJob(fallbackJob);
+                setGenZSummary(null);
+            }
         } finally {
             setLoading(false);
             setRefreshing(false);

@@ -75,15 +75,11 @@ export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 })
     // Clean the name for domain guessing (e.g. "Visa Inc." -> "visa")
     const baseName = name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    // Build a unique list of fallback URLs
+    // Build a unique list of fallback URLs - Removed failing external services
     const sources = [...new Set([
         LOGO_MAP[slug],
         LOGO_MAP[baseName],
-        externalLogo,
-        `https://logo.clearbit.com/${slug}.com`,
-        `https://logo.clearbit.com/${baseName}.com`,
-        `https://unavatar.io/${slug}.com?fallback=false`,
-        `https://unavatar.io/${baseName}.com?fallback=false`
+        externalLogo
     ].filter(Boolean))];
 
     const hasValidSource = imgIdx < sources.length;
@@ -96,6 +92,8 @@ export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 })
                     src={sources[imgIdx]}
                     alt={name}
                     className="max-w-full max-h-full object-contain relative z-10 p-2"
+                    crossOrigin="anonymous"
+                    loading="lazy"
                     onError={() => setImgIdx(prev => prev + 1)}
                 />
             ) : (

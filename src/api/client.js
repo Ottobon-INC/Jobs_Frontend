@@ -89,9 +89,18 @@ api.interceptors.response.use(
             return api(config);
         }
 
-        const isSavedCheck = error.config?.url?.includes('/is-saved');
+        if (error.response?.status === 401) {
+            console.warn('Session expired or unauthorized. Clearing token.');
+            setToken(null);
+            // Only redirect if not already on login/signup pages to avoid loops
+            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
+                window.location.href = '/login';
+            }
+        }
+
+        const isSavedCheck = error.config?.url?.includes('/is-saved') || error.config?.url?.includes('/check');
         
-        // Log error except for expected noise like network errors during mass is-saved checks
+        // Log error except for expected noise like network errors during mass checks
         if (!isSavedCheck || error.response) {
             console.error('API Error:', error.response?.data?.detail || error.message);
         }

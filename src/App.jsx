@@ -30,6 +30,7 @@ const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMateri
 const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
 const CommunityJobsPage = lazy(() => import('./pages/seeker/CommunityJobsPage'));
+const RewardsPage = lazy(() => import('./pages/seeker/RewardsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -45,6 +46,7 @@ const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewM
 const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 const CommunityModerationPage = lazy(() => import('./pages/admin/CommunityModerationPage'));
+const ManageRewardsPage = lazy(() => import('./pages/admin/ManageRewardsPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -124,6 +126,7 @@ function App() {
                   <Route path="/materials" element={<InterviewMaterialsPage />} />
                   <Route path="/jobs-ai" element={<JobsAIPage />} />
                   <Route path="/community-jobs" element={<CommunityJobsPage />} />
+                  <Route path="/rewards" element={<RewardsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -144,6 +147,7 @@ function App() {
                   <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                   <Route path="/admin/community-jobs" element={<CommunityModerationPage />} />
+                  <Route path="/admin/rewards" element={<ManageRewardsPage />} />
                 </Route>
 
               </Route>

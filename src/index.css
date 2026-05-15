@@ -55,6 +55,10 @@
 
     --background: var(--bg-primary);
     --foreground: var(--text-main);
+
+    /* Safe Area Insets for Mobile */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
   @keyframes spin {
@@ -110,10 +114,22 @@
     font-family: var(--font-sans);
   }
 
+  /* Prevent iOS zoom on focus and improve mobile input size */
+  @media screen and (max-width: 767px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
   /* Hide main window scrollbar globally */
   html, body {
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
+  }
+
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   html::-webkit-scrollbar, body::-webkit-scrollbar {
@@ -158,11 +174,13 @@
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .premium-hover:hover {
-    transform: translateY(-5px);
-    background-color: rgba(194, 203, 211, 0.1);
-    border-color: var(--color-primary);
-    box-shadow: 0 20px 40px -20px rgba(49, 56, 81, 0.15);
+  @media (hover: hover) {
+    .premium-hover:hover {
+      transform: translateY(-5px);
+      background-color: rgba(194, 203, 211, 0.1);
+      border-color: var(--color-primary);
+      box-shadow: 0 20px 40px -20px rgba(49, 56, 81, 0.15);
+    }
   }
 
   .sidebar-item {
@@ -208,15 +226,17 @@
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  button:hover, 
-  .sidebar-item:hover, 
-  .glass-card:hover, 
-  .landing-card:hover, 
-  .hero-cta:hover {
-    transform: translateY(-5px);
-    background-color: rgba(194, 203, 211, 0.1);
-    border-color: var(--color-primary);
-    box-shadow: 0 20px 40px -20px rgba(49, 56, 81, 0.15);
+  @media (hover: hover) {
+    button:hover, 
+    .sidebar-item:hover, 
+    .glass-card:hover, 
+    .landing-card:hover, 
+    .hero-cta:hover {
+      transform: translateY(-5px);
+      background-color: rgba(194, 203, 211, 0.1);
+      border-color: var(--color-primary);
+      box-shadow: 0 20px 40px -20px rgba(49, 56, 81, 0.15);
+    }
   }
 
   .glass-panel {

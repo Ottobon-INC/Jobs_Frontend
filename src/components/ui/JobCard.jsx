@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink } from 'lucide-react';
+import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { saveJob, unsaveJob } from '../../api/jobsApi';
@@ -15,10 +15,12 @@ const JobCard = ({ job, isAuthenticated = true }) => {
     const saved = savedJobIds.has(job.id);
 
     // Utility for date formatting
-    const formattedDate = new Date(job.created_at).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric'
-    });
+    const formattedDate = job.created_at || job.posted_at 
+        ? new Date(job.created_at || job.posted_at).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric'
+          })
+        : 'Recent';
 
     // Clean title — strip "POSTED" suffix and embedded locations
     const cleanTitle = (() => {
@@ -99,7 +101,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             className="group/job relative"
         >
-            <div className="relative bg-white border border-zinc-100 rounded-[2.5rem] p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden">
+            <div className="relative bg-white border border-zinc-100 rounded-3xl md:rounded-[2.5rem] p-5 md:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden">
                 
                 {/* 1. Top Row: Logo & Badges */}
                 <div className="flex items-start justify-between mb-8">
@@ -128,49 +130,63 @@ const JobCard = ({ job, isAuthenticated = true }) => {
 
                 {/* 2. Job Title & Company */}
                 <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-[#313851] leading-tight mb-2 line-clamp-2">
-                        {cleanTitle}
-                    </h3>
+                    <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-2xl font-bold text-[#313851] leading-tight line-clamp-2">
+                            {cleanTitle}
+                        </h3>
+                        {matchScore !== null && (
+                            <div className="flex flex-col items-center justify-center bg-amber-400 text-black px-2.5 py-1 rounded-xl shadow-lg shadow-amber-400/20 ring-2 ring-white">
+                                <span className="text-[9px] font-black leading-none">{matchScore}%</span>
+                                <span className="text-[6px] font-black uppercase tracking-tighter">Match</span>
+                            </div>
+                        )}
+                    </div>
                     <p className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">
                         {job.company_name || 'Ottobon Partner'}
                     </p>
                 </div>
 
-                {/* 3. Dynamic Content Area: Summary Boxes + Expandable Skills */}
-                <div className="flex-1 mb-8">
-                    {/* Always visible: Summary Boxes */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-white rounded-2xl border border-zinc-100 shadow-sm">
-                            <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Experience</p>
-                            <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-xs">
-                                <Clock size={12} className="text-[#313851]" />
-                                {displayExperience}
+                    {/* Content Section: Summary Boxes + Skills */}
+                    <div className="overflow-hidden transition-all duration-500">
+                        {/* Summary Boxes */}
+                        <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-0 group-hover/job:mb-6 transition-all">
+                            <div className="p-3 md:p-4 bg-zinc-50/50 rounded-2xl border border-zinc-100/50">
+                                <p className="text-[8px] md:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Experience</p>
+                                <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[10px] md:text-xs">
+                                    <Clock size={12} className="text-[#313851]" />
+                                    {displayExperience}
+                                </div>
+                            </div>
+                            <div className="p-3 md:p-4 bg-zinc-50/50 rounded-2xl border border-zinc-100/50">
+                                <p className="text-[8px] md:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Location</p>
+                                <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[10px] md:text-xs">
+                                    <MapPin size={12} className="text-[#313851]" />
+                                    <span className="truncate">{displayLocation}</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="p-4 bg-white rounded-2xl border border-zinc-100 shadow-sm">
-                            <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Location</p>
-                            <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-xs">
-                                <MapPin size={12} className="text-[#313851]" />
-                                <span className="truncate">{displayLocation}</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Expandable Section: Skills required */}
-                    <div className="overflow-hidden transition-all duration-500 max-h-0 group-hover/job:max-h-[180px] opacity-0 group-hover/job:opacity-100 group-hover/job:mt-6">
-                        <p className="text-[9px] font-black text-[#313851] uppercase tracking-widest mb-3">Required Skills</p>
-                        <div className="flex flex-wrap gap-2 overflow-y-auto max-h-[130px] custom-scrollbar pr-2">
-                            {keySkills.map((skill, idx) => (
-                                <span
-                                    key={idx}
-                                    className="text-[10px] font-bold px-3 py-1.5 bg-zinc-900 text-white rounded-lg capitalize tracking-wide shadow-sm"
-                                >
-                                    {skill}
-                                </span>
-                            ))}
+                        {/* Skills Section: Visible on mobile, hover on desktop */}
+                        <div className="opacity-100 max-h-[200px] mt-4 md:opacity-0 md:max-h-0 md:mt-0 md:group-hover/job:opacity-100 md:group-hover/job:max-h-[200px] md:group-hover/job:mt-6 transition-all duration-500">
+                            <p className="text-[9px] font-black text-[#313851] uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <Sparkles size={10} className="text-amber-500" />
+                                Required Skills
+                            </p>
+                            <div className="flex flex-wrap gap-1.5 md:gap-2">
+                                {keySkills.slice(0, 6).map((skill, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="text-[9px] md:text-[10px] font-bold px-2.5 py-1 bg-zinc-900 text-white rounded-lg capitalize tracking-wide"
+                                    >
+                                        {skill}
+                                    </span>
+                                ))}
+                                {keySkills.length > 6 && (
+                                    <span className="text-[9px] font-bold text-zinc-400 self-center ml-1">+{keySkills.length - 6} more</span>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 {/* 4. Action Bar */}
                 <div className="flex items-center gap-3">

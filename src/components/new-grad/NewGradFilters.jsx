@@ -9,8 +9,8 @@ export const NewGradFilters = ({
     difficulty, setDifficulty 
 }) => {
     return (
-        <section className="py-6 px-6 bg-transparent">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
+        <section className="py-3 md:py-6 px-4 md:px-6 bg-transparent">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-3 md:gap-4 items-center">
                 {/* Search Bar */}
                 <div className="relative flex-1 w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]/40" size={18} />
@@ -24,7 +24,7 @@ export const NewGradFilters = ({
                 </div>
 
                 {/* Dropdowns */}
-                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
                     <div className="relative group">
                         <select 
                             value={category}

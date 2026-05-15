@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getJobFeed } from '../../api/jobsApi';
+import { MOCK_JOBS } from '../../data/mockJobs';
 import JobCard from '../../components/ui/JobCard';
 import Loader from '../../components/ui/Loader';
 import JobMatchButton from '../../components/ui/JobMatchButton';
@@ -39,6 +40,17 @@ const JobFeedPage = () => {
     const [isExperienceOpen, setIsExperienceOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
+    // Close dropdowns on click outside
+    useEffect(() => {
+        const handleClick = () => {
+            setIsLocationOpen(false);
+            setIsExperienceOpen(false);
+            setIsCategoryOpen(false);
+        };
+        window.addEventListener('click', handleClick);
+        return () => window.removeEventListener('click', handleClick);
+    }, []);
+
     useEffect(() => {
         const fetchJobs = async () => {
             try {
@@ -72,7 +84,14 @@ const JobFeedPage = () => {
                 });
                 setJobs(cleanedData);
             } catch (err) {
-                console.error('Failed to fetch jobs', err);
+                console.error('Failed to fetch jobs, using fallback data:', err);
+                // Clean mock data if necessary
+                const cleanedFallback = MOCK_JOBS.map(job => ({
+                    ...job,
+                    cleanLocation: job.location,
+                    experience_level: job.experience_range
+                }));
+                setJobs(cleanedFallback);
             } finally {
                 setLoading(false);
             }
@@ -206,13 +225,13 @@ const JobFeedPage = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
 
     return (
-        <div className="min-h-screen bg-[#FBFBFB]">
+        <div className="bg-transparent">
             {/* Minimalist Header Section */}
-            <header className="relative z-20 pt-8 pb-1 px-6 md:px-10">
+            <header className="relative z-20 pt-6 pb-6 px-6 md:px-12">
                 {/* Refined Background Accent */}
                 <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-40" />
 
-                <div className="max-w-[1600px] mx-auto relative z-10 text-center">
+                <div className="max-w-[1400px] mx-auto relative z-10 text-center">
                     {/* 1. Title Section - Moved to top for UX hierarchy */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -264,11 +283,11 @@ const JobFeedPage = () => {
                                 {/* Location Dropdown */}
                                 <div
                                     className="relative flex-1"
-                                    onMouseEnter={() => setIsLocationOpen(true)}
-                                    onMouseLeave={() => setIsLocationOpen(false)}
+                                    onClick={(e) => { e.stopPropagation(); setIsLocationOpen(!isLocationOpen); setIsExperienceOpen(false); setIsCategoryOpen(false); }}
                                 >
                                     <button
-                                        className="w-full px-5 py-3.5 bg-white text-[#313851] border border-[#C2CBD3] rounded-xl text-xs font-bold flex justify-between items-center hover:border-[#313851] transition-all duration-200 shadow-sm"
+                                        type="button"
+                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isLocationOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <MapPin size={14} className="text-[#C2CBD3] shrink-0" />
@@ -303,11 +322,11 @@ const JobFeedPage = () => {
                                 {/* Experience Dropdown */}
                                 <div
                                     className="relative flex-1"
-                                    onMouseEnter={() => setIsExperienceOpen(true)}
-                                    onMouseLeave={() => setIsExperienceOpen(false)}
+                                    onClick={(e) => { e.stopPropagation(); setIsExperienceOpen(!isExperienceOpen); setIsLocationOpen(false); setIsCategoryOpen(false); }}
                                 >
                                     <button
-                                        className="w-full px-5 py-3.5 bg-white text-[#313851] border border-[#C2CBD3] rounded-xl text-xs font-bold flex justify-between items-center hover:border-[#313851] transition-all duration-200 shadow-sm"
+                                        type="button"
+                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isExperienceOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <span className="text-[#C2CBD3] shrink-0 font-bold tracking-tighter text-[10px]">EXP</span>
@@ -342,11 +361,11 @@ const JobFeedPage = () => {
                                 {/* Category Dropdown */}
                                 <div
                                     className="relative flex-1"
-                                    onMouseEnter={() => setIsCategoryOpen(true)}
-                                    onMouseLeave={() => setIsCategoryOpen(false)}
+                                    onClick={(e) => { e.stopPropagation(); setIsCategoryOpen(!isCategoryOpen); setIsLocationOpen(false); setIsExperienceOpen(false); }}
                                 >
                                     <button
-                                        className="w-full px-5 py-3.5 bg-white text-[#313851] border border-[#C2CBD3] rounded-xl text-xs font-bold flex justify-between items-center hover:border-[#313851] transition-all duration-200 shadow-sm"
+                                        type="button"
+                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isCategoryOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <Tag size={14} className="text-[#C2CBD3] shrink-0" />
@@ -412,7 +431,7 @@ const JobFeedPage = () => {
             <LogoMarquee />
 
             {/* Content Container */}
-            <main className="max-w-[1600px] mx-auto pt-6 pb-20 px-6 md:px-10">
+            <main className="max-w-[1400px] mx-auto pt-8 pb-20 px-6 md:px-12">
                 
                 {/* 3. Matched Roles Section ABOVE Available Roles */}
                 {isAuthenticated && role === ROLES.SEEKER && matchedJobs !== null && (

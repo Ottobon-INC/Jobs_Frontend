@@ -58,6 +58,12 @@ export const matchAllJobs = async () => {
 
 /** Helper: get the current Supabase auth user ID */
 export const getSavedJobs = async () => {
+    // Demo bypass for mobile testing
+    const token = localStorage.getItem('ottobon_custom_token');
+    if (token === 'demo_token') {
+        return [];
+    }
+
     const response = await api.get('/jobs/saved');
     return response.data;
 };

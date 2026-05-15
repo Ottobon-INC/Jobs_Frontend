@@ -33,7 +33,7 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 z-50 h-16 glass-panel border-b border-zinc-100 flex-shrink-0">
-            <div className="h-full px-6 flex items-center justify-between">
+            <div className="h-full px-4 md:px-6 flex items-center justify-between">
                 {/* Logo - Refined Branding */}
                 <Link to="/" className="flex items-center gap-3 group">
                     <img 
@@ -41,15 +41,15 @@ const Navbar = () => {
                         alt="Ottobon Jobs" 
                         className="w-8 h-8 rounded-xl group-hover:rotate-[10deg] transition-all duration-700 shadow-2xl shadow-black/10" 
                     />
-                    <span className="font-bold text-lg tracking-tight text-black flex items-center">
-                        Ottobon<span className="text-zinc-300 font-light mx-1">|</span>Jobs
+                    <span className="font-bold text-lg tracking-tight text-black flex items-center max-w-[120px] sm:max-w-none overflow-hidden">
+                        Ottobon<span className="text-zinc-300 font-light mx-1">|</span><span className="hidden sm:inline">Jobs</span>
                     </span>
                 </Link>
 
 
 
                 {/* User Actions */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                     {user ? (
                         <>
                             {/* Notification Bell */}
