@@ -44,6 +44,7 @@ const FeedbackDashboard = lazy(() => import('./pages/admin/FeedbackDashboard'));
 const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewMaterialsPage'));
 const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
+const ManageTimelinePage = lazy(() => import('./pages/admin/ManageTimelinePage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -137,6 +138,7 @@ function App() {
                   <Route path="/admin/playbooks" element={<ManagePlaybooksPage />} />
                   <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
+                  <Route path="/admin/timeline" element={<ManageTimelinePage />} />
                 </Route>
 
               </Route>

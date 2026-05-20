@@ -61,6 +61,7 @@ const Sidebar = () => {
         { to: '/admin/feedback', label: 'User Feedback', icon: BarChart3, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/playbooks', label: 'Manage Playbooks', icon: BookOpen, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/timeline', label: 'Manage Timeline', icon: Calendar, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/add-data', label: 'Add Data', icon: PlusCircle, roles: [ROLES.ADMIN], category: 'Administrative' },
     ];
 
