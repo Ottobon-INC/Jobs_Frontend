@@ -30,6 +30,7 @@ const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
 const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
+const ATSAnalyzerPage = lazy(() => import('./pages/seeker/ATSAnalyzerPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -119,6 +120,7 @@ function App() {
                   <Route path="/feedback" element={<FeedbackPage />} />
                   <Route path="/materials" element={<InterviewMaterialsPage />} />
                   <Route path="/jobs-ai" element={<JobsAIPage />} />
+                  <Route path="/ats-analyzer" element={<ATSAnalyzerPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
