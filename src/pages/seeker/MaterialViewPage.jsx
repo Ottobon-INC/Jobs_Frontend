@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchInterviewMaterialById } from '../../api/interviewMaterialsApi';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../../utils/constants';
 
 const MaterialViewPage = () => {
     const { id } = useParams();
@@ -139,7 +140,7 @@ const MaterialViewPage = () => {
                 
                 {/* PDF iframe */}
                 <iframe 
-                    src={`${material.file_url}#toolbar=1`}
+                    src={`${API_BASE_URL}/interview-materials/${material.id}/view#toolbar=1`}
                     className="w-full h-full border-none relative z-20"
                     title={material.title}
                 />

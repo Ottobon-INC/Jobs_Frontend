@@ -2,7 +2,7 @@ import api from './client';
 
 export const fetchPlaybooks = async (hiringZone = null) => {
     const params = hiringZone ? { hiring_zone: hiringZone } : {};
-    const response = await api.get('/playbooks/', { params });
+    const response = await api.get('/playbooks', { params });
     return response.data;
 };
 
@@ -17,7 +17,7 @@ export const fetchPlaybookBySlug = async (slug) => {
 };
 
 export const createPlaybook = async (playbookData) => {
-    const response = await api.post('/playbooks/', playbookData);
+    const response = await api.post('/playbooks', playbookData);
     return response.data;
 };
 
