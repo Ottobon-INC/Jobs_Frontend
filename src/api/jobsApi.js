@@ -56,6 +56,7 @@ export const matchAllJobs = async () => {
 
 // --- Saved Jobs (Backend Proxied) ---
 
+/** Helper: get the current Supabase auth user ID */
 export const getSavedJobs = async () => {
     const response = await api.get('/jobs/saved');
     return response.data;

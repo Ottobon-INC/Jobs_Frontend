@@ -9,7 +9,7 @@ const JobOverviewCard = ({
   salary = null,
   workMode = 'Onsite',
 }) => (
-  <div className="w-full mb-12 p-10 rounded-[32px] border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm">
+  <div className="w-full mb-12 p-6 md:p-10 rounded-2xl md:rounded-[32px] border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm">
     <div className="absolute -top-6 -right-6 p-6 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
       <Sparkles size={160} className="text-zinc-900" />
     </div>

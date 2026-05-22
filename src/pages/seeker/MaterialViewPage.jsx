@@ -4,8 +4,8 @@ import { ChevronLeft, Download, Loader2, AlertCircle, FileText, Share2 } from 'l
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchInterviewMaterialById } from '../../api/interviewMaterialsApi';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
-import toast from 'react-hot-toast';
 import { API_BASE_URL } from '../../utils/constants';
+import toast from 'react-hot-toast';
 
 const MaterialViewPage = () => {
     const { id } = useParams();
@@ -37,9 +37,32 @@ const MaterialViewPage = () => {
         }
     };
 
+    const getFixedUrl = (url) => {
+        if (!url) return '';
+        try {
+            const urlObj = new URL(url);
+            // Only fix the URL if it's pointing to localhost or 127.0.0.1
+            // This prevents us from mangling already valid remote URLs (like hstgr.cloud)
+            // when running the frontend locally.
+            if (urlObj.hostname === 'localhost' || urlObj.hostname === '127.0.0.1') {
+                const apiObj = new URL(API_BASE_URL);
+                urlObj.protocol = apiObj.protocol;
+                urlObj.hostname = apiObj.hostname;
+                return urlObj.toString();
+            }
+            return url;
+        } catch (e) {
+            if (url.startsWith('/')) {
+                const base = API_BASE_URL.replace(/\/$/, '');
+                return `${base}${url}`;
+            }
+            return url;
+        }
+    };
+
     const handleDownload = () => {
         if (material?.file_url) {
-            window.open(material.file_url, '_blank');
+            window.open(getFixedUrl(material.file_url), '_blank');
         }
     };
 
@@ -138,10 +161,25 @@ const MaterialViewPage = () => {
                     <FileText size={120} className="text-white/10" />
                 </div>
                 
-                {/* PDF iframe */}
+                {/* Mobile Fallback UI */}
+                <div className="absolute inset-0 z-20 flex md:hidden flex-col items-center justify-center p-6 text-center bg-[#0F1117]">
+                    <div className="w-24 h-24 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10">
+                        <FileText size={48} className="text-indigo-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white mb-3">Document Ready</h2>
+                    <p className="text-zinc-400 mb-8 max-w-xs leading-relaxed">Mobile browsers have limited support for inline document viewing. Please open the file directly to view it.</p>
+                    <button 
+                        onClick={handleDownload}
+                        className="w-full max-w-xs py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold shadow-xl shadow-indigo-600/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+                    >
+                        <Download size={20} /> Open Document
+                    </button>
+                </div>
+
+                {/* Desktop PDF iframe */}
                 <iframe 
                     src={`${API_BASE_URL}/interview-materials/${material.id}/view#toolbar=1`}
-                    className="w-full h-full border-none relative z-20"
+                    className="hidden md:block w-full h-full border-none relative z-20"
                     title={material.title}
                 />
             </main>

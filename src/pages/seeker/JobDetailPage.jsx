@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
+import { MOCK_JOBS } from '../../data/mockJobs';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
 import { sanitizeHTML } from '../../utils/sanitize';
@@ -69,7 +70,14 @@ const JobDetailPage = () => {
             setGenZSummary(data.gen_z_summary || null);
             setJob(data);
         } catch (error) {
-            console.error('Failed to fetch job:', error);
+            console.error('Failed to fetch job, using fallback data:', error);
+            const fallbackJob = MOCK_JOBS.find(j => j.id === id);
+            if (fallbackJob) {
+                fallbackJob.cleanLocation = fallbackJob.location;
+                fallbackJob.cleanTitle = fallbackJob.title;
+                setJob(fallbackJob);
+                setGenZSummary(null);
+            }
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -130,8 +138,8 @@ const JobDetailPage = () => {
 
     const displayExperience = (job.experience && !['not specified', '0', 0].includes(String(job.experience).toLowerCase()))
         ? job.experience
-        : (job.experience_range && job.experience_range !== 'Not specified' 
-            ? job.experience_range 
+        : (job.experience_range && job.experience_range !== 'Not specified'
+            ? job.experience_range
             : (job.experience === 0 || String(job.experience).toLowerCase() === '0' ? 'Fresher' : 'Not Specified')
         );
     const displayQualification = job.qualification || null;
@@ -145,7 +153,7 @@ const JobDetailPage = () => {
     };
 
     return (
-        <div className="min-h-screen pt-8 pb-12 px-6 md:px-10 max-w-[1600px] mx-auto bg-[#FBFBFB] overflow-x-hidden">
+        <div className="min-h-screen pt-4 md:pt-8 pb-12 px-4 md:px-12 max-w-[1400px] mx-auto bg-[#FBFBFB] overflow-x-hidden">
             <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-6">
                 <Link to="/jobs" className="inline-flex items-center gap-2 text-zinc-400 font-bold uppercase text-[10px] tracking-widest hover:text-zinc-900 transition-all">
                     <ArrowLeft size={14} /> Back to Job Board
@@ -158,7 +166,7 @@ const JobDetailPage = () => {
                     <BentoCard className="relative overflow-hidden !py-8 !px-8 border border-zinc-100 shadow-2xl shadow-zinc-900/5">
                         <div className="relative z-10 flex flex-col items-start gap-5 w-full">
                             <div className="max-w-4xl min-w-0 w-full flex flex-col items-start">
-                                <h1 className="text-3xl font-sans font-bold text-zinc-900 tracking-tight mb-4 leading-[1.05] break-words text-left">
+                                <h1 className="text-2xl md:text-3xl font-sans font-bold text-zinc-900 tracking-tight mb-4 leading-[1.1] break-words text-left">
                                     {job.cleanTitle}
                                 </h1>
                                 <div className="flex flex-wrap justify-start gap-4 text-zinc-400 font-bold uppercase text-[10px] tracking-[0.2em]">
@@ -184,8 +192,8 @@ const JobDetailPage = () => {
                                             onClick={handleRunMatchIQ}
                                             disabled={isMatching}
                                             className={`w-full sm:w-auto px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl ${matchDetails && !isMatching
-                                                    ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
-                                                    : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
+                                                ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
+                                                : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
                                                 } disabled:opacity-50 active:scale-95`}
                                         >
                                             {isMatching ? (
@@ -206,10 +214,10 @@ const JobDetailPage = () => {
                                     </Link>
                                 )}
                                 {(job.external_apply_url || job.external_url) && (
-                                    <a 
-                                        href={job.external_apply_url || job.external_url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
+                                    <a
+                                        href={job.external_apply_url || job.external_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="w-full sm:w-auto bg-[#313851] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#434c6d] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 border border-white/10"
                                     >
                                         <ExternalLink size={18} className="text-white" />

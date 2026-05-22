@@ -1,14 +1,15 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { Toaster } from 'react-hot-toast';
 import AppShell from './components/Layout/AppShell';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
-import { useAuth } from './hooks/useAuth';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
+
+import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
 
 // Auth Pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -31,6 +32,10 @@ const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMateri
 const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
 const ATSAnalyzerPage = lazy(() => import('./pages/seeker/ATSAnalyzerPage'));
+const CommunityJobsPage = lazy(() => import('./pages/seeker/CommunityJobsPage'));
+const RewardsPage = lazy(() => import('./pages/seeker/RewardsPage'));
+const HumanMockInterviewPage = lazy(() => import('./pages/seeker/HumanMockInterviewPage'));
+const MyHumanMockInterviewsPage = lazy(() => import('./pages/seeker/MyHumanMockInterviewsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -46,6 +51,9 @@ const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewM
 const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 const ManageTimelinePage = lazy(() => import('./pages/admin/ManageTimelinePage'));
+const CommunityModerationPage = lazy(() => import('./pages/admin/CommunityModerationPage'));
+const ManageRewardsPage = lazy(() => import('./pages/admin/ManageRewardsPage'));
+const HumanMockInterviewsDashboard = lazy(() => import('./pages/admin/HumanMockInterviewsDashboard'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -64,18 +72,23 @@ const NewGradDetailPage = lazy(() => import('./pages/public/NewGradDetailPage'))
 const HiringTimelinePage = lazy(() => import('./pages/public/HiringTimelinePage'));
 
 const GlobalWidgets = () => {
-  const { isAuthenticated } = useAuth();
-  return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+  try {
+    const { isAuthenticated } = useAuth();
+    return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+  } catch (err) {
+    return null;
+  }
 };
 
 function App() {
   return (
     <AuthProvider>
-      <NotificationProvider>
-        <Toaster position="top-right" />
-        <BrowserRouter>
-          <GlobalWidgets />
-          <Suspense fallback={<Loader fullScreen variant="logo" />}>
+      <InterviewCreditsProvider>
+        <NotificationProvider>
+          <Toaster position="top-right" />
+          <BrowserRouter>
+            <GlobalWidgets />
+            <Suspense fallback={<Loader fullScreen variant="logo" />}>
             <Routes>
               {/* Landing Page — standalone, outside AppShell */}
               <Route path="/" element={<LandingPage />} />
@@ -121,6 +134,10 @@ function App() {
                   <Route path="/materials" element={<InterviewMaterialsPage />} />
                   <Route path="/jobs-ai" element={<JobsAIPage />} />
                   <Route path="/ats-analyzer" element={<ATSAnalyzerPage />} />
+                  <Route path="/community-jobs" element={<CommunityJobsPage />} />
+                  <Route path="/rewards" element={<RewardsPage />} />
+                  <Route path="/human-mock-interview" element={<HumanMockInterviewPage />} />
+                  <Route path="/my-human-mock-interviews" element={<MyHumanMockInterviewsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -141,6 +158,9 @@ function App() {
                   <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                   <Route path="/admin/timeline" element={<ManageTimelinePage />} />
+                  <Route path="/admin/community-jobs" element={<CommunityModerationPage />} />
+                  <Route path="/admin/rewards" element={<ManageRewardsPage />} />
+                  <Route path="/admin/human-mock-interviews" element={<HumanMockInterviewsDashboard />} />
                 </Route>
 
               </Route>
@@ -155,7 +175,8 @@ function App() {
           </Suspense>
         </BrowserRouter>
       </NotificationProvider>
-    </AuthProvider>
+    </InterviewCreditsProvider>
+  </AuthProvider>
   );
 }
 

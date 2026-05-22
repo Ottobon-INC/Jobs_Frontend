@@ -56,7 +56,6 @@ export const HiringTimeline = () => {
         getTimelineData();
     }, []);
 
-
     return (
         <section className="py-20 bg-[#313851] text-white overflow-hidden relative border-y border-white/10">
             {/* Background elements */}

@@ -22,7 +22,9 @@ import {
     Calendar,
     FileText,
     Sparkles,
-    ShieldCheck
+    ShieldCheck,
+    Trophy,
+    Users
 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 import { motion } from 'framer-motion';
@@ -51,19 +53,24 @@ const Sidebar = () => {
         { to: '/mock-interview', label: 'Interview Prep', icon: Radio, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/materials', label: 'Interview Materials', icon: FileText, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/my-human-mock-interviews', label: '1-on-1 Sessions', icon: Users, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/chat', label: 'Messages', icon: MessageSquare, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/rewards', label: 'Rewards', icon: Trophy, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/feedback', label: 'Share Feedback', icon: Heart, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/provider/create', label: 'Post a Job', icon: PlusCircle, roles: [ROLES.PROVIDER], category: 'Recruitment' },
         { to: '/provider/listings', label: 'My Listings', icon: Briefcase, roles: [ROLES.PROVIDER], category: 'Recruitment' },
         { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, roles: [ROLES.PROVIDER, ROLES.SEEKER], category: 'Insights' },
         { to: '/blogs', label: 'Career Blog', icon: Newspaper, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Insights' },
         { to: '/admin/tower', label: 'Admin Dashboard', icon: LayoutDashboard, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/community-jobs', label: 'Moderate Jobs', icon: ShieldCheck, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/feedback', label: 'User Feedback', icon: BarChart3, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/playbooks', label: 'Manage Playbooks', icon: BookOpen, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/timeline', label: 'Manage Timeline', icon: Calendar, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/rewards', label: 'Manage Rewards', icon: Trophy, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/add-data', label: 'Add Data', icon: PlusCircle, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/human-mock-interviews', label: 'Human Mock Intv', icon: Users, roles: [ROLES.ADMIN], category: 'Administrative' },
     ];
 
     const filteredLinks = links.filter(link => link.roles.includes(role));
@@ -76,15 +83,17 @@ const Sidebar = () => {
 
     return (
         <aside 
-            className="sidebar fixed left-0 top-0 h-screen z-[1000] flex flex-col p-3 transition-[width] duration-[0.25s] ease-[cubic-bezier(0.4,0,0.2,1)] rounded-r-lg will-change-[width] transform translate-z-0 shadow-[4px_0_12px_-2px_rgba(49,56,81,0.15)] overflow-hidden"
+            className="sidebar hidden md:flex fixed left-0 top-0 h-screen z-[1000] flex-col p-3 transition-[width] duration-[0.25s] ease-[cubic-bezier(0.4,0,0.2,1)] rounded-r-lg will-change-[width] transform translate-z-0 shadow-[4px_0_12px_-2px_rgba(49,56,81,0.15)] overflow-hidden"
             style={{ backgroundColor: '#313851', color: '#F6F3ED' }}
         >
             <style>
                 {`
-                    .sidebar { width: 70px; transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-                    .sidebar:hover { width: 260px; }
-                    .header-and-content { transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1); margin-left: 70px; }
-                    .sidebar:hover + .header-and-content, .sidebar:hover ~ .header-and-content { margin-left: 260px; }
+                    @media (min-width: 768px) {
+                        .sidebar { width: 70px; transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+                        .sidebar:hover { width: 260px; }
+                        .header-and-content { transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1); margin-left: 70px; }
+                        .sidebar:hover + .header-and-content, .sidebar:hover ~ .header-and-content { margin-left: 260px; }
+                    }
                     .top-arrow { position: absolute; top: 16px; right: 16px; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(246, 243, 237, 0.1); border: none; color: #F6F3ED; cursor: pointer; padding: 6px; border-radius: 6px; z-index: 10; }
                     .sidebar:hover .top-arrow { transform: rotate(180deg); }
                     .sidebar-nav { padding-top: 68px; }

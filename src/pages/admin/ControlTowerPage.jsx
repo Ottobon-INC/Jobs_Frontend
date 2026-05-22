@@ -45,41 +45,41 @@ const ControlTowerPage = () => {
     if (loading) return <Loader fullScreen />;
 
     return (
-        <div className="max-w-[1600px] mx-auto pt-8 pb-12 px-6 md:px-10 bg-[#FBFBFB] min-h-screen">
-            <header className="mb-20 border-b border-zinc-100 pb-12 flex justify-between items-end">
-                <div>
-                    <h1 className="text-4xl font-sans font-bold text-zinc-900 tracking-tight flex items-center gap-6">
-                        <div className="w-16 h-16 bg-zinc-900 card grid place-items-center shadow-lg shadow-zinc-900/20">
+        <div className="max-w-[1600px] mx-auto pt-6 pb-12 px-4 sm:px-6 md:px-10 bg-[#FBFBFB] min-h-screen">
+            <header className="mb-10 sm:mb-20 border-b border-zinc-100 pb-8 sm:pb-12 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+                <div className="w-full sm:w-auto">
+                    <h1 className="text-3xl sm:text-4xl font-sans font-bold text-zinc-900 tracking-tight flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                        <div className="w-16 h-16 bg-zinc-900 card grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
                             <Ear size={32} className="text-white" />
                         </div>
                         System Administration
                     </h1>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-6 ml-1">Session Monitoring & Administrative Control</p>
+                    <p className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sm:tracking-[0.4em] mt-4 sm:mt-6 ml-1 leading-relaxed">Session Monitoring & Administrative Control</p>
                 </div>
                 <button
                     onClick={fetchSessions}
                     disabled={refreshing}
-                    className="p-5 bg-white border border-zinc-100 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all shadow-sm disabled:opacity-30"
+                    className="p-4 sm:p-5 bg-white border border-zinc-100 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all shadow-sm disabled:opacity-30 self-end sm:self-auto"
                 >
-                    <RefreshCw size={24} className={refreshing ? 'animate-spin' : ''} />
+                    <RefreshCw size={20} className={refreshing ? 'animate-spin' : ''} />
                 </button>
             </header>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-20">
+            <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-20">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <div className="bg-white border border-zinc-100 card p-8 shadow-xl shadow-zinc-900/5 h-full">
-                        <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                    <div className="bg-white border border-zinc-100 card p-6 sm:p-8 shadow-xl shadow-zinc-900/5 h-full">
+                        <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-6 sm:mb-10 flex items-center gap-3">
                             <Shield size={16} className="text-zinc-900" /> Connect to Session
                         </h2>
-                        <form onSubmit={handleConnect} className="flex gap-4">
+                        <form onSubmit={handleConnect} className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
                             <input
                                 type="text"
                                 placeholder="UUID / SIGNAL_ID"
                                 value={sessionId}
                                 onChange={(e) => setSessionId(e.target.value)}
-                                className="flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl p-5 text-zinc-900 font-semibold text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all tracking-widest"
+                                className="w-full sm:flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl p-4 sm:p-5 text-zinc-900 font-semibold text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all tracking-widest"
                             />
-                            <button type="submit" className="bg-zinc-900 text-white px-10 py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 shadow-lg shadow-zinc-900/10 transition-all">
+                            <button type="submit" className="w-full sm:w-auto bg-zinc-900 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 shadow-lg shadow-zinc-900/10 transition-all">
                                 Connect
                             </button>
                         </form>
@@ -87,21 +87,21 @@ const ControlTowerPage = () => {
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                    <div className="bg-zinc-900 card p-8 shadow-2xl shadow-zinc-900/20 h-full flex items-center justify-between text-white relative overflow-hidden">
+                    <div className="bg-zinc-900 card p-6 sm:p-8 shadow-2xl shadow-zinc-900/20 h-full flex items-center justify-between text-white relative overflow-hidden gap-4">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
                         <div className="relative z-10">
                             <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-3">Active Sessions</p>
-                            <p className="text-6xl font-sans font-bold tracking-tighter">{activeAiCount}</p>
+                            <p className="text-5xl sm:text-6xl font-sans font-bold tracking-tighter">{activeAiCount}</p>
                         </div>
                         <div className="text-right relative z-10">
                             <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-3 italic">Active Support</p>
-                            <p className="text-6xl font-sans font-bold tracking-tighter opacity-100">{humanCount}</p>
+                            <p className="text-5xl sm:text-6xl font-sans font-bold tracking-tighter opacity-100">{humanCount}</p>
                         </div>
                     </div>
                 </motion.div>
             </div>
 
-            <h2 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.5em] mb-10 ml-2 flex items-center gap-4">
+            <h2 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.5em] mb-6 sm:mb-10 ml-2 flex items-center gap-4">
                 <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Live Sessions
             </h2>
 
@@ -119,23 +119,23 @@ const ControlTowerPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.05 }}
                     >
-                        <div className="bg-white border border-zinc-100 card p-8 flex flex-col md:flex-row justify-between items-center gap-8 hover:shadow-2xl hover:shadow-zinc-900/5 transition-all duration-500 group">
-                            <div className="flex gap-8 items-center flex-1">
-                                <div className="relative">
+                        <div className="bg-white border border-zinc-100 card p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-8 hover:shadow-2xl hover:shadow-zinc-900/5 transition-all duration-500 group">
+                            <div className="flex gap-4 sm:gap-8 items-center flex-1 w-full min-w-0">
+                                <div className="relative shrink-0">
                                     <div className={`w-3 h-3 rounded-full ${session.status === 'active_human' ? 'bg-zinc-900' : 'bg-zinc-100'}`} />
                                     {session.status === 'active_human' && (
                                         <div className="absolute inset-0 bg-zinc-900 rounded-full animate-ping opacity-20" />
                                     )}
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-2xl font-sans font-bold text-zinc-900 tracking-tight group-hover:text-zinc-600 transition-colors">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xl sm:text-2xl font-sans font-bold text-zinc-900 tracking-tight group-hover:text-zinc-600 transition-colors truncate break-words">
                                         {session.user?.full_name || session.user?.email || session.users_jobs?.full_name || 'Anonymous Guest'}
                                     </p>
-                                    <p className="text-[10px] text-zinc-300 font-bold mt-2 uppercase tracking-[0.2em]">{session.id.slice(0, 18)}...</p>
+                                    <p className="text-[10px] text-zinc-300 font-bold mt-2 uppercase tracking-[0.2em] truncate">{session.id.slice(0, 18)}...</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-8">
-                                <div className="text-right">
+                            <div className="flex items-center justify-between md:justify-end gap-6 sm:gap-8 w-full md:w-auto pt-4 md:pt-0 border-t border-zinc-100 md:border-none">
+                                <div className="text-left md:text-right">
                                     <p className="text-[8px] font-bold text-zinc-300 uppercase tracking-[0.2em] mb-1">Time Started</p>
                                     <span className="text-xs font-bold text-zinc-900 tabular-nums">
                                         {new Date(session.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -143,7 +143,7 @@ const ControlTowerPage = () => {
                                 </div>
                                 <button
                                     onClick={() => navigate('/admin/helpdesk', { state: { sessionId: session.id } })}
-                                    className="px-12 py-4 bg-zinc-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/10"
+                                    className="px-8 sm:px-12 py-3.5 sm:py-4 bg-zinc-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/10 shrink-0"
                                 >
                                     Monitor
                                 </button>

@@ -76,19 +76,19 @@ const CommunityModerationPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 md:p-12 font-sans">
+        <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-4 sm:p-12 font-sans">
             <div className="max-w-4xl mx-auto space-y-10">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight flex items-center gap-4">
+                        <h1 className="text-3xl sm:text-4xl font-black tracking-tight flex flex-col sm:flex-row sm:items-start sm:items-center gap-3 sm:gap-4">
                             Moderate Posts
-                            <span className="bg-[#313851]/10 text-[#313851] text-xs px-4 py-1.5 rounded-full border border-[#313851]/20">
+                            <span className="bg-[#313851]/10 text-[#313851] text-xs px-4 py-1.5 rounded-full border border-[#313851]/20 w-fit">
                                 {pendingJobs.length} Pending
                             </span>
                         </h1>
-                        <p className="text-[#313851]/60 mt-3 font-medium text-lg">Review and verify community-submitted job listings.</p>
+                        <p className="text-[#313851]/60 mt-3 font-medium text-base sm:text-lg">Review and verify community-submitted job listings.</p>
                     </div>
-                    <div className="p-4 bg-white border border-[#313851]/10 rounded-2xl shadow-sm">
+                    <div className="p-4 bg-white border border-[#313851]/10 rounded-2xl shadow-sm w-fit self-end sm:self-auto shrink-0">
                         <ShieldAlert className="text-[#313851]/40" size={40} />
                     </div>
                 </div>
@@ -111,7 +111,7 @@ const CommunityModerationPage = () => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className={`relative bg-white border border-[#313851]/10 p-8 rounded-3xl shadow-sm transition-all ${
+                                    className={`relative bg-white border border-[#313851]/10 p-6 sm:p-8 rounded-3xl shadow-sm transition-all ${
                                         actionedIds.has(job.id) ? 'border-green-500/50' : ''
                                     }`}
                                 >
@@ -130,15 +130,15 @@ const CommunityModerationPage = () => {
                                     )}
 
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                                        <div className="space-y-5 flex-1">
+                                        <div className="space-y-5 flex-1 min-w-0">
                                             <div className="space-y-1">
-                                                <h3 className="text-2xl font-bold text-[#313851] flex items-center gap-3">
+                                                <h3 className="text-xl sm:text-2xl font-bold text-[#313851] flex items-center gap-3 truncate">
                                                     {job.title}
-                                                    <a href="#" className="text-[#313851]/40 hover:text-[#313851] transition-colors">
+                                                    <a href="#" className="text-[#313851]/40 hover:text-[#313851] transition-colors shrink-0">
                                                         <ArrowUpRight size={20} />
                                                     </a>
                                                 </h3>
-                                                <p className="text-[#313851]/60 font-bold text-lg">{job.company_name}</p>
+                                                <p className="text-[#313851]/60 font-bold text-base sm:text-lg truncate">{job.company_name}</p>
                                             </div>
 
                                             {job.external_url && (
@@ -153,37 +153,37 @@ const CommunityModerationPage = () => {
                                                 </a>
                                             )}
 
-                                            <div className="flex flex-wrap items-center gap-5">
-                                                <div className="flex items-center gap-2 bg-[#F6F3ED] px-4 py-2 rounded-xl border border-[#313851]/5">
+                                            <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                                                <div className="flex items-center gap-2 bg-[#F6F3ED] px-3 sm:px-4 py-2 rounded-xl border border-[#313851]/5">
                                                     <User size={16} className="text-[#313851]/40" />
-                                                    <span className="text-xs text-[#313851]/70 font-black uppercase tracking-widest">
+                                                    <span className="text-[10px] sm:text-xs text-[#313851]/70 font-black uppercase tracking-widest">
                                                         By {job.submitted_by ? 'Community Member' : 'Anonymous'}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-center gap-2 bg-[#F6F3ED] px-4 py-2 rounded-xl border border-[#313851]/5">
+                                                <div className="flex items-center gap-2 bg-[#F6F3ED] px-3 sm:px-4 py-2 rounded-xl border border-[#313851]/5">
                                                     <Clock size={16} className="text-[#313851]/40" />
-                                                    <span className="text-xs text-[#313851]/70 font-black uppercase tracking-widest">
+                                                    <span className="text-[10px] sm:text-xs text-[#313851]/70 font-black uppercase tracking-widest">
                                                         {new Date(job.created_at).toLocaleDateString()}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <p className="text-[#313851]/50 text-sm leading-relaxed italic border-l-4 border-[#313851]/10 pl-4">"{job.description_raw}"</p>
+                                            <p className="text-[#313851]/50 text-sm leading-relaxed italic border-l-4 border-[#313851]/10 pl-4 break-words">"{job.description_raw}"</p>
                                         </div>
 
-                                        <div className="flex items-center gap-4 shrink-0">
+                                        <div className="flex items-center gap-4 shrink-0 w-full md:w-auto pt-4 md:pt-0 border-t border-zinc-100 md:border-none justify-between md:justify-end">
                                             <button 
                                                 onClick={() => handleReject(job.id)}
-                                                className="p-5 bg-[#313851]/5 border border-[#313851]/10 text-[#313851]/40 hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/5 rounded-2xl transition-all group"
+                                                className="p-4 sm:p-5 bg-[#313851]/5 border border-[#313851]/10 text-[#313851]/40 hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/5 rounded-2xl transition-all group shrink-0"
                                                 title="Reject"
                                             >
                                                 <X size={24} className="group-hover:scale-110 transition-transform" />
                                             </button>
                                             <Button 
                                                 onClick={() => handleApprove(job.id)}
-                                                className="bg-[#313851] hover:bg-[#313851]/90 text-white font-black px-10 py-5 rounded-2xl flex items-center gap-3 shadow-xl transition-all group"
+                                                className="bg-[#313851] hover:bg-[#313851]/90 text-white font-black px-6 sm:px-10 py-4 sm:py-5 rounded-2xl flex items-center justify-center gap-3 shadow-xl transition-all group w-full md:w-auto"
                                             >
-                                                <Check size={24} strokeWidth={3} className="group-hover:scale-110 transition-transform" />
+                                                <Check size={24} strokeWidth={3} className="group-hover:scale-110 transition-transform shrink-0" />
                                                 Approve
                                             </Button>
                                         </div>
@@ -198,7 +198,7 @@ const CommunityModerationPage = () => {
                 <div className="p-8 bg-white border border-[#313851]/10 rounded-[2rem] space-y-6 shadow-sm">
                     <div className="flex items-center gap-3 text-[#313851] font-black text-xs uppercase tracking-[0.2em]">
                         <AlertCircle size={20} className="text-[#313851]/40" />
-                        Moderation Guidelines
+                        Moderate Guidelines
                     </div>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {[

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+ import { motion } from 'framer-motion';
 import JobCard from './JobCard';
 import { Target } from 'lucide-react';
 
@@ -32,8 +32,8 @@ const MatchedJobsSection = ({ matchedJobs, isAuthenticated, error }) => {
     }
 
     return (
-        <section className="mb-12 mt-4 relative">
-            <div className="absolute inset-0 bg-gray-50/80 rounded-[2.5rem] -mx-4 sm:-mx-8 -my-6 z-0 border border-gray-100/50"></div>
+        <section className="mb-12 mt-4 relative w-full max-w-full">
+            <div className="hidden sm:block absolute inset-0 bg-gray-50/80 rounded-[2.5rem] -mx-8 -my-6 z-0 border border-gray-100/50"></div>
             
             <div className="relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 pb-6 border-b-2 border-black/5">
@@ -49,7 +49,7 @@ const MatchedJobsSection = ({ matchedJobs, isAuthenticated, error }) => {
                     </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-start">
                     {matchedJobs.map((job, idx) => (
                         <JobCard key={job.id || idx} job={job} isAuthenticated={isAuthenticated} />
                     ))}

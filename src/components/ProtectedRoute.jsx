@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ allowedRoles = [], children }) => {
     const { user, role, loading } = useAuth();
@@ -9,7 +9,7 @@ const ProtectedRoute = ({ allowedRoles = [], children }) => {
     }
 
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/" replace />;
     }
 
     // SECURITY: If roles are required, deny access unless role is confirmed valid (OWASP A01)

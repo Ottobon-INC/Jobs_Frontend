@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { supabase } from '../api/client';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 import { ROLES } from '../utils/constants';
 
@@ -62,30 +62,26 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(saved ? JSON.parse(saved) : []);
 
         const channel = supabase
-            .channel('global_diagnostic_channel')
+            .channel('mock_interviews_notifications')
             .on(
                 'postgres_changes',
                 {
                     event: '*',
-                    schema: 'public'
+                    schema: 'public',
+                    table: 'mock_interviews_jobs'
                 },
                 (payload) => {
-                    console.log('📡 [CATCH-ALL LOG] Event Received From DB:', {
-                        table: payload.table,
-                        event: payload.eventType,
-                        newRow: payload.new,
-                        oldRow: payload.old
-                    });
-
                     const activeRole = role || user?.user_metadata?.role;
+                    const isSeeker = activeRole === ROLES.SEEKER;
+                    const isAdmin = activeRole === ROLES.ADMIN;
 
                     // 1. Seeker: Your review is completed
-                    if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.SEEKER && payload.eventType === 'UPDATE') {
-                        const { old: oldRow, new: newRow } = payload;
+                    if (isSeeker && payload.eventType === 'UPDATE') {
+                        const { new: newRow } = payload;
                         if (newRow.user_id === user.id && newRow.status === 'reviewed') {
                             addNotification({
                                 title: 'Analysis Ready',
-                                message: `Your mock interview analysis for ${newRow.job_title || 'a recent role'} is ready for review.`,
+                                message: `Your mock interview analysis is ready for review.`,
                                 type: 'success',
                                 link: '/interview-reviews'
                             });
@@ -93,10 +89,10 @@ export const NotificationProvider = ({ children }) => {
                     }
 
                     // 2. Admin: New submission received
-                    if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.ADMIN && payload.eventType === 'INSERT') {
+                    if (isAdmin && payload.eventType === 'INSERT') {
                         addNotification({
                             title: 'New Submission',
-                            message: `A new mock interview review has been submitted.`,
+                            message: `A new mock interview has been submitted.`,
                             type: 'info',
                             link: '/admin/interview-reviews'
                         });
@@ -104,11 +100,14 @@ export const NotificationProvider = ({ children }) => {
                 }
             )
             .subscribe((status) => {
-                console.log('📡 Subscription Status:', status);
+                if (status === 'SUBSCRIBED') {
+                    console.log('📡 Notifications Subscribed');
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.warn('📡 Notifications Channel Error - Check Supabase Realtime settings');
+                }
             });
 
         return () => {
-            console.log('🔌 Unsubscribing from Notifications');
             supabase.removeChannel(channel);
         };
     }, [user, role, addNotification]);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar, getResumeDownloadUrl } from '../../api/usersApi';
 import { supabase } from '../../api/client';
@@ -28,10 +29,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfilePage = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [extracting, setExtracting] = useState(false);
+    const [avatarError, setAvatarError] = useState(false);
+
+    const isValidAvatarUrl = (url) => {
+        if (!url || typeof url !== 'string') return false;
+        const trimmed = url.trim().toLowerCase();
+        if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined' || trimmed === '[object object]') return false;
+        return trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/') || trimmed.startsWith('data:');
+    };
 
     // Editable State
     const [editMode, setEditMode] = useState(false);
@@ -55,11 +65,12 @@ const ProfilePage = () => {
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
 
-    const fetchProfile = async () => {
+    const fetchProfile = async (isSilent = false) => {
         try {
-            setLoading(true);
+            if (!isSilent) setLoading(true);
             const data = await getMyProfile();
             setProfile(data);
+            setAvatarError(false); // Reset error state on fresh fetch
 
             // Sync local editable state
             setFullName(data.full_name || '');
@@ -86,7 +97,7 @@ const ProfilePage = () => {
             console.error(err);
             setError("Failed to fetch profile details.");
         } finally {
-            setLoading(false);
+            if (!isSilent) setLoading(false);
         }
     };
 
@@ -173,7 +184,7 @@ const ProfilePage = () => {
             setMessage("Profile updated successfully.");
             setEditMode(false);
             try { sessionStorage.removeItem('jobFeedMatchedJobs'); } catch {}
-            fetchProfile(); // Refresh underlying profile data
+            await fetchProfile(true); // Refresh underlying profile data silently
         } catch (err) {
             setError(err.response?.data?.detail || "Update failed. Please try again.");
         } finally {
@@ -263,11 +274,11 @@ const ProfilePage = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
 
     return (
-        <div className="max-w-[1600px] mx-auto pt-8 pb-12 px-6 md:px-10 min-h-screen">
-            <header className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="max-w-[1400px] mx-auto pt-4 md:pt-8 pb-12 px-4 md:px-12 min-h-screen overflow-x-hidden">
+            <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
                 <div>
                     <div>
-                        <h1 className="text-4xl font-bold text-black tracking-tight leading-none">Identity</h1>
+                        <h1 className="text-3xl md:text-4xl font-bold text-black tracking-tight leading-none">Identity</h1>
                         <div className="text-[10px] font-black text-zinc-400 mt-4 uppercase tracking-[0.4em] flex items-center gap-3">
                             <div className="w-10 h-[1px] bg-zinc-200" /> Your Professional Dashboard
                         </div>
@@ -298,11 +309,12 @@ const ProfilePage = () => {
                     >
                         <div className="relative group/avatar mb-6">
                             <div className="w-16 h-16 rounded-full bg-black overflow-hidden shadow-2xl shadow-black/20 ring-8 ring-zinc-50 border-4 border-white relative">
-                                {profile?.avatar_url || user?.user_metadata?.avatar_url ? (
+                                {(isValidAvatarUrl(profile?.avatar_url) || isValidAvatarUrl(user?.user_metadata?.avatar_url)) && !avatarError ? (
                                     <img
                                         src={profile?.avatar_url || user?.user_metadata?.avatar_url}
                                         alt={profile?.full_name || 'User Avatar'}
                                         className="w-full h-full object-cover"
+                                        onError={() => setAvatarError(true)}
                                     />
                                 ) : (
                                     <div className="w-full h-full grid place-items-center text-5xl font-bold text-white">

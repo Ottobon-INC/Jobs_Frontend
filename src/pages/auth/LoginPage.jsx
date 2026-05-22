@@ -1,22 +1,29 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { signIn, initiateGoogleLogin } from '../../api/authApi';
-import { getMyProfile } from '../../api/usersApi';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { initiateGoogleLogin } from '../../api/authApi';
 import { ROLES } from '../../utils/constants';
 import { Briefcase, Eye, EyeOff, Sparkles, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
+import Loader from '../../components/ui/Loader';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { refreshSession } = useAuth();
+    const { user, role, login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    // If already authenticated, wait for role then redirect to appropriate dashboard
+    if (user) {
+        if (!role) return <Loader fullScreen variant="logo" />;
+        if (role === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
+        if (role === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
+        return <Navigate to="/jobs" replace />;
+    }
     const handleGoogleLogin = () => {
         initiateGoogleLogin();
     };
@@ -26,9 +33,7 @@ const LoginPage = () => {
         setLoading(true);
         setError(null);
         try {
-            await signIn(email, password);
-            await refreshSession();
-            const profile = await getMyProfile();
+            const profile = await login(email, password);
             
             if (profile.role === ROLES.ADMIN) {
                 navigate('/admin/tower');

@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { setToken } from '../../api/client';
-import { getMyProfile } from '../../api/usersApi';
 import { ROLES } from '../../utils/constants';
 
 const AuthCallback = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { refreshSession } = useAuth();
+    const { setAuthToken } = useAuth();
 
     useEffect(() => {
         const handleCallback = async () => {
@@ -19,12 +17,9 @@ const AuthCallback = () => {
             
             if (accessToken) {
                 try {
-                    setToken(accessToken);
-                    
-                    // Force the AuthContext to recognize the new session
-                    await refreshSession();
-                    
-                    const profile = await getMyProfile();
+                    // Manually set token to ensure our API interceptor works
+                    // We use the context's setAuthToken to ensure state is updated
+                    const profile = await setAuthToken(accessToken);
                     
                     if (profile.role === ROLES.ADMIN) {
                         navigate('/admin/tower');

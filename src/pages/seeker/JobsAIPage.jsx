@@ -204,7 +204,7 @@ const JobsAIPage = () => {
                             className="bg-white rounded-[2.5rem] p-10 shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20"
                         >
                             {/* Progress Indicator */}
-                            <div className="flex items-center mb-12">
+                            <div className="flex items-center mb-12 pb-8 border-b border-[#F6F3ED]">
                                 <div className={`flex flex-col items-center flex-1 ${step >= 1 ? 'text-[#313851]' : 'text-[#C2CBD3]'}`}>
                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black mb-2 transition-all ${step >= 1 ? 'bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/20' : 'bg-[#F6F3ED] text-[#C2CBD3]'}`}>1</div>
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em]">Preferences</span>
@@ -256,17 +256,24 @@ const JobsAIPage = () => {
                                     <div>
                                         <label className="block text-[10px] font-black text-[#313851] uppercase tracking-[0.25em] mb-4">Experience Horizon</label>
                                         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                                            {['fresher', '1-3', '3-5', '5+', 'profile'].map((l) => (
+                                            {[
+                                                { id: 'fresher', label: 'Fresher' },
+                                                { id: '1-3', label: '1-3 Yrs' },
+                                                { id: '3-5', label: '3-5 Yrs' },
+                                                { id: '5+', label: '5+ Yrs' },
+                                                { id: 'profile', label: 'Use Profile' }
+                                            ].map((level) => (
                                                 <button
-                                                    key={l}
-                                                    onClick={() => setExperienceLevel(l)}
-                                                    className={`p-4 rounded-2xl border font-black text-[10px] uppercase tracking-widest transition-all ${
-                                                        experienceLevel === l
-                                                        ? 'border-[#313851] bg-[#313851] text-white shadow-lg shadow-[#313851]/20'
-                                                        : 'border-[#C2CBD3]/30 text-[#C2CBD3] hover:border-[#313851]/30'
+                                                    key={level.id}
+                                                    type="button"
+                                                    onClick={() => setExperienceLevel(level.id)}
+                                                    className={`px-3 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border ${
+                                                        experienceLevel === level.id
+                                                            ? 'border-[#313851] bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/10'
+                                                            : 'border-[#C2CBD3]/30 bg-white text-[#C2CBD3] hover:border-[#313851]/30 hover:text-[#313851]'
                                                     }`}
                                                 >
-                                                    {l === 'profile' ? 'Use Profile' : l + (l.includes('+') || l === 'fresher' ? '' : ' Yrs')}
+                                                    {level.label}
                                                 </button>
                                             ))}
                                         </div>
@@ -286,40 +293,63 @@ const JobsAIPage = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div 
                                             onClick={() => setResumeOption('profile')}
-                                            className={`p-8 rounded-3xl border-2 cursor-pointer transition-all ${
+                                            className={`p-8 rounded-3xl border-2 cursor-pointer transition-all relative overflow-hidden ${
                                                 resumeOption === 'profile' ? 'border-[#313851] bg-[#313851]/5' : 'border-[#F6F3ED] hover:border-[#C2CBD3]'
                                             }`}
                                         >
+                                            {resumeOption === 'profile' && (
+                                                <div className="absolute top-4 right-4 text-[#313851]">
+                                                    <CheckCircle2 size={24} />
+                                                </div>
+                                            )}
                                             <User className="mb-4 text-[#313851]" size={32} />
                                             <h4 className="text-sm font-black uppercase tracking-widest mb-1">Standard Profile</h4>
-                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase">Use the resume saved in your account settings.</p>
+                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase tracking-wide">Use the resume saved in your account settings.</p>
                                         </div>
                                         <div 
                                             onClick={() => setResumeOption('upload')}
-                                            className={`p-8 rounded-3xl border-2 cursor-pointer transition-all ${
+                                            className={`p-8 rounded-3xl border-2 cursor-pointer transition-all relative overflow-hidden ${
                                                 resumeOption === 'upload' ? 'border-[#313851] bg-[#313851]/5' : 'border-[#F6F3ED] hover:border-[#C2CBD3]'
                                             }`}
                                         >
+                                            {resumeOption === 'upload' && (
+                                                <div className="absolute top-4 right-4 text-[#313851]">
+                                                    <CheckCircle2 size={24} />
+                                                </div>
+                                            )}
                                             <Upload className="mb-4 text-[#313851]" size={32} />
                                             <h4 className="text-sm font-black uppercase tracking-widest mb-1">Upload Override</h4>
-                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase">Target this specific search with a new PDF/Doc.</p>
+                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase tracking-wide">Target this specific search with a new PDF/Doc.</p>
                                         </div>
                                     </div>
 
                                     {resumeOption === 'upload' && (
-                                        <div className="border-2 border-dashed border-[#C2CBD3]/40 rounded-[2rem] p-10 text-center bg-[#F6F3ED]/20">
-                                            <input type="file" id="up" className="hidden" onChange={(e) => setFile(e.target.files[0])} />
-                                            <label htmlFor="up" className="cursor-pointer flex flex-col items-center">
-                                                <FileText size={48} className="text-[#C2CBD3] mb-4" />
-                                                <span className="text-xs font-black uppercase tracking-widest text-[#313851]">
-                                                    {file ? file.name : "Select Resume File"}
-                                                </span>
-                                            </label>
-                                        </div>
+                                        <motion.div 
+                                            initial={{ opacity: 0, height: 0 }} 
+                                            animate={{ opacity: 1, height: 'auto' }} 
+                                            className="mb-8"
+                                        >
+                                            <div className="border-2 border-dashed border-[#C2CBD3]/40 rounded-[2rem] p-10 text-center bg-[#F6F3ED]/20 hover:border-[#313851]/50 transition-colors">
+                                                <input 
+                                                    type="file" 
+                                                    accept=".pdf,.docx,.doc" 
+                                                    onChange={(e) => setFile(e.target.files[0])}
+                                                    className="hidden" 
+                                                    id="resume-upload" 
+                                                />
+                                                <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center">
+                                                    <FileText size={48} className="text-[#C2CBD3] mb-4" />
+                                                    <span className="text-xs font-black uppercase tracking-widest text-[#313851] block mb-1">
+                                                        {file ? file.name : "Select Resume File"}
+                                                    </span>
+                                                    <span className="text-[9px] font-bold text-[#C2CBD3] uppercase tracking-widest">PDF or Word docs up to 5MB</span>
+                                                </label>
+                                            </div>
+                                        </motion.div>
                                     )}
 
                                     <div className="pt-6 flex justify-between items-center">
-                                        <button onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-widest text-[#C2CBD3]">Back</button>
+                                        <button onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-widest text-[#C2CBD3] hover:text-[#313851] transition-colors px-4 py-2">Back</button>
                                         <button 
                                             onClick={handleSearch}
                                             className="px-12 py-5 bg-[#313851] text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#313851]/30"
@@ -374,7 +404,7 @@ const JobsAIPage = () => {
                         </motion.div>
                     )}
 
-                    {/* Common Loading Step */}
+                    {/* Step 3: Loading */}
                     {step === 3 && (
                         <motion.div 
                             key="loading"
@@ -388,7 +418,7 @@ const JobsAIPage = () => {
                                 </div>
                             </div>
                             <h2 className="text-3xl font-black uppercase tracking-tighter mb-4">Neural Scan Active</h2>
-                            <p className="text-lg text-[#313851]/50 max-w-md text-center mb-10 font-medium">
+                            <p className="text-lg text-[#313851]/50 max-w-md text-center mb-10 font-medium leading-relaxed">
                                 {mode === 'search' 
                                     ? "Traversing company career endpoints and mapping your technical stack to live openings..."
                                     : "Extracting semantic data from the job posting and calculating alignment vectors..."}
@@ -403,7 +433,7 @@ const JobsAIPage = () => {
                         </motion.div>
                     )}
 
-                    {/* Mode: Search - Results */}
+                    {/* Step 4: Results */}
                     {step === 4 && (
                         <motion.div key="results" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
                             <div className="flex justify-between items-end mb-10">
@@ -428,25 +458,51 @@ const JobsAIPage = () => {
                                             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }}
                                             className="bg-white rounded-[2rem] p-8 shadow-sm border border-[#C2CBD3]/10 hover:shadow-xl hover:shadow-[#313851]/5 transition-all group relative overflow-hidden"
                                         >
+                                            <div className="absolute top-0 left-0 w-2 h-full bg-[#313851] opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                             <div className="flex flex-col md:flex-row gap-8 items-center">
-                                                <div className="w-24 h-24 bg-[#F6F3ED] rounded-[1.5rem] flex flex-col items-center justify-center border border-[#C2CBD3]/20">
+                                                <div className="w-24 h-24 bg-[#F6F3ED] rounded-[1.5rem] flex flex-col items-center justify-center border border-[#C2CBD3]/20 shrink-0">
                                                     <span className="text-3xl font-black text-[#313851]">{job.match_score}%</span>
                                                     <span className="text-[8px] font-black uppercase tracking-widest text-[#C2CBD3]">Match</span>
                                                 </div>
-                                                <div className="flex-1">
-                                                    <h3 className="text-xl font-black tracking-tight mb-1">{job.title}</h3>
-                                                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-[#C2CBD3] mb-4">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="text-xl font-black tracking-tight mb-1 truncate text-left">{job.title}</h3>
+                                                    <div className="flex flex-wrap items-center gap-4 text-[10px] font-black uppercase tracking-widest text-[#C2CBD3] mb-4">
                                                         <span>{job.company}</span>
                                                         <span className="w-1.5 h-1.5 bg-[#C2CBD3] rounded-full"></span>
                                                         <span>{job.location}</span>
                                                     </div>
-                                                    <p className="text-sm text-[#313851]/70 line-clamp-2 italic">
-                                                        "{job.ai_insight}"
+                                                    <div className="flex flex-wrap gap-2 mb-4">
+                                                        <span className="px-3 py-1 bg-[#F6F3ED] text-[#313851] text-[9px] font-black rounded-full uppercase tracking-widest">
+                                                            {job.location}
+                                                        </span>
+                                                        <span className="px-3 py-1 bg-[#313851] text-[#F6F3ED] text-[9px] font-black rounded-full uppercase tracking-widest">
+                                                            {job.type || 'Full Time'}
+                                                        </span>
+                                                        {job.details && (
+                                                            <>
+                                                                <span className={`px-3 py-1 text-[9px] font-black rounded-full uppercase tracking-widest border ${job.details.skills ? 'bg-white border-[#313851] text-[#313851]' : 'bg-white border-[#C2CBD3]/30 text-[#C2CBD3]'}`}>
+                                                                    {job.details.skills ? '✓ Skills Match' : '⨯ Skills Gap'}
+                                                                </span>
+                                                                <span className={`px-3 py-1 text-[9px] font-black rounded-full uppercase tracking-widest border ${job.details.experience ? 'bg-white border-[#313851] text-[#313851]' : 'bg-white border-[#C2CBD3]/30 text-[#C2CBD3]'}`}>
+                                                                    {job.details.experience ? '✓ Exp. Fit' : '⨯ Exp. Gap'}
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm text-[#313851]/70 line-clamp-3 text-left">
+                                                        <span className="font-black text-[#313851] uppercase text-[10px] tracking-widest">AI Deep Insight:</span> {job.ai_insight}
                                                     </p>
                                                 </div>
-                                                <a href={job.url} target="_blank" rel="noreferrer" className="px-10 py-4 bg-[#313851] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-3 hover:scale-110 transition-all">
-                                                    View Role <ArrowUpRight size={16} />
-                                                </a>
+                                                <div className="w-full md:w-auto shrink-0">
+                                                    <a 
+                                                        href={job.url} 
+                                                        target="_blank" 
+                                                        rel="noreferrer" 
+                                                        className="w-full md:w-auto px-10 py-4 bg-[#313851] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#313851]/20"
+                                                    >
+                                                        View Role <ArrowUpRight size={16} />
+                                                    </a>
+                                                </div>
                                             </div>
                                         </motion.div>
                                     ))}
@@ -459,7 +515,7 @@ const JobsAIPage = () => {
                     {step === 5 && singleJobResult && (
                         <motion.div key="single-result" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
                             <div className="bg-white rounded-[3rem] p-12 shadow-2xl shadow-[#313851]/5 border border-[#C2CBD3]/20 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-10">
+                                <div className="absolute top-0 right-0 p-10 hidden md:block">
                                     <div className={`w-32 h-32 rounded-full border-8 flex items-center justify-center ${
                                         (singleJobResult.match_score || 0) > 70 ? 'border-green-500/20 text-green-600' : 'border-yellow-500/20 text-yellow-600'
                                     }`}>
@@ -471,14 +527,25 @@ const JobsAIPage = () => {
                                 </div>
 
                                 <div className="max-w-2xl">
-                                    <h2 className="text-4xl font-black tracking-tighter mb-2">{singleJobResult.title}</h2>
-                                    <div className="flex items-center gap-4 text-sm font-black uppercase tracking-[0.2em] text-[#C2CBD3] mb-10">
+                                    <div className="block md:hidden mb-6">
+                                        <div className={`w-24 h-24 mx-auto rounded-full border-8 flex items-center justify-center ${
+                                            (singleJobResult.match_score || 0) > 70 ? 'border-green-500/20 text-green-600' : 'border-yellow-500/20 text-yellow-600'
+                                        }`}>
+                                            <div className="text-center">
+                                                <div className="text-2xl font-black">{singleJobResult.match_score || '??'}%</div>
+                                                <div className="text-[8px] font-black uppercase tracking-widest">Match</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2 text-left">{singleJobResult.title}</h2>
+                                    <div className="flex flex-wrap items-center gap-4 text-xs font-black uppercase tracking-[0.2em] text-[#C2CBD3] mb-10">
                                         <span>{singleJobResult.company}</span>
                                         <span className="w-2 h-2 bg-[#C2CBD3] rounded-full"></span>
                                         <span>{singleJobResult.location}</span>
                                     </div>
 
-                                    <div className="space-y-10">
+                                    <div className="space-y-10 text-left">
                                         <div>
                                             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851] mb-4">Match Analysis</h4>
                                             <p className="text-lg text-[#313851]/80 leading-relaxed font-medium italic">
@@ -510,7 +577,7 @@ const JobsAIPage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="mt-12 flex gap-4">
+                                    <div className="mt-12 flex flex-col sm:flex-row gap-4">
                                         <a href={externalUrl} target="_blank" rel="noreferrer" className="flex-1 py-5 bg-[#313851] text-white rounded-2xl font-black text-[12px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl">
                                             Go to Official Posting <ArrowUpRight size={18} />
                                         </a>

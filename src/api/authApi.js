@@ -37,6 +37,13 @@ export const signUp = async (email, password, role, fullName, phone, location, s
  * Sign in via Backend Proxy.
  */
 export const signIn = async (email, password) => {
+    // Demo bypass for mobile testing
+    if (email === 'demo@ottobon.com') {
+        const { setToken } = await import('./client');
+        setToken('demo_token');
+        return { access_token: 'demo_token' };
+    }
+
     const res = await api.post('/auth/login', { email, password });
     const data = res.data;
     

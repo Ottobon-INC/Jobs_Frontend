@@ -62,7 +62,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
     ];
 
     return (
-        <section className="relative min-h-[850px] lg:min-h-[900px] flex items-center bg-gradient-to-b from-[#1a1f33] to-[#313851] overflow-hidden py-20 px-6">
+        <section className="relative min-h-[600px] lg:min-h-[900px] flex items-center bg-gradient-to-b from-[#1a1f33] to-[#313851] overflow-hidden py-12 lg:py-20 px-6">
             {/* 1. Deep Background Ecosystem (Animated Logo Rows) */}
             <div className="absolute inset-0 opacity-[0.08] pointer-events-none select-none flex flex-col justify-around py-20 overflow-hidden">
                 {[0, 1, 2, 3, 4].map((rowIdx) => (
@@ -104,7 +104,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
                     className="space-y-10"
                 >
                     <div className="space-y-6">
-                        <h1 className="text-5xl md:text-7xl font-black text-[#F6F3ED] leading-[1.1] tracking-tighter">
+                        <h1 className="text-4xl md:text-7xl font-black text-[#F6F3ED] leading-[1.1] tracking-tighter">
                             The Ultimate <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C2CBD3] via-white to-[#F6F3ED]">
                                 New Grad Placement Hub

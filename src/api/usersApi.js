@@ -1,6 +1,18 @@
 import api, { supabase } from './client';
 
 export const getMyProfile = async () => {
+    // Demo bypass for mobile testing
+    const token = localStorage.getItem('ottobon_custom_token');
+    if (token === 'demo_token') {
+        return {
+            id: 'demo_user_id',
+            email: 'demo@ottobon.com',
+            role: 'seeker',
+            full_name: 'Demo User',
+            location: 'Bangalore'
+        };
+    }
+
     const response = await api.get('/users/me', {
         requestTimeout: 15000 // Increased to 15s to handle slower DB/cold starts
     });

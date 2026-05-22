@@ -24,6 +24,7 @@ import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
 import CompanyDashboardSidebar from '../../components/new-grad/CompanyDashboardSidebar';
 import NotFoundPage from '../NotFoundPage';
 import Loader from '../../components/ui/Loader';
+import { COMPANIES } from '../../data/newGradData';
 
 const NewGradDetailPage = () => {
     const { slug } = useParams();
@@ -38,7 +39,9 @@ const NewGradDetailPage = () => {
                 const data = await fetchPlaybookBySlug(slug);
                 setCompany(data);
             } catch (error) {
-                console.error('Failed to load company:', error);
+                console.error('Failed to load company, using fallback data:', error);
+                const fallback = COMPANIES.find(c => c.slug === slug);
+                setCompany(fallback);
             } finally {
                 setLoading(false);
             }
@@ -170,4 +173,5 @@ const NewGradDetailPage = () => {
 };
 
 export default NewGradDetailPage;
+
 

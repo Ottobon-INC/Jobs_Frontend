@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { signUp, initiateGoogleLogin } from '../../api/authApi';
 import { extractSkills, uploadAvatar } from '../../api/usersApi';
 import { 
@@ -23,10 +23,19 @@ import {
 import { ROLES, DESIRED_JOB_ROLES, WORK_PREFERENCES, EXPERIENCE_LEVELS, JOB_TITLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
+    const { user, role: authRole } = useAuth();
     const [step, setStep] = useState(1);
+
+    // If already authenticated, redirect to appropriate dashboard
+    if (user) {
+        if (authRole === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
+        if (authRole === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
+        return <Navigate to="/jobs" replace />;
+    }
     
     // Auth Data
     const [email, setEmail] = useState('');
@@ -150,7 +159,7 @@ const RegisterPage = () => {
                 // Or better, upload it to a 'temp' folder and have the backend move it.
                 // For simplicity here, I'll use the email as a unique identifier.
                 const tempId = email.replace(/[^a-zA-Z0-9]/g, '_');
-                finalAvatarUrl = await uploadAvatar(tempId, avatarFile);
+                finalAvatarUrl = await uploadAvatar(avatarFile);
                 setUploadingAvatar(false);
             }
 
@@ -174,7 +183,8 @@ const RegisterPage = () => {
             );
             navigate('/login');
         } catch (err) {
-            setError(err.message || 'Registration failed. Please try again.');
+            const detail = err.response?.data?.detail || err.message;
+            setError(detail || 'Registration failed. Please try again.');
         } finally {
             setLoading(false);
             setUploadingAvatar(false);
@@ -700,13 +710,23 @@ const RegisterPage = () => {
                     </AnimatePresence>
 
                     {error && (
-                        <motion.p 
+                        <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="mt-6 text-[10px] font-bold text-rose-500 bg-rose-50/50 border border-rose-100 p-4 card uppercase tracking-widest text-center"
+                            className="mt-6 flex flex-col gap-4"
                         >
-                            {error}
-                        </motion.p>
+                            <div className="text-[10px] font-bold text-rose-500 bg-rose-50/50 border border-rose-100 p-4 card uppercase tracking-widest text-center">
+                                {error}
+                            </div>
+                            {error.toLowerCase().includes('already registered') && (
+                                <Link 
+                                    to="/login" 
+                                    className="w-full py-3 bg-zinc-900 text-white card text-[10px] font-bold uppercase tracking-[0.2em] text-center shadow-lg shadow-zinc-900/10 hover:bg-zinc-800 transition-all"
+                                >
+                                    Proceed to Login
+                                </Link>
+                            )}
+                        </motion.div>
                     )}
 
                     {/* Navigation Buttons */}
