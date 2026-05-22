@@ -5,7 +5,7 @@ import { useNotifications } from '../../context/NotificationContext';
 import { 
     Search, Bookmark, User, BookOpen, Radio, MessageSquare, TrendingUp, Newspaper, 
     LayoutDashboard, LogOut, Briefcase, PlusCircle, ClipboardList, Upload, BarChart3, 
-    Heart, Calendar, FileText, Sparkles, ShieldCheck, X, Trophy
+    Heart, Calendar, FileText, Sparkles, ShieldCheck, X, Trophy, Users
 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 
@@ -33,6 +33,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
         { to: '/mock-interview', label: 'Interview Prep', icon: Radio, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/materials', label: 'Interview Materials', icon: FileText, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.SEEKER], category: 'Resources' },
+        { to: '/my-human-mock-interviews', label: '1-on-1 Sessions', icon: Users, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/chat', label: 'Messages', icon: MessageSquare, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/rewards', label: 'Rewards', icon: Trophy, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/feedback', label: 'Share Feedback', icon: Heart, roles: [ROLES.SEEKER], category: 'Resources' },
@@ -47,6 +48,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
         { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/playbooks', label: 'Manage Playbooks', icon: BookOpen, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/add-data', label: 'Add Data', icon: PlusCircle, roles: [ROLES.ADMIN], category: 'Administrative' },
+        { to: '/admin/human-mock-interviews', label: 'Human Mock Intv', icon: Users, roles: [ROLES.ADMIN], category: 'Administrative' },
     ];
 
     const normalizedRole = role?.toLowerCase();

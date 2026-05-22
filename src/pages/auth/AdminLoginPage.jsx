@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signIn } from '../../api/authApi';
-import { getMyProfile } from '../../api/usersApi';
 import { Shield, Eye, EyeOff, Lock, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
 
 const AdminLoginPage = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -19,9 +19,7 @@ const AdminLoginPage = () => {
         setLoading(true);
         setError(null);
         try {
-            await signIn(email, password);
-            // After successful sign in, check role
-            const profile = await getMyProfile();
+            const profile = await login(email, password);
 
             if (profile.role === ROLES.ADMIN) {
                 navigate('/admin/tower');

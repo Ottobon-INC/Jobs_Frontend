@@ -19,7 +19,7 @@ const AppShell = () => {
                 <Navbar />
 
                 {/* Main Content Area - Locked Viewport Layout */}
-                <main className="flex-1 w-full min-w-0 h-full overflow-y-auto custom-scrollbar pb-20 md:pb-0">
+                <main className="flex-1 w-full min-w-0 h-full overflow-y-auto overflow-x-hidden custom-scrollbar pb-20 md:pb-0">
                     <Outlet />
                 </main>
             </div>

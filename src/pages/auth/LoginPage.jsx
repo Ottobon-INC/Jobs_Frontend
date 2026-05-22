@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { signIn, initiateGoogleLogin } from '../../api/authApi';
-import { getMyProfile } from '../../api/usersApi';
+import { initiateGoogleLogin } from '../../api/authApi';
 import { ROLES } from '../../utils/constants';
 import { Briefcase, Eye, EyeOff, Sparkles, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
+import { useAuth } from '../../hooks/useAuth';
+import Loader from '../../components/ui/Loader';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { user, role, refreshSession } = useAuth();
+    const { user, role, login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    // If already authenticated, redirect to appropriate dashboard
+    // If already authenticated, wait for role then redirect to appropriate dashboard
     if (user) {
+        if (!role) return <Loader fullScreen variant="logo" />;
         if (role === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
         if (role === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
         return <Navigate to="/jobs" replace />;
@@ -33,9 +34,7 @@ const LoginPage = () => {
         setLoading(true);
         setError(null);
         try {
-            await signIn(email, password);
-            await refreshSession();
-            const profile = await getMyProfile();
+            const profile = await login(email, password);
             
             if (profile.role === ROLES.ADMIN) {
                 navigate('/admin/tower');
@@ -60,12 +59,8 @@ const LoginPage = () => {
                 className="w-full max-w-md bg-white card border border-zinc-100 p-8 shadow-xl shadow-zinc-900/5"
             >
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4">
-                        <img 
-                            src="/favicon.png" 
-                            alt="Logo" 
-                            className="w-full h-full rounded-2xl shadow-lg shadow-black/5"
-                        />
+                    <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 card grid place-items-center mx-auto mb-4 shadow-sm">
+                        <Briefcase size={28} className="text-zinc-400" />
                     </div>
                     <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-zinc-50 text-zinc-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 border border-zinc-100">
                         <Sparkles size={12} className="text-zinc-400" />
@@ -176,3 +171,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

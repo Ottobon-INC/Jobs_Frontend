@@ -58,12 +58,6 @@ export const matchAllJobs = async () => {
 
 /** Helper: get the current Supabase auth user ID */
 export const getSavedJobs = async () => {
-    // Demo bypass for mobile testing
-    const token = localStorage.getItem('ottobon_custom_token');
-    if (token === 'demo_token') {
-        return [];
-    }
-
     const response = await api.get('/jobs/saved');
     return response.data;
 };
@@ -79,11 +73,6 @@ export const unsaveJob = async (jobId) => {
 };
 
 export const isJobSaved = async (jobId) => {
-    try {
-        const response = await api.get(`/jobs/saved/${jobId}/check`);
-        return response.data.saved;
-    } catch (err) {
-        // If 401 or other error, assume not saved
-        return false;
-    }
+    const response = await api.get(`/jobs/saved/${jobId}/check`);
+    return response.data.saved;
 };

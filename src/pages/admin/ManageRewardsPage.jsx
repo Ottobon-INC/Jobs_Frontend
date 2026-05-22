@@ -284,6 +284,7 @@ const ManageRewardsPage = () => {
                         <option value="Boosts">Boosts</option>
                         <option value="Digital">Digital</option>
                         <option value="Exclusive">Exclusive</option>
+                        <option value="clam reward">clam reward</option>
                       </select>
                     </div>
                     <div>

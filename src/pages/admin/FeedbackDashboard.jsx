@@ -121,14 +121,14 @@ const FeedbackDashboard = () => {
 
       {/* Filters & List */}
       <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-50 flex items-center gap-4">
+        <div className="p-6 border-b border-gray-50 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mr-4">
             <Filter size={14} />
             Filters
           </div>
           
           <select
-            className="px-4 py-2 bg-gray-50 rounded-xl border-none text-sm font-semibold focus:ring-2 focus:ring-black outline-none"
+            className="px-4 py-2 bg-gray-50 rounded-xl border-none text-sm font-semibold focus:ring-2 focus:ring-black outline-none w-full sm:w-auto"
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
@@ -138,7 +138,7 @@ const FeedbackDashboard = () => {
           </select>
 
           <select
-            className="px-4 py-2 bg-gray-50 rounded-xl border-none text-sm font-semibold focus:ring-2 focus:ring-black outline-none"
+            className="px-4 py-2 bg-gray-50 rounded-xl border-none text-sm font-semibold focus:ring-2 focus:ring-black outline-none w-full sm:w-auto"
             value={filters.rating}
             onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
           >
@@ -160,37 +160,37 @@ const FeedbackDashboard = () => {
             filteredFeedbacks.map((item) => (
               <div key={item.id} className="group">
                 <div 
-                  className={`p-6 hover:bg-gray-50/50 transition-all cursor-pointer flex items-center justify-between ${expandedId === item.id ? 'bg-gray-50/50' : ''}`}
+                  className={`p-6 hover:bg-gray-50/50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 ${expandedId === item.id ? 'bg-gray-50/50' : ''}`}
                   onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 overflow-hidden">
+                  <div className="flex items-center gap-4 w-full md:w-auto min-w-0">
+                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 overflow-hidden shrink-0">
                       {item.user_full_name ? item.user_full_name.charAt(0).toUpperCase() : <Users size={20} />}
                     </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900">{item.user_full_name || 'Anonymous'}</h4>
-                      <p className="text-xs text-gray-400 font-medium">{item.user_email}</p>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-gray-900 truncate">{item.user_full_name || 'Anonymous'}</h4>
+                      <p className="text-xs text-gray-400 font-medium truncate">{item.user_email}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-8">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  <div className="flex flex-wrap items-center justify-between md:justify-end gap-4 md:gap-8 w-full md:w-auto pt-4 md:pt-0 border-t border-gray-100 md:border-none">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 ${
                       item.type === 'mock_interview' ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'
                     }`}>
                       {item.type.replace('_', ' ')}
                     </span>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} size={14} className={i < item.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'} />
                       ))}
                     </div>
 
-                    <span className="text-xs text-gray-400 w-24 text-right">
+                    <span className="text-xs text-gray-400 w-auto md:w-24 text-right shrink-0">
                       {new Date(item.created_at).toLocaleDateString()}
                     </span>
 
-                    <ChevronDown size={18} className={`text-gray-300 transition-transform ${expandedId === item.id ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={18} className={`text-gray-300 transition-transform shrink-0 ${expandedId === item.id ? 'rotate-180' : ''}`} />
                   </div>
                 </div>
 
@@ -198,9 +198,9 @@ const FeedbackDashboard = () => {
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
-                    className="overflow-hidden bg-gray-50/30 px-6 pb-6"
+                    className="overflow-hidden bg-gray-50/30 px-4 sm:px-6 pb-6"
                   >
-                    <div className="ml-14 p-6 bg-white rounded-2xl border border-gray-100 space-y-6 shadow-sm">
+                    <div className="md:ml-14 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 space-y-6 shadow-sm">
                       <div className="space-y-2">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Feedback Narrative</span>
                         <p className="text-gray-700 leading-relaxed italic">"{item.feedback_text}"</p>

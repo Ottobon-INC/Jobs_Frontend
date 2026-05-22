@@ -35,7 +35,7 @@ const SavedJobsPage = () => {
     return (
         <div className="min-h-screen bg-[#FBFBFB]">
             {/* Content Container */}
-            <main className="max-w-[1600px] mx-auto pt-8 pb-12 px-6 md:px-10">
+            <main className="max-w-[1600px] mx-auto pt-8 pb-12 px-4 sm:px-6 md:px-10">
                 <div className="flex flex-col gap-1 mb-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-zinc-400 text-[10px] font-bold uppercase tracking-[0.2em] w-fit border border-zinc-100 shadow-sm mb-4">
                         <Bookmark size={12} className="text-zinc-400" />
@@ -53,7 +53,7 @@ const SavedJobsPage = () => {
                 </div>
 
                 {jobs.length > 0 ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-8 items-start">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-start">
                         {jobs.map(job => (
                             <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />
                         ))}

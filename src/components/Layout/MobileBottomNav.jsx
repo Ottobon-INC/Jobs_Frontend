@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Search, PlusCircle, Briefcase, Bookmark, User, Menu, X } from 'lucide-react';
+import { Search, PlusCircle, Briefcase, Bookmark, User, Menu, X, LayoutDashboard, ShieldCheck, BarChart3, BookOpen } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 
 const MobileBottomNav = ({ onMenuClick }) => {
@@ -13,6 +13,11 @@ const MobileBottomNav = ({ onMenuClick }) => {
         { to: '/provider/create', label: 'Post', icon: PlusCircle },
         { to: '/market-intelligence', label: 'Market', icon: Search },
         { to: '/profile', label: 'Profile', icon: User }
+    ] : role === ROLES.ADMIN ? [
+        { to: '/admin/tower', label: 'Tower', icon: LayoutDashboard },
+        { to: '/admin/community-jobs', label: 'Moderate', icon: ShieldCheck },
+        { to: '/admin/feedback', label: 'Feedback', icon: BarChart3 },
+        { to: '/admin/playbooks', label: 'Playbooks', icon: BookOpen }
     ] : [
         { to: '/jobs', label: 'Jobs', icon: Search },
         { to: '/saved', label: 'Saved', icon: Bookmark },

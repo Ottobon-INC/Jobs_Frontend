@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoldCoinIcon } from './CoinBalance';
+import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
 
 /* ─── Confetti Particle ─── */
 const ConfettiParticle = ({ index }) => {
@@ -56,14 +57,17 @@ const SuccessCheckmark = () => (
 
 const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
   const [step, setStep] = useState('confirm'); // 'confirm' | 'loading' | 'success'
+  const [errorMsg, setErrorMsg] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const modalRef = useRef(null);
+  const { addCredits } = useInterviewCreditsContext();
 
   // Reset on open
   useEffect(() => {
     if (isOpen) {
       setStep('confirm');
       setShowConfetti(false);
+      setErrorMsg(null);
     }
   }, [isOpen]);
 
@@ -98,17 +102,29 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
 
   const handleConfirm = useCallback(async () => {
     setStep('loading');
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    onConfirm(item);
-    setStep('success');
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 1200);
-  }, [item, onConfirm]);
+    setErrorMsg(null);
+    try {
+      await onConfirm(item);
+
+      // Perform local balance credit addition if shop purchase is interview credits
+      if (item.grantType === 'interview_credits') {
+        addCredits(item.grantAmount, 'shop_purchase', item.name);
+      }
+
+      setStep('success');
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1200);
+    } catch (err) {
+      // If API fails, go back to confirm so user can retry
+      setStep('confirm');
+      setErrorMsg(err.response?.data?.detail || err.message || 'Failed to redeem reward');
+    }
+  }, [item, onConfirm, addCredits]);
 
   if (!item) return null;
 
-  const balanceAfter = coinBalance - item.cost;
+  const isClamReward = item.category === 'clam reward' || item.category === 'Claim Reward';
+  const balanceAfter = isClamReward ? coinBalance + item.cost : coinBalance - item.cost;
 
   return (
     <AnimatePresence>
@@ -157,19 +173,40 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                   </div>
 
                   <h3 className="text-xl font-bold text-[#313851] mb-2">{item.name}</h3>
-                  <p className="text-sm text-[#313851]/60 mb-6 leading-relaxed font-medium">{item.description}</p>
+                  <p className="text-sm text-[#313851]/60 mb-4 leading-relaxed font-medium">{item.description}</p>
+
+                  {errorMsg && (
+                    <div className="w-full mb-4 p-3 rounded-lg bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold text-center">
+                      {errorMsg}
+                    </div>
+                  )}
+
+                  {item.grantType === 'interview_credits' && (
+                    <div className="flex items-center gap-2 text-xs text-[#10b981] font-semibold mb-5 bg-[#10b981]/5 px-3.5 py-2.5 rounded-lg border border-[#10b981]/25 w-full">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>You'll receive {item.grantAmount} {item.grantAmount === 1 ? 'credit' : 'credits'} added to your balance</span>
+                    </div>
+                  )}
 
                   <div className="w-full rounded-xl border border-[#C2CBD3]/20 p-5 mb-6 space-y-3" style={{ background: '#F6F3ED' }}>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">Redemption Cost</span>
+                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">
+                        {isClamReward ? 'Reward Amount' : 'Redemption Cost'}
+                      </span>
                       <div className="flex items-center gap-1.5">
                         <GoldCoinIcon size={16} />
-                        <span className="font-bold text-[#313851]">{item.cost.toLocaleString()}</span>
+                        <span className="font-bold text-[#313851]">
+                          {isClamReward ? `+${item.cost.toLocaleString()}` : item.cost.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                     <div className="border-t border-[#C2CBD3]/20" />
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">Remaining Balance</span>
+                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">
+                        {isClamReward ? 'New Balance' : 'Remaining Balance'}
+                      </span>
                       <span className="font-bold text-[#313851]">{balanceAfter.toLocaleString()} Coins</span>
                     </div>
                   </div>
@@ -182,7 +219,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                       boxShadow: '0 4px 12px rgba(49,56,81,0.2)',
                     }}
                   >
-                    Confirm Redemption
+                    {isClamReward ? 'Confirm Claim' : 'Confirm Redemption'}
                   </button>
 
                   <button
@@ -229,12 +266,34 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                   )}
 
                   <div className="mb-5">
-                    <SuccessCheckmark />
+                    {item.grantType === 'interview_credits' ? (
+                      <div className="w-16 h-16 rounded-full bg-[#10b981]/10 border border-[#10b981]/25 flex items-center justify-center text-[#10b981] mx-auto">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                          <line x1="12" y1="19" x2="12" y2="22" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <SuccessCheckmark />
+                    )}
                   </div>
 
-                  <h3 className="text-2xl font-bold text-[#313851] mb-2">Redemption Successful!</h3>
+                  <h3 className="text-2xl font-bold text-[#313851] mb-2">
+                    {item.grantType === 'interview_credits' 
+                      ? 'Credits Added!' 
+                      : isClamReward 
+                        ? 'Claim Successful!' 
+                        : 'Redemption Successful!'}
+                  </h3>
                   <p className="text-sm text-[#313851]/60 mb-1 font-semibold">{item.name}</p>
-                  <p className="text-xs text-[#313851]/40 mb-8 font-bold uppercase tracking-tight">This perk has been added to your profile.</p>
+                  <p className="text-xs text-[#313851]/40 mb-8 font-bold uppercase tracking-tight">
+                    {item.grantType === 'interview_credits'
+                      ? `${item.grantAmount} interview credits have been credited to your balance.`
+                      : isClamReward
+                        ? `${item.cost} coins have been added to your balance.`
+                        : 'This perk has been added to your profile.'}
+                  </p>
 
                   <div className="flex gap-4 w-full">
                     <button

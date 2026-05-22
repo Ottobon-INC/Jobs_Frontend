@@ -9,6 +9,8 @@ import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
 
+import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
+
 // Auth Pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const AdminLoginPage = lazy(() => import('./pages/auth/AdminLoginPage'));
@@ -31,6 +33,8 @@ const MaterialViewPage = lazy(() => import('./pages/seeker/MaterialViewPage'));
 const JobsAIPage = lazy(() => import('./pages/seeker/JobsAIPage'));
 const CommunityJobsPage = lazy(() => import('./pages/seeker/CommunityJobsPage'));
 const RewardsPage = lazy(() => import('./pages/seeker/RewardsPage'));
+const HumanMockInterviewPage = lazy(() => import('./pages/seeker/HumanMockInterviewPage'));
+const MyHumanMockInterviewsPage = lazy(() => import('./pages/seeker/MyHumanMockInterviewsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -47,6 +51,7 @@ const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 const CommunityModerationPage = lazy(() => import('./pages/admin/CommunityModerationPage'));
 const ManageRewardsPage = lazy(() => import('./pages/admin/ManageRewardsPage'));
+const HumanMockInterviewsDashboard = lazy(() => import('./pages/admin/HumanMockInterviewsDashboard'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -76,11 +81,12 @@ const GlobalWidgets = () => {
 function App() {
   return (
     <AuthProvider>
-      <NotificationProvider>
-        <Toaster position="top-right" />
-        <BrowserRouter>
-          <GlobalWidgets />
-          <Suspense fallback={<Loader fullScreen variant="logo" />}>
+      <InterviewCreditsProvider>
+        <NotificationProvider>
+          <Toaster position="top-right" />
+          <BrowserRouter>
+            <GlobalWidgets />
+            <Suspense fallback={<Loader fullScreen variant="logo" />}>
             <Routes>
               {/* Landing Page — standalone, outside AppShell */}
               <Route path="/" element={<LandingPage />} />
@@ -127,6 +133,8 @@ function App() {
                   <Route path="/jobs-ai" element={<JobsAIPage />} />
                   <Route path="/community-jobs" element={<CommunityJobsPage />} />
                   <Route path="/rewards" element={<RewardsPage />} />
+                  <Route path="/human-mock-interview" element={<HumanMockInterviewPage />} />
+                  <Route path="/my-human-mock-interviews" element={<MyHumanMockInterviewsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}
@@ -148,6 +156,7 @@ function App() {
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                   <Route path="/admin/community-jobs" element={<CommunityModerationPage />} />
                   <Route path="/admin/rewards" element={<ManageRewardsPage />} />
+                  <Route path="/admin/human-mock-interviews" element={<HumanMockInterviewsDashboard />} />
                 </Route>
 
               </Route>
@@ -162,7 +171,8 @@ function App() {
           </Suspense>
         </BrowserRouter>
       </NotificationProvider>
-    </AuthProvider>
+    </InterviewCreditsProvider>
+  </AuthProvider>
   );
 }
 

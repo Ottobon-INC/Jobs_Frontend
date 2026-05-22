@@ -35,15 +35,15 @@ const IngestionPage = () => {
     ];
 
     return (
-        <div className="max-w-6xl mx-auto py-20 px-8 bg-[#FBFBFB] min-h-screen">
-            <header className="mb-20 border-b border-zinc-100 pb-12">
-                <h1 className="text-4xl font-sans font-bold text-zinc-900 tracking-tight flex items-center gap-6">
-                    <div className="w-16 h-16 bg-zinc-900 card grid place-items-center shadow-lg shadow-zinc-900/20">
+        <div className="max-w-6xl mx-auto py-10 sm:py-20 px-4 sm:px-8 bg-[#FBFBFB] min-h-screen">
+            <header className="mb-10 sm:mb-20 border-b border-zinc-100 pb-8 sm:pb-12">
+                <h1 className="text-3xl sm:text-4xl font-sans font-bold text-zinc-900 tracking-tight flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                    <div className="w-16 h-16 bg-zinc-900 card grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
                         <Database size={32} className="text-white" />
                     </div>
                     Data Management
                 </h1>
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-6 ml-1">
+                <p className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sm:tracking-[0.4em] mt-4 sm:mt-6 ml-1 leading-relaxed">
                     System Data Import & External Scrapers
                 </p>
             </header>
@@ -53,20 +53,20 @@ const IngestionPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-                <div className="md:col-span-2 lg:col-span-3 bg-white border border-zinc-100 card p-8 shadow-xl shadow-zinc-900/5 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-8">
-                        <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 rounded-3xl grid place-items-center">
+                <div className="md:col-span-2 lg:col-span-3 bg-white border border-zinc-100 card p-6 sm:p-8 shadow-xl shadow-zinc-900/5 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
+                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-center sm:text-left w-full sm:w-auto">
+                        <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 rounded-3xl grid place-items-center shrink-0">
                             <Power size={32} className="text-zinc-400" />
                         </div>
                         <div>
                             <h3 className="text-2xl font-sans font-bold text-zinc-900 tracking-tight">Global System Update</h3>
-                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mt-2">Synchronize all configured sources</p>
+                            <p className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-2 leading-relaxed">Synchronize all configured sources</p>
                         </div>
                     </div>
                     <button
                         disabled={loading !== null}
                         onClick={() => handleIngest('all')}
-                        className="bg-zinc-900 text-white px-12 py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center gap-4 shadow-xl shadow-zinc-900/10 disabled:opacity-30 active:scale-95"
+                        className="w-full md:w-auto bg-zinc-900 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-4 shadow-xl shadow-zinc-900/10 disabled:opacity-30 active:scale-95"
                     >
                         <RefreshCw size={20} className={loading === 'all' ? 'animate-spin' : ''} />
                         {loading === 'all' ? "Processing..." : "Start Global Update"}

@@ -183,7 +183,8 @@ const RegisterPage = () => {
             );
             navigate('/login');
         } catch (err) {
-            setError(err.message || 'Registration failed. Please try again.');
+            const detail = err.response?.data?.detail || err.message;
+            setError(detail || 'Registration failed. Please try again.');
         } finally {
             setLoading(false);
             setUploadingAvatar(false);
@@ -709,13 +710,23 @@ const RegisterPage = () => {
                     </AnimatePresence>
 
                     {error && (
-                        <motion.p 
+                        <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="mt-6 text-[10px] font-bold text-rose-500 bg-rose-50/50 border border-rose-100 p-4 card uppercase tracking-widest text-center"
+                            className="mt-6 flex flex-col gap-4"
                         >
-                            {error}
-                        </motion.p>
+                            <div className="text-[10px] font-bold text-rose-500 bg-rose-50/50 border border-rose-100 p-4 card uppercase tracking-widest text-center">
+                                {error}
+                            </div>
+                            {error.toLowerCase().includes('already registered') && (
+                                <Link 
+                                    to="/login" 
+                                    className="w-full py-3 bg-zinc-900 text-white card text-[10px] font-bold uppercase tracking-[0.2em] text-center shadow-lg shadow-zinc-900/10 hover:bg-zinc-800 transition-all"
+                                >
+                                    Proceed to Login
+                                </Link>
+                            )}
+                        </motion.div>
                     )}
 
                     {/* Navigation Buttons */}

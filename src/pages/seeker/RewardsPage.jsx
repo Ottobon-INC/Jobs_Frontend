@@ -6,6 +6,7 @@ import DailyStreak from '../../components/rewards/DailyStreak';
 import CoinShop from '../../components/rewards/CoinShop';
 import RedeemModal from '../../components/rewards/RedeemModal';
 import RedemptionHistory from '../../components/rewards/RedemptionHistory';
+import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
 import {
   getRewardsState,
   claimDailyReward,
@@ -24,6 +25,7 @@ const RewardsPage = () => {
     current_streak: 0,
     can_claim_today: false,
   });
+  const isClaimingRef = useRef(false);
   const [shopItems, setShopItems] = useState([]);
   const [history, setHistory] = useState([]);
   const [coinDelta, setCoinDelta] = useState(0);
@@ -55,14 +57,15 @@ const RewardsPage = () => {
 
   // Handlers
   const handleClaim = useCallback(async () => {
-    if (isClaiming || !rewardsState.can_claim_today) return;
+    if (isClaiming || isClaimingRef.current || !rewardsState.can_claim_today) return;
 
     setIsClaiming(true);
+    isClaimingRef.current = true;
     try {
       const result = await claimDailyReward();
       setCoinDelta(result.coins_awarded);
 
-      // Refresh state from server to be safe, or optimistic update
+      // Refresh state from server to be safe
       const newState = await getRewardsState();
       setRewardsState(newState);
 
@@ -71,15 +74,25 @@ const RewardsPage = () => {
       // Clear delta after animation
       setTimeout(() => setCoinDelta(0), 3000);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to claim reward');
+      const errorDetail = error.response?.data?.detail || 'Failed to claim reward';
+      if (errorDetail.toLowerCase().includes('already claimed')) {
+        // Just refresh the state if they already claimed it (e.g. double click or stale tab)
+        const newState = await getRewardsState();
+        setRewardsState(newState);
+      } else {
+        toast.error(errorDetail);
+      }
     } finally {
       setIsClaiming(false);
+      isClaimingRef.current = false;
     }
   }, [isClaiming, rewardsState.can_claim_today]);
 
   const handleWeekChange = useCallback((dir) => {
     setWeekOffset(prev => Math.min(0, prev + dir));
   }, []);
+
+  const { addCredits } = useInterviewCreditsContext();
 
   const handleOpenRedeem = useCallback((item) => {
     setModalItem(item);
@@ -90,6 +103,21 @@ const RewardsPage = () => {
       const result = await redeemReward(item.id);
       toast.success(`Successfully redeemed ${item.name}!`);
 
+      // Detect if this is a mock interview session and add interview credits!
+      const lowerName = (item.name || '').toLowerCase();
+      const lowerDesc = (item.description || '').toLowerCase();
+      
+      const isHumanMock = item.slug === 'human_mock_interview' || lowerName.includes('human mock') || lowerDesc.includes('human mock');
+      const isAiMock = !isHumanMock && (item.slug === 'mock_interview' || lowerName.includes('mock interview') || lowerDesc.includes('mock interview'));
+      
+      if (isAiMock) {
+        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai');
+        toast.success(`Added 1 AI interview credit to your balance!`);
+      } else if (isHumanMock) {
+        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'human');
+        toast.success(`Added 1 Human interview credit to your balance!`);
+      }
+
       // Refresh all data to update balance and history
       fetchData();
       setModalItem(null);
@@ -97,7 +125,7 @@ const RewardsPage = () => {
       toast.error(error.response?.data?.detail || 'Redemption failed');
       throw error; // Let modal handle processing state
     }
-  }, [fetchData]);
+  }, [fetchData, addCredits]);
 
   if (loading) {
     return (
@@ -145,17 +173,32 @@ const RewardsPage = () => {
           items={shopItems}
           coinBalance={rewardsState.coin_balance}
           onRedeem={handleOpenRedeem}
+          history={history}
         />
 
-        {/* Redemption History */}
         <RedemptionHistory
-          history={history.map(h => ({
-            id: h.id,
-            date: h.redeemed_at,
-            rewardName: h.reward_items?.name || 'Unknown Reward',
-            coinsSpent: h.coins_spent,
-            status: h.status
-          }))}
+          history={history.map(h => {
+            let rewardName = '';
+            if (h.rewardName) {
+              rewardName = h.rewardName;
+            } else if (h.reward_items) {
+              if (Array.isArray(h.reward_items)) {
+                rewardName = h.reward_items[0]?.name || '';
+              } else {
+                rewardName = h.reward_items.name || '';
+              }
+            }
+            if (!rewardName) {
+              rewardName = 'Unknown Reward';
+            }
+            return {
+              id: h.id,
+              date: h.redeemed_at,
+              rewardName: rewardName,
+              coinsSpent: h.coins_spent,
+              status: h.status
+            };
+          })}
         />
       </div>
 

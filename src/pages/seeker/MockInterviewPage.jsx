@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview } from '../../api/mockInterviewApi';
+import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, startMockInterview } from '../../api/mockInterviewApi';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../context/NotificationContext';
 import { useWebSocket } from '../../hooks/useWebSocket';
@@ -11,6 +11,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { toJpeg } from 'html-to-image';
 import { generateUUID } from '../../utils/uuid';
+import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
+import { CreditBalance } from '../../components/rewards/CreditBalance';
+import { CreditCheckPanel, CreditCheckModal } from '../../components/rewards/CreditCheckModal';
 import {
     ArrowLeft,
     Mic,
@@ -29,6 +32,8 @@ import {
     Upload,
     Download,
     CheckCircle,
+    Sparkles,
+    ArrowUpRight,
 } from 'lucide-react';
 
 // ── Config ────────────────────────────────────────────────────
@@ -100,8 +105,19 @@ const MockInterviewPage = () => {
     const jobTitle = location.state?.jobTitle || '';
     const companyName = location.state?.companyName || '';
 
-    // Session step: 'entry' | 'interview'
-    const [step, setStep] = useState('entry');
+    // Session step: 'selection' | 'ai_setup' | 'interview'
+    const [step, setStep] = useState('selection');
+
+    // Credit System Gating State
+    const { 
+        totalCreditsRemaining, 
+        useCredit, 
+        isFirstTimeUser 
+    } = useInterviewCreditsContext();
+
+    const [showCreditPanel, setShowCreditPanel] = useState(false);
+    const [showCreditModal, setShowCreditModal] = useState(false);
+    const [modalType, setModalType] = useState('onboarding'); // 'onboarding' | 'paywall'
 
     // Entry state
     const [interviewType, setInterviewType] = useState('technical');
@@ -243,8 +259,14 @@ const MockInterviewPage = () => {
             }, 500);
         },
         (err) => {
-            setErrorMsg(err);
-            handleStop();
+            toast.error(`Microphone Error: ${err}`);
+            stopMic();
+            if (disconnect) disconnect();
+            stopPlayback();
+            setIsActive(false);
+            setIsTimerActive(false);
+            setIsStarting(false);
+            setStep('ai_setup');
         },
         isSpeaking,
         forcedMuteRef,
@@ -293,6 +315,39 @@ const MockInterviewPage = () => {
         }
     };
 
+    const handleStartClick = () => {
+        const onboardingSeen = localStorage.getItem('ottobon_onboarding_seen');
+        if (isFirstTimeUser && !onboardingSeen) {
+            setModalType('onboarding');
+            setShowCreditModal(true);
+            return;
+        }
+
+        if (totalCreditsRemaining === 0) {
+            setModalType('paywall');
+            setShowCreditModal(true);
+            return;
+        }
+
+        setShowCreditPanel(true);
+    };
+
+    const handleConfirmStart = async () => {
+        setShowCreditPanel(false);
+        setShowCreditModal(false);
+
+        const res = useCredit(jobTitle || 'General Practice');
+        if (res.success) {
+            if (isFirstTimeUser) {
+                localStorage.setItem('ottobon_onboarding_seen', 'true');
+            }
+            await handleStart();
+        } else {
+            setModalType('paywall');
+            setShowCreditModal(true);
+        }
+    };
+
     const handleStart = async () => {
         setIsStarting(true);
         setErrorMsg('');
@@ -303,7 +358,17 @@ const MockInterviewPage = () => {
         setViolationCount(0);
         setShowViolationAlert(false);
         endingRef.current = false;
-        interviewRecordIdRef.current = generateUUID();
+        try {
+            // Register session with the FastAPI backend
+            const startedSession = await startMockInterview(id || null);
+            interviewRecordIdRef.current = startedSession.id;
+        } catch (err) {
+            console.error('Failed to start interview on backend:', err);
+            const detail = err.response?.data?.detail || 'Failed to initialize session with server.';
+            setErrorMsg(detail);
+            setIsStarting(false);
+            return;
+        }
 
         try {
             // Push job context to mock backend (runs on the same server as jobs backend)
@@ -370,8 +435,8 @@ const MockInterviewPage = () => {
 
     const handleFinalCancel = () => {
         if (window.confirm('Are you sure you want to discard this practice session? Your progress will not be saved for review.')) {
-            // Reset everything and go back to entry
-            setStep('entry');
+            // Reset everything and go back to selection
+            setStep('selection');
             setIsActive(false);
             setTranscripts([]);
             setResponses([]);
@@ -426,22 +491,114 @@ const MockInterviewPage = () => {
     };
     const statusPill = statusColors[isSpeaking ? 'speaking' : statusClass] || statusColors.disconnected;
 
-    // ── ENTRY SCREEN ──────────────────────────────────────────
-    if (step === 'entry') {
+    // ── SELECTION SCREEN ──────────────────────────────────────
+    if (step === 'selection') {
         return (
-            <div className="min-h-screen py-8 px-4 md:px-6 bg-[#FBFBFB] flex flex-col items-center justify-center">
-                <div className="w-full max-w-2xl">
+            <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 font-sans flex items-center justify-center">
+                <div className="max-w-5xl mx-auto w-full">
+                    {/* Header */}
+                    <header className="mb-12 text-center">
+                        <motion.div 
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="inline-flex items-center justify-center p-3 mb-4 rounded-full bg-[#C2CBD3]/20 text-[#313851] shadow-sm"
+                        >
+                            <Sparkles size={32} />
+                        </motion.div>
+                        <motion.h1 
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
+                            className="text-4xl lg:text-5xl font-black tracking-tight mb-4 uppercase"
+                        >
+                            Mock <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#313851] to-[#C2CBD3]">Interviews</span>
+                        </motion.h1>
+                        <motion.p 
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+                            className="text-lg text-[#313851]/70 max-w-2xl mx-auto font-bold uppercase tracking-widest text-[10px]"
+                        >
+                            Choose your preferred interview preparation method.
+                        </motion.p>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                        {/* Left Card: AI Mock Interview */}
+                        <motion.div 
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="group relative rounded-[2rem] overflow-hidden bg-[#313851] text-white p-10 flex flex-col h-[450px] shadow-2xl shadow-[#313851]/20 hover:scale-[1.02] transition-transform duration-500"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute top-0 right-0 p-8">
+                                <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center">
+                                    <Bot size={32} className="text-white" />
+                                </div>
+                            </div>
+                            
+                            <div className="mt-auto relative z-10">
+                                <h2 className="text-white text-3xl font-black uppercase tracking-tight mb-4">AI Mock<br />Interview</h2>
+                                <p className="text-white/70 text-sm font-medium leading-relaxed mb-8 max-w-xs">
+                                    Practice with our advanced AI interviewer tailored to your job description. Get instant feedback and analysis.
+                                </p>
+                                <button 
+                                    onClick={() => setStep('ai_setup')}
+                                    className="inline-flex items-center gap-3 px-8 py-4 bg-white text-[#313851] rounded-full font-black text-[11px] uppercase tracking-widest hover:bg-[#F6F3ED] transition-colors"
+                                >
+                                    Launch Simulator <ChevronRight size={16} />
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* Right Card: Human Mock Interview */}
+                        <motion.div 
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="group relative rounded-[2rem] overflow-hidden bg-black text-white p-10 flex flex-col h-[450px] shadow-2xl shadow-black/20 hover:scale-[1.02] transition-transform duration-500"
+                        >
+                            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-blue-600/30 via-transparent to-transparent rounded-full blur-3xl" />
+                            
+                            <div className="absolute top-0 right-0 p-8">
+                                <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center">
+                                    <User size={32} className="text-black" />
+                                </div>
+                            </div>
+                            
+                            <div className="mt-auto relative z-10">
+                                <h2 className="text-3xl font-black uppercase tracking-tight mb-4">Human Mock<br />Interview</h2>
+                                <p className="text-white/70 text-sm font-medium leading-relaxed mb-8 max-w-xs">
+                                    Schedule a real interview session with industry professionals. Premium personalized feedback and mentorship.
+                                </p>
+                                <Link 
+                                    to="/human-mock-interview"
+                                    className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-black text-[11px] uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+                                >
+                                    Schedule Interview <ArrowUpRight size={16} />
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // ── AI ENTRY SCREEN ──────────────────────────────────────────
+    if (step === 'ai_setup') {
+        return (
+            <>
+                <div className="min-h-screen py-8 px-4 md:px-6 bg-[#FBFBFB] flex flex-col items-center justify-center">
+                    <div className="w-full max-w-2xl">
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         className="mb-6"
                     >
-                        <Link
-                            to={id ? `/jobs/${id}` : '/jobs'}
+                        <button
+                            onClick={() => setStep('selection')}
                             className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[10px] tracking-[0.3em] hover:text-zinc-900 transition-colors"
                         >
-                            <ArrowLeft size={14} /> Back
-                        </Link>
+                            <ArrowLeft size={14} /> Back to Selection
+                        </button>
                     </motion.div>
 
                     <motion.div
@@ -451,8 +608,8 @@ const MockInterviewPage = () => {
                         className="bg-white rounded-2xl border border-zinc-100 p-6 shadow-xl shadow-zinc-900/5"
                     >
                         {/* Header */}
-                        <div className="mb-6">
-                            <div className="flex items-center gap-4 mb-4">
+                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center">
                                     <Radio size={20} className="text-white" />
                                 </div>
@@ -460,13 +617,16 @@ const MockInterviewPage = () => {
                                     Mock Interview
                                 </h1>
                             </div>
-                            {(companyName || jobTitle) && (
-                                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-4 flex items-center gap-3">
-                                    <div className="w-8 h-[1px] bg-zinc-100" />
-                                    {companyName && `${companyName} • `}{jobTitle}
-                                </p>
-                            )}
+                            <div className="self-start sm:self-auto">
+                                <CreditBalance />
+                            </div>
                         </div>
+                        {(companyName || jobTitle) && (
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-2 flex items-center gap-3">
+                                <div className="w-8 h-[1px] bg-zinc-100" />
+                                {companyName && `${companyName} • `}{jobTitle}
+                            </p>
+                        )}
 
                         {/* Interview Type */}
                         <div className="mb-6">
@@ -588,8 +748,8 @@ const MockInterviewPage = () => {
 
                         {/* Start button */}
                         <button
-                            onClick={handleStart}
-                            disabled={isStarting || !hasResume || uploadingResume}
+                            onClick={handleStartClick}
+                            disabled={isStarting || !hasResume || uploadingResume || showCreditPanel}
                             className="w-full py-6 bg-zinc-900 text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-4 shadow-2xl shadow-zinc-900/20 disabled:opacity-30 active:scale-95"
                         >
                             {isStarting ? (
@@ -607,11 +767,30 @@ const MockInterviewPage = () => {
                                 </>
                             )}
                         </button>
+
+                        <AnimatePresence>
+                            {showCreditPanel && (
+                                <CreditCheckPanel
+                                    onConfirm={handleConfirmStart}
+                                    onCancel={() => setShowCreditPanel(false)}
+                                    isStarting={isStarting}
+                                />
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 </div>
             </div>
-        );
-    }
+
+            <CreditCheckModal
+                isOpen={showCreditModal}
+                onClose={() => setShowCreditModal(false)}
+                viewState={modalType}
+                onConfirm={handleConfirmStart}
+                isStarting={isStarting}
+            />
+        </>
+    );
+}
 
     // ── INTERVIEW SCREEN ──────────────────────────────────────
     return (
@@ -635,6 +814,7 @@ const MockInterviewPage = () => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4">
+                            <CreditBalance />
                             {isTimerActive && (
                                 <div className="flex items-center gap-3 px-6 py-3 bg-zinc-50 border border-zinc-100 text-zinc-900 rounded-full font-sans font-bold text-lg tracking-tight shadow-sm">
                                     <Clock size={18} className="text-zinc-300" /> {formatTime(timeLeft)}
@@ -672,7 +852,7 @@ const MockInterviewPage = () => {
                             <button
                                 onClick={() => {
                                     if (document.fullscreenElement) document.exitFullscreen().catch(() => { });
-                                    setStep('entry');
+                                    setStep('selection');
                                     handleStop();
                                 }}
                                 className="flex items-center gap-2.5 px-6 py-3.5 rounded-full border border-zinc-100 bg-white text-zinc-900 font-bold text-[10px] uppercase tracking-widest hover:border-zinc-900 transition-all"
@@ -862,6 +1042,14 @@ const MockInterviewPage = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <CreditCheckModal
+                isOpen={showCreditModal}
+                onClose={() => setShowCreditModal(false)}
+                viewState={modalType}
+                onConfirm={handleConfirmStart}
+                isStarting={isStarting}
+            />
         </>
     );
 };

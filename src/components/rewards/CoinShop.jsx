@@ -10,7 +10,7 @@ const ShoppingBagIcon = () => (
   </svg>
 );
 
-const CoinShop = ({ items = [], coinBalance, onRedeem }) => {
+const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filterTabs = useMemo(() => {
@@ -80,15 +80,26 @@ const CoinShop = ({ items = [], coinBalance, onRedeem }) => {
       {/* Grid */}
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {filteredItems.map((item, index) => (
-            <RewardCard
-              key={item.id}
-              item={item}
-              index={index}
-              canAfford={coinBalance >= item.cost}
-              onRedeem={onRedeem}
-            />
-          ))}
+          {filteredItems.map((item, index) => {
+            const isClamReward = item.category === 'clam reward' || item.category === 'Claim Reward';
+            const isLocked = isClamReward && history.some(h => {
+              if (h.reward_item_id !== item.id) return false;
+              const date = new Date(h.created_at);
+              const now = new Date();
+              return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+            });
+            const canAfford = isClamReward ? true : coinBalance >= item.cost;
+            return (
+              <RewardCard
+                key={item.id}
+                item={item}
+                index={index}
+                canAfford={canAfford}
+                isLocked={isLocked}
+                onRedeem={onRedeem}
+              />
+            );
+          })}
         </div>
       ) : (
         <motion.div

@@ -39,6 +39,14 @@ const LockSmallIcon = () => (
   </svg>
 );
 
+const MicrophoneIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <line x1="12" y1="19" x2="12" y2="22" />
+  </svg>
+);
+
 const categoryConfig = {
   Coupons: {
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
@@ -62,9 +70,9 @@ const categoryConfig = {
   },
 };
 
-const RewardCard = ({ item, canAfford, onRedeem, index }) => {
+const RewardCard = ({ item, canAfford, isLocked, onRedeem, index }) => {
   const config = categoryConfig[item.category] || categoryConfig.Boosts;
-  const IconComp = config.icon;
+  const IconComp = item.grantType === 'interview_credits' ? MicrophoneIcon : (config.icon || TagIcon);
 
   return (
     <motion.div
@@ -72,11 +80,24 @@ const RewardCard = ({ item, canAfford, onRedeem, index }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.06 * index }}
       whileHover={{ y: -4 }}
-      className="group rounded-2xl border border-[#C2CBD3]/40 overflow-hidden flex flex-col transition-all duration-300 shadow-sm"
+      className="group relative rounded-2xl border border-[#C2CBD3]/40 overflow-hidden flex flex-col transition-all duration-300 shadow-sm"
       style={{
         background: '#ffffff',
       }}
     >
+      {/* Absolute Overlapping Badge */}
+      {item.badge && (
+        <div 
+          className={`absolute top-2 right-2.5 z-10 text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border ${
+            item.badge === 'POPULAR'
+              ? 'bg-[#6366f1]/15 text-[#6366f1] border-[#6366f1]/20'
+              : 'bg-[#f59e0b]/15 text-[#f59e0b] border-[#f59e0b]/20'
+          }`}
+        >
+          {item.badge}
+        </div>
+      )}
+
       {/* Category banner */}
       <div
         className="h-10 flex items-center justify-center gap-2"
@@ -88,14 +109,29 @@ const RewardCard = ({ item, canAfford, onRedeem, index }) => {
 
       {/* Body */}
       <div className="p-4 flex-1 flex flex-col">
-        <h3 className="text-base font-bold text-[#313851] mb-2 leading-tight">{item.name}</h3>
+        <h3 className="text-base font-bold text-[#313851] mb-2 leading-tight flex items-center gap-2">
+          {item.name}
+          {item.grantType === 'interview_credits' && (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            </svg>
+          )}
+        </h3>
         <p className="text-xs text-[#313851]/60 mb-4 line-clamp-2 leading-relaxed font-medium">{item.description}</p>
 
         {/* Details row */}
-        <div className="flex items-center gap-2 flex-wrap text-[10px] text-[#313851]/40 font-bold uppercase tracking-wider mt-auto">
-          <span>{item.expiry_days || 30} Days Expiry</span>
-          <span className="text-[#C2CBD3]">·</span>
-          <span className="text-[#313851]/60">{item.redeemed || 0} redeemed</span>
+        <div className="flex flex-col gap-2 mt-auto">
+          {item.grantType === 'interview_credits' && (
+            <div className="text-xs text-[#6b6b82] font-semibold">
+              🎵 Grants {item.grantAmount} {item.grantAmount === 1 ? 'credit' : 'credits'}
+            </div>
+          )}
+          <div className="flex items-center gap-2 flex-wrap text-[10px] text-[#313851]/40 font-bold uppercase tracking-wider">
+            <span>{item.expiry_days || 30} Days Expiry</span>
+            <span className="text-[#C2CBD3]">·</span>
+            <span className="text-[#313851]/60">{item.redeemed || 0} redeemed</span>
+          </div>
         </div>
       </div>
 
@@ -108,10 +144,10 @@ const RewardCard = ({ item, canAfford, onRedeem, index }) => {
 
         <button
           onClick={() => onRedeem(item)}
-          disabled={!canAfford}
+          disabled={!canAfford || isLocked}
           className="relative rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none"
           style={{
-            ...(canAfford ? {
+            ...((canAfford && !isLocked) ? {
               background: '#313851',
               color: '#F6F3ED',
               cursor: 'pointer',
@@ -124,13 +160,20 @@ const RewardCard = ({ item, canAfford, onRedeem, index }) => {
             }),
           }}
         >
-          {canAfford ? (
-            'Redeem'
-          ) : (
+          {isLocked ? (
             <span className="flex items-center gap-1.5">
               <LockSmallIcon />
               Locked
             </span>
+          ) : !canAfford ? (
+            <span className="flex items-center gap-1.5">
+              <LockSmallIcon />
+              Locked
+            </span>
+          ) : item.category === 'clam reward' ? (
+            'CLAIM'
+          ) : (
+            'Redeem'
           )}
         </button>
       </div>

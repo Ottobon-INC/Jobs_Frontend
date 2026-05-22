@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink, Sparkles } from 'lucide-react';
+import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { saveJob, unsaveJob } from '../../api/jobsApi';
@@ -15,12 +15,10 @@ const JobCard = ({ job, isAuthenticated = true }) => {
     const saved = savedJobIds.has(job.id);
 
     // Utility for date formatting
-    const formattedDate = job.created_at || job.posted_at 
-        ? new Date(job.created_at || job.posted_at).toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric'
-          })
-        : 'Recent';
+    const formattedDate = new Date(job.created_at).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric'
+    });
 
     // Clean title — strip "POSTED" suffix and embedded locations
     const cleanTitle = (() => {
@@ -99,106 +97,92 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="group/job relative"
+            className="group/job relative w-full min-w-0"
         >
-            <div className="relative bg-white border border-zinc-100 rounded-3xl md:rounded-[2.5rem] p-5 md:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden">
+            <div className="relative bg-white border border-zinc-100 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden w-full min-w-0">
                 
                 {/* 1. Top Row: Logo & Badges */}
-                <div className="flex items-start justify-between mb-8">
+                <div className="flex items-start justify-between mb-5 sm:mb-8">
                     <CompanyLogo 
                         company={{ 
                             name: job.company_name, 
                             logo: job.company_logo,
                             slug: job.company_name?.toLowerCase().replace(/\s+/g, '-')
                         }} 
-                        className="w-16 h-16 group-hover/job:scale-110 transition-transform duration-500" 
+                        className="w-12 h-12 sm:w-16 sm:h-16 group-hover/job:scale-110 transition-transform duration-500" 
                     />
                     
-                    <div className="flex flex-col items-end gap-2">
-                        <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                    <div className="flex flex-col items-end gap-1.5 sm:gap-2">
+                        <div className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${
                             workMode === 'Remote' ? 'bg-sky-100 text-sky-700' :
                             workMode === 'Hybrid' ? 'bg-purple-100 text-purple-700' :
                             'bg-emerald-100 text-emerald-700'
                         }`}>
                             {workMode}
                         </div>
-                        <div className="px-3 py-1 bg-zinc-50 text-zinc-400 rounded-full text-[9px] font-bold uppercase tracking-widest border border-zinc-100">
+                        <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 bg-zinc-50 text-zinc-400 rounded-full text-[8px] sm:text-[9px] font-bold uppercase tracking-widest border border-zinc-100">
                             {formattedDate}
                         </div>
                     </div>
                 </div>
 
                 {/* 2. Job Title & Company */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-2xl font-bold text-[#313851] leading-tight line-clamp-2">
-                            {cleanTitle}
-                        </h3>
-                        {matchScore !== null && (
-                            <div className="flex flex-col items-center justify-center bg-amber-400 text-black px-2.5 py-1 rounded-xl shadow-lg shadow-amber-400/20 ring-2 ring-white">
-                                <span className="text-[9px] font-black leading-none">{matchScore}%</span>
-                                <span className="text-[6px] font-black uppercase tracking-tighter">Match</span>
-                            </div>
-                        )}
-                    </div>
-                    <p className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">
+                <div className="mb-5 sm:mb-8">
+                    <h3 className="text-lg sm:text-2xl font-bold text-[#313851] leading-tight mb-1.5 sm:mb-2 line-clamp-2">
+                        {cleanTitle}
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">
                         {job.company_name || 'Ottobon Partner'}
                     </p>
                 </div>
 
-                    {/* Content Section: Summary Boxes + Skills */}
-                    <div className="overflow-hidden transition-all duration-500">
-                        {/* Summary Boxes */}
-                        <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-0 group-hover/job:mb-6 transition-all">
-                            <div className="p-3 md:p-4 bg-zinc-50/50 rounded-2xl border border-zinc-100/50">
-                                <p className="text-[8px] md:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Experience</p>
-                                <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[10px] md:text-xs">
-                                    <Clock size={12} className="text-[#313851]" />
-                                    {displayExperience}
-                                </div>
-                            </div>
-                            <div className="p-3 md:p-4 bg-zinc-50/50 rounded-2xl border border-zinc-100/50">
-                                <p className="text-[8px] md:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Location</p>
-                                <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[10px] md:text-xs">
-                                    <MapPin size={12} className="text-[#313851]" />
-                                    <span className="truncate">{displayLocation}</span>
-                                </div>
+                {/* 3. Dynamic Content Area: Summary Boxes + Expandable Skills */}
+                <div className="flex-1 mb-5 sm:mb-8">
+                    {/* Always visible: Summary Boxes */}
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-zinc-100 shadow-sm min-w-0">
+                            <p className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Experience</p>
+                            <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[11px] sm:text-xs min-w-0">
+                                <Clock size={12} className="text-[#313851] shrink-0" />
+                                <span className="truncate">{displayExperience}</span>
                             </div>
                         </div>
-
-                        {/* Skills Section: Visible on mobile, hover on desktop */}
-                        <div className="opacity-100 max-h-[200px] mt-4 md:opacity-0 md:max-h-0 md:mt-0 md:group-hover/job:opacity-100 md:group-hover/job:max-h-[200px] md:group-hover/job:mt-6 transition-all duration-500">
-                            <p className="text-[9px] font-black text-[#313851] uppercase tracking-widest mb-3 flex items-center gap-2">
-                                <Sparkles size={10} className="text-amber-500" />
-                                Required Skills
-                            </p>
-                            <div className="flex flex-wrap gap-1.5 md:gap-2">
-                                {keySkills.slice(0, 6).map((skill, idx) => (
-                                    <span
-                                        key={idx}
-                                        className="text-[9px] md:text-[10px] font-bold px-2.5 py-1 bg-zinc-900 text-white rounded-lg capitalize tracking-wide"
-                                    >
-                                        {skill}
-                                    </span>
-                                ))}
-                                {keySkills.length > 6 && (
-                                    <span className="text-[9px] font-bold text-zinc-400 self-center ml-1">+{keySkills.length - 6} more</span>
-                                )}
+                        <div className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-zinc-100 shadow-sm min-w-0">
+                            <p className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Location</p>
+                            <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[11px] sm:text-xs min-w-0">
+                                <MapPin size={12} className="text-[#313851] shrink-0" />
+                                <span className="truncate">{displayLocation}</span>
                             </div>
                         </div>
                     </div>
 
+                    {/* Expandable Section: Skills required */}
+                    <div className="overflow-hidden transition-all duration-500 max-h-0 group-hover/job:max-h-[180px] opacity-0 group-hover/job:opacity-100 group-hover/job:mt-6">
+                        <p className="text-[9px] font-black text-[#313851] uppercase tracking-widest mb-3">Required Skills</p>
+                        <div className="flex flex-wrap gap-2 overflow-y-auto max-h-[130px] custom-scrollbar pr-2">
+                            {keySkills.map((skill, idx) => (
+                                <span
+                                    key={idx}
+                                    className="text-[10px] font-bold px-3 py-1.5 bg-zinc-900 text-white rounded-lg capitalize tracking-wide shadow-sm"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
                 {/* 4. Action Bar */}
-                <div className="flex items-center gap-3">
-                    <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1">
-                        <button className="w-full py-4 bg-[#313851] text-white rounded-2xl font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center transition-all hover:bg-black group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10">
+                <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
+                    <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1 min-w-0">
+                        <button className="w-full py-3.5 sm:py-4 bg-[#313851] text-white rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] flex items-center justify-center transition-all hover:bg-black group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10 truncate">
                             View details
                         </button>
                     </Link>
                     <button
                         onClick={handleToggleSave}
                         disabled={loading || !isAuthenticated}
-                        className={`p-4 rounded-2xl transition-all duration-300 border ${
+                        className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 border shrink-0 ${
                             saved
                                 ? 'bg-amber-50 border-amber-200 text-amber-600'
                                 : 'bg-zinc-50 border-zinc-100 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100'

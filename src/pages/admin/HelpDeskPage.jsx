@@ -32,13 +32,13 @@ const HelpDeskPage = () => {
     }, []);
 
     return (
-        <div className="max-w-6xl mx-auto py-12 px-8">
-            <div className="mb-12 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto py-6 sm:py-12 px-4 sm:px-8">
+            <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl font-sans font-bold tracking-tight text-zinc-900">Help Desk Monitor</h1>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-3">Live Session Intervention & Support</p>
+                    <h1 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight text-zinc-900">Help Desk Monitor</h1>
+                    <p className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-3">Live Session Intervention & Support</p>
                 </div>
-                <Link to="/admin/tower" className="flex items-center gap-2 text-[10px] font-bold text-zinc-300 hover:text-zinc-900 uppercase tracking-widest transition-colors">
+                <Link to="/admin/tower" className="flex items-center gap-2 text-[10px] font-bold text-zinc-300 hover:text-zinc-900 uppercase tracking-widest transition-colors self-end sm:self-auto shrink-0">
                     <ArrowLeft size={14} /> System Administration
                 </Link>
             </div>
@@ -219,7 +219,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
     return (
         <div className="bg-white border border-zinc-100 card overflow-hidden flex flex-col h-full min-h-[500px] shadow-2xl shadow-zinc-900/5">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-zinc-50 bg-[#FBFBFB] flex items-center justify-between shrink-0 gap-4">
+            <div className="px-4 sm:px-8 py-4 sm:py-5 border-b border-zinc-50 bg-[#FBFBFB] flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4">
                 <div className="flex items-center gap-4 min-w-0">
                     <span className={`w-2 h-2 rounded-full shrink-0 ${exited ? 'bg-zinc-300' : 'bg-zinc-900 animate-pulse'}`} />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 truncate">
@@ -229,10 +229,10 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto justify-start md:justify-end">
                     {/* Confirm exit inline prompt */}
                     {confirmExit && (
-                        <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-2">
+                        <div className="flex flex-wrap items-center gap-2 bg-red-50 border border-red-100 rounded-xl p-2 sm:px-4 sm:py-2 w-full sm:w-auto justify-center sm:justify-start">
                             <AlertTriangle size={12} className="text-red-400 shrink-0" />
                             <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest whitespace-nowrap">Hand off to AI?</span>
                             <button
@@ -255,7 +255,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                     {intercepted && !exited && !confirmExit && (
                         <button
                             onClick={() => setConfirmExit(true)}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border border-zinc-200 text-zinc-400 hover:border-red-200 hover:text-red-500 hover:bg-red-50"
+                            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border border-zinc-200 text-zinc-400 hover:border-red-200 hover:text-red-500 hover:bg-red-50 w-full sm:w-auto"
                         >
                             <LogOut size={13} /> Exit Session
                         </button>
@@ -263,14 +263,14 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
 
                     {/* Join / Joined / Released button */}
                     {exited ? (
-                        <div className="flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-zinc-50 text-zinc-300">
+                        <div className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-zinc-50 text-zinc-300 w-full sm:w-auto">
                             <Bot size={14} /> AI Resumed
                         </div>
                     ) : (
                         <button
                             onClick={handleIntercept}
                             disabled={intercepted || intercepting}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${
+                            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 w-full sm:w-auto ${
                                 intercepted
                                     ? 'bg-zinc-50 text-zinc-300 cursor-not-allowed'
                                     : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-xl shadow-zinc-900/10'

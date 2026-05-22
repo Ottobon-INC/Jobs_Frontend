@@ -14,6 +14,8 @@ const getSupabaseClient = () => {
 export const supabase = getSupabaseClient();
 
 // ── Cached auth token ────────────────────────────────────────
+// Instead of calling getSession() on every request (slow!),
+// we cache the token and update it via the auth state listener.
 let _cachedToken = localStorage.getItem('ottobon_custom_token') || null;
 
 export const setToken = (token) => {
@@ -32,18 +34,22 @@ supabase.auth.getSession().then(({ data }) => {
     const sessionToken = data?.session?.access_token;
     const customToken = localStorage.getItem('ottobon_custom_token');
     
-    _cachedToken = sessionToken || customToken || null;
+    _cachedToken = customToken || sessionToken || null;
 
     // If we have a custom token but Supabase doesn't know about it, set it
-    if (!sessionToken && customToken) {
+    if (!sessionToken && customToken && customToken !== 'demo_token') {
         supabase.auth.setSession({ access_token: customToken, refresh_token: '' });
     }
 });
 
 // Keep cache in sync when user logs in/out/refreshes token
 supabase.auth.onAuthStateChange((_event, session) => {
+    const customToken = localStorage.getItem('ottobon_custom_token');
     if (session?.access_token) {
-        setToken(session.access_token);
+        // Only let the session update the token if there isn't a custom token active
+        if (!customToken || customToken === 'demo_token') {
+            setToken(session.access_token);
+        }
     }
 });
 
@@ -89,18 +95,27 @@ api.interceptors.response.use(
             return api(config);
         }
 
-        if (error.response?.status === 401) {
-            console.warn('Session expired or unauthorized. Clearing token.');
-            setToken(null);
-            // Only redirect if not already on login/signup pages to avoid loops
-            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
-                window.location.href = '/login';
+        // --- 401: Token Expired — attempt silent refresh then retry once ---
+        if (error.response?.status === 401 && !config._isRetryAfterRefresh) {
+            config._isRetryAfterRefresh = true;
+            try {
+                const { data: refreshData } = await supabase.auth.refreshSession();
+                const newToken = refreshData?.session?.access_token;
+                if (newToken) {
+                    setToken(newToken);
+                    config.headers.Authorization = `Bearer ${newToken}`;
+                    return api(config); // Retry original request with new token
+                }
+            } catch (refreshErr) {
+                console.warn('API 401 — token refresh failed:', refreshErr);
             }
+            // If refresh failed, clear the stale cached token
+            _cachedToken = null;
         }
 
-        const isSavedCheck = error.config?.url?.includes('/is-saved') || error.config?.url?.includes('/check');
+        const isSavedCheck = error.config?.url?.includes('/is-saved');
         
-        // Log error except for expected noise like network errors during mass checks
+        // Log error except for expected noise like network errors during mass is-saved checks
         if (!isSavedCheck || error.response) {
             console.error('API Error:', error.response?.data?.detail || error.message);
         }

@@ -227,7 +227,7 @@ const JobFeedPage = () => {
     return (
         <div className="bg-transparent">
             {/* Minimalist Header Section */}
-            <header className="relative z-20 pt-6 pb-6 px-6 md:px-12">
+            <header className="relative z-20 pt-6 pb-6 px-4 md:px-12 max-w-[1400px] mx-auto">
                 {/* Refined Background Accent */}
                 <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-40" />
 
@@ -240,10 +240,10 @@ const JobFeedPage = () => {
                         className="mb-8"
                     >
 
-                        <h1 className="text-5xl md:text-6xl font-sans font-bold mb-4 tracking-tight text-zinc-900">
+                        <h1 className="text-2xl md:text-6xl font-sans font-bold mb-4 tracking-tight text-zinc-900 leading-tight">
                             Opportunities
                         </h1>
-                        <p className="text-zinc-500 max-w-2xl mx-auto text-lg mb-4 leading-relaxed font-medium">
+                        <p className="text-zinc-500 max-w-2xl mx-auto text-sm md:text-lg mb-4 leading-relaxed font-medium px-4">
                             Access the latest listings and career opportunities across our global network.
                         </p>
                     </motion.div>
@@ -266,7 +266,7 @@ const JobFeedPage = () => {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search by role, company, or keywords..."
-                                    className="w-full pl-14 pr-6 py-4.5 bg-white text-[#313851] border border-[#C2CBD3] rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-[#313851]/5 focus:border-[#313851] transition-all duration-300 shadow-sm placeholder:text-[#C2CBD3]"
+                                    className="w-full pl-14 pr-6 py-4 bg-white text-[#313851] border border-[#C2CBD3] rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-[#313851]/5 focus:border-[#313851] transition-all duration-300 shadow-sm placeholder:text-[#C2CBD3]"
                                 />
                                 {searchTerm && (
                                     <button 
@@ -287,7 +287,7 @@ const JobFeedPage = () => {
                                 >
                                     <button
                                         type="button"
-                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isLocationOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
+                                        className={`w-full px-5 py-3 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isLocationOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <MapPin size={14} className="text-[#C2CBD3] shrink-0" />
@@ -326,7 +326,7 @@ const JobFeedPage = () => {
                                 >
                                     <button
                                         type="button"
-                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isExperienceOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
+                                        className={`w-full px-5 py-3 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isExperienceOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <span className="text-[#C2CBD3] shrink-0 font-bold tracking-tighter text-[10px]">EXP</span>
@@ -365,7 +365,7 @@ const JobFeedPage = () => {
                                 >
                                     <button
                                         type="button"
-                                        className={`w-full px-5 py-3.5 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isCategoryOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
+                                        className={`w-full px-5 py-3 bg-white text-[#313851] border rounded-xl text-xs font-bold flex justify-between items-center transition-all duration-200 shadow-sm ${isCategoryOpen ? 'border-[#313851] ring-2 ring-[#313851]/5' : 'border-[#C2CBD3]'}`}
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden">
                                             <Tag size={14} className="text-[#C2CBD3] shrink-0" />
@@ -431,7 +431,7 @@ const JobFeedPage = () => {
             <LogoMarquee />
 
             {/* Content Container */}
-            <main className="max-w-[1400px] mx-auto pt-8 pb-20 px-6 md:px-12">
+            <main className="max-w-[1400px] mx-auto pt-8 pb-20 px-4 sm:px-6 md:px-12">
                 
                 {/* 3. Matched Roles Section ABOVE Available Roles */}
                 {isAuthenticated && role === ROLES.SEEKER && matchedJobs !== null && (
@@ -440,7 +440,7 @@ const JobFeedPage = () => {
 
                 <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-12">
                     <div>
-                        <h2 className="text-3xl font-sans font-bold text-zinc-900 tracking-tight">
+                        <h2 className="text-2xl md:text-3xl font-sans font-bold text-zinc-900 tracking-tight">
                             Available Roles
                         </h2>
                         <p className="text-zinc-400 text-sm mt-1 font-medium">
@@ -452,7 +452,7 @@ const JobFeedPage = () => {
                     </span>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-start">
                     {visibleJobs.length > 0 ? (
                         visibleJobs.map(job => <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />)
                     ) : (
