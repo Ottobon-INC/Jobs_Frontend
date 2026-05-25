@@ -847,13 +847,13 @@ const ProfilePage = () => {
                                             : "Upload your resume to start matching with relevant jobs."}
                                     </p>
                                 </div>
-                                <label className={`px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3 group shadow-2xl ${!editMode ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed pointer-events-none shadow-none' : 'bg-black text-white hover:scale-105 active:scale-95 breathing-pulse cursor-pointer shadow-black/20'}`}>
+                                <label className="px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-3 group shadow-2xl bg-black text-white hover:scale-105 active:scale-95 breathing-pulse cursor-pointer shadow-black/20">
                                     <input
                                         type="file"
                                         className="hidden"
                                         onChange={handleResumeUpload}
                                         accept=".pdf,.docx"
-                                        disabled={saving || !editMode}
+                                        disabled={saving}
                                     />
                                     {saving ? <RefreshCw size={18} className="animate-spin" /> : <Upload size={18} className="group-hover:-translate-y-1 transition-transform" />}
                                     {saving ? 'Processing...' : 'Update Resume'}
