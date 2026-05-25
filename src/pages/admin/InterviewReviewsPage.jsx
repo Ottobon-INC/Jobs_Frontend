@@ -6,6 +6,7 @@ import {
     submitAdminMockInterviewReview,
 } from '../../api/mockInterviewApi';
 import { useAuth } from '../../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const emptyTemplate = {
     overallSummary: '',
@@ -56,6 +57,7 @@ const InterviewReviewsPage = () => {
     const [detailLoading, setDetailLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const loadReviews = async () => {
         setLoading(true);
@@ -73,6 +75,7 @@ const InterviewReviewsPage = () => {
             if (err.message) console.log('Supabase Error Message:', err.message);
             if (err.details) console.log('Supabase Error Details:', err.details);
             setMessage('Unable to load interview reviews right now.');
+            setIsSuccess(false);
         } finally {
             setLoading(false);
         }
@@ -113,6 +116,7 @@ const InterviewReviewsPage = () => {
             } catch (err) {
                 console.error('Failed to load interview review detail:', err);
                 setMessage('Unable to load the selected interview.');
+                setIsSuccess(false);
             } finally {
                 setDetailLoading(false);
             }
@@ -125,12 +129,25 @@ const InterviewReviewsPage = () => {
     const userTranscript = useMemo(() => selectedReview?.ai_scorecard?.user_transcript || [], [selectedReview]);
     const aiTranscript = useMemo(() => selectedReview?.ai_scorecard?.ai_transcript || [], [selectedReview]);
 
+    const selectNextPending = () => {
+        const nextPending = reviews.find(review => review.status === 'pending_review' && review.id !== selectedReviewId);
+        if (nextPending) {
+            setSelectedReviewId(nextPending.id);
+            setMessage('');
+            setIsSuccess(false);
+            toast.success('Loaded next pending ticket!');
+        } else {
+            toast.success('All pending reviews completed! 🎉');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedReviewId || saving) return;
 
         setSaving(true);
         setMessage('');
+        setIsSuccess(false);
 
         const payload = {
             overall_summary: form.overallSummary.trim(),
@@ -147,10 +164,14 @@ const InterviewReviewsPage = () => {
             const updated = await submitAdminMockInterviewReview(selectedReviewId, payload);
             setSelectedReview(updated);
             setReviews((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
-            setMessage('Analysis sent to the user.');
+            setMessage('Your expert feedback and scorecard analysis have been sent to the applicant.');
+            setIsSuccess(true);
+            toast.success('Feedback submitted successfully!');
         } catch (err) {
             console.error('Failed to submit interview review:', err);
             setMessage('Could not send the analysis. Please try again.');
+            setIsSuccess(false);
+            toast.error('Failed to submit review.');
         } finally {
             setSaving(false);
         }
@@ -202,8 +223,35 @@ const InterviewReviewsPage = () => {
             </div>
 
             {message && (
-                <div className="mb-6 rounded-[24px] border border-zinc-100 bg-white px-6 py-4 text-sm font-semibold text-zinc-600">
-                    {message}
+                <div className={`mb-8 rounded-[28px] border p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 transform translate-y-0 animate-in fade-in slide-in-from-top-4 ${
+                    isSuccess 
+                    ? 'bg-emerald-50/60 border-emerald-100 text-emerald-800 shadow-lg shadow-emerald-500/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]' 
+                    : 'bg-rose-50/60 border-rose-100 text-rose-800 shadow-lg shadow-rose-500/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]'
+                }`}>
+                    <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-[18px] grid place-items-center shrink-0 ${
+                            isSuccess ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+                        }`}>
+                            {isSuccess ? <CheckCircle size={22} className="animate-bounce" /> : <Activity size={22} />}
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold leading-tight">
+                                {isSuccess ? 'Review Submitted Successfully!' : 'Something went wrong'}
+                            </p>
+                            <p className={`text-xs mt-1.5 font-medium ${isSuccess ? 'text-emerald-600/90' : 'text-rose-600/90'}`}>
+                                {message}
+                            </p>
+                        </div>
+                    </div>
+                    {isSuccess && reviews.some(r => r.status === 'pending_review' && r.id !== selectedReviewId) && (
+                        <button
+                            type="button"
+                            onClick={selectNextPending}
+                            className="shrink-0 self-start md:self-auto rounded-full bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all shadow-md shadow-emerald-600/10 hover:shadow-lg hover:shadow-emerald-600/20 active:scale-95"
+                        >
+                            Review Next Ticket →
+                        </button>
+                    )}
                 </div>
             )}
 
