@@ -55,62 +55,89 @@ export const NotificationProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (!user || !role) return;
+        if (!user?.id) return; // Don't subscribe until auth ready
 
         // Reset local storage key if user changes
         const saved = localStorage.getItem(`notifications_${user.id}`);
         setNotifications(saved ? JSON.parse(saved) : []);
 
-        const channel = supabase
-            .channel('mock_interviews_notifications')
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'mock_interviews_jobs'
-                },
-                (payload) => {
-                    const activeRole = role || user?.user_metadata?.role;
-                    const isSeeker = activeRole === ROLES.SEEKER;
-                    const isAdmin = activeRole === ROLES.ADMIN;
+        let retryCount = 0;
+        let retryTimeout = null;
+        let channel = null;
 
-                    // 1. Seeker: Your review is completed
-                    if (isSeeker && payload.eventType === 'UPDATE') {
-                        const { new: newRow } = payload;
-                        if (newRow.user_id === user.id && newRow.status === 'reviewed') {
+        const subscribe = () => {
+            channel = supabase
+                .channel('global_diagnostic_channel')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public'
+                    },
+                    (payload) => {
+                        console.log('📡 [CATCH-ALL LOG] Event Received From DB:', {
+                            table: payload.table,
+                            event: payload.eventType,
+                            newRow: payload.new,
+                            oldRow: payload.old
+                        });
+
+                        const activeRole = role || user?.user_metadata?.role;
+
+                        // 1. Seeker: Your review is completed
+                        if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.SEEKER && payload.eventType === 'UPDATE') {
+                            const { old: oldRow, new: newRow } = payload;
+                            if (newRow.user_id === user.id && newRow.status === 'reviewed') {
+                                addNotification({
+                                    title: 'Analysis Ready',
+                                    message: `Your mock interview analysis for ${newRow.job_title || 'a recent role'} is ready for review.`,
+                                    type: 'success',
+                                    link: '/interview-reviews'
+                                });
+                            }
+                        }
+
+                        // 2. Admin: New submission received
+                        if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.ADMIN && payload.eventType === 'INSERT') {
                             addNotification({
-                                title: 'Analysis Ready',
-                                message: `Your mock interview analysis is ready for review.`,
-                                type: 'success',
-                                link: '/interview-reviews'
+                                title: 'New Submission',
+                                message: `A new mock interview review has been submitted.`,
+                                type: 'info',
+                                link: '/admin/interview-reviews'
                             });
                         }
                     }
+                )
+                .subscribe((status) => {
+                    console.log('📡 Subscription Status:', status);
 
-                    // 2. Admin: New submission received
-                    if (isAdmin && payload.eventType === 'INSERT') {
-                        addNotification({
-                            title: 'New Submission',
-                            message: `A new mock interview has been submitted.`,
-                            type: 'info',
-                            link: '/admin/interview-reviews'
-                        });
+                    if (status === 'SUBSCRIBED') {
+                        retryCount = 0; // Reset on success
                     }
-                }
-            )
-            .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('📡 Notifications Subscribed');
-                } else if (status === 'CHANNEL_ERROR') {
-                    console.warn('📡 Notifications Channel Error - Check Supabase Realtime settings');
-                }
-            });
+
+                    if (status === 'CHANNEL_ERROR') {
+                        // Exponential backoff — don't hammer Supabase
+                        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
+                        retryCount++;
+                        console.log(`🔄 Retrying in ${delay}ms (attempt ${retryCount})`);
+                        retryTimeout = setTimeout(() => {
+                            if (channel) {
+                                supabase.removeChannel(channel);
+                            }
+                            subscribe();
+                        }, delay);
+                    }
+                });
+        };
+
+        subscribe();
 
         return () => {
-            supabase.removeChannel(channel);
+            console.log('🔌 Unsubscribing from Notifications');
+            if (retryTimeout) clearTimeout(retryTimeout);
+            if (channel) supabase.removeChannel(channel);
         };
-    }, [user, role, addNotification]);
+    }, [user?.id, role, addNotification]);
 
     const unreadCount = notifications.filter(n => !n.isRead).length;
 

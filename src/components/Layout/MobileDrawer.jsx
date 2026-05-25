@@ -25,7 +25,6 @@ const MobileDrawer = ({ isOpen, onClose }) => {
     const links = [
         { to: '/jobs', label: 'Job Board', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
         { to: '/jobs-ai', label: 'Jobs AI', icon: Sparkles, roles: [ROLES.SEEKER], category: 'Jobs' },
-        { to: '/community-jobs', label: 'Community Board', icon: PlusCircle, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },

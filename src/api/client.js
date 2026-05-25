@@ -110,7 +110,7 @@ api.interceptors.response.use(
                 console.warn('API 401 — token refresh failed:', refreshErr);
             }
             // If refresh failed, clear the stale cached token
-            _cachedToken = null;
+            setToken(null);
         }
 
         const isSavedCheck = error.config?.url?.includes('/is-saved');

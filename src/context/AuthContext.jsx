@@ -29,6 +29,11 @@ export const AuthProvider = ({ children }) => {
     const [savedJobIds, setSavedJobIds] = useState(new Set());
     const [loading, setLoading] = useState(true);
     const initialised = useRef(false);
+    const userRef = useRef(user);
+
+    useEffect(() => {
+        userRef.current = user;
+    }, [user]);
     
     const fetchSavedJobs = useCallback(async () => {
         try {
@@ -71,7 +76,8 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
                 setRole(null);
                 setProfile(null);
-                localStorage.removeItem('ottobon_custom_token');
+                setApiToken(null);
+                await supabase.auth.signOut();
                 setLoading(false);
                 return;
             }
@@ -88,7 +94,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Failed to fetch user profile:', error);
 
             // Fallback: use cached user or Supabase metadata
-            const activeUser = cachedUser || user;
+            const activeUser = cachedUser || userRef.current;
             if (activeUser) {
                 console.warn('fetchProfile: Falling back to cached user metadata');
                 const metaRole = activeUser.user_metadata?.role || 'seeker';
@@ -113,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, []);
 
     const checkSession = useCallback(async () => {
         setLoading(true);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Plus, 
@@ -14,7 +15,8 @@ import {
     Check,
     HelpCircle,
     ArrowUp,
-    ArrowDown
+    ArrowDown,
+    ArrowLeft
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchTimeline, createTimeline, updateTimeline, deleteTimeline } from '../../api/timelineApi';
@@ -26,6 +28,7 @@ const MONTHS_LIST = [
 ];
 
 const ManageTimelinePage = () => {
+    const navigate = useNavigate();
     const [timeline, setTimeline] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingMonth, setEditingMonth] = useState(null); // When not null, represents the month form being edited/added
@@ -224,6 +227,14 @@ const ManageTimelinePage = () => {
     return (
         <div className="min-h-screen bg-[#F6F3ED] p-8">
             <div className="max-w-6xl mx-auto">
+                {/* Back Button */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-2 text-[#313851]/60 hover:text-[#313851] transition-colors text-xs font-black uppercase tracking-wider mb-6 bg-white border border-[#313851]/10 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 cursor-pointer"
+                >
+                    <ArrowLeft size={14} strokeWidth={3} /> Back
+                </button>
+
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>

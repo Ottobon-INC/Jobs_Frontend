@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Search, PlusCircle, Briefcase, Bookmark, User, Menu, X, LayoutDashboard, ShieldCheck, BarChart3, BookOpen } from 'lucide-react';
+import { Search, PlusCircle, Briefcase, Bookmark, User, Menu, X, LayoutDashboard, ShieldCheck, BarChart3, BookOpen, Trophy } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 
 const MobileBottomNav = ({ onMenuClick }) => {
@@ -21,7 +21,7 @@ const MobileBottomNav = ({ onMenuClick }) => {
     ] : [
         { to: '/jobs', label: 'Jobs', icon: Search },
         { to: '/saved', label: 'Saved', icon: Bookmark },
-        { to: '/community-jobs', label: 'Community', icon: PlusCircle },
+        { to: '/rewards', label: 'Rewards', icon: Trophy },
         { to: '/profile', label: 'Profile', icon: User }
     ];
 
