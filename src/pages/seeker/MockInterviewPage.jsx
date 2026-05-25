@@ -45,7 +45,8 @@ import {
 
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
-const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `ws://${window.location.hostname}:8200/mock/ws`;
+const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `${wsProto}//${window.location.hostname}:8200/mock/ws`;
 
 // ── Helpers ───────────────────────────────────────────────────
 const HIDDEN_TYPES = new Set(["main_question", "follow_up"]);

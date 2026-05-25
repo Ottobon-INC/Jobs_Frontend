@@ -6,7 +6,8 @@
 import axios from 'axios';
 import api, { supabase } from './client';
 
-const MOCK_BASE = import.meta.env.VITE_MOCK_API_URL || `http://${window.location.hostname}:8200/mock`;
+const proto = window.location.protocol === 'https:' ? 'https:' : 'http:';
+const MOCK_BASE = import.meta.env.VITE_MOCK_API_URL || `${proto}//${window.location.hostname}:8200/mock`;
 
 /**
  * mockClient is used for real-time interaction with the AI interview engine (Port 8200).
