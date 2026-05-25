@@ -57,7 +57,8 @@ export const setMockMode = async (mode, sessionId = 'default_session', options =
         session_id: sessionId,
         duration_minutes: options.durationMinutes || 15,
         interviewer_persona: options.interviewerPersona || 'Neutral',
-        whiteboard_mode: options.whiteboardMode || false
+        whiteboard_mode: options.whiteboardMode || false,
+        interview_input_mode: options.interviewInputMode || 'voice',
     });
     return res.data;
 };
@@ -354,4 +355,17 @@ export const markMockInterviewAsViewed = async (id) => {
         // We don't necessarily want to break the UI for this
     }
     return data;
+};
+
+export const uploadProfileResumeToSession = async (resumeText, sessionId) => {
+    // Convert profile resume text to a blob and upload it
+    const blob = new Blob([resumeText], { type: 'text/plain' });
+    const file = new File([blob], 'profile_resume.txt', { type: 'text/plain' });
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await mockClient.post('/upload_resume', formData, {
+        params: { session_id: sessionId },
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
 };

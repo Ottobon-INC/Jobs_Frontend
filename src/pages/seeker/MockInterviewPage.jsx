@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, setMockInterviewStructure } from '../../api/mockInterviewApi';
+import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, setMockInterviewStructure, uploadProfileResumeToSession } from '../../api/mockInterviewApi';
 import { getCompanyRounds } from '../../shared/companyRounds';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../context/NotificationContext';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useMicrophone } from '../../hooks/useMicrophone';
 import { useAudioStreamer } from '../../hooks/useAudioStreamer';
+import { useUtteranceStateMachine, SentenceStatus } from '../../hooks/useUtteranceStateMachine';
+import { useDevTelemetry } from '../../hooks/useDevTelemetry';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -32,11 +34,31 @@ import {
     Download,
     CheckCircle,
     Layers,
+    Shield,
+    Send,
 } from 'lucide-react';
 
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
 const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `ws://${window.location.hostname}:8200/mock/ws`;
+
+// ── Helpers ───────────────────────────────────────────────────
+const HIDDEN_TYPES = new Set(["main_question", "follow_up"]);
+
+function normalizeMessageType(type) {
+    const t = String(type || "").trim().toLowerCase();
+    return HIDDEN_TYPES.has(t) ? null : t;
+}
+
+function sanitizeInterviewerText(text) {
+    return String(text || "")
+        // remove bracket tags if present
+        .replace(/\[\s*(MAIN[_\s]QUESTION|FOLLOW[_\s]UP)\s*\]/gi, "")
+        // remove plain leaked tokens if present
+        .replace(/\b(main_question|follow_up)\b/gi, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+}
 
 
 // ── Sub-components ────────────────────────────────────────────
@@ -269,6 +291,309 @@ const SubRoundProgressBar = ({ questionsAsked, questionLimit, roundStartTime, to
     );
 };
 
+// ── PERSONA PROFILES ──────────────────────────────────────────
+const PERSONA_PROFILES = {
+  'Marcus Reid': { name: 'Marcus Reid', title: 'Senior Engineering Manager' },
+  'Priya Sharma': { name: 'Priya Sharma', title: 'Startup Founder' },
+  'Jordan Lee': { name: 'Jordan Lee', title: 'Skeptical Interviewer' },
+  'Sarah Kim': { name: 'Sarah Kim', title: 'Supportive Mentor' },
+  'Neutral': { name: 'Interviewer', title: 'Interviewer' },
+};
+
+// ── Text Mode Components ────────────────────────────────────────
+
+const QuestionCard = ({ message, personaInfo, interviewerPersona }) => {
+  const name = personaInfo?.name || 
+    PERSONA_PROFILES[interviewerPersona]?.name || 
+    'Interviewer';
+  
+  return (
+    <div className="flex flex-col gap-1.5 max-w-[88%]">
+      <div className="flex items-center gap-2 px-1">
+        <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-400">
+          Question {message.question_number}
+        </span>
+      </div>
+      <div
+        style={{ borderLeft: '3px solid #18181b' }}
+        className="bg-white rounded-xl rounded-tl-sm border border-zinc-100 px-5 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.07)]"
+      >
+        <p className="text-[13.5px] text-zinc-900 leading-relaxed font-medium">
+          {message.text ? sanitizeInterviewerText(message.text) : ''}
+        </p>
+      </div>
+      <span className="text-[9px] text-zinc-300 px-1 font-medium">
+        {name} · {message.timestamp}
+      </span>
+    </div>
+  );
+};
+
+const FollowUpBubble = ({ message, personaInfo, interviewerPersona }) => {
+  const name = personaInfo?.name || 
+    PERSONA_PROFILES[interviewerPersona]?.name || 
+    'Interviewer';
+  
+  return (
+    <div className="flex flex-col gap-1 max-w-[72%]">
+      <div className="bg-zinc-100 rounded-2xl rounded-tl-sm px-4 py-3 border border-zinc-100">
+        <p className="text-[13px] text-zinc-700 leading-relaxed">
+          {message.text ? sanitizeInterviewerText(message.text) : ''}
+        </p>
+      </div>
+      <span className="text-[9px] text-zinc-300 px-1 font-medium">
+        {name} · {message.timestamp}
+      </span>
+    </div>
+  );
+};
+
+const GreetingBubble = ({ message, personaInfo, interviewerPersona }) => {
+  const name = personaInfo?.name || 
+    PERSONA_PROFILES[interviewerPersona]?.name || 
+    'Interviewer';
+  
+  return (
+    <div className="flex flex-col gap-1 max-w-[88%]">
+      <div className="bg-zinc-900 rounded-2xl rounded-tl-sm px-5 py-4">
+        <p className="text-[13px] text-zinc-100 leading-relaxed">
+          {message.text ? sanitizeInterviewerText(message.text) : ''}
+        </p>
+      </div>
+      <span className="text-[9px] text-zinc-300 px-1 font-medium">
+        {name} · {message.timestamp}
+      </span>
+    </div>
+  );
+};
+
+const UserBubble = ({ message }) => {
+  const statusIcon = {
+    sending: '·',
+    sent: '✓',
+    read: '✓✓',
+  }[message.status] || '✓';
+  
+  const statusColor = message.status === 'read' 
+    ? 'text-zinc-400' 
+    : 'text-zinc-500';
+  
+  return (
+    <div className="flex flex-col items-end gap-1 max-w-[78%] ml-auto">
+      <div className="bg-zinc-900 rounded-2xl rounded-tr-sm px-4 py-3">
+        <p className="text-[13px] text-zinc-100 leading-relaxed">
+          {message.text}
+        </p>
+      </div>
+      <span className={`text-[9px] px-1 font-medium ${statusColor}`}>
+        You · {message.timestamp} · {statusIcon}
+      </span>
+    </div>
+  );
+};
+
+const TypingIndicator = ({ personaInfo, interviewerPersona }) => {
+  const name = personaInfo?.name || 
+    PERSONA_PROFILES[interviewerPersona]?.name || 
+    'Interviewer';
+  
+  return (
+    <div className="flex flex-col gap-1 max-w-[72%]">
+      <div className="bg-zinc-100 rounded-2xl rounded-tl-sm px-4 py-3.5 border border-zinc-100 flex items-center gap-1.5 w-fit">
+        {[0, 1, 2].map(i => (
+          <div
+            key={i}
+            className="w-1.5 h-1.5 rounded-full bg-zinc-400"
+            style={{
+              animation: 'typingBounce 1.2s infinite',
+              animationDelay: `${i * 0.2}s`,
+            }}
+          />
+        ))}
+      </div>
+      <span className="text-[9px] text-zinc-300 px-1 font-medium">
+        {name} is typing...
+      </span>
+    </div>
+  );
+};
+
+const TextInterviewScreen = ({
+  chatMessages,
+  aiIsTyping,
+  textInput,
+  setTextInput,
+  handleSendText,
+  isActive,
+  isSpeaking,
+  chatScrollRef,
+  personaInfo,
+  interviewerPersona,
+  currentRound,
+  roundsConfig,
+  localRoundTimer,
+  status,
+  interviewInputMode,
+}) => {
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes typingBounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+        30% { transform: translateY(-4px); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      if (document.head.contains(style)) document.head.removeChild(style);
+    };
+  }, []);
+
+  const persona = personaInfo || 
+    PERSONA_PROFILES[interviewerPersona] || 
+    PERSONA_PROFILES['Neutral'];
+  
+  return (
+    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[500px] bg-white rounded-2xl border border-zinc-100 shadow-2xl shadow-zinc-900/5 overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 bg-zinc-900 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white font-bold text-sm shrink-0">
+            {persona?.name?.[0] || 'M'}
+          </div>
+          <div>
+            <p className="text-white font-bold text-sm">
+              {persona?.name || 'Marcus Reid'}
+            </p>
+            <p className="text-zinc-400 text-[10px] font-medium">
+              {persona?.title || 'Senior Engineering Manager'}
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          {currentRound && (
+            <div className="px-3 py-1.5 bg-zinc-800 rounded-full border border-zinc-700">
+              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300">
+                {currentRound.round_name} · {(currentRound.round_index ?? 0) + 1}
+                /{currentRound.total_rounds || roundsConfig?.length || 1}
+              </span>
+            </div>
+          )}
+          
+          {localRoundTimer !== null && isActive && (
+            <div className={`px-3 py-1.5 rounded-full border font-bold text-[9px] uppercase tracking-widest
+              ${localRoundTimer <= 30 
+                ? 'bg-red-500 border-red-600 text-white animate-pulse' 
+                : localRoundTimer <= 60 
+                ? 'bg-amber-500 border-amber-600 text-white'
+                : 'bg-zinc-800 border-zinc-700 text-zinc-300'
+              }`}>
+              {Math.floor(localRoundTimer / 60)}:
+              {String(localRoundTimer % 60).padStart(2, '0')}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <div
+        ref={chatScrollRef}
+        className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5 bg-[#F8F7F4]"
+      >
+        {chatMessages.length === 0 && (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-[11px] font-medium text-zinc-300 uppercase tracking-widest">
+              Connecting to interviewer...
+            </p>
+          </div>
+        )}
+        
+        {chatMessages.map((msg) => {
+          if (msg.role === 'user') {
+            return <UserBubble key={msg.id} message={msg} />;
+          }
+          if (msg.message_type === 'greeting') {
+            return (
+              <GreetingBubble 
+                key={msg.id} 
+                message={msg}
+                personaInfo={personaInfo}
+                interviewerPersona={interviewerPersona}
+              />
+            );
+          }
+          if (msg.message_type === 'main_question') {
+            return (
+              <QuestionCard
+                key={msg.id}
+                message={msg}
+                personaInfo={personaInfo}
+                interviewerPersona={interviewerPersona}
+              />
+            );
+          }
+          return (
+            <FollowUpBubble
+              key={msg.id}
+              message={msg}
+              personaInfo={personaInfo}
+              interviewerPersona={interviewerPersona}
+            />
+          );
+        })}
+        
+        {aiIsTyping && (
+          <TypingIndicator 
+            personaInfo={personaInfo}
+            interviewerPersona={interviewerPersona}
+          />
+        )}
+      </div>
+      
+      <div className="px-5 py-4 border-t border-zinc-100 bg-white shrink-0">
+        <div className="flex gap-3 items-end">
+          <textarea
+            value={textInput}
+            onChange={e => setTextInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!isActive || aiIsTyping || (interviewInputMode !== 'text' && isSpeaking)) return;
+                handleSendText();
+              }
+            }}
+            placeholder={
+              isActive 
+                ? "Type your answer... (Enter to send · Shift+Enter for new line)"
+                : "Waiting for interviewer..."
+            }
+            rows={2}
+            disabled={!isActive || aiIsTyping || (interviewInputMode !== 'text' && isSpeaking)}
+            className="flex-1 px-4 py-3 rounded-xl border border-zinc-100 bg-zinc-50 text-sm text-zinc-900 resize-none focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/10 placeholder:text-zinc-300 disabled:opacity-40 transition-all leading-relaxed"
+            style={{ maxHeight: '120px' }}
+          />
+          <button
+            onClick={handleSendText}
+            disabled={!textInput.trim() || !isActive || aiIsTyping || (interviewInputMode !== 'text' && isSpeaking)}
+            className="w-11 h-11 bg-zinc-900 text-white rounded-xl flex items-center justify-center hover:bg-zinc-800 active:scale-95 disabled:opacity-30 transition-all shrink-0 mb-0.5"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+        
+        {textInput.length > 50 && (
+          <p className="text-[9px] text-zinc-300 mt-2 font-medium text-right pr-14">
+            {textInput.length} chars
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ── Main Page ─────────────────────────────────────────────────
 // ── WaveformVisualizer — 32-bar smoothed enterprise waveform ─────────────────
 const WaveformVisualizer = ({ analyserRef, isActive, isMuted }) => {
@@ -340,8 +665,35 @@ const MockInterviewPage = () => {
     const [companySearch, setCompanySearch] = useState(location.state?.companyName || '');
     const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
 
-    // Session step: 'entry' | 'interview'
+    // Session step: 'entry' | 'briefing' | 'interview'
     const [step, setStep] = useState('entry');
+
+    // Interview input mode
+    const [interviewInputMode, setInterviewInputMode] = useState('voice');
+    // 'voice' | 'text' | 'hybrid'
+
+    // Text mode input
+    const [textInput, setTextInput] = useState('');
+    const [chatMessages, setChatMessages] = useState([]);
+    const [aiIsTyping, setAiIsTyping] = useState(false);
+    const [questionCounter, setQuestionCounter] = useState(0);
+    const chatScrollRef = useRef(null);
+
+    // Persona info from backend
+    const [personaInfo, setPersonaInfo] = useState(null);
+
+    // Round time remaining (from backend time_remaining_seconds)
+    const [roundTimeRemaining, setRoundTimeRemaining] = useState(null);
+    const [localRoundTimer, setLocalRoundTimer] = useState(null);
+
+    // Time warning
+    const [showTimeWarning, setShowTimeWarning] = useState(false);
+    const [timeWarningRoundName, setTimeWarningRoundName] = useState('');
+    const [timeWarningSeconds, setTimeWarningSeconds] = useState(60);
+
+    // Instant debrief
+    const [debriefData, setDebriefData] = useState(null);
+    const [showDebrief, setShowDebrief] = useState(false);
 
     // Entry state
     const [interviewType, setInterviewType] = useState('technical');
@@ -362,7 +714,8 @@ const MockInterviewPage = () => {
     const [responses, setResponses] = useState([]);
     const [conversationLog, setConversationLog] = useState([]);
     const [currentResponse, setCurrentResponse] = useState('');
-    const [visibleWords, setVisibleWords] = useState('');  // timestamp-driven subtitle
+    const [visibleWords, setVisibleWords] = useState('');  // legacy — kept for text-mode compat
+    const [currentSentenceText, setCurrentSentenceText] = useState(''); // live sentence word-by-word
     const [partialTranscript, setPartialTranscript] = useState(''); // live STT preview
     const [isThinking, setIsThinking] = useState(false);  // "Interviewer is thinking..."
     const [panelsDimmed, setPanelsDimmed] = useState(false); // round-change dim effect
@@ -402,6 +755,12 @@ const MockInterviewPage = () => {
     const [roundQuestionsAsked, setRoundQuestionsAsked] = useState(0);
     const [roundStartTime, setRoundStartTime] = useState(null);
 
+    // Fresh session suffix — regenerated on every handleStart to avoid stale backend state
+    const [sessionSuffix, setSessionSuffix] = useState(() => Date.now().toString());
+
+    // Briefing room checklist state (must be top-level — not inside conditional)
+    const [checkedItems, setCheckedItems] = useState({});
+
     // Listen to interviewType changes to show/hide technical rounds
     useEffect(() => {
         if (interviewType !== 'technical') {
@@ -419,14 +778,13 @@ const MockInterviewPage = () => {
     // Known company list for entry-screen selector
     const KNOWN_COMPANIES = ['Google', 'Amazon', 'Microsoft', 'Meta', 'Startup', 'Default'];
 
-    // Fresh session suffix — regenerated on every handleStart to avoid stale backend state
-    const [sessionSuffix, setSessionSuffix] = useState(() => Date.now().toString());
     const currentSessionIdRef = useRef('');
 
     // Compute base session ID (used for display / resume upload)
     const sessionId = id ? `${id}_${sessionSuffix}` : `default_${sessionSuffix}`;
     // Keep ref in sync for WebSocket
     if (!currentSessionIdRef.current) currentSessionIdRef.current = sessionId;
+
 
     const { session, profile } = useAuth();
     const token = session?.access_token;
@@ -439,17 +797,39 @@ const MockInterviewPage = () => {
 
     const transcriptRef = useRef(null);
     const responseRef = useRef(null);
+    const typingTimeoutRef = useRef(null);
     const forcedMuteRef = useRef(false);
     const stopSessionRef = useRef(null);
     const endingRef = useRef(false);
     const interviewRecordIdRef = useRef(generateUUID());
-    const scheduleStartRef    = useRef(null); // wall-clock ms when audio ACTUALLY started
-    const wordRevealRafRef    = useRef(null); // rAF id for the word-reveal loop
-    const pendingScheduleRef  = useRef(null); // stores word_schedule payload until audio starts
-    const playbackSafetyRef   = useRef(null); // fallback timer if onPlaybackStart never fires
-    const pendingResponseTextRef = useRef(null);
-    const playbackStartFiredRef = useRef(false);
-    const rafCompletedRef = useRef(false);
+    // ── Sentence-streaming refs (consolidated — state machine owns most state) ──
+    const sentenceRafRef             = useRef(null); // rAF id for per-sentence word reveal
+
+    // ── State machine & telemetry hooks ────────────────────────────────────
+    const stateMachine = useUtteranceStateMachine();
+    const telemetry = useDevTelemetry();
+
+    // ── Unified user transcript turn ref ───────────────────────────────────
+    // Single source of truth for the user's speech in the current turn,
+    // eliminating race conditions between SpeechRecognition and Whisper.
+    const userTurnRef = useRef({
+        turnId: null,           // from response_start.turn_id
+        partialText: '',        // live SpeechRecognition interim
+        backupText: '',         // SpeechRecognition final (pre-Whisper)
+        whisperText: null,      // authoritative Whisper transcript
+        committed: false,       // true once added to transcripts[]
+        commitSource: null,     // 'backup' | 'whisper'
+    });
+    const _resetUserTurn = () => {
+        userTurnRef.current = {
+            turnId: null,
+            partialText: '',
+            backupText: '',
+            whisperText: null,
+            committed: false,
+            commitSource: null,
+        };
+    };
 
     // Auto-scroll transcript/response panels
     useEffect(() => {
@@ -463,384 +843,525 @@ const MockInterviewPage = () => {
         }
     }, [responses, currentResponse]);
 
+    // Local round timer countdown
+    useEffect(() => {
+        if (roundTimeRemaining === null) return;
+        setLocalRoundTimer(roundTimeRemaining);
+        const interval = setInterval(() => {
+            setLocalRoundTimer(prev => {
+                if (prev === null || prev <= 0) {
+                    clearInterval(interval);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [roundTimeRemaining]);
+
     const updateStatus = (text, cls) => {
         setStatus(text);
         setStatusClass(cls);
     };
 
+    // Strip backend structural tags like [MAIN_QUESTION], [FOLLOW_UP], [GREETING], etc.
+    // before any content reaches the UI or conversation log.
+    const _sanitizeText = (text) => {
+        if (typeof text !== 'string') return '';
+        return text
+            .replace(/\[[A-Z_]{2,}\]/g, '')  // remove [TAG] tokens
+            .replace(/\s{2,}/g, ' ')           // collapse double-spaces left behind
+            .trim();
+    };
+
     const appendConversationEntry = useCallback((role, content) => {
-        const normalizedContent = typeof content === 'string' ? content.trim() : '';
-        if (!normalizedContent) return;
+        const sanitized = _sanitizeText(content);
+        if (!sanitized) return;
+
+        console.log("[MESSAGE UPDATE]", {
+            action: 'appendConversationEntry',
+            message: { role, content: sanitized },
+            timestamp: performance.now()
+        });
 
         setConversationLog((prev) => [
             ...prev,
             {
                 role,
-                content: normalizedContent,
+                content: sanitized,
                 created_at: new Date().toISOString(),
             },
         ]);
     }, []);
 
-    // ── Audio playback-start callback ────────────────────────────────────────
-    // Fired by useAudioStreamer the instant the first PCM buffer is actually
-    // scheduled to play. We use this as the authoritative t=0 for word timing.
-    const handlePlaybackStart = useCallback(({ wallClockMs }) => {
-        // Clear the safety fallback — we got a real start time
-        if (playbackSafetyRef.current) {
-            clearTimeout(playbackSafetyRef.current);
-            playbackSafetyRef.current = null;
-        }
+    // ── Per-sentence playback-start callback ─────────────────────────────────
+    // Fired by useAudioStreamer the instant the first PCM buffer of a sentence
+    // is scheduled to play. Uses the state machine's schedule as source of truth.
+    const handlePlaybackStart = useCallback(({ sentenceId, wallClockMs }) => {
+        // Mark sentence as PLAYING in the state machine
+        stateMachine.markPlaying(sentenceId, wallClockMs);
 
-        const wordsArr = pendingScheduleRef.current;
-        if (!wordsArr) return; // no word_schedule was pending (shouldn't happen)
+        telemetry.log('playback_start', { sentenceId, wallClockMs });
 
-        // Consume the pending schedule — this also signals the safety timeout
-        // (which checks `pendingScheduleRef.current === wordsArr`) to no-op.
-        pendingScheduleRef.current = null;
+        // Get the schedule from the state machine (falls back to simulated)
+        const schedule = stateMachine.getSchedule(sentenceId);
+        if (!schedule || schedule.length === 0) return;
 
-        // Anchor the schedule to the actual playback start
-        scheduleStartRef.current = wallClockMs;
+        // Add a small 50ms offset so first word doesn't flash immediately
+        const anchorMs = wallClockMs + 50;
+        cancelAnimationFrame(sentenceRafRef.current);
 
-        // Cancel any existing loop just in case
-        cancelAnimationFrame(wordRevealRafRef.current);
+        const revealSentenceWords = () => {
+            const sentence = stateMachine.getSentence(sentenceId);
+            // Stop if sentence was interrupted or completed
+            if (sentence && (sentence.status === SentenceStatus.INTERRUPTED)) {
+                return;
+            }
 
-        // ── rAF loop: reveal words as audio plays ─────────────────────────
-        const revealWords = () => {
-            const elapsed = Math.max(0, Date.now() - scheduleStartRef.current);
-
-            // Show every word whose start_ms has passed
-            const visible = wordsArr
+            const elapsed = Date.now() - anchorMs;
+            const visible = schedule
                 .filter(w => w.start_ms <= elapsed)
                 .map(w => w.word)
                 .join(' ');
 
-            setVisibleWords(visible);
+            setCurrentSentenceText(visible);
 
-            // Keep looping until all words are revealed
-            const allRevealed = visible.split(' ').filter(Boolean).length >= wordsArr.length;
-            if (!allRevealed) {
-                wordRevealRafRef.current = requestAnimationFrame(revealWords);
+            const allWordsRevealed = visible.split(' ').filter(Boolean).length >= schedule.length;
+            const durationMs = sentence?.scheduleDurationMs || 0;
+            const isTimeUp = durationMs > 0 && elapsed >= durationMs;
+
+            if (!allWordsRevealed && !isTimeUp) {
+                sentenceRafRef.current = requestAnimationFrame(revealSentenceWords);
             } else {
-                rafCompletedRef.current = true;
-                const checkAndTransition = () => {
-                    if (pendingResponseTextRef.current) {
-                        setResponses(prev => {
-                            if (prev[prev.length - 1] === pendingResponseTextRef.current) return prev;
-                            return [...prev, pendingResponseTextRef.current];
-                        });
-                        appendConversationEntry('assistant', pendingResponseTextRef.current);
-                        pendingResponseTextRef.current = null;
-                        rafCompletedRef.current = false;
-                    } else {
-                        setTimeout(() => {
-                            if (rafCompletedRef.current && pendingResponseTextRef.current) {
-                                setResponses(prev => {
-                                    if (prev[prev.length - 1] === pendingResponseTextRef.current) return prev;
-                                    return [...prev, pendingResponseTextRef.current];
-                                });
-                                appendConversationEntry('assistant', pendingResponseTextRef.current);
-                                pendingResponseTextRef.current = null;
-                                rafCompletedRef.current = false;
-                            }
-                        }, 150);
-                    }
-                };
-                setTimeout(checkAndTransition, 400);
+                // When time is up, the visual playback of this sentence is complete.
+                // Clear it so the UI seamlessly relies on `currentResponse` (which is updated by sentence_complete).
+                setCurrentSentenceText('');
             }
         };
 
-        wordRevealRafRef.current = requestAnimationFrame(revealWords);
-    }, []); // stable — no reactive deps needed
+        sentenceRafRef.current = requestAnimationFrame(revealSentenceWords);
 
-    const { initStreamer, feedChunk, flushRemaining, stopAudio, isSpeaking, analyserNode } = useAudioStreamer(
+        // Log drift measurement
+        const sentence = stateMachine.getSentence(sentenceId);
+        telemetry.logDrift({
+            sentenceId,
+            audioStartMs: wallClockMs,
+            scheduleStartMs: sentence?.scheduleReady ? wallClockMs : null,
+            eventReceiveMs: Date.now(),
+        });
+    }, [stateMachine, telemetry]);
+
+    const { initStreamer, feedChunk, flushRemaining, resetForNextSentence, markScheduleReady, stopSentenceAudio, stopAudio, isSpeaking, analyserNode } = useAudioStreamer(
         // onSpeakingChange
-        (speaking) => { forcedMuteRef.current = speaking; },
-        // onPlaybackStart — fires the moment first audio buffer is scheduled
+        (speaking) => {
+            if (speaking) {
+                forcedMuteRef.current = true;
+            } else {
+                // Delay unmute — audio may still be playing/echoing
+                setTimeout(() => {
+                    forcedMuteRef.current = false;
+                }, 1000); // 1 second buffer after AI stops speaking
+            }
+        },
+        // onPlaybackStart — fires the moment first audio buffer of a sentence is scheduled
         handlePlaybackStart
     );
 
+    // Debug: log whenever AI speaking or mic mute state changes
+    // NOTE: placed AFTER useAudioStreamer so isSpeaking is in scope (avoids TDZ crash)
+    useEffect(() => {
+        console.log("[VOICE STATE]", {
+            aiSpeaking: isSpeaking,
+            micMuted: isMuted,
+            timestamp: performance.now()
+        });
+    }, [isSpeaking, isMuted]);
+
     const handleMessage = useCallback(
         (data) => {
-            console.log('[WS EVENT]', data instanceof ArrayBuffer ? 'AUDIO_BYTES' : JSON.parse(data).type);
+            // ── Binary audio bytes — pipe directly to audio streamer ───────────
             if (data instanceof ArrayBuffer) {
+                if (interviewInputMode === 'text') return; // text mode never plays audio
+                console.log("[WS EVENT]", "binary_audio", { byteLength: data.byteLength, timestamp: performance.now() });
                 forcedMuteRef.current = true;
-                updateStatus('Speaking', 'speaking');
-                feedChunk(data);
-            } else if (typeof data === 'string') {
+                const activeSid = stateMachine.getActiveSentenceId();
+                feedChunk(data, activeSid);
+                if (activeSid != null) {
+                    stateMachine.addPcmBytes(activeSid, data.byteLength);
+                }
+                return;
+            }
+
+            if (typeof data === 'string') {
                 try {
                     const parsed = JSON.parse(data);
-                    if (parsed.type === 'transcript') {
-                        setPartialTranscript('');
-                        setTranscripts((prev) => [...prev, parsed.text]);
-                        appendConversationEntry('user', parsed.text);
-                        // Track questions asked in current round (each user turn = 1 answer to a question)
-                        setRoundQuestionsAsked((prev) => prev + 1);
-                        // Show thinking indicator after natural pause
-                        setTimeout(() => setIsThinking(true), 200);
-                    } else if (parsed.type === 'response_start') {
-                        // Clear initializing overlay on first greeting
-                        setIsInitializing(false);
-                        // Clear round transition overlay on first question of new round
-                        setIsRoundTransitioning(false);
-                        updateStatus('Speaking', 'speaking');
+                    console.log("[WS EVENT]", parsed.type || parsed.event, parsed);
 
-                        // ── CRITICAL: Save previous response BEFORE canceling RAF ──
-                        // If previous RAF is still running OR response_done already set text,
-                        // commit it to responses history NOW before clearing state.
-                        if (pendingResponseTextRef.current) {
-                            const textToSave = pendingResponseTextRef.current;
-                            setResponses(prev => {
-                                // Avoid duplicate if RAF already added it
-                                if (prev[prev.length - 1] === textToSave) return prev;
-                                return [...prev, textToSave];
+                    switch (parsed.type) {
+
+                        // ── User's speech — Whisper authoritative final transcript ─────
+                        // Uses unified userTurnRef to eliminate race conditions.
+                        case 'transcript': {
+                            const ut = userTurnRef.current;
+                            let whisperText = parsed.text || '';
+                            
+                            // If Whisper is empty but we have a backup, keep the backup text
+                            if (!whisperText && ut.backupText) {
+                                whisperText = ut.backupText;
+                            }
+                            
+                            ut.whisperText = whisperText;
+
+                            if (!whisperText) {
+                                // Ignore empty transcript and just clear partial
+                                setPartialTranscript('');
+                                break;
+                            }
+
+                            console.log("[TRANSCRIPT]", {
+                                source: 'server_Whisper',
+                                text: whisperText,
+                                wasCommitted: ut.committed,
+                                commitSource: ut.commitSource,
+                                timestamp: performance.now()
                             });
-                            appendConversationEntry('assistant', textToSave);
-                            pendingResponseTextRef.current = null;
-                        }
-                        
-                        // Now safe to cancel RAF and reset state
-                        cancelAnimationFrame(wordRevealRafRef.current);
-                        wordRevealRafRef.current = null;
-                        setVisibleWords('');
-                        setCurrentResponse('');
-                        rafCompletedRef.current = false;
-                        
-                        // Cancel safety timeout too
-                        if (playbackSafetyRef.current) {
-                            clearTimeout(playbackSafetyRef.current);
-                            playbackSafetyRef.current = null;
-                        }
-                        pendingScheduleRef.current = null;
-                    } else if (parsed.type === 'word_schedule') {
-                        // ── Word-schedule received — defer reveal until audio STARTS ──
-                        //
-                        // The schedule arrives BEFORE the PCM chunks (by design), so we
-                        // must NOT start the reveal loop now — audio hasn't played yet.
-                        // Instead:
-                        //   1. Store the words array in a ref.
-                        //   2. useAudioStreamer will call handlePlaybackStart() the
-                        //      moment it schedules the first PCM buffer, giving us the
-                        //      exact wall-clock anchor.
-                        //   3. handlePlaybackStart() then starts the rAF loop.
-                        //
-                        // Safety net: if onPlaybackStart never fires within 800 ms
-                        // (e.g. very short response where all audio is flushed at once
-                        // via flushRemaining before the threshold is hit), we fall back
-                        // to the old behaviour and start the loop immediately.
+                            telemetry.log('transcript_received', { text: whisperText, wasCommitted: ut.committed });
 
-                        setIsThinking(false);
-                        setVisibleWords('');
+                            setPartialTranscript('');
 
-                        // Cancel any leftover loop from a previous turn
-                        cancelAnimationFrame(wordRevealRafRef.current);
-                        if (playbackSafetyRef.current) clearTimeout(playbackSafetyRef.current);
-
-                        const wordsArr = parsed.words; // [{word, start_ms}]
-
-                        // Stash the schedule so handlePlaybackStart can pick it up
-                        pendingScheduleRef.current = wordsArr;
-
-                        // ── Fallback: start loop immediately if audio starts quickly ──
-                        // (covers the case where flushRemaining fires before this
-                        //  handler runs, i.e. onPlaybackStart already fired)
-                        playbackSafetyRef.current = setTimeout(() => {
-                            // Guard: if real playback start already fired, skip
-                            if (playbackStartFiredRef.current) return;
-                            // Guard: if no pending schedule, skip
-                            if (pendingScheduleRef.current !== wordsArr) return;
-
-                            console.warn('[word_sync] Safety fallback activating');
-                            scheduleStartRef.current = Date.now() + 200;
-                            pendingScheduleRef.current = null;
-
-                                cancelAnimationFrame(wordRevealRafRef.current);
-                                const revealWords = () => {
-                                    const elapsed = Math.max(0, Date.now() - scheduleStartRef.current);
-                                    const visible = wordsArr
-                                        .filter(w => w.start_ms <= elapsed)
-                                        .map(w => w.word)
-                                        .join(' ');
-                                    setVisibleWords(visible);
-                                    const allRevealed =
-                                        visible.split(' ').filter(Boolean).length >= wordsArr.length;
-                                    if (!allRevealed) {
-                                        wordRevealRafRef.current = requestAnimationFrame(revealWords);
-                                    } else {
-                                        rafCompletedRef.current = true;
-                                        const checkAndTransition = () => {
-                                            if (pendingResponseTextRef.current) {
-                                                setResponses(prev => {
-                                                    if (prev[prev.length - 1] === pendingResponseTextRef.current) return prev;
-                                                    return [...prev, pendingResponseTextRef.current];
-                                                });
-                                                appendConversationEntry('assistant', pendingResponseTextRef.current);
-                                                pendingResponseTextRef.current = null;
-                                                rafCompletedRef.current = false;
-                                            } else {
-                                                setTimeout(() => {
-                                                    if (rafCompletedRef.current && pendingResponseTextRef.current) {
-                                                        setResponses(prev => {
-                                                            if (prev[prev.length - 1] === pendingResponseTextRef.current) return prev;
-                                                            return [...prev, pendingResponseTextRef.current];
-                                                        });
-                                                        appendConversationEntry('assistant', pendingResponseTextRef.current);
-                                                        pendingResponseTextRef.current = null;
-                                                        rafCompletedRef.current = false;
-                                                    }
-                                                }, 150);
-                                            }
-                                        };
-                                        setTimeout(checkAndTransition, 400);
+                            if (ut.committed && ut.commitSource === 'backup') {
+                                // Backup was already committed — overwrite with Whisper
+                                setTranscripts((prev) => {
+                                    if (prev.length === 0) return [...prev, whisperText];
+                                    // Only overwrite if it actually changed to avoid unnecessary re-renders
+                                    if (prev[prev.length - 1] === whisperText) return prev;
+                                    return [...prev.slice(0, -1), whisperText];
+                                });
+                                setConversationLog((prev) => {
+                                    const lastUserIdx = [...prev].reverse().findIndex(e => e.role === 'user');
+                                    if (lastUserIdx === -1) {
+                                        return [...prev, { role: 'user', content: whisperText, created_at: new Date().toISOString() }];
                                     }
-                                };
-                                wordRevealRafRef.current = requestAnimationFrame(revealWords);
-                        }, 4000); // 4000 ms grace period
-                    } else if (parsed.type === 'response_chunk') {
-                        setCurrentResponse((prev) => prev + parsed.text);
-                    } else if (parsed.type === 'response_done') {
-                        flushRemaining();
-                        // Clean up word-reveal state for this turn
-                        if (playbackSafetyRef.current) {
-                            clearTimeout(playbackSafetyRef.current);
-                            playbackSafetyRef.current = null;
-                        }
-                        pendingScheduleRef.current = null;
-                        setIsThinking(false);
-                        
-                        const isError = parsed.text?.includes("Pipeline Error");
-                        if (isError) {
-                            addNotification({ type: 'error', message: "Interviewer encountered a voice error, please try again." });
-                            pendingResponseTextRef.current = null;
-                            rafCompletedRef.current = false;
-                        } else {
-                            pendingResponseTextRef.current = parsed.text;
-
-                            // If RAF already finished before response_done arrived
-                            // → trigger transition now (RAF won't do it, it already exited)
-                            if (rafCompletedRef.current) {
-                                setTimeout(() => {
-                                    setResponses(prev => {
-                                        if (prev[prev.length - 1] === parsed.text) return prev;
-                                        return [...prev, parsed.text];
-                                    });
-                                    appendConversationEntry('assistant', parsed.text);
-                                    pendingResponseTextRef.current = null;
-                                    rafCompletedRef.current = false;
-                                }, 400);
+                                    const realIdx = prev.length - 1 - lastUserIdx;
+                                    const updated = [...prev];
+                                    updated[realIdx] = { ...updated[realIdx], content: whisperText };
+                                    return updated;
+                                });
+                                ut.commitSource = 'whisper'; // upgrade source
+                            } else if (!ut.committed) {
+                                // No backup committed yet — commit Whisper directly
+                                setTranscripts((prev) => [...prev, whisperText]);
+                                appendConversationEntry('user', whisperText);
+                                setRoundQuestionsAsked((prev) => prev + 1);
+                                ut.committed = true;
+                                ut.commitSource = 'whisper';
                             }
+                            // else: already committed via whisper, ignore duplicate
+
+                            setTimeout(() => setIsThinking(true), 200);
+                            break;
                         }
 
-                        if (isFirstTurn) {
-                            setIsFirstTurn(false);
-                            startMic();
-                            updateStatus('Listening', 'listening');
-                        } else {
-                            updateStatus('Listening', 'listening');
+                        // ── AI starting to respond ─────────────────────────────────────
+                        case 'response_start': {
+                            forcedMuteRef.current = true; // Mute mic IMMEDIATELY when AI starts
+                            setIsThinking(false);
+                            setIsInitializing(false);
+                            setIsRoundTransitioning(false);
+
+                            // Dispatch to state machine — resets sentence registry for new turn
+                            stateMachine.dispatchEvent(parsed);
+                            telemetry.log('response_start', { turnId: parsed.turn_id });
+
+                            // Commit backup user speech using userTurnRef
+                            const ut = userTurnRef.current;
+                            if (!ut.committed && ut.backupText) {
+                                const backupText = ut.backupText;
+                                setTranscripts((prev) => {
+                                    if (prev[prev.length - 1] === backupText) return prev;
+                                    return [...prev, backupText];
+                                });
+                                appendConversationEntry('user', backupText);
+                                setRoundQuestionsAsked((prev) => prev + 1);
+                                ut.committed = true;
+                                ut.commitSource = 'backup';
+                            }
+                            setPartialTranscript('');
+
+                            setCurrentSentenceText('');
+                            setCurrentResponse('');
+                            cancelAnimationFrame(sentenceRafRef.current);
+                            updateStatus('Speaking', 'speaking');
+                            break;
                         }
-                    } else if (parsed.type === 'audio_complete') {
-                        // Only force-complete if RAF has already finished
-                        // If RAF is still running, let it complete naturally
-                        if (rafCompletedRef.current && pendingResponseTextRef.current) {
-                            setResponses(prev => {
-                                if (prev[prev.length - 1] === pendingResponseTextRef.current) return prev;
-                                return [...prev, pendingResponseTextRef.current];
+
+                        // ── A new sentence is about to play ───────────────────────────
+                        // Text is revealed via state machine → handlePlaybackStart.
+                        case 'sentence_text': {
+                            parsed.text = sanitizeInterviewerText(parsed.text);
+                            parsed.message_type = normalizeMessageType(parsed.message_type);
+
+                            setIsThinking(false);
+                            // Reset audio streamer per-sentence state
+                            resetForNextSentence();
+                            setCurrentSentenceText('');
+
+                            // Dispatch to state machine — stores text, messageType, sentenceId
+                            const result = stateMachine.dispatchEvent(parsed);
+                            telemetry.log('sentence_text', {
+                                sentenceId: parsed.sentence_id,
+                                text: parsed.text?.substring(0, 60),
+                                messageType: parsed.message_type,
+                                isFirst: parsed.is_first,
                             });
-                            appendConversationEntry('assistant', pendingResponseTextRef.current);
-                            pendingResponseTextRef.current = null;
-                            rafCompletedRef.current = false;
-                        }
-                        // If RAF not done yet: audio_complete is a no-op
-                        // RAF's allRevealed block will handle transition
-                    } else if (parsed.type === 'response') {
-                        if (parsed.text?.includes("Pipeline Error")) {
-                            addNotification({ type: 'error', message: "Interviewer encountered a voice error, please try again." });
-                        } else {
-                            setResponses((prev) => [...prev, parsed.text]);
-                            appendConversationEntry('assistant', parsed.text);
-                        }
-                    } else if (parsed.type === 'round_time_up') {
-                        addNotification({
-                            type: 'warning',
-                            title: 'Round Time Up',
-                            message: `${parsed.round_name} is complete. Transitioning to ${parsed.next_round}...`,
-                        });
-                        // Mute mic briefly during transition
-                        setIsMuted(true);
-                        setTimeout(() => setIsMuted(false), 3000);
-                    } else if (parsed.type === 'round_change') {
-                        stopMic();
-                        setIsRoundTransitioning(true);
-                        updateStatus('Preparing Round...', 'transition');
-                        stopAudio();
-                        cancelAnimationFrame(wordRevealRafRef.current);
-                        if (playbackSafetyRef.current) {
-                            clearTimeout(playbackSafetyRef.current);
-                            playbackSafetyRef.current = null;
-                        }
-                        pendingScheduleRef.current = null;
-                        pendingResponseTextRef.current = null;
-                        rafCompletedRef.current = false;
-                        setPanelsDimmed(true);
-                        setRoundHistory((prev) => [...prev, currentRound].filter(Boolean));
-                        const newRound = {
-                            round_name: parsed.round_name,
-                            focus: parsed.focus,
-                            round_index: parsed.round_index,
-                            total_rounds: parsed.total_rounds,
-                        };
-                        setCurrentRound(newRound);
-                        // Reset sub-round question counter for new round
-                        setRoundQuestionsAsked(0);
-                        setRoundStartTime(Date.now());
-                        // Update roundsConfig if backend sends full rounds array
-                        if (parsed.rounds && parsed.rounds.length > 0) {
-                            setRoundsConfig(parsed.rounds);
+
+                            break;
                         }
 
-                        // ── Prep countdown sequence (3-2-1) ──────────────────
-                        // Clear any previous countdown timer
-                        if (prepTimerRef.current) clearInterval(prepTimerRef.current);
-                        setPrepRoundName(parsed.round_name || 'Next Round');
-                        setPrepRoundIndex(parsed.round_index);
-                        setPrepTotalRounds(parsed.total_rounds);
-                        setPrepCountdownValue(3);
-                        setShowPrepCountdown(true);
+                        // ── Word timing for the current sentence ──────────────────────
+                        case 'sentence_schedule': {
+                            // Dispatch to state machine — stores word schedule
+                            stateMachine.dispatchEvent(parsed);
+                            // Notify audio streamer that schedule is ready (readiness gate)
+                            markScheduleReady(parsed.sentence_id);
+                            telemetry.log('sentence_schedule', {
+                                sentenceId: parsed.sentence_id,
+                                wordCount: parsed.words?.length,
+                                durationMs: parsed.duration_ms,
+                            });
+                            break;
+                        }
 
-                        let count = 3;
-                        prepTimerRef.current = setInterval(() => {
-                            count -= 1;
-                            if (count > 0) {
-                                setPrepCountdownValue(count);
-                            } else {
-                                clearInterval(prepTimerRef.current);
-                                prepTimerRef.current = null;
-                                setShowPrepCountdown(false);
-                                setPanelsDimmed(false);
-                                // Now show the brief round transition overlay
-                                setShowRoundTransition(true);
-                                setTimeout(() => setShowRoundTransition(false), 2500);
+                        // ── One sentence finished playing ──────────────────────────────
+                        case 'sentence_complete': {
+                            flushRemaining();
+
+                            // Dispatch to state machine — marks sentence completed
+                            const completionResult = stateMachine.dispatchEvent(parsed);
+
+                            // Safely update currentResponse in the background
+                            if (completionResult?.completedText) {
+                                setCurrentResponse(completionResult.completedText);
                             }
-                        }, 1000);
-                    } else if (parsed.type === 'round_info') {
-                        setCurrentRound({
-                            round_name: parsed.round_name,
-                            round_index: parsed.round_index,
-                            total_rounds: parsed.total_rounds,
-                        });
-                        if (parsed.rounds) {
-                            setRoundsConfig(parsed.rounds);
+                            
+                            // DO NOT cancel RAF or clear currentSentenceText yet.
+                            // The typewriter loop will finish gracefully based on schedule duration.
+                            telemetry.log('sentence_complete', { sentenceId: parsed.sentence_id });
+                            break;
                         }
-                    } else if (parsed.type === 'interview_complete') {
-                        stopMic();
-                        updateStatus('Disconnected', 'disconnected');
-                        if (stopSessionRef.current) stopSessionRef.current();
-                    } else if (parsed.type === 'session_end_trigger') {
-                        stopMic();
-                        updateStatus('Disconnected', 'disconnected');
-                        if (stopSessionRef.current) stopSessionRef.current();
-                    } else if (parsed.type === 'ping') {
-                        // Silently ignore keep-alive pings from backend
+
+                        // ── Full AI response complete ──────────────────────────────────
+                        case 'response_done': {
+                            flushRemaining();
+                            // Do NOT cancel RAF here. Let the last sentence finish its animation natively.
+                            setIsThinking(false);
+
+                            // Dispatch to state machine — finalizes turn
+                            const turnResult = stateMachine.dispatchEvent(parsed);
+                            
+                            const rawRespText = turnResult?.fullText || parsed.text || currentResponse || '';
+                            const finalRespText = sanitizeInterviewerText(rawRespText);
+                            
+                            const rawMsgType = turnResult?.messageType || parsed.message_type || 'follow_up';
+                            const finalMessageType = normalizeMessageType(rawMsgType);
+
+                            telemetry.log('response_done', {
+                                textLength: finalRespText.length,
+                                messageType: finalMessageType,
+                            });
+
+                            if (finalRespText && !finalRespText.includes('Pipeline Error')) {
+                                // Store as {text, messageType} object for label rendering
+                                setResponses(prev => [...prev, { text: finalRespText, messageType: finalMessageType }]);
+                                appendConversationEntry('assistant', finalRespText);
+                            } else if (finalRespText?.includes('Pipeline Error')) {
+                                addNotification({ type: 'error', message: 'Interviewer encountered a voice error, please try again.' });
+                            }
+                            setCurrentResponse('');
+
+                            // Reset userTurnRef for next turn
+                            _resetUserTurn();
+
+                            if (isFirstTurn) {
+                                setIsFirstTurn(false);
+                                if (interviewInputMode !== 'text') startMic();
+                            }
+                            updateStatus('Listening', 'listening');
+                            // We do NOT unmute here. 
+                            // Unmute is handled securely by onSpeakingChange callback once audio genuinely stops playing.
+                            break;
+                        }
+
+                        // ── Backend confirmed assistant was interrupted ────────────────
+                        case 'assistant_interrupted': {
+                            stopSentenceAudio();
+                            cancelAnimationFrame(sentenceRafRef.current);
+
+                            const { partialText } = stateMachine.interruptActive();
+                            if (partialText) {
+                                setCurrentResponse(partialText);
+                            }
+                            setCurrentSentenceText('');
+                            setIsThinking(false);
+                            break;
+                        }
+
+                        // ── Round time warning ─────────────────────────────────────────
+                        case 'round_time_warning':
+                            setShowTimeWarning(true);
+                            setTimeWarningRoundName(parsed.round_name || '');
+                            setTimeWarningSeconds(parsed.seconds_remaining);
+                            setRoundTimeRemaining(parsed.seconds_remaining);
+                            setTimeout(() => setShowTimeWarning(false), 8000);
+                            break;
+
+                        // ── Round transition ───────────────────────────────────────────
+                        case 'round_change':
+                            stopMic();
+                            setIsRoundTransitioning(true);
+                            updateStatus('Preparing Round...', 'transition');
+                            stopAudio();
+                            cancelAnimationFrame(sentenceRafRef.current);
+                            setCurrentSentenceText('');
+                            stateMachine.reset();
+                            _resetUserTurn();
+                            setPanelsDimmed(true);
+                            setRoundHistory((prev) => [...prev, currentRound].filter(Boolean));
+                            setCurrentRound({
+                                round_name: parsed.round_name,
+                                focus: parsed.focus,
+                                round_index: parsed.round_index,
+                                total_rounds: parsed.total_rounds,
+                            });
+                            setRoundQuestionsAsked(0);
+                            setRoundStartTime(Date.now());
+                            if (parsed.rounds && parsed.rounds.length > 0) setRoundsConfig(parsed.rounds);
+
+                            if (prepTimerRef.current) clearInterval(prepTimerRef.current);
+                            setPrepRoundName(parsed.round_name || 'Next Round');
+                            setPrepRoundIndex(parsed.round_index);
+                            setPrepTotalRounds(parsed.total_rounds);
+                            setPrepCountdownValue(3);
+                            setShowPrepCountdown(true);
+                            {
+                                let count = 3;
+                                prepTimerRef.current = setInterval(() => {
+                                    count -= 1;
+                                    if (count > 0) {
+                                        setPrepCountdownValue(count);
+                                    } else {
+                                        clearInterval(prepTimerRef.current);
+                                        prepTimerRef.current = null;
+                                        setShowPrepCountdown(false);
+                                        setPanelsDimmed(false);
+                                        setShowRoundTransition(true);
+                                        setTimeout(() => setShowRoundTransition(false), 2500);
+                                    }
+                                }, 1000);
+                            }
+                            break;
+
+                        // ── Round info ────────────────────────────────────────────────
+                        case 'round_info':
+                            setCurrentRound({
+                                round_name: parsed.round_name,
+                                round_index: parsed.round_index,
+                                total_rounds: parsed.total_rounds,
+                            });
+                            if (parsed.rounds) setRoundsConfig(parsed.rounds);
+                            break;
+
+                        // ── Persona info ──────────────────────────────────────────────
+                        case 'persona_info':
+                            setPersonaInfo(parsed);
+                            break;
+
+                        // ── Text mode messages ────────────────────────────────────────
+                        case 'response_text':
+                        case 'greeting_text': {
+                            clearTimeout(typingTimeoutRef.current);
+                            setAiIsTyping(false);
+                            const msgType = parsed.message_type || (parsed.type === 'greeting_text' ? 'greeting' : 'follow_up');
+                            let qNum = questionCounter;
+                            if (msgType === 'main_question') {
+                                qNum = questionCounter + 1;
+                                setQuestionCounter(qNum);
+                            }
+                            const newMsg = {
+                                id: Date.now().toString(),
+                                role: 'assistant',
+                                text: sanitizeInterviewerText(parsed.text),
+                                message_type: normalizeMessageType(msgType),
+                                question_number: qNum,
+                                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            };
+                            console.log("[MESSAGE UPDATE]", {
+                                action: 'receiveText_Assistant',
+                                message: newMsg,
+                                timestamp: performance.now()
+                            });
+                            setChatMessages(prev => [...prev, newMsg]);
+                            setTimeout(() => {
+                                if (chatScrollRef.current) chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+                            }, 100);
+                            if (interviewInputMode === 'text' && isFirstTurn) setIsFirstTurn(false);
+                            if (interviewInputMode === 'text') updateStatus('Listening', 'listening');
+                            if (parsed.round_index !== undefined) {
+                                setCurrentRound(prev => ({ ...prev, round_index: parsed.round_index, round_name: parsed.round_name || prev?.round_name }));
+                            }
+                            if (parsed.time_remaining_seconds !== undefined) setLocalRoundTimer(parsed.time_remaining_seconds);
+                            break;
+                        }
+
+                        // ── Legacy fallbacks ──────────────────────────────────────────
+                        case 'round_time_up':
+                            addNotification({
+                                type: 'warning',
+                                title: 'Round Time Up',
+                                message: `${parsed.round_name} is complete. Transitioning to ${parsed.next_round}...`,
+                            });
+                            setIsMuted(true);
+                            setTimeout(() => setIsMuted(false), 3000);
+                            break;
+
+                        case 'response':
+                            if (parsed.text?.includes('Pipeline Error')) {
+                                addNotification({ type: 'error', message: 'Interviewer encountered a voice error, please try again.' });
+                            } else {
+                                setResponses((prev) => [...prev, parsed.text]);
+                                appendConversationEntry('assistant', parsed.text);
+                            }
+                            break;
+
+                        case 'response_chunk':
+                            setCurrentResponse((prev) => {
+                                // Intelligently add spaces between chunks if backend strips them
+                                const addSpace = prev.length > 0 && 
+                                                 !prev.endsWith(' ') && 
+                                                 !parsed.text.startsWith(' ') && 
+                                                 !/^[.,?!:;'"\]]/.test(parsed.text);
+                                return prev + (addSpace ? ' ' : '') + parsed.text;
+                            });
+                            break;
+
+                        case 'interview_complete':
+                            stopMic();
+                            updateStatus('Disconnected', 'disconnected');
+                            if (parsed.debrief) setDebriefData(parsed.debrief);
+                            if (stopSessionRef.current) stopSessionRef.current();
+                            break;
+
+                        case 'session_end_trigger':
+                            stopMic();
+                            updateStatus('Disconnected', 'disconnected');
+                            if (stopSessionRef.current) stopSessionRef.current();
+                            break;
+
+                        case 'ping':
+                            break; // ignore keep-alive
+
+                        default:
+                            break;
                     }
                 } catch {
                     setResponses((prev) => [...prev, data]);
@@ -848,10 +1369,11 @@ const MockInterviewPage = () => {
                 }
             }
         },
-        [appendConversationEntry, feedChunk, flushRemaining, stopAudio, currentRound]
+        [appendConversationEntry, feedChunk, flushRemaining, stopAudio, currentRound,
+         interviewInputMode, isFirstTurn, questionCounter, resetForNextSentence]
     );
 
-    const { connect, sendAudioChunk, disconnect } = useWebSocket(
+    const { connect, sendAudioChunk, sendMessage, disconnect } = useWebSocket(
         wsUrl,
         () => {
             // Microphone starts only after the first AI response/greeting finishes
@@ -863,6 +1385,52 @@ const MockInterviewPage = () => {
         },
         () => handleStop()
     );
+
+    const handleSendText = useCallback(() => {
+        if (!textInput.trim() || !isActive) return;
+
+        const newMsg = {
+            id: Date.now().toString(),
+            role: 'user',
+            text: textInput.trim(),
+            status: 'sending',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        console.log("[MESSAGE UPDATE]", {
+            action: 'sendText_User',
+            message: newMsg,
+            timestamp: performance.now()
+        });
+
+        setChatMessages(prev => [...prev, newMsg]);
+        setTextInput('');
+        setAiIsTyping(true);
+        
+        typingTimeoutRef.current = setTimeout(() => {
+            setAiIsTyping(false);
+            addNotification({
+                type: 'error',
+                message: 'Interviewer did not respond. Check connection.',
+            });
+        }, 30000);
+        
+        sendAudioChunk(JSON.stringify({
+            type: 'text_input',
+            text: newMsg.text
+        }));
+
+        setTimeout(() => {
+            if (chatScrollRef.current) {
+                chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            setChatMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, status: 'sent' } : m));
+        }, 400);
+
+    }, [textInput, isActive, sendAudioChunk]);
 
     const isSystemMuted = isMuted || isSpeaking;
 
@@ -882,7 +1450,45 @@ const MockInterviewPage = () => {
         isSystemMuted,
         forcedMuteRef,
         isMuted,
-        setPartialTranscript
+        // onPartialTranscript — store backup text in unified userTurnRef
+        (text) => {
+            console.log("[TRANSCRIPT]", {
+                source: 'partialTranscriptCallback',
+                text: text,
+                timestamp: performance.now()
+            });
+            setPartialTranscript(text);
+            if (text) {
+                userTurnRef.current.backupText = text;
+            }
+        },
+        // onUserSpeechStart — interruption detection
+        () => {
+            if (isSpeaking) {
+                telemetry.log('user_interrupt', {
+                    activeSentenceId: stateMachine.getActiveSentenceId(),
+                });
+
+                // Stop AI audio immediately
+                stopSentenceAudio();
+                cancelAnimationFrame(sentenceRafRef.current);
+
+                // Send interrupt signal to backend
+                sendMessage({ type: 'interrupt' });
+
+                // Mark sentence as interrupted in state machine
+                const { partialText } = stateMachine.interruptActive();
+
+                // Keep whatever text was revealed so far
+                if (partialText) {
+                    setCurrentResponse(partialText);
+                }
+                setCurrentSentenceText('');
+
+                // Allow mic through immediately
+                forcedMuteRef.current = false;
+            }
+        }
     );
 
     const persistInterviewForReview = useCallback(async () => {
@@ -898,7 +1504,7 @@ const MockInterviewPage = () => {
                 durationMinutes: duration,
                 transcript: conversationLog,
                 userTranscript: transcripts,
-                aiTranscript: responses,
+                aiTranscript: responses.map(r => typeof r === 'string' ? r : r.text),
                 // ── Round fields ──
                 roundNumber: (currentRound?.round_index ?? 0) + 1,
                 roundLabel: currentRound?.round_name || 'General Interview',
@@ -946,22 +1552,20 @@ const MockInterviewPage = () => {
         disconnect();
 
         // Cancel any in-flight timers / rAFs
-        cancelAnimationFrame(wordRevealRafRef.current);
-        wordRevealRafRef.current = null;
-        if (playbackSafetyRef.current) {
-            clearTimeout(playbackSafetyRef.current);
-            playbackSafetyRef.current = null;
-        }
+        cancelAnimationFrame(sentenceRafRef.current);
+        sentenceRafRef.current = null;
         if (prepTimerRef.current) {
             clearInterval(prepTimerRef.current);
             prepTimerRef.current = null;
         }
+        clearTimeout(typingTimeoutRef.current);
+
+        // Reset state machine and user turn ref
+        stateMachine.reset();
+        _resetUserTurn();
+        telemetry.clear();
 
         // Reset refs
-        pendingScheduleRef.current = null;
-        pendingResponseTextRef.current = null;
-        rafCompletedRef.current = false;
-        scheduleStartRef.current = null;
         forcedMuteRef.current = false;
         endingRef.current = false;
         stopSessionRef.current = null;
@@ -980,7 +1584,7 @@ const MockInterviewPage = () => {
         setResponses([]);
         setConversationLog([]);
         setCurrentResponse('');
-        setVisibleWords('');
+        setCurrentSentenceText('');
         setCurrentRound(null);
         setRoundHistory([]);
         setIsFirstTurn(true);
@@ -997,23 +1601,30 @@ const MockInterviewPage = () => {
         setRoundStartTime(null);
         setTimeLeft(0);
         setIsTimerActive(false);
+        setTextInput('');
+        setChatMessages([]);
+        setAiIsTyping(false);
+        setQuestionCounter(0);
+        setPartialTranscript('');
+        setRoundTimeRemaining(null);
+        setLocalRoundTimer(null);
+        setShowTimeWarning(false);
+        setDebriefData(null);
+        setShowDebrief(false);
+        setPersonaInfo(null);
+        setCheckedItems({});
     }, [stopMic, stopAudio, disconnect]);
 
-    const handleProceedToInstructions = () => {
+    const handleProceedToBriefing = async () => {
         if (!hasResume && interviewType !== 'hr') return;
-        setStep('instructions');
-    };
+        setCheckedItems({});  // fresh checklist each time
 
-    const handleConfirmStart = async () => {
         // ── Defensive hard-reset before every start ──────────────────────────
         endingRef.current = false;
         interviewRecordIdRef.current = generateUUID();
 
-        // Generate a FRESH session ID so the backend starts clean
-        const newSuffix = Date.now().toString();
-        setSessionSuffix(newSuffix);
-        const currentSessionId = id ? `${id}_${newSuffix}` : `default_${newSuffix}`;
-        currentSessionIdRef.current = currentSessionId;
+        // Keep the stable session ID so the uploaded resume is retained
+        currentSessionIdRef.current = sessionId;
 
         // Full state wipe (media, timers, refs, all React state)
         resetSession();
@@ -1021,14 +1632,35 @@ const MockInterviewPage = () => {
         setIsStarting(true);
         setErrorMsg('');
 
+        // Go to briefing — WS connect happens there
+        setStep('briefing');
+        setIsStarting(false);
+    };
+
+    const handleConfirmStart = async () => {
         try {
-            // 1. Push job context to mock backend
+            setIsStarting(true);
+            setIsInitializing(true);
+            updateStatus('Connecting', 'connecting');
+
+            const currentSessionId = currentSessionIdRef.current;
+
+            // Wait for ALL setup to complete
             if (companyName || jobTitle) {
                 await setMockJobContext(companyName || '', jobTitle || '', currentSessionId);
             }
-            await setMockMode(interviewType, currentSessionId, { interviewerPersona, whiteboardMode, durationMinutes: duration });
+            await setMockMode(interviewType, currentSessionId, { 
+                interviewerPersona, 
+                whiteboardMode, 
+                durationMinutes: duration, 
+                interviewInputMode 
+            });
 
-            // 2. Sanitize and push multi-round structure (technical mode only)
+            // 3. Push profile resume to backend session if no file uploaded
+            if (!sessionResumeName && profile?.resume_text) {
+                await uploadProfileResumeToSession(profile.resume_text, currentSessionId);
+            }
+
             if (interviewType === 'technical' && roundsConfig && roundsConfig.length > 0) {
                 const sanitizedRounds = roundsConfig
                     .filter(r => r && r.round_name)
@@ -1043,7 +1675,6 @@ const MockInterviewPage = () => {
                 }
             }
 
-            // 3. ONLY AFTER context is saved, initialize audio and connect
             if (proctorMode) {
                 try {
                     if (document.documentElement.requestFullscreen) {
@@ -1057,15 +1688,17 @@ const MockInterviewPage = () => {
             setTimeLeft(duration * 60);
             setIsTimerActive(true);
             setIsActive(true);
-            setIsInitializing(true);
-            updateStatus('Connecting', 'connecting');
-            initStreamer();
+            
+            if (interviewInputMode !== 'text') {
+                initStreamer();
+            }
+            
+            // Only NOW connect WebSocket
             connect();
             setStep('interview');
         } catch (err) {
-            console.error('Failed to set context/mode/structure:', err);
+            console.error('Failed to start interview:', err);
             setErrorMsg('Failed to initialize session. Please try again.');
-            setIsInitializing(false);
         } finally {
             setIsStarting(false);
         }
@@ -1084,34 +1717,31 @@ const MockInterviewPage = () => {
         setPanelsDimmed(false);
         stopMic();
         disconnect();
-        stopAudio();  // replaces stopPlayback — also cancels jitter buffer
+        stopAudio();
 
         // Cancel any in-flight timers / rAFs
-        cancelAnimationFrame(wordRevealRafRef.current);
-        wordRevealRafRef.current = null;
-        if (playbackSafetyRef.current) {
-            clearTimeout(playbackSafetyRef.current);
-            playbackSafetyRef.current = null;
-        }
+        cancelAnimationFrame(sentenceRafRef.current);
+        sentenceRafRef.current = null;
         if (prepTimerRef.current) {
             clearInterval(prepTimerRef.current);
             prepTimerRef.current = null;
         }
-        pendingScheduleRef.current = null;
-        pendingResponseTextRef.current = null;
-        rafCompletedRef.current = false;
+        // Reset state machine and user turn ref
+        stateMachine.reset();
+        _resetUserTurn();
+        telemetry.clear();
 
         updateStatus('Disconnected', 'disconnected');
         if (isTimeout) {
             setResponses((prev) => [
                 ...prev,
-                'Thank you for the interview. The allocated time has ended.',
+                { text: 'Thank you for the interview. The allocated time has ended.', messageType: 'system' },
             ]);
         }
         
         // Instead of auto-persisting, we show options
         setShowCompletionOptions(true);
-    }, [disconnect, stopMic, stopAudio]);
+    }, [disconnect, stopMic, stopAudio, stateMachine, telemetry]);
 
     const handleFinalSubmit = async () => {
         await persistInterviewForReview();
@@ -1125,6 +1755,12 @@ const MockInterviewPage = () => {
             type: 'info',
             link: '/interview-reviews'
         });
+
+        // Regenerate suffix for any subsequent interview to get a brand new session ID
+        const newSuffix = Date.now().toString();
+        setSessionSuffix(newSuffix);
+        currentSessionIdRef.current = id ? `${id}_${newSuffix}` : `default_${newSuffix}`;
+        setSessionResumeName(null);
     };
 
     const handleFinalCancel = () => {
@@ -1135,23 +1771,19 @@ const MockInterviewPage = () => {
         stopAudio();
 
         // 2. Cancel any in-flight timers / rAFs
-        cancelAnimationFrame(wordRevealRafRef.current);
-        wordRevealRafRef.current = null;
-        if (playbackSafetyRef.current) {
-            clearTimeout(playbackSafetyRef.current);
-            playbackSafetyRef.current = null;
-        }
+        cancelAnimationFrame(sentenceRafRef.current);
+        sentenceRafRef.current = null;
         if (prepTimerRef.current) {
             clearInterval(prepTimerRef.current);
             prepTimerRef.current = null;
         }
+        clearTimeout(typingTimeoutRef.current);
 
-        // 3. Reset all refs (critical: endingRef must be false so next handleStop can fire)
+        // 3. Reset state machine, user turn, and refs
+        stateMachine.reset();
+        _resetUserTurn();
+        telemetry.clear();
         endingRef.current = false;
-        pendingResponseTextRef.current = null;
-        pendingScheduleRef.current = null;
-        rafCompletedRef.current = false;
-        scheduleStartRef.current = null;
         forcedMuteRef.current = false;
         stopSessionRef.current = null;
 
@@ -1169,7 +1801,7 @@ const MockInterviewPage = () => {
         setResponses([]);
         setConversationLog([]);
         setCurrentResponse('');
-        setVisibleWords('');
+        setCurrentSentenceText('');
         setCurrentRound(null);
         setRoundHistory([]);
         setIsFirstTurn(true);
@@ -1187,6 +1819,24 @@ const MockInterviewPage = () => {
         setRoundStartTime(null);
         setTimeLeft(0);
         setIsTimerActive(false);
+        setTextInput('');
+        setChatMessages([]);
+        setAiIsTyping(false);
+        setQuestionCounter(0);
+        setPartialTranscript('');
+        setRoundTimeRemaining(null);
+        setLocalRoundTimer(null);
+        setShowTimeWarning(false);
+        setDebriefData(null);
+        setShowDebrief(false);
+        setPersonaInfo(null);
+        setCheckedItems({});
+
+        // Regenerate suffix for any subsequent interview to get a brand new session ID
+        const newSuffix = Date.now().toString();
+        setSessionSuffix(newSuffix);
+        currentSessionIdRef.current = id ? `${id}_${newSuffix}` : `default_${newSuffix}`;
+        setSessionResumeName(null);
     };
 
     // Keep stopSessionRef in sync
@@ -1326,6 +1976,33 @@ const MockInterviewPage = () => {
                     >
                         {/* LEFT COLUMN */}
                         <div className="flex flex-col gap-6 lg:col-span-1">
+                            {/* Card 0: INTERVIEW MODE */}
+                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
+                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
+                                    00 / INTERVIEW MODE
+                                </p>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {[
+                                        { id: 'voice', label: 'Voice', Icon: Mic, desc: 'Speak your answers' },
+                                        { id: 'text', label: 'Text', Icon: FileText, desc: 'Type your answers' },
+                                        { id: 'hybrid', label: 'Hybrid', Icon: Activity, desc: 'Voice + text together' },
+                                    ].map(({ id: modeId, label, Icon, desc }) => (
+                                        <button
+                                            key={modeId}
+                                            onClick={() => setInterviewInputMode(modeId)}
+                                            className={`py-3 px-2 rounded-xl border transition-all duration-300 flex flex-col items-center gap-1.5 ${interviewInputMode === modeId
+                                                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
+                                                    : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
+                                                }`}
+                                        >
+                                            <Icon size={18} />
+                                            <span className="font-bold text-[10px] uppercase tracking-widest">{label}</span>
+                                            <span className={`text-[8px] font-medium ${interviewInputMode === modeId ? 'text-zinc-300' : 'text-zinc-300'}`}>{desc}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* Card 1: SELECT MODE */}
                             <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
                                 <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
@@ -1602,7 +2279,7 @@ const MockInterviewPage = () => {
 
                             {/* START BUTTON */}
                             <button
-                                onClick={handleProceedToInstructions}
+                                onClick={handleProceedToBriefing}
                                 disabled={isStarting || !hasResume || uploadingResume}
                                 className="shrink-0 w-full py-5 bg-zinc-900 text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 shadow-xl shadow-zinc-900/20 disabled:opacity-30 active:scale-95"
                             >
@@ -1628,91 +2305,247 @@ const MockInterviewPage = () => {
         );
     }
 
-    // ── INSTRUCTIONS SCREEN ───────────────────────────────────
-    if (step === 'instructions') {
+    // ── BRIEFING ROOM SCREEN ──────────────────────────────────
+    if (step === 'briefing') {
+        const PERSONA_PROFILES = {
+            'Neutral':     { name: 'Marcus Reid',   title: 'Senior Engineering Manager', style: 'Direct, technical, no small talk',        years: 9,  rating: 4.4 },
+            'Friendly':    { name: 'Sarah Kim',     title: 'Engineering Lead',            style: 'Warm, collaborative, rigorous',           years: 5,  rating: 4.7 },
+            'Tough':       { name: 'Jordan Lee',    title: 'Principal Engineer',          style: 'Challenging, high standards',             years: 12, rating: 3.9 },
+            'Speed Round': { name: 'Priya Sharma',  title: 'Co-Founder & CTO',            style: 'Fast, energetic, scenario-driven',        years: 4,  rating: 4.5 },
+        };
+
+        const COMPANY_TIPS = {
+            google: [
+                'Google values scalability above everything else',
+                'State time and space complexity for every solution',
+                'Use STAR method for behavioral questions',
+            ],
+            amazon: [
+                'Structure every answer using STAR format',
+                'Reference Amazon Leadership Principles by name',
+                'Quantify impact: use numbers, percentages, scale',
+            ],
+            microsoft: [
+                'Demonstrate Growth Mindset: how do you learn from failure?',
+                'Show clean, readable code — Microsoft values maintainability',
+                'Collaborate verbally — think out loud',
+            ],
+            meta: [
+                'Move fast — concise, direct answers',
+                'Always discuss the impact and scale of your work',
+                'Optimal complexity expected — justify every trade-off',
+            ],
+        };
+        const defaultTips = [
+            'Show adaptability — how do you handle ambiguity?',
+            'Demonstrate ownership — what did YOU specifically do?',
+            'Practical skills matter more than theory here',
+        ];
+
+        const persona = PERSONA_PROFILES[interviewerPersona] || PERSONA_PROFILES['Neutral'];
+        const companyKey = companyName?.toLowerCase().trim() || '';
+        const tips = COMPANY_TIPS[companyKey] || defaultTips;
+
+        const timeWeights = [0.47, 0.33, 0.20];
+        const roundTimes = roundsConfig.map((_, i) => {
+            const weight = timeWeights[i] || (1 / roundsConfig.length);
+            return Math.round(duration * weight);
+        });
+
+        const isVoiceMode = interviewInputMode === 'voice' || interviewInputMode === 'hybrid';
+        const checklistItems = [
+            ...(isVoiceMode ? [
+                { key: 'headphones', label: 'I am wearing headphones' },
+                { key: 'quiet', label: 'I am in a quiet environment' },
+            ] : []),
+            { key: 'structure', label: 'I have read the round structure above' },
+            { key: 'time', label: `I have ${duration} minutes uninterrupted` },
+        ];
+
+        // checkedItems state is declared at top of component (Rules of Hooks)
+        const allChecked = checklistItems.every(item => checkedItems[item.key]);
+
         return (
-            <div className="min-h-screen py-8 px-6 bg-[#FBFBFB] flex items-center justify-center">
+            <div
+                className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto"
+                style={{ background: 'radial-gradient(ellipse at center, rgba(24,24,27,0.97) 0%, rgba(9,9,11,0.99) 100%)' }}
+            >
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-2xl bg-white rounded-3xl border border-zinc-100 shadow-xl shadow-zinc-900/5 overflow-hidden"
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full max-w-[720px] mx-auto px-8 py-12"
                 >
-                    <div className="px-10 py-10">
-                        <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center mb-6 shadow-md">
-                            <Radio size={28} className="text-white" />
-                        </div>
-                        <h2 className="text-3xl font-bold text-zinc-900 tracking-tight mb-2">Before We Begin</h2>
-                        <p className="text-zinc-500 font-medium mb-8">
-                            {duration} minutes · {roundsConfig.length || 1} rounds
-                        </p>
+                    {/* Back button */}
+                    <button
+                        onClick={() => setStep('entry')}
+                        className="flex items-center gap-2 text-zinc-500 font-bold text-[10px] uppercase tracking-widest hover:text-white transition-colors mb-10"
+                    >
+                        <ArrowLeft size={14} /> Change Settings
+                    </button>
 
-                        <div className="space-y-6 mb-10">
-                            {[
-                                "Use earphones or headphones",
-                                "Sit in a quiet environment",
-                                "Ensure stable internet connection",
-                                "Speak clearly at a normal pace",
-                                proctorMode ? "Do not switch tabs (proctoring enabled)" : "Stay focused during the session"
-                            ].map((item, idx) => (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className="flex items-center gap-4 text-zinc-700 font-medium text-sm"
-                                >
-                                    <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
-                                        <CheckCircle size={14} className="text-zinc-500" />
-                                    </div>
-                                    {item}
-                                </motion.div>
-                            ))}
-                        </div>
-
-                        {roundsConfig && roundsConfig.length > 0 && (
-                            <div className="mb-10 p-6 bg-zinc-50 rounded-2xl border border-zinc-100">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-4">Interview Structure</p>
-                                <div className="space-y-5">
-                                    {roundsConfig.map((round, idx) => (
-                                        <div key={idx} className="flex items-start gap-4 relative">
-                                            {idx < roundsConfig.length - 1 && (
-                                                <div className="absolute left-[11px] top-6 bottom-[-16px] w-[2px] bg-zinc-200" />
-                                            )}
-                                            <div className="w-6 h-6 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[10px] font-bold shrink-0 relative z-10">
-                                                {idx + 1}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-bold text-zinc-900 tracking-tight">{round.round_name}</p>
-                                                <p className="text-xs text-zinc-500 leading-relaxed mt-1">{round.focus_description}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                    {/* Mission Header */}
+                    <div className="mb-10">
+                        <span className="inline-block px-4 py-1.5 bg-zinc-800 text-zinc-400 rounded-full text-[9px] font-bold uppercase tracking-[0.4em] mb-4 border border-zinc-700">
+                            <Shield size={10} className="inline mr-2 -mt-0.5" />Classified Mission
+                        </span>
+                        <h1 className="text-5xl font-bold text-white tracking-tight mb-2">
+                            {companyName || 'Interview'}
+                        </h1>
+                        {jobTitle && (
+                            <p className="text-sm font-medium text-zinc-500">{jobTitle}</p>
                         )}
+                        <p className="text-[11px] text-zinc-600 mt-3 font-medium">
+                            Interview begins when you are ready
+                        </p>
+                    </div>
 
-                        <div className="flex items-center gap-4 pt-6 border-t border-zinc-100">
-                            <button
-                                onClick={() => setStep('entry')}
-                                className="flex-1 py-4 bg-white text-zinc-500 border border-zinc-200 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:text-zinc-900 hover:border-zinc-300 transition-all"
-                            >
-                                ← Change Settings
-                            </button>
-                            <button
-                                onClick={handleConfirmStart}
-                                disabled={isStarting}
-                                className="flex-1 py-4 bg-zinc-900 text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95 disabled:opacity-50"
-                            >
-                                {isStarting ? 'Starting...' : "I'm Ready, Start →"}
-                            </button>
+                    {/* Interviewer Card */}
+                    <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-2xl p-6 mb-8 flex items-start gap-5">
+                        <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-700">
+                            <span className="text-white font-bold text-lg">{persona.name[0]}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-white font-bold text-sm">{persona.name}</p>
+                            <p className="text-zinc-400 text-[11px] font-medium">{persona.title}</p>
+                            <p className="text-zinc-500 text-[10px] mt-2">
+                                Interview style: <span className="text-zinc-300">{persona.style}</span>
+                            </p>
+                            <p className="text-zinc-600 text-[10px] mt-1">
+                                {persona.years} years at {companyName || 'company'} · Glassdoor ★ {persona.rating}
+                            </p>
                         </div>
                     </div>
+
+                    {/* Mission Timeline */}
+                    {roundsConfig && roundsConfig.length > 0 && (
+                        <div className="mb-8">
+                            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-500 mb-5">
+                                Mission Timeline
+                            </p>
+                            <div className="space-y-0">
+                                {roundsConfig.map((round, idx) => (
+                                    <div key={idx} className="relative pl-8 pb-6 last:pb-0">
+                                        {idx < roundsConfig.length - 1 && (
+                                            <div className="absolute left-[9px] top-6 bottom-0 w-[2px] bg-zinc-800" />
+                                        )}
+                                        <div className="absolute left-0 top-0 w-5 h-5 rounded-full bg-zinc-700 border-2 border-zinc-600 flex items-center justify-center text-[9px] font-bold text-zinc-300">
+                                            {idx + 1}
+                                        </div>
+                                        <p className="text-white font-bold text-[11px] uppercase tracking-widest">
+                                            Phase {idx + 1} — {round.round_name} ({roundTimes[idx]}m)
+                                        </p>
+                                        <p className="text-zinc-500 text-[10px] mt-1 leading-relaxed line-clamp-1">
+                                            {round.focus_description}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Intelligence Briefing */}
+                    <div className="mb-8">
+                        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-500 mb-4">
+                            Intelligence Briefing
+                        </p>
+                        <div className="space-y-2.5">
+                            {tips.map((tip, i) => (
+                                <div key={i} className="flex items-start gap-3">
+                                    <Zap size={12} className="text-zinc-600 shrink-0 mt-0.5" />
+                                    <p className="text-zinc-400 text-[11px] font-medium leading-relaxed">{tip}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Pre-Mission Check */}
+                    <div className="mb-10">
+                        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-500 mb-4">
+                            Pre-Mission Check
+                        </p>
+                        <div className="space-y-3">
+                            {checklistItems.map((item) => (
+                                <button
+                                    key={item.key}
+                                    onClick={() => setCheckedItems(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
+                                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-zinc-800 hover:border-zinc-600 transition-all text-left group"
+                                >
+                                    <motion.div
+                                        animate={{
+                                            backgroundColor: checkedItems[item.key] ? '#18181b' : 'transparent',
+                                            borderColor: checkedItems[item.key] ? '#18181b' : '#52525b',
+                                        }}
+                                        className="w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0"
+                                    >
+                                        {checkedItems[item.key] && (
+                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                                                <CheckCircle size={14} className="text-white" />
+                                            </motion.div>
+                                        )}
+                                    </motion.div>
+                                    <span className={`text-[11px] font-bold uppercase tracking-widest transition-colors ${checkedItems[item.key] ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                                        {item.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Enter Interview Button */}
+                    <button
+                        onClick={handleConfirmStart}
+                        disabled={!allChecked}
+                        className="w-full py-5 bg-white text-zinc-900 rounded-full font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-zinc-100 transition-all shadow-2xl shadow-white/10 disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
+                    >
+                        Enter Interview →
+                    </button>
                 </motion.div>
             </div>
         );
     }
 
     // ── INTERVIEW SCREEN ──────────────────────────────────────
+    if (interviewInputMode === 'text') {
+        return (
+            <div className="min-h-screen py-8 px-6 bg-[#FBFBFB] flex flex-col items-center justify-center">
+                <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
+                    <div className="flex justify-between items-center px-2">
+                         <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
+                            Practice Interview
+                        </h1>
+                        <button
+                            onClick={() => {
+                                handleStop();
+                                setStep('entry');
+                            }}
+                            className="text-zinc-500 font-bold text-[10px] uppercase tracking-widest hover:text-zinc-900 transition-colors flex items-center gap-2"
+                        >
+                            Exit Interview
+                        </button>
+                    </div>
+                    <TextInterviewScreen 
+                        chatMessages={chatMessages}
+                        aiIsTyping={aiIsTyping}
+                        textInput={textInput}
+                        setTextInput={setTextInput}
+                        handleSendText={handleSendText}
+                        isActive={isActive}
+                        isSpeaking={isSpeaking}
+                        chatScrollRef={chatScrollRef}
+                        personaInfo={personaInfo}
+                        interviewerPersona={interviewerPersona}
+                        currentRound={currentRound}
+                        roundsConfig={roundsConfig}
+                        localRoundTimer={localRoundTimer}
+                        status={status}
+                        interviewInputMode={interviewInputMode}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="min-h-screen pt-8 pb-12 px-6 md:px-10 bg-[#FBFBFB]">
@@ -1753,22 +2586,34 @@ const MockInterviewPage = () => {
                                     <Clock size={18} className="text-zinc-300" /> {formatTime(timeLeft)}
                                 </div>
                             )}
-
+                            {localRoundTimer !== null && isActive && (
+                                <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full border font-bold text-[11px] uppercase tracking-widest transition-all ${localRoundTimer <= 30
+                                    ? 'bg-red-50 border-red-100 text-red-500 animate-pulse'
+                                    : localRoundTimer <= 60
+                                    ? 'bg-amber-50 border-amber-100 text-amber-600'
+                                    : 'bg-zinc-50 border-zinc-100 text-zinc-500'
+                                }`}>
+                                    <Clock size={14} />
+                                    Round: {Math.floor(localRoundTimer / 60)}:{String(localRoundTimer % 60).padStart(2, '0')}
+                                </div>
+                            )}
                             {/* Status */}
                             <span className={`px-6 py-3 border rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ${statusPill}`}>
                                 {isSpeaking ? 'SPEAKING' : (isActive ? 'LISTENING' : status.toUpperCase())}
                             </span>
 
                             {/* Mute */}
-                            <button
-                                onClick={() => setIsMuted((prev) => !prev)}
-                                disabled={!isActive || isSpeaking}
-                                className={`premium-tag flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${ (isMuted || isSpeaking) ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-white text-zinc-900 border-zinc-100 hover:border-zinc-900'
-                                    }`}
-                            >
-                                {(isMuted || isSpeaking) ? <MicOff size={16} /> : <Mic size={16} />}
-                                {isSpeaking ? 'AI Speaking' : (isMuted ? 'Unmute' : 'Mute')}
-                            </button>
+                            {interviewInputMode !== 'text' && (
+                                <button
+                                    onClick={() => setIsMuted((prev) => !prev)}
+                                    disabled={!isActive || isSpeaking}
+                                    className={`premium-tag flex items-center gap-2.5 px-6 py-3.5 rounded-full border font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 ${ (isMuted || isSpeaking) ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-white text-zinc-900 border-zinc-100 hover:border-zinc-900'
+                                        }`}
+                                >
+                                    {(isMuted || isSpeaking) ? <MicOff size={16} /> : <Mic size={16} />}
+                                    {isSpeaking ? 'AI Speaking' : (isMuted ? 'Unmute' : 'Mute')}
+                                </button>
+                            )}
 
                             {/* Stop */}
                             <button
@@ -1808,44 +2653,153 @@ const MockInterviewPage = () => {
                             className="bg-white rounded-[40px] border border-zinc-100 p-12 shadow-2xl shadow-zinc-900/5"
                         >
                             {showCompletionOptions ? (
-                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
-                                    <div className="max-w-2xl">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-2 h-2 bg-zinc-900 rounded-full animate-pulse" />
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-900">Session Completed</p>
-                                        </div>
-                                        <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Ready to Submit?</h2>
-                                        <p className="text-base text-zinc-500 leading-relaxed">
-                                            You've completed your practice session. Choose whether to submit your transcript for a detailed expert review or discard this session and try again.
-                                        </p>
-                                        <div className="flex items-center gap-8 mt-8">
-                                            <div className="flex flex-col">
-                                                <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Duration</span>
-                                                <span className="text-sm font-bold text-zinc-900">{duration} Minutes</span>
+                                debriefData ? (
+                                    /* ── Instant Debrief ── */
+                                    <div className="space-y-6">
+                                        {/* Header */}
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-1">Mission Report</p>
+                                                <h2 className="text-3xl font-bold text-zinc-900 tracking-tight">
+                                                    {companyName || 'Interview'} Complete
+                                                </h2>
                                             </div>
-                                            <div className="w-px h-8 bg-zinc-100" />
-                                            <div className="flex flex-col">
-                                                <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Transcript</span>
-                                                <span className="text-sm font-bold text-zinc-900">{conversationLog.length} Exchanges</span>
+                                            <div className={`px-6 py-3 rounded-full border font-bold text-[11px] uppercase tracking-widest ${
+                                                debriefData.overall_verdict === 'STRONG HIRE' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                debriefData.overall_verdict === 'HIRE' ? 'bg-green-50 text-green-600 border-green-200' :
+                                                debriefData.overall_verdict === 'NO HIRE' ? 'bg-red-50 text-red-600 border-red-200' :
+                                                'bg-amber-50 text-amber-700 border-amber-200'
+                                            }`}>
+                                                {debriefData.overall_verdict || 'BORDERLINE'}
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="flex flex-col sm:flex-row items-center gap-6 min-w-[360px]">
-                                        <button
-                                            onClick={handleFinalSubmit}
-                                            className="flex-1 w-full py-4 bg-zinc-900 text-white rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10 active:scale-95"
-                                        >
-                                            Submit
-                                        </button>
-                                        <button
-                                            onClick={() => setShowDiscardModal(true)}
-                                            className="flex-1 w-full py-4 bg-white text-zinc-400 border border-zinc-100 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:border-zinc-900 hover:text-zinc-900 transition-all active:scale-95"
-                                        >
-                                            Discard
-                                        </button>
+                                        {/* Score grid */}
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                            {[
+                                                { label: 'Technical', value: debriefData.technical_accuracy },
+                                                { label: 'Communication', value: debriefData.communication_clarity },
+                                                { label: 'Completeness', value: debriefData.response_completeness },
+                                                { label: 'Confidence', value: debriefData.confidence_score },
+                                            ].map(({ label, value }) => (
+                                                <div key={label} className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100">
+                                                    <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 mb-1">{label}</p>
+                                                    <p className="text-2xl font-bold text-zinc-900">{value}%</p>
+                                                    <div className="mt-2 h-1 bg-zinc-100 rounded-full overflow-hidden">
+                                                        <motion.div
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${value}%` }}
+                                                            transition={{ duration: 0.8, ease: 'easeOut' }}
+                                                            className="h-full bg-zinc-900 rounded-full"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Filler words */}
+                                        {debriefData.filler_words_detected > 0 && (
+                                            <div className="p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-center gap-3">
+                                                <AlertTriangle size={16} className="text-amber-500 shrink-0" />
+                                                <p className="text-[11px] font-bold text-amber-700">
+                                                    {debriefData.filler_words_detected} filler words detected. Practice slowing down before answering.
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Round breakdown */}
+                                        <div className="space-y-3">
+                                            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300">Round Breakdown</p>
+                                            {(debriefData.rounds || []).map((round, i) => (
+                                                <div key={i} className="bg-white border border-zinc-100 rounded-2xl p-5">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <p className="font-bold text-sm uppercase tracking-wide text-zinc-900">{round.round_name}</p>
+                                                        <span className="text-xl font-bold text-zinc-900">{round.score}/100</span>
+                                                    </div>
+                                                    <p className="text-[11px] text-zinc-500 mb-1">✓ {round.strongest_moment}</p>
+                                                    <p className="text-[11px] text-zinc-400">△ {round.weakest_moment}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Top 3 improvements */}
+                                        <div className="bg-zinc-900 rounded-2xl p-6">
+                                            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-4">Top 3 Things to Improve</p>
+                                            {(debriefData.top_3_improvements || []).map((item, i) => (
+                                                <div key={i} className="flex items-start gap-3 mb-3 last:mb-0">
+                                                    <span className="w-5 h-5 rounded-full bg-zinc-700 text-zinc-300 flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">
+                                                        {i + 1}
+                                                    </span>
+                                                    <p className="text-sm text-zinc-300">{item}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Verdict explanation */}
+                                        {debriefData.verdict_explanation && (
+                                            <p className="text-sm text-zinc-500 leading-relaxed italic px-1">
+                                                {debriefData.verdict_explanation}
+                                            </p>
+                                        )}
+
+                                        {/* Actions */}
+                                        <div className="flex gap-4">
+                                            <button
+                                                onClick={handleFinalSubmit}
+                                                disabled={isSavingInterview}
+                                                className="flex-1 py-4 bg-zinc-900 text-white rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl disabled:opacity-50"
+                                            >
+                                                {isSavingInterview ? 'Submitting...' : 'Submit for Expert Review →'}
+                                            </button>
+                                            <button
+                                                onClick={() => setShowDiscardModal(true)}
+                                                className="px-8 py-4 bg-white text-zinc-400 border border-zinc-100 rounded-full font-bold text-[11px] uppercase tracking-widest hover:border-zinc-900 hover:text-zinc-900 transition-all"
+                                            >
+                                                Discard
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    /* ── Standard completion (no debrief) ── */
+                                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+                                        <div className="max-w-2xl">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <div className="w-2 h-2 bg-zinc-900 rounded-full animate-pulse" />
+                                                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-900">Session Completed</p>
+                                            </div>
+                                            <h2 className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">Ready to Submit?</h2>
+                                            <p className="text-base text-zinc-500 leading-relaxed">
+                                                You've completed your practice session. Choose whether to submit your transcript for a detailed expert review or discard this session and try again.
+                                            </p>
+                                            <div className="flex items-center gap-8 mt-8">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Duration</span>
+                                                    <span className="text-sm font-bold text-zinc-900">{duration} Minutes</span>
+                                                </div>
+                                                <div className="w-px h-8 bg-zinc-100" />
+                                                <div className="flex flex-col">
+                                                    <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest mb-1">Transcript</span>
+                                                    <span className="text-sm font-bold text-zinc-900">{conversationLog.length} Exchanges</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col sm:flex-row items-center gap-6 min-w-[360px]">
+                                            <button
+                                                onClick={handleFinalSubmit}
+                                                className="flex-1 w-full py-4 bg-zinc-900 text-white rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10 active:scale-95"
+                                            >
+                                                Submit
+                                            </button>
+                                            <button
+                                                onClick={() => setShowDiscardModal(true)}
+                                                className="flex-1 w-full py-4 bg-white text-zinc-400 border border-zinc-100 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] hover:border-zinc-900 hover:text-zinc-900 transition-all active:scale-95"
+                                            >
+                                                Discard
+                                            </button>
+                                        </div>
+                                    </div>
+                                )
                             ) : (
                                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                                     <div className="max-w-3xl">
@@ -1924,16 +2878,62 @@ const MockInterviewPage = () => {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className="text-base font-medium text-zinc-600 leading-relaxed"
+                                        style={{ fontStyle: 'normal' }}
                                     >
                                         {t}
                                     </motion.p>
                                 ))}
                                 {partialTranscript && (
-                                    <p className="text-sm italic text-zinc-400 leading-relaxed">
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="text-base font-medium text-zinc-400 leading-relaxed px-2 min-h-[20px]"
+                                        style={{ fontStyle: 'normal' }}
+                                    >
                                         {partialTranscript}
-                                    </p>
+                                    </motion.p>
                                 )}
                             </div>
+                            {/* Text mode input */}
+                            {(interviewInputMode === 'text' || interviewInputMode === 'hybrid') && (
+                                <div className="flex gap-3 mt-4">
+                                    <textarea
+                                        value={textInput}
+                                        onChange={e => setTextInput(e.target.value)}
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                if (!textInput.trim() || !isActive || (interviewInputMode !== 'text' && isSpeaking)) return;
+                                                const text = textInput.trim();
+                                                setTextInput('');
+                                                setTranscripts(prev => [...prev, text]);
+                                                appendConversationEntry('user', text);
+                                                sendAudioChunk(JSON.stringify({ type: 'user_message', text }));
+                                                updateStatus('Processing', 'processing');
+                                            }
+                                        }}
+                                        placeholder="Type your answer..."
+                                        rows={2}
+                                        disabled={!isActive || (interviewInputMode !== 'text' && isSpeaking)}
+                                        className="flex-1 px-4 py-3 rounded-xl border border-zinc-100 bg-zinc-50 text-sm resize-none focus:outline-none focus:border-zinc-900 transition-all"
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            if (!textInput.trim() || !isActive || (interviewInputMode !== 'text' && isSpeaking)) return;
+                                            const text = textInput.trim();
+                                            setTextInput('');
+                                            setTranscripts(prev => [...prev, text]);
+                                            appendConversationEntry('user', text);
+                                            sendAudioChunk(JSON.stringify({ type: 'user_message', text }));
+                                            updateStatus('Processing', 'processing');
+                                        }}
+                                        disabled={!textInput.trim() || !isActive || (interviewInputMode !== 'text' && isSpeaking)}
+                                        className="px-6 py-3 bg-zinc-900 text-white rounded-xl font-bold text-[11px] uppercase tracking-widest disabled:opacity-30 transition-all hover:bg-zinc-800"
+                                    >
+                                        <Send size={16} />
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* AI Response */}
@@ -1994,52 +2994,86 @@ const MockInterviewPage = () => {
                                 ) : (
                                     <>
                                         {/* Thinking indicator */}
-                                        {isThinking && !visibleWords && (
-                                            <motion.p
+                                        {isThinking && !currentSentenceText && (
+                                            <motion.div
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                className="text-[10px] font-medium text-zinc-300 uppercase tracking-widest italic text-center mb-4"
+                                                className="flex items-center gap-2 mb-4"
                                             >
-                                                Interviewer is thinking...
-                                            </motion.p>
+                                                <div className="flex gap-1">
+                                                    {[0,1,2].map(i => (
+                                                        <motion.div
+                                                            key={i}
+                                                            className="w-1.5 h-1.5 bg-zinc-300 rounded-full"
+                                                            animate={{ y: [-2, 2, -2] }}
+                                                            transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span className="text-[10px] font-medium text-zinc-300 uppercase tracking-widest">
+                                                    Thinking...
+                                                </span>
+                                            </motion.div>
                                         )}
                                         <div
                                             ref={responseRef}
-                                            className="h-64 overflow-y-auto flex flex-col gap-6 pr-4 custom-scrollbar"
+                                            className="h-64 overflow-y-auto flex flex-col gap-4 pr-4 custom-scrollbar"
                                         >
-                                            {/* Previous completed responses — always shown */}
-                                            {responses.map((r, i) => (
-                                                <motion.p
-                                                    key={i}
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    className="text-base font-medium text-zinc-900 leading-relaxed"
-                                                >
-                                                    {r}
-                                                </motion.p>
-                                            ))}
-                                            
-                                            {/* Placeholder — only when truly empty */}
-                                            {responses.length === 0 && !visibleWords && !isThinking && (
-                                                <p className="text-xs font-medium text-zinc-300 italic">
-                                                    Awaiting logic synthesis...
+                                            {/* Completed responses history — message-type-driven rendering */}
+                                            {responses.map((r, i) => {
+                                                // Support both legacy string format and new {text, messageType} objects
+                                                const rawText = typeof r === 'string' ? r : r.text;
+                                                const text = sanitizeInterviewerText(rawText);
+                                                
+                                                const rawMsgType = typeof r === 'string' ? 'follow_up' : (r.messageType || 'follow_up');
+                                                const messageType = normalizeMessageType(rawMsgType);
+
+                                                // Style variations based on message type
+                                                const isMainQuestion = messageType === 'main_question';
+                                                const isGreeting = messageType === 'greeting';
+                                                const isBridge = messageType === 'bridge';
+
+                                                return (
+                                                    <motion.div
+                                                        key={i}
+                                                        initial={{ opacity: 0, y: 8 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className={`text-sm font-medium leading-relaxed pl-3 ${
+                                                            isMainQuestion
+                                                                ? 'border-l-2 border-zinc-900 text-zinc-700'
+                                                                : isGreeting
+                                                                ? 'border-l-2 border-zinc-300 text-zinc-600 bg-zinc-50 rounded-r-lg p-3'
+                                                                : isBridge
+                                                                ? 'border-l-2 border-zinc-200 text-zinc-400 italic'
+                                                                : 'border-l-2 border-zinc-100 text-zinc-500'
+                                                        }`}
+                                                    >
+                                                        {isMainQuestion && (
+                                                            <span className="inline-block text-[9px] font-bold uppercase tracking-widest text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded mr-2 mb-1">
+                                                                Question
+                                                            </span>
+                                                        )}
+                                                        {text}
+                                                    </motion.div>
+                                                );
+                                            })}
+
+                                            {/* Empty state */}
+                                            {responses.length === 0 && !currentSentenceText && !isThinking && (
+                                                <p className="text-xs font-medium text-zinc-300">
+                                                    Awaiting response...
                                                 </p>
                                             )}
-                                            
-                                            {/* Live subtitle — shown IN ADDITION to previous responses */}
-                                            {visibleWords && (
+
+                                            {/* Current sentence — live word-by-word sync */}
+                                            {(currentSentenceText || currentResponse) && (
                                                 <motion.p
-                                                    key="live"
+                                                    key="current"
                                                     initial={{ opacity: 0 }}
                                                     animate={{ opacity: 1 }}
-                                                    className="text-base font-bold text-zinc-900 leading-relaxed border-t border-zinc-50 pt-4 mt-2"
+                                                    className="text-base font-medium text-zinc-900 leading-relaxed"
                                                 >
-                                                    {visibleWords}
-                                                    <span
-                                                        className="inline-block w-[3px] h-[1.1em] bg-zinc-900 ml-0.5 align-middle"
-                                                        style={{ animation: 'blink 0.9s step-end infinite' }}
-                                                    />
+                                                    {sanitizeInterviewerText(currentResponse ? (currentResponse + (currentSentenceText ? ' ' + currentSentenceText : '')) : currentSentenceText)}
                                                 </motion.p>
                                             )}
                                         </div>
@@ -2050,6 +3084,27 @@ const MockInterviewPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Time Warning Banner */}
+            <AnimatePresence>
+                {showTimeWarning && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 px-8 py-4 rounded-full border font-bold text-[11px] uppercase tracking-widest shadow-xl flex items-center gap-3 ${timeWarningSeconds <= 30
+                            ? 'bg-red-500 text-white border-red-600'
+                            : 'bg-amber-50 text-amber-700 border-amber-200'
+                        }`}
+                    >
+                        <Clock size={14} />
+                        {timeWarningSeconds <= 30
+                            ? `Wrapping up ${timeWarningRoundName}...`
+                            : `1 minute remaining in ${timeWarningRoundName}`
+                        }
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Initializing Overlay — shown until first response_start */}
             <AnimatePresence>

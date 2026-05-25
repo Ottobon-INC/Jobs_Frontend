@@ -1,8 +1,9 @@
 import { useRef, useCallback, useEffect } from 'react';
 
-export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMuteRef, isMuted = false, onPartialTranscript) {
+export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMuteRef, isMuted = false, onPartialTranscript, onUserSpeechStart) {
   const mediaRecorderRef = useRef(null);
   const recognitionRef = useRef(null);
+  const recognitionRunningRef = useRef(false);
   const micActiveRef = useRef(false);
   const streamRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -15,23 +16,91 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
   // Sync prop to ref for closure safety
   useEffect(() => {
     isDisabledRef.current = isDisabled || isMuted;
+    const isCurrentlyMuted = isDisabled || isMuted || (forcedMuteRef && forcedMuteRef.current);
     
     // Explicit hardware-level mute/unmute
     if (streamRef.current) {
       streamRef.current.getAudioTracks().forEach(track => {
-        track.enabled = !isDisabled && !(forcedMuteRef && forcedMuteRef.current);
+        track.enabled = !isCurrentlyMuted;
       });
     }
 
     // Immediate stop if disabled
-    if ((isDisabled || isMuted || (forcedMuteRef && forcedMuteRef.current)) && isSpeakingRef.current && mediaRecorderRef.current) {
+    if (isCurrentlyMuted && isSpeakingRef.current && mediaRecorderRef.current) {
       if (mediaRecorderRef.current.state === 'recording') {
         mediaRecorderRef.current.stop();
         isSpeakingRef.current = false;
       }
     }
-  }, [isDisabled, isMuted]);
 
+    // Sync speech recognition running state
+    if (recognitionRef.current) {
+      if (isCurrentlyMuted) {
+        if (recognitionRunningRef.current) {
+          try {
+            recognitionRef.current.stop();
+            recognitionRunningRef.current = false;
+          } catch (e) {
+            console.error("Error stopping SpeechRecognition:", e);
+          }
+        }
+        if (onPartialTranscript) onPartialTranscript(''); // Clear stale text
+      } else {
+        if (!recognitionRunningRef.current && micActiveRef.current) {
+          try {
+            recognitionRef.current.start();
+            recognitionRunningRef.current = true;
+          } catch (e) {
+            // Ignore - might already be starting/running
+          }
+        }
+      }
+    }
+  }, [isDisabled, isMuted, forcedMuteRef, onPartialTranscript]);
+
+  // Forced mute watcher to detect flip changes rapidly
+  useEffect(() => {
+    if (!forcedMuteRef) return;
+    let lastMuteState = forcedMuteRef.current;
+    
+    const intervalId = setInterval(() => {
+      const currentMuteState = forcedMuteRef.current;
+      if (currentMuteState !== lastMuteState) {
+        lastMuteState = currentMuteState;
+        
+        const isCurrentlyMuted = isDisabledRef.current || currentMuteState;
+        
+        if (streamRef.current) {
+          streamRef.current.getAudioTracks().forEach(track => {
+            track.enabled = !isCurrentlyMuted;
+          });
+        }
+        
+        if (isCurrentlyMuted) {
+          if (isSpeakingRef.current && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.stop();
+            isSpeakingRef.current = false;
+          }
+          if (recognitionRef.current && recognitionRunningRef.current) {
+            try {
+              recognitionRef.current.stop();
+              recognitionRunningRef.current = false;
+            } catch (e) {}
+          }
+          if (onPartialTranscript) onPartialTranscript('');
+        } else {
+          if (recognitionRef.current && !recognitionRunningRef.current && micActiveRef.current) {
+            try {
+              recognitionRef.current.start();
+              recognitionRunningRef.current = true;
+            } catch (e) {}
+          }
+        }
+      }
+    }, 100);
+    
+    return () => clearInterval(intervalId);
+  }, [forcedMuteRef, onPartialTranscript]);
 
   const startMic = useCallback(async () => {
     try {
@@ -39,7 +108,8 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
+          autoGainControl: true,
+          suppressLocalAudioPlayback: true,
         } 
       });
       
@@ -53,22 +123,53 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
         
         recognitionRef.current.onresult = (event) => {
           let interimText = '';
+          let finalText = '';
+          // Iterate from event.resultIndex to avoid stale accumulation
           for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (!event.results[i].isFinal) {
+            if (event.results[i].isFinal) {
+              finalText += event.results[i][0].transcript;
+            } else {
               interimText += event.results[i][0].transcript;
             }
           }
-          if (onPartialTranscript && interimText) {
-            onPartialTranscript(interimText);
+          const textVal = (finalText + ' ' + interimText).trim() || '';
+          console.log("[TRANSCRIPT]", {
+            source: 'SpeechRecognition',
+            text: textVal,
+            timestamp: performance.now()
+          });
+          if (onPartialTranscript) {
+            // Keep final text visible until backend WebSocket transcript replaces it
+            onPartialTranscript(textVal);
           }
+          // Note: do NOT send finalText here — Whisper handles final STT.
+          // Web Speech API final results are ignored for accuracy reasons.
+        };
+
+        recognitionRef.current.onstart = () => {
+          recognitionRunningRef.current = true;
         };
 
         recognitionRef.current.onend = () => {
-          if (micActiveRef.current && recognitionRef.current) {
-            try { recognitionRef.current.start(); } catch (e) {}
+          recognitionRunningRef.current = false;
+          const isCurrentlyMuted = isDisabledRef.current || (forcedMuteRef && forcedMuteRef.current);
+          if (
+            micActiveRef.current && 
+            recognitionRef.current &&
+            !isCurrentlyMuted
+          ) {
+            try { 
+              recognitionRef.current.start(); 
+              recognitionRunningRef.current = true;
+            } catch (e) {
+              // Ignore — recognition may already be starting
+            }
           }
         };
-        try { recognitionRef.current.start(); } catch (e) {}
+        try { 
+          recognitionRef.current.start(); 
+          recognitionRunningRef.current = true;
+        } catch (e) {}
       }
       
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -120,9 +221,13 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
         const sum = dataArray.reduce((S, v) => S + v, 0);
         const average = sum / dataArray.length;
 
-        if (average > 15) { // Bumped to 15 for noise immunity
+        if (average > 12) {
           if (!isSpeakingRef.current) {
             isSpeakingRef.current = true;
+            // Fire the speech-start callback for interruption detection
+            if (typeof onUserSpeechStart === 'function') {
+              onUserSpeechStart();
+            }
             const isCurrentlyMuted = isDisabledRef.current || (forcedMuteRef && forcedMuteRef.current);
             if (mediaRecorderRef.current.state === 'inactive' && !isCurrentlyMuted) {
               mediaRecorderRef.current.start();
@@ -159,7 +264,7 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
       if (onError) onError("Microphone access denied.");
       return false;
     }
-  }, [onAudioData, onError]);
+  }, [onAudioData, onError, onPartialTranscript, onUserSpeechStart]);
 
   const stopMic = useCallback(() => {
     if (animationFrameRef.current) {
@@ -178,6 +283,9 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
       try { recognitionRef.current.stop(); } catch (e) {}
       recognitionRef.current = null;
     }
+    
+    // Clear partial transcript on stop
+    if (onPartialTranscript) onPartialTranscript('');
     
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());

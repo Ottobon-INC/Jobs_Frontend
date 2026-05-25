@@ -1,32 +1,34 @@
 /**
  * useAudioStreamer.js
- * Production-grade audio streaming hook for the Mock Interview AI voice pipeline.
+ * Sentence-streaming audio hook for the Mock Interview AI voice pipeline.
  *
- * Features:
- *  - WAV header detection & stripping on the first chunk per response
- *    (backend sends 44-byte RIFF header before the first PCM chunk)
- *  - Jitter buffer: queues chunks until 150ms of audio is accumulated,
- *    then flushes in scheduled order — smooths out network latency spikes
+ * v2 (Deterministic Sync Refactor):
+ *  - WAV header detection & stripping on the first chunk per SENTENCE
+ *    (backend sends 44-byte RIFF header before the first PCM chunk of each sentence)
+ *  - Per-sentence jitter buffer: buffers 80ms of audio before starting playback
+ *  - Readiness gate: playback starts only when BOTH schedule + minimum PCM buffer
+ *    are ready. This ensures audio and text start in lockstep.
+ *  - sentenceId tagging on all operations for precise audio-text correlation
  *  - AnalyserNode exposed for SiriVisualizer real-time waveform sync
- *  - stopAudio(): immediate interruption for round transitions
+ *  - stopAudio(): immediate interruption for round transitions (closes AudioContext)
+ *  - stopSentenceAudio(): cancels only the active sentence without closing AudioContext
+ *  - resetForNextSentence(): resets per-sentence state without closing AudioContext
  *  - isSpeaking state for UI feedback
- *  - onPlaybackStart(audioCtxStartTime, wallClockStartTime): fires the EXACT
- *    moment the first audio buffer is actually scheduled. Used by the caller
- *    to anchor word_schedule timestamps to real audio playback time.
+ *  - onPlaybackStart({ sentenceId, wallClockMs }): fires the moment the first PCM
+ *    buffer of a sentence is scheduled. Used to anchor word timestamps.
  */
 
 import { useRef, useCallback, useState } from 'react';
 
-// How many milliseconds of PCM audio to buffer before starting playback.
-// Higher = smoother but more latency. 150ms is the configured threshold.
-const JITTER_BUFFER_MS = 150;
+// Reduced from 150ms → 80ms: sentences are shorter so we need to start faster
+const JITTER_BUFFER_MS = 80;
 const SAMPLE_RATE = 24000;     // Must match backend TTS output (OpenAI PCM = 24kHz)
 const BITS_PER_SAMPLE = 16;    // OpenAI PCM is signed 16-bit
 const CHANNELS = 1;            // Mono
 
 // Bytes of audio that equal JITTER_BUFFER_MS of playback
 const BYTES_PER_MS = (SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE / 8)) / 1000;
-const BUFFER_THRESHOLD_BYTES = JITTER_BUFFER_MS * BYTES_PER_MS; // = 7200 bytes
+const BUFFER_THRESHOLD_BYTES = JITTER_BUFFER_MS * BYTES_PER_MS;
 
 /** Check whether an ArrayBuffer starts with the RIFF magic bytes "RIFF" */
 function _hasWavHeader(buffer) {
@@ -55,9 +57,9 @@ function _pcmToAudioBuffer(ctx, pcmBuffer) {
 
 /**
  * @param {function} onSpeakingChange   - (isSpeaking: bool) => void
- * @param {function} onPlaybackStart    - ({ audioCtxTime, wallClockMs }) => void
- *   Fired ONCE per response, at the exact moment the first PCM buffer is
- *   scheduled to start. The caller uses this to anchor word timestamps.
+ * @param {function} onPlaybackStart    - ({ sentenceId, audioCtxTime, wallClockMs }) => void
+ *   Fired ONCE per sentence, at the exact moment the first PCM buffer is
+ *   scheduled to start. The caller uses this to anchor per-sentence word timestamps.
  */
 export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
     const audioCtxRef       = useRef(null);
@@ -65,16 +67,22 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
     const gainRef           = useRef(null);
     const nextStartTimeRef  = useRef(0);
     const activeSourcesRef  = useRef(0);
-    const pendingBytesRef   = useRef(0);   // accumulated buffer size before flush
-    const pendingChunksRef  = useRef([]);  // queued raw PCM ArrayBuffers
-    const isFirstChunkRef   = useRef(true); // tracks WAV header stripping per response
-    const bufferFlushedRef  = useRef(false); // tracks if we've started playing this response
+    const pendingBytesRef   = useRef(0);   // accumulated buffer size before flush (per sentence)
+    const pendingChunksRef  = useRef([]);  // queued raw PCM ArrayBuffers (per sentence)
+    const isFirstChunkRef   = useRef(true); // tracks WAV header stripping per SENTENCE
+    const bufferFlushedRef  = useRef(false); // tracks if we've started playing this sentence
 
-    /**
-     * Tracks whether we've already fired onPlaybackStart for the current
-     * response. Reset in flushRemaining / stopAudio.
-     */
+    // Current sentence ID being processed
+    const currentSentenceIdRef = useRef(null);
+
+    // Whether schedule has been received for the current sentence
+    const scheduleReadyRef = useRef(false);
+
+    // Whether we've already fired onPlaybackStart for the current sentence
     const playbackStartFiredRef = useRef(false);
+
+    // Track active BufferSourceNode references for interruption
+    const activeSourceNodesRef = useRef([]);
 
     const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -123,22 +131,24 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
                 nextStartTimeRef.current = now;
             }
 
-            // ── Fire the playback-start notification ONCE per response ──────
-            // We do this for the very first scheduled buffer of a response,
-            // before source.start() so the caller gets the anchor time
-            // synchronously before any scheduling delay.
+            // ── Fire the playback-start notification ONCE per sentence ──────
             if (isFirst && !playbackStartFiredRef.current) {
                 playbackStartFiredRef.current = true;
+                const scheduleOffsetMs = Math.max(0, (nextStartTimeRef.current - now) * 1000);
+                const wallClockMs = Date.now() + scheduleOffsetMs;
+
                 if (typeof onPlaybackStart === 'function') {
-                    const scheduleOffsetMs = Math.max(0, (nextStartTimeRef.current - now) * 1000);
                     onPlaybackStart({
+                        sentenceId: currentSentenceIdRef.current,
                         audioCtxTime: nextStartTimeRef.current,
-                        wallClockMs: Date.now() + scheduleOffsetMs,
+                        wallClockMs,
                     });
                 }
             }
 
             activeSourcesRef.current++;
+            activeSourceNodesRef.current.push(source);
+
             if (activeSourcesRef.current === 1) {
                 setIsSpeaking(true);
                 if (onSpeakingChange) onSpeakingChange(true);
@@ -146,6 +156,10 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
 
             source.onended = () => {
                 activeSourcesRef.current = Math.max(0, activeSourcesRef.current - 1);
+                // Remove from active list
+                const idx = activeSourceNodesRef.current.indexOf(source);
+                if (idx !== -1) activeSourceNodesRef.current.splice(idx, 1);
+
                 if (activeSourcesRef.current === 0) {
                     setIsSpeaking(false);
                     if (onSpeakingChange) onSpeakingChange(false);
@@ -172,13 +186,52 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
         bufferFlushedRef.current = true;
     }, [_scheduleBuffer]);
 
+    // ── Check readiness and flush if both conditions met ─────────────────────
+    const _checkAndFlush = useCallback(() => {
+        if (bufferFlushedRef.current) return; // already flushing/flushed
+
+        const hasEnoughPcm = pendingBytesRef.current >= BUFFER_THRESHOLD_BYTES;
+        const hasSchedule = scheduleReadyRef.current;
+
+        // Start playback when BOTH schedule AND minimum PCM buffer are ready
+        if (hasEnoughPcm && hasSchedule) {
+            _flushBuffer();
+        }
+    }, [_flushBuffer]);
+
+    // ── Public: mark schedule as ready for current sentence ──────────────────
+    const markScheduleReady = useCallback((sentenceId) => {
+        // Only apply if it matches the current sentence
+        if (sentenceId !== undefined) {
+            if (currentSentenceIdRef.current === null) {
+                currentSentenceIdRef.current = sentenceId;
+            } else if (currentSentenceIdRef.current !== sentenceId) {
+                console.warn(`[useAudioStreamer] Ignoring mismatched schedule for sentence ${sentenceId}. Expected ${currentSentenceIdRef.current}`);
+                return;
+            }
+        }
+        scheduleReadyRef.current = true;
+        // Attempt flush now that schedule is ready
+        _checkAndFlush();
+    }, [_checkAndFlush]);
+
     // ── Public: feed a raw ArrayBuffer chunk from the WebSocket ───────────────
-    const feedChunk = useCallback((arrayBuffer) => {
+    const feedChunk = useCallback((arrayBuffer, sentenceId) => {
         _ensureContext();
+
+        // Update current sentence ID if provided and match strictly
+        if (sentenceId !== undefined) {
+            if (currentSentenceIdRef.current === null) {
+                currentSentenceIdRef.current = sentenceId;
+            } else if (currentSentenceIdRef.current !== sentenceId) {
+                console.warn(`[useAudioStreamer] Ignoring mismatched chunk for sentence ${sentenceId}. Expected ${currentSentenceIdRef.current}`);
+                return;
+            }
+        }
 
         let pcm = arrayBuffer;
 
-        // Strip WAV header from the very first chunk of each response
+        // Strip WAV header from the very first chunk of each sentence
         if (isFirstChunkRef.current) {
             if (_hasWavHeader(arrayBuffer)) {
                 pcm = _stripWavHeader(arrayBuffer);
@@ -191,31 +244,73 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
         pendingChunksRef.current.push(pcm);
         pendingBytesRef.current += pcm.byteLength;
 
-        // Start playback once jitter buffer threshold is reached
-        if (!bufferFlushedRef.current && pendingBytesRef.current >= BUFFER_THRESHOLD_BYTES) {
-            _flushBuffer();
-        } else if (bufferFlushedRef.current) {
+        // Try readiness-gated flush
+        if (!bufferFlushedRef.current) {
+            _checkAndFlush();
+        } else {
             // Buffer already started — schedule immediately.
-            // isFirst = false here because the first chunk was in the flush.
             _scheduleBuffer(pcm, false);
             pendingChunksRef.current.pop(); // already scheduled, remove from queue
         }
-    }, [_ensureContext, _flushBuffer, _scheduleBuffer]);
+    }, [_ensureContext, _checkAndFlush, _scheduleBuffer]);
 
-    // ── Public: call when response_done is received ───────────────────────────
-    // Flushes any leftover buffered chunks that didn't meet the threshold
-    const flushRemaining = useCallback(() => {
-        if (!bufferFlushedRef.current && pendingChunksRef.current.length > 0) {
-            _flushBuffer();
-        }
-        // Reset per-response state for next turn
+    // ── Public: reset per-sentence state WITHOUT closing AudioContext ─────────
+    // Called by MockInterviewPage on each sentence_text event, before feeding
+    // audio chunks for the new sentence. Keeps AudioContext open for seamless
+    // back-to-back sentence playback (critical for perceived continuity).
+    const resetForNextSentence = useCallback(() => {
         isFirstChunkRef.current = true;
         bufferFlushedRef.current = false;
         playbackStartFiredRef.current = false;
-    }, [_flushBuffer]);
+        scheduleReadyRef.current = false;
+        pendingBytesRef.current = 0;
+        pendingChunksRef.current = [];
+        currentSentenceIdRef.current = null;
+    }, []);
+
+    // ── Public: call when sentence_complete or response_done is received ──────
+    // Flushes any leftover buffered chunks that didn't meet the threshold
+    // Called when sentence_complete or response_done is received
+    const flushRemaining = useCallback(() => {
+        if (!bufferFlushedRef.current && pendingChunksRef.current.length > 0) {
+            // Force flush even without schedule — underrun case
+            _flushBuffer();
+        }
+        // Safely reset state after sentence completes
+        resetForNextSentence();
+    }, [_flushBuffer, resetForNextSentence]);
+
+    // ── Public: stop only the active sentence's audio (for interruption) ─────
+    // Does NOT close AudioContext — allows immediate restart for next sentence
+    const stopSentenceAudio = useCallback(() => {
+        // Stop all currently scheduled buffer sources
+        activeSourceNodesRef.current.forEach(source => {
+            try { source.stop(); } catch (e) { /* ignore — may already be stopped */ }
+        });
+        activeSourceNodesRef.current = [];
+
+        // Reset per-sentence state
+        activeSourcesRef.current = 0;
+        pendingBytesRef.current = 0;
+        pendingChunksRef.current = [];
+        isFirstChunkRef.current = true;
+        bufferFlushedRef.current = false;
+        playbackStartFiredRef.current = false;
+        scheduleReadyRef.current = false;
+        currentSentenceIdRef.current = null;
+
+        setIsSpeaking(false);
+        if (onSpeakingChange) onSpeakingChange(false);
+    }, [onSpeakingChange]);
 
     // ── Public: immediate stop (round transitions, session end) ───────────────
     const stopAudio = useCallback(() => {
+        // Stop all active sources first
+        activeSourceNodesRef.current.forEach(source => {
+            try { source.stop(); } catch (e) { /* ignore */ }
+        });
+        activeSourceNodesRef.current = [];
+
         // Close and null out the AudioContext — all scheduled sources are cancelled
         if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
             audioCtxRef.current.close().catch(() => {});
@@ -231,6 +326,8 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
         isFirstChunkRef.current = true;
         bufferFlushedRef.current = false;
         playbackStartFiredRef.current = false;
+        scheduleReadyRef.current = false;
+        currentSentenceIdRef.current = null;
         setIsSpeaking(false);
         if (onSpeakingChange) onSpeakingChange(false);
     }, [onSpeakingChange]);
@@ -244,6 +341,9 @@ export function useAudioStreamer(onSpeakingChange, onPlaybackStart) {
         initStreamer,
         feedChunk,
         flushRemaining,
+        resetForNextSentence,
+        markScheduleReady,     // NEW — signal that schedule is ready for current sentence
+        stopSentenceAudio,     // NEW — cancel active sentence without closing AudioContext
         stopAudio,
         isSpeaking,
         /** Pass this ref's .current to SiriVisualizer for real audio waveform sync */
