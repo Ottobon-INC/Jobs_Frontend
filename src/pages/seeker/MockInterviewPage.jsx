@@ -1392,7 +1392,10 @@ const MockInterviewPage = () => {
     const { connect, sendAudioChunk, sendMessage, disconnect } = useWebSocket(
         wsUrl,
         () => {
-            // Microphone starts only after the first AI response/greeting finishes
+            // Send auth token immediately to avoid 5-second timeout in the backend
+            if (token) {
+                sendMessage({ type: 'auth', token });
+            }
         },
         handleMessage,
         (err) => {
@@ -1420,6 +1423,8 @@ const MockInterviewPage = () => {
         });
 
         setChatMessages(prev => [...prev, newMsg]);
+        setTranscripts(prev => [...prev, newMsg.text]);
+        appendConversationEntry('user', newMsg.text);
         setTextInput('');
         setAiIsTyping(true);
         
@@ -1431,10 +1436,10 @@ const MockInterviewPage = () => {
             });
         }, 30000);
         
-        sendAudioChunk(JSON.stringify({
+        sendMessage({
             type: 'text_input',
             text: newMsg.text
-        }));
+        });
 
         setTimeout(() => {
             if (chatScrollRef.current) {
@@ -1446,7 +1451,7 @@ const MockInterviewPage = () => {
             setChatMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, status: 'sent' } : m));
         }, 400);
 
-    }, [textInput, isActive, sendAudioChunk]);
+    }, [textInput, isActive, sendMessage, appendConversationEntry]);
 
     const isSystemMuted = isMuted || isSpeaking;
 
