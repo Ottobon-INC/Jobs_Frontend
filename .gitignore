@@ -23,7 +23,7 @@ lerna-debug.log*
 *.log
 error_log.txt
 dev_output.log
-data/
+/data/
 scripts/sql/
 
 # ── IDEs & Editors ──
