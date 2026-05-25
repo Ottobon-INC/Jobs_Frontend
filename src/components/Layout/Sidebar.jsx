@@ -62,7 +62,6 @@ const Sidebar = () => {
         { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, roles: [ROLES.PROVIDER, ROLES.SEEKER], category: 'Insights' },
         { to: '/blogs', label: 'Career Blog', icon: Newspaper, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Insights' },
         { to: '/admin/tower', label: 'Admin Dashboard', icon: LayoutDashboard, roles: [ROLES.ADMIN], category: 'Administrative' },
-        { to: '/admin/community-jobs', label: 'Moderate Jobs', icon: ShieldCheck, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/feedback', label: 'User Feedback', icon: BarChart3, roles: [ROLES.ADMIN], category: 'Administrative' },
         { to: '/admin/ingest', label: 'Data Management', icon: Upload, roles: [ROLES.ADMIN], category: 'Administrative' },

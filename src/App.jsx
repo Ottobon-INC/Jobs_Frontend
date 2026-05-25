@@ -51,7 +51,6 @@ const AddInterviewMaterialsPage = lazy(() => import('./pages/admin/AddInterviewM
 const ManagePlaybooksPage = lazy(() => import('./pages/admin/ManagePlaybooksPage'));
 const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 const ManageTimelinePage = lazy(() => import('./pages/admin/ManageTimelinePage'));
-const CommunityModerationPage = lazy(() => import('./pages/admin/CommunityModerationPage'));
 const ManageRewardsPage = lazy(() => import('./pages/admin/ManageRewardsPage'));
 const HumanMockInterviewsDashboard = lazy(() => import('./pages/admin/HumanMockInterviewsDashboard'));
 
@@ -158,7 +157,6 @@ function App() {
                   <Route path="/admin/playbooks/create" element={<EditPlaybookPage />} />
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                   <Route path="/admin/timeline" element={<ManageTimelinePage />} />
-                  <Route path="/admin/community-jobs" element={<CommunityModerationPage />} />
                   <Route path="/admin/rewards" element={<ManageRewardsPage />} />
                   <Route path="/admin/human-mock-interviews" element={<HumanMockInterviewsDashboard />} />
                 </Route>
