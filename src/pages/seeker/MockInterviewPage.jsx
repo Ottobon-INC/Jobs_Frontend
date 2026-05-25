@@ -3397,7 +3397,6 @@ const MockInterviewPage = () => {
                 confirmText="Yes, Discard"
                 cancelText="Cancel"
             />
-            />
         </>
     );
 };
