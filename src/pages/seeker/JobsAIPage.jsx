@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Sparkles, 
@@ -20,9 +21,15 @@ import {
 import toast from 'react-hot-toast';
 import { searchJobsAI, scrapeJobAI } from '../../api/jobsAIApi';
 import { useAuth } from '../../hooks/useAuth';
+import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
+import { CreditCheckModal } from '../../components/rewards/CreditCheckModal';
+import { CreditBalance } from '../../components/rewards/CreditBalance';
 
 const JobsAIPage = () => {
+    const navigate = useNavigate();
     const { user } = useAuth();
+    const { totalCreditsRemaining, useCredit } = useInterviewCreditsContext();
+    const [isPaywallOpen, setIsPaywallOpen] = useState(false);
     const [mode, setMode] = useState(null); // null, 'search', 'link'
     const [step, setStep] = useState(1);
     const [preferences, setPreferences] = useState({
@@ -48,10 +55,23 @@ const JobsAIPage = () => {
             return;
         }
 
+        if (totalCreditsRemaining <= 0) {
+            setIsPaywallOpen(true);
+            return;
+        }
+
         setIsSearching(true);
         setStep(3); // Loading step
 
         try {
+            const creditRes = useCredit('Check Match: Scrape the Web');
+            if (!creditRes.success) {
+                setIsPaywallOpen(true);
+                setIsSearching(false);
+                setStep(2);
+                return;
+            }
+
             const formData = new FormData();
             formData.append('location', preferences.location);
             formData.append('jobType', preferences.jobType);
@@ -82,10 +102,23 @@ const JobsAIPage = () => {
             return;
         }
 
+        if (totalCreditsRemaining <= 0) {
+            setIsPaywallOpen(true);
+            return;
+        }
+
         setIsSearching(true);
         setStep(3); // Reuse loading step
 
         try {
+            const creditRes = useCredit('Check Match: Bring Your Job');
+            if (!creditRes.success) {
+                setIsPaywallOpen(true);
+                setIsSearching(false);
+                setStep(1);
+                return;
+            }
+
             const data = await scrapeJobAI(externalUrl);
             setSingleJobResult(data.job);
             setStep(5); // New result step for single job
@@ -159,16 +192,20 @@ const JobsAIPage = () => {
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
                 <header className="mb-10 text-center">
-                    <div className="flex justify-between items-center mb-10">
-                        {mode && (
+                    <div className="flex justify-between items-center mt-12 sm:mt-16 mb-10">
+                        {mode ? (
                             <button 
                                 onClick={reset}
                                 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#313851]/40 hover:text-[#313851] transition-colors"
                             >
                                 <ArrowLeft size={16} /> Back to selection
                             </button>
+                        ) : (
+                            <div className="flex-1"></div>
                         )}
-                        <div className="flex-1"></div>
+                        <div className="flex items-center gap-4">
+                            <CreditBalance />
+                        </div>
                     </div>
 
                     <motion.div 
@@ -191,6 +228,14 @@ const JobsAIPage = () => {
                     >
                         AI-powered alignment engine for external job opportunities.
                     </motion.p>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                        className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs font-bold text-[#313851]/50 uppercase tracking-widest px-4"
+                    >
+                        <span>Each scan consumes 1 credit.</span>
+                        <span className="hidden sm:inline w-1.5 h-1.5 bg-[#313851]/20 rounded-full"></span>
+                        <span>Redeem earned coins in the <span className="text-[#313851] underline cursor-pointer hover:text-black font-black" onClick={() => navigate('/rewards')}>Reward Shop</span> for more!</span>
+                    </motion.div>
                 </header>
 
                 <AnimatePresence mode="wait">
@@ -590,6 +635,14 @@ const JobsAIPage = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                <CreditCheckModal 
+                    isOpen={isPaywallOpen} 
+                    onClose={() => setIsPaywallOpen(false)} 
+                    viewState="paywall" 
+                    onConfirm={() => setIsPaywallOpen(false)} 
+                    isStarting={false} 
+                />
             </div>
         </div>
     );

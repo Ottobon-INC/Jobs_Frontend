@@ -4,7 +4,7 @@ import { generateUUID } from '../utils/uuid';
 const STORAGE_KEY = 'ottobon_interview_credits';
 
 const getInitialState = () => ({
-  freeCreditsRemaining: 3,
+  freeCreditsRemaining: 5,
   purchasedCreditsRemaining: 0,
   purchasedHumanCreditsRemaining: 0,
   totalUsed: 0,
@@ -12,7 +12,7 @@ const getInitialState = () => ({
     {
       id: generateUUID(),
       type: 'free_trial_grant',
-      amount: 3,
+      amount: 5,
       description: 'Welcome bonus',
       timestamp: new Date().toISOString()
     }
@@ -183,11 +183,11 @@ export const useInterviewCredits = () => {
     const currentState = refreshFromStorage();
     const { freeCreditsRemaining, purchasedCreditsRemaining, purchasedHumanCreditsRemaining = 0, totalUsed } = currentState;
 
-    const aiUsedFree = Math.min(3, totalAiInterviewsTaken);
-    const aiUsedPurchased = Math.max(0, totalAiInterviewsTaken - 3);
+    const aiUsedFree = Math.min(5, totalAiInterviewsTaken);
+    const aiUsedPurchased = Math.max(0, totalAiInterviewsTaken - 5);
     const humanUsedPurchased = totalHumanInterviewsTaken;
 
-    const correctedFreeRemaining = Math.max(0, 3 - aiUsedFree);
+    const correctedFreeRemaining = Math.max(0, 5 - aiUsedFree);
     const correctedAiPurchasedRemaining = Math.max(0, aiRedeemedCount - aiUsedPurchased);
     const correctedHumanPurchasedRemaining = Math.max(0, humanRedeemedCount - humanUsedPurchased);
 
@@ -219,7 +219,7 @@ export const useInterviewCredits = () => {
 
   const totalCreditsRemaining = state.freeCreditsRemaining + state.purchasedCreditsRemaining + (state.purchasedHumanCreditsRemaining || 0);
   const hasFreeTrialRemaining = state.freeCreditsRemaining > 0;
-  const isFirstTimeUser = state.totalUsed === 0 && state.freeCreditsRemaining === 3;
+  const isFirstTimeUser = state.totalUsed === 0 && state.freeCreditsRemaining === 5;
 
   // Development debugging helper object
   const creditDebug = {
@@ -227,7 +227,7 @@ export const useInterviewCredits = () => {
     purchasedRemaining: state.purchasedCreditsRemaining,
     purchasedHumanRemaining: state.purchasedHumanCreditsRemaining || 0,
     totalRemaining: totalCreditsRemaining,
-    totalGranted: 3 + state.transactions.reduce((acc, t) => t.type === 'shop_purchase' ? acc + t.amount : acc, 0),
+    totalGranted: 5 + state.transactions.reduce((acc, t) => t.type === 'shop_purchase' ? acc + t.amount : acc, 0),
     totalUsed: state.totalUsed
   };
 

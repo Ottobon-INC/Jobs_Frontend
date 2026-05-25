@@ -248,16 +248,16 @@ export const CreditCheckModal = ({ isOpen, onClose, viewState, onConfirm, isStar
             </motion.div>
 
             <h3 id="onboarding-title" className="text-2xl font-bold text-zinc-900 tracking-tight">
-              You Have 3 Free Interviews!
+              You Have 5 Free Credits!
             </h3>
 
             <p className="text-sm text-zinc-500 mt-3 leading-relaxed">
-              Welcome to Ottobon! We've given you 3 free mock interview credits to get started. Practice with AI, get feedback, and land your dream job.
+              Welcome to Ottobon! We've given you 5 free credits to get started. Practice with AI mock interviews, verify external jobs with check match, and land your dream job.
             </p>
 
             {/* Credit preview with glow */}
             <div className="flex items-center justify-center gap-3 mt-6">
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3, 4, 5].map((i) => (
                 <div 
                   key={i} 
                   className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-[#6366f1] shadow-[0_4px_12px_rgba(99,102,241,0.08)] animate-pulse"
@@ -268,7 +268,7 @@ export const CreditCheckModal = ({ isOpen, onClose, viewState, onConfirm, isStar
                   </svg>
                 </div>
               ))}
-              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider ml-1.5">× 3 Free Credits</span>
+              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider ml-1.5">× 5 Free Credits</span>
             </div>
 
             {/* CTA */}
