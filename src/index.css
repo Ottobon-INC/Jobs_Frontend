@@ -99,12 +99,12 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    letter-spacing: -0.025em; /* tracking-tight */
+    font-family: var(--font-display) !important;
+    letter-spacing: -0.025em !important; /* tracking-tight */
     color: var(--text-main);
-    font-weight: 800;
+    font-weight: 800 !important;
     font-style: normal !important;
-    line-height: 1.1; /* more dense, professional rhythm */
+    line-height: 1.15; /* stable line height */
   }
 
   button,

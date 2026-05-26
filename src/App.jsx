@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
+import PrivacyLockOverlay from './components/auth/PrivacyLockOverlay';
 
 import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
 
@@ -73,7 +74,12 @@ const HiringTimelinePage = lazy(() => import('./pages/public/HiringTimelinePage'
 const GlobalWidgets = () => {
   try {
     const { isAuthenticated } = useAuth();
-    return <FloatingNewGradWidget isAuthenticated={isAuthenticated} />;
+    return (
+      <>
+        <FloatingNewGradWidget isAuthenticated={isAuthenticated} />
+        <PrivacyLockOverlay />
+      </>
+    );
   } catch (err) {
     return null;
   }

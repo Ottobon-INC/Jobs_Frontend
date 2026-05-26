@@ -20,7 +20,8 @@ export const signUp = async (email, password, role, fullName, phone, location, s
             work_preference: workPreference,
             experience,
             position,
-            description
+            description,
+            privacy_policy_accepted: true
         }
     });
 

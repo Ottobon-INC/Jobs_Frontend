@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useRef } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { signUp, initiateGoogleLogin } from '../../api/authApi';
@@ -22,21 +23,18 @@ import {
 } from 'lucide-react';
 import { ROLES, DESIRED_JOB_ROLES, WORK_PREFERENCES, EXPERIENCE_LEVELS, JOB_TITLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../../api/client';
 import { useAuth } from '../../hooks/useAuth';
+import PrivacyPolicyModal from '../../components/auth/PrivacyPolicyModal';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
     const { user, role: authRole } = useAuth();
     const [step, setStep] = useState(1);
-
-    // If already authenticated, redirect to appropriate dashboard
-    if (user) {
-        if (authRole === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
-        if (authRole === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
-        return <Navigate to="/jobs" replace />;
-    }
     
+    // Privacy policy state
+    const [privacyAccepted, setPrivacyAccepted] = useState(false);
+    const [policyOpen, setPolicyOpen] = useState(false);
+
     // Auth Data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -70,6 +68,13 @@ const RegisterPage = () => {
     const [loading, setLoading] = useState(false);
     const [extracting, setExtracting] = useState(false);
     const fileInputRef = useRef(null);
+
+    // If already authenticated, redirect to appropriate dashboard
+    if (user) {
+        if (authRole === ROLES.ADMIN) return <Navigate to="/admin/tower" replace />;
+        if (authRole === ROLES.PROVIDER) return <Navigate to="/provider/listings" replace />;
+        return <Navigate to="/jobs" replace />;
+    }
     const handleGoogleLogin = () => {
         initiateGoogleLogin(role);
     };
@@ -122,6 +127,10 @@ const RegisterPage = () => {
             }
             if (password !== confirmPassword) {
                 setError("Passwords do not match.");
+                return;
+            }
+            if (!privacyAccepted) {
+                setError("You must accept the Privacy Policy to proceed.");
                 return;
             }
         }
@@ -322,6 +331,18 @@ const RegisterPage = () => {
                                             placeholder="Confirm Password"
                                         />
                                     </div>
+                                    
+                                    <label className="flex items-start gap-3 mt-4 cursor-pointer select-none group text-left p-1">
+                                        <input
+                                            type="checkbox"
+                                            checked={privacyAccepted}
+                                            onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                                            className="mt-1 w-4 h-4 rounded border-zinc-200 text-zinc-900 focus:ring-zinc-900/5 accent-zinc-900 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] font-bold text-zinc-400 group-hover:text-zinc-900 transition-colors leading-relaxed uppercase tracking-wider">
+                                            I agree to the <button type="button" onClick={() => setPolicyOpen(true)} className="text-zinc-950 font-black underline border-none bg-none p-0 inline-block focus:outline-none uppercase tracking-wider">Privacy Policy</button>
+                                        </span>
+                                    </label>
                                 </div>
 
                                 <div className="flex items-center gap-4 mt-6">
@@ -788,6 +809,8 @@ const RegisterPage = () => {
                     </div>
                 </div>
             </div>
+            
+            <PrivacyPolicyModal isOpen={policyOpen} onClose={() => setPolicyOpen(false)} />
         </div>
     );
 };

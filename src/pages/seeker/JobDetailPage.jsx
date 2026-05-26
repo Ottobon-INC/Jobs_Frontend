@@ -10,7 +10,7 @@ import MatchIQModal from '../../components/ui/MatchIQModal';
 import MatchedJobsSection from '../../components/ui/MatchedJobsSection';
 import JobOverviewCard from '../../components/ui/JobOverviewCard';
 import { getKeySkills, getRoleOverview } from '../../utils/jobOverview';
-import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Sparkles, Building2, RefreshCw, Lock, ChevronUp, ChevronDown } from 'lucide-react';
+import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (

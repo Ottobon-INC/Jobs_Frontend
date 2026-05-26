@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Briefcase } from "lucide-react";
+import PrivacyPolicyModal from "../auth/PrivacyPolicyModal";
 
 export function LandingFooter() {
+    const [policyOpen, setPolicyOpen] = useState(false);
+
     return (
         <footer className="pt-24 pb-12 border-t border-[#F6F3ED]/10 bg-[#313851]">
             <div className="container mx-auto px-4 max-w-7xl">
@@ -69,6 +73,11 @@ export function LandingFooter() {
                         {['Cookies Policy', 'Legal Terms', 'Privacy Policy'].map(t => (
                             <span
                                 key={t}
+                                onClick={() => {
+                                    if (t === 'Privacy Policy') {
+                                        setPolicyOpen(true);
+                                    }
+                                }}
                                 className="cursor-pointer transition-all hover:text-[#F6F3ED]"
                             >
                                 {t}
@@ -78,6 +87,8 @@ export function LandingFooter() {
                     <span>© {new Date().getFullYear()} Ottobon Jobs. All rights reserved.</span>
                 </div>
             </div>
+            
+            <PrivacyPolicyModal isOpen={policyOpen} onClose={() => setPolicyOpen(false)} />
         </footer>
     );
 }
