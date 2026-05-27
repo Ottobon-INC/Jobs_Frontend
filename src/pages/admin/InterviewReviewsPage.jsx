@@ -310,10 +310,10 @@ const InterviewReviewsPage = () => {
                                     <div>
                                         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-3">Selected User</p>
                                         <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-                                            {selectedReview.user?.full_name || selectedReview.user?.email || `User ${selectedReview.user_id}`}
+                                            {selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email || selectedReview.user_email || `User ${selectedReview.user_id || selectedReview.interview_id || 'ID unknown'}`}
                                         </h2>
                                         <p className="text-sm text-zinc-500 mt-2">
-                                            {selectedReview.user?.email || 'The database could not join the user profile for this interview.'}
+                                            {selectedReview.user?.email || selectedReview.user_email || 'The database could not join the user profile for this interview.'}
                                         </p>
                                     </div>
                                     <div className="rounded-[24px] border border-zinc-100 bg-white px-6 py-4 shadow-sm min-w-[140px]">
