@@ -76,7 +76,7 @@ const NewGradDetailPage = () => {
             <div className="bg-[#313851] py-4 px-6 flex items-center justify-between border-b border-white/5 sticky top-0 z-50">
                 <Link 
                     to="/new-grad" 
-                    className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
+                    className="inline-flex items-center gap-2 text-[#ffffff]/60 hover:text-[#ffffff] transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
                 >
                     <ArrowLeft size={14} strokeWidth={3} /> Back to Playbooks
                 </Link>

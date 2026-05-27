@@ -15,7 +15,8 @@ import {
     Sparkles,
     ChevronDown,
     ChevronUp,
-    History
+    History,
+    TrendingUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getMyMockInterviews, getMockInterviewDetails, markMockInterviewAsViewed } from '../../api/mockInterviewApi';
@@ -41,9 +42,9 @@ const StatusBadge = ({ status }) => {
 
 const FeedbackSection = ({ title, icon: Icon, children, colorClass = "text-zinc-900" }) => (
     <div className="bg-white/50 backdrop-blur-sm border border-zinc-100/50 rounded-[28px] p-6 shadow-sm hover:shadow-md transition-all duration-500">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 flex items-center gap-3 mb-5">
-            <div className={`p-2 rounded-xl bg-zinc-50 ${colorClass}`}>
-                <Icon size={16} />
+        <h3 className="text-xs md:text-[13px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-3 mb-5">
+            <div className={`p-2.5 rounded-xl bg-zinc-50 ${colorClass} shrink-0`}>
+                <Icon size={18} />
             </div>
             {title}
         </h3>
@@ -134,7 +135,7 @@ const InterviewReviewsPage = () => {
             transition={{ delay: idx * 0.05 }}
             key={item.id}
             onClick={() => setSelectedId(item.id)}
-            className={`group relative w-full text-left px-6 py-4 rounded-[32px] border transition-all duration-500 overflow-hidden ${selectedId === item.id
+            className={`group relative w-full shrink-0 text-left px-6 py-4 rounded-[32px] border transition-all duration-500 overflow-hidden ${selectedId === item.id
                 ? 'bg-zinc-900 border-zinc-900 shadow-xl shadow-zinc-900/20'
                 : 'bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-lg'
                 }`}
@@ -154,22 +155,19 @@ const InterviewReviewsPage = () => {
     );
 
     return (
-        <div className="max-w-[1600px] mx-auto min-h-[calc(100vh-120px)] flex flex-col gap-8">
-            {/* Header omitted for brevity in diff but included in final */}
-            {/* ... same header ... */}
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-10 pt-8 min-h-[calc(100vh-120px)] flex flex-col gap-8">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-zinc-100">
                 <div>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-4 mb-4"
+                        className="flex items-center gap-4"
                     >
                         <div className="w-14 h-14 rounded-3xl bg-zinc-900 grid place-items-center shadow-2xl shadow-zinc-900/20">
                             <Trophy size={28} className="text-white" />
                         </div>
                         <div>
                             <h1 className="text-4xl font-black tracking-tight text-zinc-900">Performance Workspace</h1>
-                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-1">Review your AI-powered & expert interview analysis</p>
                         </div>
                     </motion.div>
                 </div>
@@ -272,8 +270,7 @@ const InterviewReviewsPage = () => {
                                     <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none"></div>
                                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                                         <div className="space-y-4">
-                                            <div className="flex items-center gap-3">
-                                                <Sparkles size={16} className="text-emerald-400" />
+                                            <div>
                                                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Evaluation Ready</span>
                                             </div>
                                             <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-none text-white">
@@ -301,7 +298,7 @@ const InterviewReviewsPage = () => {
 
                                         {selectedData.status === 'reviewed' && (
                                             <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-6 rounded-[32px] border border-white/10">
-                                                <div className="w-16 h-16 rounded-2xl bg-emerald-500 grid place-items-center shadow-lg shadow-emerald-500/20">
+                                                <div className="w-16 h-16 rounded-2xl bg-[#10b981] grid place-items-center shadow-lg shadow-[#10b981]/20">
                                                     <Star size={32} className="text-white" fill="white" />
                                                 </div>
                                                 <div>
@@ -335,11 +332,11 @@ const InterviewReviewsPage = () => {
                                         </div>
 
                                         <div className="space-y-8">
-                                            <FeedbackSection title="Areas for Growth" icon={Activity} colorClass="text-amber-600">
+                                            <FeedbackSection title="Areas for Growth" icon={TrendingUp} colorClass="text-emerald-600">
                                                 <ul className="space-y-3">
                                                     {(selectedData.ai_scorecard?.admin_review?.improvements || []).map((imp, idx) => (
                                                         <li key={idx} className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-zinc-100">
-                                                            <div className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></div>
+                                                            <div className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></div>
                                                             <span className="text-xs font-bold text-zinc-700">{imp}</span>
                                                         </li>
                                                     ))}
@@ -359,8 +356,8 @@ const InterviewReviewsPage = () => {
                                         <div className="lg:col-span-2">
                                             <div className="bg-zinc-50 border border-zinc-100 rounded-[40px] p-8 md:p-10">
                                                 <div className="flex items-center justify-between mb-10">
-                                                    <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-400 flex items-center gap-3">
-                                                        <MessageSquare size={16} /> Session Transcript
+                                                    <h3 className="text-xs md:text-[13px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-3">
+                                                        <MessageSquare size={18} /> Session Transcript
                                                     </h3>
                                                     <span className="px-4 py-1.5 rounded-full bg-zinc-200/50 text-zinc-500 text-[10px] font-black uppercase tracking-widest">
                                                         {(selectedData.transcript || []).length} Exchanges

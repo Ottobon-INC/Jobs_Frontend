@@ -16,7 +16,8 @@ import {
     Link as LinkIcon,
     Globe,
     Zap,
-    ArrowLeft
+    ArrowLeft,
+    Target
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { searchJobsAI, scrapeJobAI } from '../../api/jobsAIApi';
@@ -24,10 +25,29 @@ import { useAuth } from '../../hooks/useAuth';
 import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
 import { CreditCheckModal } from '../../components/rewards/CreditCheckModal';
 import { CreditBalance } from '../../components/rewards/CreditBalance';
+import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 const JobsAIPage = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+
+    const howItWorksSteps = [
+        {
+            title: "Choose How to Find Jobs",
+            description: "Pick \"Scrape the Web\" to search company boards, or \"Bring Your Job\" to paste a link from any career site.",
+            icon: Globe
+        },
+        {
+            title: "Tell Us What You Want",
+            description: "Enter your target location, experience level, and preferred work type. You can also upload a resume to override your profile.",
+            icon: MapPin
+        },
+        {
+            title: "See Your Fit Score",
+            description: "View your compatibility score, a clear breakdown of where your background aligns, and direct suggestions for missing skills.",
+            icon: Target
+        }
+    ];
     const { totalCreditsRemaining, useCredit } = useInterviewCreditsContext();
     const [isPaywallOpen, setIsPaywallOpen] = useState(false);
     const [mode, setMode] = useState(null); // null, 'search', 'link'
@@ -192,7 +212,7 @@ const JobsAIPage = () => {
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
                 <header className="mb-10 text-center">
-                    <div className="flex justify-between items-center mt-12 sm:mt-16 mb-10">
+                    <div className="flex justify-between items-center mt-12 sm:mt-16 mb-6">
                         {mode ? (
                             <button 
                                 onClick={reset}
@@ -208,14 +228,6 @@ const JobsAIPage = () => {
                         </div>
                     </div>
 
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-[#313851] text-white shadow-lg"
-                    >
-                        <Sparkles size={32} />
-                    </motion.div>
-                    
                     <motion.h1 
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         className="text-4xl lg:text-5xl font-black tracking-tight mb-4 uppercase"
@@ -228,15 +240,16 @@ const JobsAIPage = () => {
                     >
                         AI-powered alignment engine for external job opportunities.
                     </motion.p>
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                        className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs font-bold text-[#313851]/50 uppercase tracking-widest px-4"
-                    >
-                        <span>Each scan consumes 1 credit.</span>
-                        <span className="hidden sm:inline w-1.5 h-1.5 bg-[#313851]/20 rounded-full"></span>
-                        <span>Redeem earned coins in the <span className="text-[#313851] underline cursor-pointer hover:text-black font-black" onClick={() => navigate('/rewards')}>Reward Shop</span> for more!</span>
-                    </motion.div>
                 </header>
+
+                <HowItWorksWidget
+                    pageKey="check-match"
+                    title="How Check Match Works"
+                    icon={Target}
+                    steps={howItWorksSteps}
+                    creditsInfo="Each scan consumes 1 credit. Practice mock interviews to earn more reward coins that you can redeem for scan credits!"
+                    theme="warm"
+                />
 
                 <AnimatePresence mode="wait">
                     {!mode && renderLanding()}
@@ -250,15 +263,15 @@ const JobsAIPage = () => {
                         >
                             {/* Progress Indicator */}
                             <div className="flex items-center mb-12 pb-8 border-b border-[#F6F3ED]">
-                                <div className={`flex flex-col items-center flex-1 ${step >= 1 ? 'text-[#313851]' : 'text-[#C2CBD3]'}`}>
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black mb-2 transition-all ${step >= 1 ? 'bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/20' : 'bg-[#F6F3ED] text-[#C2CBD3]'}`}>1</div>
+                                <div className={`flex flex-col items-center flex-1 ${step >= 1 ? 'text-[#313851]' : 'text-[#313851]'}`}>
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black mb-2 transition-all ${step >= 1 ? 'bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/20' : 'bg-[#F6F3ED] text-[#313851]'}`}>1</div>
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em]">Preferences</span>
                                 </div>
                                 <div className="flex-1 h-1 bg-[#F6F3ED] rounded-full overflow-hidden mx-4">
                                     <div className="h-full bg-[#313851] transition-all duration-500" style={{ width: step > 1 ? '100%' : '0%' }}></div>
                                 </div>
-                                <div className={`flex flex-col items-center flex-1 ${step >= 2 ? 'text-[#313851]' : 'text-[#C2CBD3]'}`}>
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black mb-2 transition-all ${step >= 2 ? 'bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/20' : 'bg-[#F6F3ED] text-[#C2CBD3]'}`}>2</div>
+                                <div className={`flex flex-col items-center flex-1 ${step >= 2 ? 'text-[#313851]' : 'text-[#313851]'}`}>
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black mb-2 transition-all ${step >= 2 ? 'bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/20' : 'bg-[#F6F3ED] text-[#313851]'}`}>2</div>
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em]">Profile Data</span>
                                 </div>
                             </div>
@@ -288,7 +301,7 @@ const JobsAIPage = () => {
                                                         className={`flex-1 p-4 rounded-2xl border font-black text-[10px] uppercase tracking-widest transition-all ${
                                                             preferences.jobType === t 
                                                             ? 'border-[#313851] bg-[#313851] text-white shadow-lg shadow-[#313851]/20' 
-                                                            : 'border-[#C2CBD3]/30 text-[#C2CBD3] hover:border-[#313851]/30 hover:text-[#313851]'
+                                                            : 'border-[#313851] text-[#313851] hover:bg-[#313851]/5'
                                                         }`}
                                                     >
                                                         {t}
@@ -315,7 +328,7 @@ const JobsAIPage = () => {
                                                     className={`px-3 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border ${
                                                         experienceLevel === level.id
                                                             ? 'border-[#313851] bg-[#313851] text-[#F6F3ED] shadow-lg shadow-[#313851]/10'
-                                                            : 'border-[#C2CBD3]/30 bg-white text-[#C2CBD3] hover:border-[#313851]/30 hover:text-[#313851]'
+                                                            : 'border-[#313851] bg-white text-[#313851] hover:bg-[#313851]/5'
                                                     }`}
                                                 >
                                                     {level.label}
@@ -348,8 +361,8 @@ const JobsAIPage = () => {
                                                 </div>
                                             )}
                                             <User className="mb-4 text-[#313851]" size={32} />
-                                            <h4 className="text-sm font-black uppercase tracking-widest mb-1">Standard Profile</h4>
-                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase tracking-wide">Use the resume saved in your account settings.</p>
+                                            <h4 className="text-sm font-black uppercase tracking-widest mb-1">Use resume from profile</h4>
+                                            <p className="text-[10px] text-[#313851] font-bold uppercase tracking-wide">Use the resume saved in your account settings.</p>
                                         </div>
                                         <div 
                                             onClick={() => setResumeOption('upload')}
@@ -363,8 +376,8 @@ const JobsAIPage = () => {
                                                 </div>
                                             )}
                                             <Upload className="mb-4 text-[#313851]" size={32} />
-                                            <h4 className="text-sm font-black uppercase tracking-widest mb-1">Upload Override</h4>
-                                            <p className="text-[10px] text-[#C2CBD3] font-bold uppercase tracking-wide">Target this specific search with a new PDF/Doc.</p>
+                                            <h4 className="text-sm font-black uppercase tracking-widest mb-1">Upload new resume</h4>
+                                            <p className="text-[10px] text-[#313851] font-bold uppercase tracking-wide">Target this specific search with a new PDF/Doc.</p>
                                         </div>
                                     </div>
 
@@ -383,18 +396,18 @@ const JobsAIPage = () => {
                                                     id="resume-upload" 
                                                 />
                                                 <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center">
-                                                    <FileText size={48} className="text-[#C2CBD3] mb-4" />
+                                                    <FileText size={48} className="text-[#313851]/40 mb-4" />
                                                     <span className="text-xs font-black uppercase tracking-widest text-[#313851] block mb-1">
                                                         {file ? file.name : "Select Resume File"}
                                                     </span>
-                                                    <span className="text-[9px] font-bold text-[#C2CBD3] uppercase tracking-widest">PDF or Word docs up to 5MB</span>
+                                                    <span className="text-[9px] font-bold text-[#313851]/60 uppercase tracking-widest">PDF or Word docs up to 5MB</span>
                                                 </label>
                                             </div>
                                         </motion.div>
                                     )}
 
                                     <div className="pt-6 flex justify-between items-center">
-                                        <button onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-widest text-[#C2CBD3] hover:text-[#313851] transition-colors px-4 py-2">Back</button>
+                                        <button onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-widest text-[#313851]/70 hover:text-[#313851] transition-colors px-4 py-2">Back</button>
                                         <button 
                                             onClick={handleSearch}
                                             className="px-12 py-5 bg-[#313851] text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#313851]/30"

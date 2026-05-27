@@ -18,6 +18,7 @@ import { useInterviewCreditsContext } from '../../context/InterviewCreditsContex
 import { CreditBalance } from '../../components/rewards/CreditBalance';
 import { CreditCheckPanel, CreditCheckModal } from '../../components/rewards/CreditCheckModal';
 import ConfirmModal from '../../components/ui/ConfirmModal';
+import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 import {
     ArrowLeft,
     Mic,
@@ -662,6 +663,24 @@ const WaveformVisualizer = ({ analyserRef, isActive, isMuted }) => {
 
 // ── Main Page ─────────────────────────────────────────────────
 const MockInterviewPage = () => {
+    const howItWorksSteps = [
+        {
+            title: "Choose Your Interviewer",
+            description: "Select an AI interviewer personality (Marcus, Jordan, Priya, or Sarah) and choose the rounds you want to practice.",
+            icon: User
+        },
+        {
+            title: "Check Your Microphone",
+            description: "Test your microphone and verify your audio setup to make sure the voice conversation works perfectly.",
+            icon: Mic
+        },
+        {
+            title: "Start Practicing",
+            description: "Talk or type your answers in real-time. Follow your progress, monitor any mistakes, and review a detailed scorecard afterwards.",
+            icon: Radio
+        }
+    ];
+
     const { id } = useParams();
     const location = useLocation();
     const { addNotification } = useNotifications();
@@ -2010,14 +2029,7 @@ const MockInterviewPage = () => {
             <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 font-sans flex items-center justify-center">
                 <div className="max-w-5xl mx-auto w-full">
                     {/* Header */}
-                    <header className="mb-12 text-center">
-                        <motion.div 
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center justify-center p-3 mb-4 rounded-full bg-[#C2CBD3]/20 text-[#313851] shadow-sm"
-                        >
-                            <Sparkles size={32} />
-                        </motion.div>
+                    <header className="mb-8 text-center">
                         <motion.h1 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
                             className="text-4xl lg:text-5xl font-black tracking-tight mb-4 uppercase"
@@ -2132,6 +2144,15 @@ const MockInterviewPage = () => {
                             Back to Job Feed
                         </Link>
                     </motion.div>
+
+                    <HowItWorksWidget
+                        pageKey="ai-mock"
+                        title="How AI Mock Interview Works"
+                        icon={Radio}
+                        steps={howItWorksSteps}
+                        creditsInfo="Each practice session consumes 1 credit. First-time users are given free welcome credits to get started!"
+                        theme="neutral"
+                    />
 
                     {/* Grid Layout */}
                     <motion.div

@@ -21,7 +21,7 @@ import {
     Heart,
     Calendar,
     FileText,
-    Sparkles,
+    Target,
     ShieldCheck,
     Trophy,
     Users
@@ -44,7 +44,7 @@ const Sidebar = () => {
 
     const links = [
         { to: '/jobs', label: 'Job Board', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
-        { to: '/jobs-ai', label: 'Check Match', icon: Sparkles, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/jobs-ai', label: 'Check Match', icon: Target, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
@@ -111,27 +111,6 @@ const Sidebar = () => {
                     .sidebar:hover .category-label { height: auto; opacity: 1; visibility: visible; margin: 12px 0 4px 12px; }
                     .sidebar-nav { transition: gap 0.2s ease; gap: 4px !important; }
                     .sidebar:hover .sidebar-nav { gap: 8px !important; }
-
-                    @keyframes strobe-gold {
-                        0%, 100% { 
-                            box-shadow: 0 0 4px rgba(255, 215, 0, 0.1);
-                            background-color: transparent;
-                            border-color: rgba(255, 215, 0, 0.2);
-                        }
-                        50% { 
-                            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-                            background-color: rgba(255, 215, 0, 0.08);
-                            border-color: rgba(255, 215, 0, 0.6);
-                        }
-                    }
-                    .ai-strobe-glow {
-                        animation: strobe-gold 3s ease-in-out infinite;
-                        border: 1px solid rgba(255, 215, 0, 0.2) !important;
-                    }
-                    .ai-strobe-glow .nav-icon {
-                        color: #FFD700 !important;
-                        filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
-                    }
                 `}
             </style>
 
@@ -150,7 +129,6 @@ const Sidebar = () => {
                                 className={({ isActive }) => `
                                     nav-item p-2.5 rounded-md w-full border-none transition-all duration-300 overflow-hidden
                                     ${isActive ? 'sidebar-item-active' : ''}
-                                    ${link.label === 'Check Match' ? 'ai-strobe-glow' : ''}
                                 `}
                             >
                                 <div className="nav-icon">

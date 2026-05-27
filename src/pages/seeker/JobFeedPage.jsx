@@ -12,6 +12,12 @@ import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
 import { getKeySkills } from '../../utils/jobOverview';
 import LogoMarquee from '../../components/ui/LogoMarquee';
+import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
+
+const backgroundLogos = [
+    "Google", "TCS", "Infosys", "Microsoft", "Amazon", "Meta", "Netflix", "Adobe", 
+    "Apple", "Nvidia", "Flipkart", "Razorpay", "Samsung", "Oracle", "IBM", "Intel"
+];
 
 const JobFeedPage = () => {
     const { isAuthenticated, role } = useAuth();
@@ -227,9 +233,38 @@ const JobFeedPage = () => {
     return (
         <div className="bg-transparent">
             {/* Minimalist Header Section */}
-            <header className="relative z-20 pt-6 pb-6 px-4 md:px-12 max-w-[1400px] mx-auto">
-                {/* Refined Background Accent */}
-                <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-40" />
+            <header className="relative z-20 pt-6 pb-6 px-4 md:px-12 max-w-[1400px] mx-auto md:my-8 md:py-20 md:px-12 md:bg-gradient-to-br md:from-[#1a1f33] md:to-[#313851] md:rounded-[2.5rem] md:shadow-2xl md:overflow-hidden">
+                {/* Refined Background Accent (Mobile Only) */}
+                <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-zinc-50 to-transparent pointer-events-none opacity-40 md:hidden" />
+
+                {/* Desktop-only Animated Logo Scroll Background */}
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none select-none flex-col justify-around py-12 overflow-hidden hidden md:flex">
+                    {[0, 1, 2].map((rowIdx) => (
+                        <motion.div 
+                            key={rowIdx}
+                            initial={{ x: rowIdx % 2 === 0 ? "-30%" : "0%" }}
+                            animate={{ x: rowIdx % 2 === 0 ? "0%" : "-30%" }}
+                            transition={{ 
+                                duration: 25 + (rowIdx * 5), 
+                                repeat: Infinity, 
+                                ease: "linear" 
+                            }}
+                            className="flex gap-20 whitespace-nowrap"
+                        >
+                            {[...backgroundLogos, ...backgroundLogos, ...backgroundLogos].map((logo, i) => (
+                                <div key={i} className="flex items-center justify-center">
+                                    <CompanyLogo 
+                                        company={{ name: logo }} 
+                                        className="w-16 h-16 bg-transparent border-none" 
+                                    />
+                                </div>
+                            ))}
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Desktop-only Glows */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#C2CBD3]/10 rounded-full blur-[150px] pointer-events-none hidden md:block" />
 
                 <div className="max-w-[1400px] mx-auto relative z-10 text-center">
                     {/* 1. Title Section - Moved to top for UX hierarchy */}
@@ -240,10 +275,10 @@ const JobFeedPage = () => {
                         className="mb-8"
                     >
 
-                        <h1 className="text-2xl md:text-6xl font-sans font-bold mb-4 tracking-tight text-zinc-900 leading-tight">
+                        <h1 className="text-2xl md:text-6xl font-sans font-bold mb-4 tracking-tight text-[#313851] md:text-white leading-tight">
                             Opportunities
                         </h1>
-                        <p className="text-zinc-500 max-w-2xl mx-auto text-sm md:text-lg mb-4 leading-relaxed font-medium px-4">
+                        <p className="text-[#313851]/70 md:text-white/70 max-w-2xl mx-auto text-sm md:text-lg mb-4 leading-relaxed font-medium px-4">
                             Access the latest listings and career opportunities across our global network.
                         </p>
                     </motion.div>

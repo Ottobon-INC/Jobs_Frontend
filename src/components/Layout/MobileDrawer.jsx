@@ -5,7 +5,7 @@ import { useNotifications } from '../../context/NotificationContext';
 import { 
     Search, Bookmark, User, BookOpen, Radio, MessageSquare, TrendingUp, Newspaper, 
     LayoutDashboard, LogOut, Briefcase, PlusCircle, ClipboardList, Upload, BarChart3, 
-    Heart, Calendar, FileText, Sparkles, ShieldCheck, X, Trophy, Users
+    Heart, Calendar, FileText, Target, ShieldCheck, X, Trophy, Users
 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 
@@ -24,7 +24,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
 
     const links = [
         { to: '/jobs', label: 'Job Board', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
-        { to: '/jobs-ai', label: 'Jobs AI', icon: Sparkles, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/jobs-ai', label: 'Jobs AI', icon: Target, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },
@@ -95,11 +95,10 @@ const MobileDrawer = ({ isOpen, onClose }) => {
                                         className={({ isActive }) => `
                                             flex items-center gap-3 p-3 rounded-xl transition-all
                                             ${isActive ? 'bg-[#C2CBD3] text-[#313851] font-bold' : 'text-[#F6F3ED] hover:bg-[#C2CBD3]/10 hover:text-white'}
-                                            ${link.label === 'Jobs AI' ? 'ring-1 ring-[#FFD700]/30 shadow-[0_0_10px_rgba(255,215,0,0.15)] bg-[#FFD700]/5' : ''}
                                         `}
                                     >
-                                        <link.icon size={20} className={link.label === 'Jobs AI' ? 'text-[#FFD700]' : ''} />
-                                        <span className={`text-sm ${link.label === 'Jobs AI' ? 'font-bold text-[#FFD700]' : ''}`}>{link.label}</span>
+                                        <link.icon size={20} />
+                                        <span className="text-sm">{link.label}</span>
                                         {link.to.includes('interview-reviews') && unreadCount > 0 && (
                                             <span className="ml-auto px-2 py-0.5 bg-red-500 text-white text-[10px] rounded-full font-bold shadow-md shadow-red-500/20">
                                                 {unreadCount}

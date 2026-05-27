@@ -1,4 +1,4 @@
-export const DAILY_COIN_REWARD = 10;
+export const DAILY_COIN_REWARD = 50;
 export const STREAK_LENGTH = 7;
 export const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 

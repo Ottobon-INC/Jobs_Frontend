@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     ShieldCheck, 
@@ -18,6 +18,7 @@ import {
     Trash2 
 } from 'lucide-react';
 import { analyzeResumeATS } from '../../api/resumeAnalyzerApi';
+import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 // Refined Neu-Minimalist Card styling
 const Card = ({ children, className = "", delay = 0 }) => (
@@ -32,11 +33,36 @@ const Card = ({ children, className = "", delay = 0 }) => (
 );
 
 const ATSAnalyzerPage = () => {
+    const location = useLocation();
+    const howItWorksSteps = [
+        {
+            title: "Add Your Resume",
+            description: "Upload your resume as a PDF or text file, or paste your resume text directly into the box.",
+            icon: Upload
+        },
+        {
+            title: "Add the Job Description",
+            description: "Paste the description of the job you want to apply for so we can compare it to your resume.",
+            icon: Terminal
+        },
+        {
+            title: "Get Helpful Tips",
+            description: "See a compatibility score, list of matching skills, missing keywords, and custom copy-paste prompts you can use with ChatGPT, Claude, or Gemini to quickly rewrite and improve your resume.",
+            icon: Sparkles
+        }
+    ];
+
     // Input state
     const [file, setFile] = useState(null);
     const [resumeText, setResumeText] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [showTextPaste, setShowTextPaste] = useState(false);
+
+    useEffect(() => {
+        if (location.state?.jobDescription) {
+            setJobDescription(location.state.jobDescription);
+        }
+    }, [location.state]);
 
     // Flow & loading states
     const [loading, setLoading] = useState(false);
@@ -223,6 +249,14 @@ const ATSAnalyzerPage = () => {
                 )}
             </motion.div>
 
+            <HowItWorksWidget
+                pageKey="ats-scanner"
+                title="How Resume ATS Scanner Works"
+                icon={ShieldCheck}
+                steps={howItWorksSteps}
+                theme="neutral"
+            />
+
             {/* Error Banner */}
             {error && (
                 <motion.div 
@@ -288,7 +322,7 @@ const ATSAnalyzerPage = () => {
                                         <FileText size={16} />
                                     </div>
                                     <div>
-                                        <h2 className="text-sm font-bold tracking-tight text-zinc-900">Resume Source</h2>
+                                        <h2 className="text-lg font-bold tracking-tight text-zinc-900">Upload Resume</h2>
                                         <p className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest">Document upload or text pasting</p>
                                     </div>
                                 </div>
@@ -387,8 +421,8 @@ const ATSAnalyzerPage = () => {
                                         <Terminal size={16} />
                                     </div>
                                     <div>
-                                        <h2 className="text-sm font-bold tracking-tight text-zinc-900">Job Context</h2>
-                                        <p className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest">Manual entry of targeting guidelines</p>
+                                        <h2 className="text-lg font-bold tracking-tight text-zinc-900">Job Description</h2>
+                                        <p className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest">Manually copy and paste the description of your job</p>
                                     </div>
                                 </div>
 

@@ -1,11 +1,52 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../context/NotificationContext';
-import { LogOut, User, Briefcase, Search, Bell, Trash2, Clock } from 'lucide-react';
+import { 
+    LogOut, 
+    User, 
+    Briefcase, 
+    Search, 
+    Bell, 
+    Trash2, 
+    Clock,
+    Target, 
+    ShieldCheck, 
+    Bookmark, 
+    BookOpen, 
+    Calendar, 
+    Radio, 
+    FileText, 
+    ClipboardList, 
+    Users, 
+    MessageSquare, 
+    Trophy, 
+    Heart, 
+    TrendingUp, 
+    Newspaper 
+} from 'lucide-react';
 import { supabase } from '../../api/client';
 import { useState, useRef, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const seekerNavigationLinks = [
+    { to: '/jobs', label: 'Job Board', icon: Search, category: 'Jobs' },
+    { to: '/jobs-ai', label: 'Check Match', icon: Target, category: 'Jobs' },
+    { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, category: 'Jobs' },
+    { to: '/saved', label: 'Saved Jobs', icon: Bookmark, category: 'Jobs' },
+    { to: '/profile', label: 'My Profile', icon: User, category: 'Jobs' },
+    { to: '/courses', label: 'Skills & Courses', icon: BookOpen, category: 'Resources' },
+    { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, category: 'Resources' },
+    { to: '/mock-interview', label: 'Interview Prep', icon: Radio, category: 'Resources' },
+    { to: '/materials', label: 'Interview Materials', icon: FileText, category: 'Resources' },
+    { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, category: 'Resources' },
+    { to: '/my-human-mock-interviews', label: '1-on-1 Sessions', icon: Users, category: 'Resources' },
+    { to: '/chat', label: 'Messages', icon: MessageSquare, category: 'Resources' },
+    { to: '/rewards', label: 'Rewards', icon: Trophy, category: 'Resources' },
+    { to: '/feedback', label: 'Share Feedback', icon: Heart, category: 'Resources' },
+    { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, category: 'Analytics' },
+    { to: '/blogs', label: 'Career Blog', icon: Newspaper, category: 'Analytics' },
+];
 
 const Navbar = () => {
     const { user, role, profile, logout } = useAuth();
@@ -14,6 +55,8 @@ const Navbar = () => {
     const location = useLocation();
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const notifRef = useRef(null);
+    const [activeCategory, setActiveCategory] = useState(null);
+    const navPillsRef = useRef(null);
     const [avatarError, setAvatarError] = useState(false);
 
     const isValidAvatarUrl = (url) => {
@@ -38,6 +81,9 @@ const Navbar = () => {
             if (notifRef.current && !notifRef.current.contains(event.target)) {
                 setIsNotifOpen(false);
             }
+            if (navPillsRef.current && !navPillsRef.current.contains(event.target)) {
+                setActiveCategory(null);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -58,7 +104,81 @@ const Navbar = () => {
                     </span>
                 </Link>
 
+                {/* Centered Category Navigation Pills (Desktop-only for Seeker) */}
+                {user && role === 'seeker' && (
+                    <div className="hidden md:flex items-center gap-1.5 relative z-30" ref={navPillsRef}>
+                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[#313851]/8 border border-[#313851]/20">
+                            {['Jobs', 'Resources', 'Analytics'].map((cat) => {
+                                const isOpen = activeCategory === cat;
+                                const isRelated = seekerNavigationLinks.some(link => {
+                                    if (link.category !== cat) return false;
+                                    return location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));
+                                });
 
+                                let btnClass = 'text-[#313851]/80 hover:text-[#313851] hover:bg-[#313851]/10 bg-transparent';
+                                if (isOpen) {
+                                    btnClass = 'text-[#F6F3ED] bg-[#313851] shadow-sm font-bold';
+                                } else if (isRelated) {
+                                    btnClass = 'text-[#313851] bg-[#313851]/20 font-bold';
+                                }
+
+                                return (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                                        className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 border-none cursor-pointer ${btnClass}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        
+                        {/* Dropdown Panel (AnimatePresence) */}
+                        <AnimatePresence>
+                            {activeCategory && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute top-12 left-1/2 -translate-x-1/2 w-64 bg-[#313851] text-[#F6F3ED] rounded-2xl p-2.5 shadow-2xl border border-[#C2CBD3]/20 flex flex-col gap-1 z-50 text-left animate-in fade-in duration-200"
+                                >
+                                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#F6F3ED]/40 px-3 py-1.5 mb-1 select-none border-b border-[#C2CBD3]/10">
+                                        {activeCategory} Portal
+                                    </div>
+                                    <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto no-scrollbar">
+                                        {seekerNavigationLinks
+                                            .filter((link) => link.category === activeCategory)
+                                            .map((link) => {
+                                                const Icon = link.icon;
+                                                const isCurrentPage = location.pathname === link.to;
+                                                return (
+                                                    <NavLink
+                                                        key={link.to}
+                                                        to={link.to}
+                                                        onClick={() => setActiveCategory(null)}
+                                                        className={`
+                                                            flex items-center gap-3 p-2 rounded-lg border-none transition-all duration-200 text-decoration-none group
+                                                            ${isCurrentPage 
+                                                                ? 'bg-[#C2CBD3] text-[#313851] font-bold shadow-sm' 
+                                                                : 'text-[#F6F3ED]/80 hover:text-white hover:bg-white/10'
+                                                            }
+                                                        `}
+                                                    >
+                                                        <div className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${isCurrentPage ? 'bg-[#313851]/10 text-[#313851]' : 'bg-[#F6F3ED]/5 text-[#F6F3ED]/80 group-hover:scale-105 group-hover:bg-[#C2CBD3]/10'}`}>
+                                                            <Icon size={16} strokeWidth={2.5} />
+                                                        </div>
+                                                        <span className="text-[11px] font-bold tracking-wide">{link.label}</span>
+                                                    </NavLink>
+                                                );
+                                            })}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
 
                 {/* User Actions */}
                 <div className="flex items-center gap-4">

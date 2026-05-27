@@ -66,7 +66,7 @@ export const HiringTimeline = () => {
             <div className="max-w-7xl mx-auto px-6 mb-6 relative z-10">
                 <Link 
                     to="/jobs"
-                    className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-all text-xs font-black uppercase tracking-wider bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-2 rounded-xl shadow-lg hover:scale-105 active:scale-95 duration-200"
+                    className="inline-flex items-center gap-2 text-[#ffffff]/60 hover:text-[#ffffff] transition-all text-xs font-black uppercase tracking-wider bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-2 rounded-xl shadow-lg hover:scale-105 active:scale-95 duration-200"
                 >
                     <ArrowLeft size={14} strokeWidth={3} /> Back to Home
                 </Link>

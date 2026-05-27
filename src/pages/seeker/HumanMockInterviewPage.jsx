@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MapPin, Briefcase, FileText, Upload, Calendar, Clock, Globe, Target, ChevronRight, CheckCircle2, User, UserPlus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Sparkles, MapPin, Briefcase, FileText, Upload, Calendar, Clock, Globe, Target, ChevronRight, CheckCircle2, User, UserPlus, Users, ArrowLeft } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../hooks/useAuth';
 // We will assume an api client exists or we just create a mock one. Let's create an api client file next.
@@ -9,8 +9,27 @@ import { createHumanMockInterviewRequest, uploadInterviewResume } from '../../ap
 import { useInterviewCreditsContext } from '../../context/InterviewCreditsContext';
 import { CreditBalance } from '../../components/rewards/CreditBalance';
 import { CreditCheckPanel, CreditCheckModal } from '../../components/rewards/CreditCheckModal';
+import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 const HumanMockInterviewPage = () => {
+    const howItWorksSteps = [
+        {
+            title: "Share Your Goals",
+            description: "Provide your job goals, experience level, and the specific company you're preparing for.",
+            icon: Target
+        },
+        {
+            title: "Pick a Time & Upload Resume",
+            description: "Upload your resume and select a convenient date and time for your mock interview session.",
+            icon: Calendar
+        },
+        {
+            title: "Meet with an Expert",
+            description: "Get matched with a real industry professional for a 1-on-1 practice interview, and receive a complete scorecard to help you improve.",
+            icon: UserPlus
+        }
+    ];
+
     const { user, profile } = useAuth();
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
@@ -169,6 +188,16 @@ const HumanMockInterviewPage = () => {
     return (
         <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 font-sans">
             <div className="max-w-4xl mx-auto">
+                {/* Back Button */}
+                <div className="mb-8">
+                    <Link 
+                        to="/mock-interview"
+                        className="inline-flex items-center gap-2 text-[#313851]/60 hover:text-[#313851] transition-all text-xs font-black uppercase tracking-wider bg-white border border-[#313851]/10 hover:bg-[#313851]/5 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 text-decoration-none"
+                    >
+                        <ArrowLeft size={14} strokeWidth={3} /> Back to Hub
+                    </Link>
+                </div>
+
                 {/* Header */}
                 <header className="mb-10 text-center relative">
                     <div className="absolute right-0 top-0 hidden md:block">
@@ -194,6 +223,17 @@ const HumanMockInterviewPage = () => {
                         Schedule a 1-on-1 session with an industry professional
                     </motion.p>
                 </header>
+
+                {step < 5 && (
+                    <HowItWorksWidget
+                        pageKey="human-sessions"
+                        title="How 1-on-1 Professional Sessions Work"
+                        icon={Users}
+                        steps={howItWorksSteps}
+                        creditsInfo="Each 1-on-1 mock interview request consumes 1 human session credit. Earned regular coins can be redeemed for human mock interview session tokens in the Reward Shop!"
+                        theme="warm"
+                    />
+                )}
 
                 <AnimatePresence mode="wait">
                     {step < 5 && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
 import { MOCK_JOBS } from '../../data/mockJobs';
 import { useAuth } from '../../hooks/useAuth';
@@ -10,7 +10,7 @@ import MatchIQModal from '../../components/ui/MatchIQModal';
 import MatchedJobsSection from '../../components/ui/MatchedJobsSection';
 import JobOverviewCard from '../../components/ui/JobOverviewCard';
 import { getKeySkills, getRoleOverview } from '../../utils/jobOverview';
-import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown } from 'lucide-react';
+import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (
@@ -28,6 +28,7 @@ const BentoCard = ({ children, className = "", delay = 0 }) => (
 const JobDetailPage = () => {
     const { id } = useParams();
     const locationState = useLocation();
+    const navigate = useNavigate();
     const passedLocation = locationState.state?.displayLocation;
     const { user, role } = useAuth();
     const [job, setJob] = useState(null);
@@ -191,7 +192,7 @@ const JobDetailPage = () => {
                                         <button
                                             onClick={handleRunMatchIQ}
                                             disabled={isMatching}
-                                            className={`w-full sm:w-auto px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl ${matchDetails && !isMatching
+                                            className={`w-full sm:w-auto px-8 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl ${matchDetails && !isMatching
                                                 ? 'bg-white border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white'
                                                 : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-zinc-900/10'
                                                 } disabled:opacity-50 active:scale-95`}
@@ -201,15 +202,15 @@ const JobDetailPage = () => {
                                             ) : matchDetails ? (
                                                 <><RefreshCw size={14} /> Re-run Match Analysis</>
                                             ) : (
-                                                <><Sparkles size={14} /> Analyze Job Fit</>
+                                                <>Analyze Job Fit</>
                                             )}
                                         </button>
                                     </>
                                 )}
                                 {!user && (
                                     <Link to="/login" className="w-full sm:w-auto">
-                                        <button className="w-full bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
-                                            <Sparkles size={14} /> Analyze Job Fit <Lock size={12} className="opacity-40" />
+                                        <button className="w-full bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
+                                            Analyze Job Fit <Lock size={12} className="opacity-40" />
                                         </button>
                                     </Link>
                                 )}
@@ -400,6 +401,14 @@ const JobDetailPage = () => {
                                 </div>
                             )}
                         </div>
+                        {user && (
+                            <button
+                                onClick={() => navigate('/ats-analyzer', { state: { jobDescription: job.description_raw } })}
+                                className="mt-6 w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md"
+                            >
+                                Compare with ATS Scanner
+                            </button>
+                        )}
                     </BentoCard>
                 </div>
             </motion.div>
