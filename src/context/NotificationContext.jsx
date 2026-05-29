@@ -61,81 +61,88 @@ export const NotificationProvider = ({ children }) => {
         const saved = localStorage.getItem(`notifications_${user.id}`);
         setNotifications(saved ? JSON.parse(saved) : []);
 
-        let retryCount = 0;
-        let retryTimeout = null;
-        let channel = null;
+        const storageKey = `last_notification_check_${user.id}`;
+        // If no lastChecked exists, initialize it to the current time so we don't fetch historical items
+        if (!localStorage.getItem(storageKey)) {
+            localStorage.setItem(storageKey, new Date().toISOString());
+        }
 
-        const subscribe = () => {
-            channel = supabase
-                .channel('global_diagnostic_channel')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public'
-                    },
-                    (payload) => {
-                        console.log('📡 [CATCH-ALL LOG] Event Received From DB:', {
-                            table: payload.table,
-                            event: payload.eventType,
-                            newRow: payload.new,
-                            oldRow: payload.old
-                        });
+        const pollNotifications = async () => {
+            try {
+                const activeRole = role || user?.user_metadata?.role;
+                const lastChecked = localStorage.getItem(storageKey) || new Date().toISOString();
+                const currentPollTime = new Date().toISOString();
+                let maxTimestamp = lastChecked;
 
-                        const activeRole = role || user?.user_metadata?.role;
+                // 1. Seeker: Your review is completed
+                if (activeRole === ROLES.SEEKER) {
+                    const { data, error } = await supabase
+                        .from('mock_interviews_jobs')
+                        .select('id, status, updated_at, jobs_jobs(title)')
+                        .eq('user_id', user.id)
+                        .eq('status', 'reviewed')
+                        .gt('updated_at', lastChecked);
 
-                        // 1. Seeker: Your review is completed
-                        if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.SEEKER && payload.eventType === 'UPDATE') {
-                            const { old: oldRow, new: newRow } = payload;
-                            if (newRow.user_id === user.id && newRow.status === 'reviewed') {
-                                addNotification({
-                                    title: 'Analysis Ready',
-                                    message: `Your mock interview analysis for ${newRow.job_title || 'a recent role'} is ready for review.`,
-                                    type: 'success',
-                                    link: '/interview-reviews'
-                                });
+                    if (error) {
+                        console.error('📡 Error polling mock_interviews_jobs for seeker:', error);
+                    } else if (data && data.length > 0) {
+                        data.forEach(item => {
+                            const jobTitle = item.jobs_jobs?.title || 'a recent role';
+                            addNotification({
+                                title: 'Analysis Ready',
+                                message: `Your mock interview analysis for ${jobTitle} is ready for review.`,
+                                type: 'success',
+                                link: '/interview-reviews'
+                            });
+                            if (item.updated_at > maxTimestamp) {
+                                maxTimestamp = item.updated_at;
                             }
-                        }
+                        });
+                    }
+                }
 
-                        // 2. Admin: New submission received
-                        if (payload.table === 'mock_interviews_jobs' && activeRole === ROLES.ADMIN && payload.eventType === 'INSERT') {
+                // 2. Admin: New submission received
+                if (activeRole === ROLES.ADMIN) {
+                    const { data, error } = await supabase
+                        .from('mock_interviews_jobs')
+                        .select('id, status, created_at, jobs_jobs(title)')
+                        .gt('created_at', lastChecked);
+
+                    if (error) {
+                        console.error('📡 Error polling mock_interviews_jobs for admin:', error);
+                    } else if (data && data.length > 0) {
+                        data.forEach(item => {
+                            const jobTitle = item.jobs_jobs?.title || 'a recent role';
                             addNotification({
                                 title: 'New Submission',
-                                message: `A new mock interview review has been submitted.`,
+                                message: `A new mock interview review has been submitted for ${jobTitle}.`,
                                 type: 'info',
                                 link: '/admin/interview-reviews'
                             });
-                        }
-                    }
-                )
-                .subscribe((status) => {
-                    console.log('📡 Subscription Status:', status);
-
-                    if (status === 'SUBSCRIBED') {
-                        retryCount = 0; // Reset on success
-                    }
-
-                    if (status === 'CHANNEL_ERROR') {
-                        // Exponential backoff — don't hammer Supabase
-                        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
-                        retryCount++;
-                        console.log(`🔄 Retrying in ${delay}ms (attempt ${retryCount})`);
-                        retryTimeout = setTimeout(() => {
-                            if (channel) {
-                                supabase.removeChannel(channel);
+                            if (item.created_at > maxTimestamp) {
+                                maxTimestamp = item.created_at;
                             }
-                            subscribe();
-                        }, delay);
+                        });
                     }
-                });
+                }
+
+                // Save next check timestamp (advance to the latest record time or current poll time)
+                const nextCheckTime = maxTimestamp > lastChecked ? maxTimestamp : currentPollTime;
+                localStorage.setItem(storageKey, nextCheckTime);
+            } catch (err) {
+                console.error('📡 Failed to execute notification polling cycle:', err);
+            }
         };
 
-        subscribe();
+        // Run immediately on mount to catch any changes while offline/offline-between-reloads
+        pollNotifications();
+
+        // Start 30-second interval polling cycle
+        const intervalId = setInterval(pollNotifications, 30000);
 
         return () => {
-            console.log('🔌 Unsubscribing from Notifications');
-            if (retryTimeout) clearTimeout(retryTimeout);
-            if (channel) supabase.removeChannel(channel);
+            console.log('🔌 Cleaning up Notification polling cycle');
+            clearInterval(intervalId);
         };
     }, [user?.id, role, addNotification]);
 
