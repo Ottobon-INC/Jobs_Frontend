@@ -28,7 +28,7 @@ export const signUp = async (email, password, role, fullName, phone, location, s
     const data = res.data;
     if (data.access_token) {
         const { setToken } = await import('./client');
-        setToken(data.access_token);
+        setToken(data.access_token, data.refresh_token);
     }
     
     return data;
@@ -50,7 +50,7 @@ export const signIn = async (email, password) => {
     
     if (data.access_token) {
         const { setToken } = await import('./client');
-        setToken(data.access_token);
+        setToken(data.access_token, data.refresh_token);
     }
     
     return data;

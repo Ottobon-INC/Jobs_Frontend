@@ -18,14 +18,18 @@ export const supabase = getSupabaseClient();
 // we cache the token and update it via the auth state listener.
 let _cachedToken = localStorage.getItem('ottobon_custom_token') || null;
 
-export const setToken = (token) => {
+export const setToken = (token, refreshToken) => {
     _cachedToken = token;
     if (token) {
         localStorage.setItem('ottobon_custom_token', token);
+        if (refreshToken) {
+            localStorage.setItem('ottobon_refresh_token', refreshToken);
+        }
         // Sync to supabase client so direct DB calls work immediately
-        supabase.auth.setSession({ access_token: token, refresh_token: '' });
+        supabase.auth.setSession({ access_token: token, refresh_token: refreshToken || '' });
     } else {
         localStorage.removeItem('ottobon_custom_token');
+        localStorage.removeItem('ottobon_refresh_token');
     }
 };
 
@@ -99,12 +103,20 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !config._isRetryAfterRefresh) {
             config._isRetryAfterRefresh = true;
             try {
-                const { data: refreshData } = await supabase.auth.refreshSession();
-                const newToken = refreshData?.session?.access_token;
-                if (newToken) {
-                    setToken(newToken);
-                    config.headers.Authorization = `Bearer ${newToken}`;
-                    return api(config); // Retry original request with new token
+                const refreshToken = localStorage.getItem('ottobon_refresh_token');
+                if (refreshToken) {
+                    // Import axios directly to bypass the custom interceptors authorization headers
+                    const axiosDirect = await import('axios');
+                    const res = await axiosDirect.default.post(`${API_BASE_URL}/auth/refresh`, {
+                        refresh_token: refreshToken
+                    });
+                    const newToken = res.data?.access_token;
+                    const newRefreshToken = res.data?.refresh_token;
+                    if (newToken) {
+                        setToken(newToken, newRefreshToken);
+                        config.headers.Authorization = `Bearer ${newToken}`;
+                        return api(config); // Retry original request with new token
+                    }
                 }
             } catch (refreshErr) {
                 console.warn('API 401 — token refresh failed:', refreshErr);

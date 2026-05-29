@@ -57,21 +57,7 @@ export const AuthProvider = ({ children }) => {
 
             // --- CRITICAL FIX: Handle expired/invalid tokens (401) ---
             if (status === 401) {
-                console.warn('fetchProfile: 401 Unauthorized. Attempting token refresh...');
-                try {
-                    const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-                    if (refreshData?.session?.access_token && !refreshError) {
-                        setApiToken(refreshData.session.access_token);
-                        console.info('fetchProfile: Token refreshed, retrying...');
-                        const retryData = await getMyProfile();
-                        setProfile(retryData);
-                        setRole(retryData.role);
-                        return;
-                    }
-                } catch (refreshErr) {
-                    console.warn('fetchProfile: Token refresh failed.', refreshErr);
-                }
-                console.warn('fetchProfile: Clearing stale auth state due to 401.');
+                console.warn('fetchProfile: 401 Unauthorized. Clearing stale auth state.');
                 setSession(null);
                 setUser(null);
                 setRole(null);
