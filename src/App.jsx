@@ -9,6 +9,7 @@ import { ROLES } from './utils/constants';
 import Loader from './components/ui/Loader';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
 import PrivacyLockOverlay from './components/auth/PrivacyLockOverlay';
+import AnalyticsTracker from './components/AnalyticsTracker';
 
 import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
 
@@ -92,6 +93,7 @@ function App() {
         <NotificationProvider>
           <Toaster position="top-right" />
           <BrowserRouter>
+            <AnalyticsTracker />
             <GlobalWidgets />
             <Suspense fallback={<Loader fullScreen variant="logo" />}>
             <Routes>
