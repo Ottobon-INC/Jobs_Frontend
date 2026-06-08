@@ -48,7 +48,12 @@ const JobsAIPage = () => {
             icon: Target
         }
     ];
-    const { totalCreditsRemaining, useCredit } = useInterviewCreditsContext();
+    const { 
+        freeMatchCreditsRemaining = 5,
+        purchasedMatchCreditsRemaining = 0, 
+        useCredit 
+    } = useInterviewCreditsContext();
+    const aiCreditsRemaining = freeMatchCreditsRemaining + purchasedMatchCreditsRemaining;
     const [isPaywallOpen, setIsPaywallOpen] = useState(false);
     const [mode, setMode] = useState(null); // null, 'search', 'link'
     const [step, setStep] = useState(1);
@@ -75,7 +80,7 @@ const JobsAIPage = () => {
             return;
         }
 
-        if (totalCreditsRemaining <= 0) {
+        if (aiCreditsRemaining <= 0) {
             setIsPaywallOpen(true);
             return;
         }
@@ -122,7 +127,7 @@ const JobsAIPage = () => {
             return;
         }
 
-        if (totalCreditsRemaining <= 0) {
+        if (aiCreditsRemaining <= 0) {
             setIsPaywallOpen(true);
             return;
         }
@@ -224,7 +229,7 @@ const JobsAIPage = () => {
                             <div className="flex-1"></div>
                         )}
                         <div className="flex items-center gap-4">
-                            <CreditBalance />
+                            <CreditBalance mode="ai_match_only" />
                         </div>
                     </div>
 
@@ -655,6 +660,7 @@ const JobsAIPage = () => {
                     viewState="paywall" 
                     onConfirm={() => setIsPaywallOpen(false)} 
                     isStarting={false} 
+                    mode="ai_match_only"
                 />
             </div>
         </div>

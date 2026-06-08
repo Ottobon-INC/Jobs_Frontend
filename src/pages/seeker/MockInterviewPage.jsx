@@ -695,10 +695,13 @@ const MockInterviewPage = () => {
 
     // Credit System Gating State
     const { 
-        totalCreditsRemaining, 
+        freeCreditsRemaining,
+        purchasedCreditsRemaining, 
         useCredit, 
         isFirstTimeUser 
     } = useInterviewCreditsContext();
+
+    const aiCreditsRemaining = freeCreditsRemaining + purchasedCreditsRemaining;
 
     const [showCreditPanel, setShowCreditPanel] = useState(false);
     const [showCreditModal, setShowCreditModal] = useState(false);
@@ -1599,7 +1602,7 @@ const MockInterviewPage = () => {
             return;
         }
 
-        if (totalCreditsRemaining === 0) {
+        if (aiCreditsRemaining === 0) {
             setModalType('paywall');
             setShowCreditModal(true);
             return;
@@ -2165,7 +2168,7 @@ const MockInterviewPage = () => {
                         <div className="flex flex-col gap-6 lg:col-span-1">
                             {/* Credit Balance Widget */}
                             <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <CreditBalance />
+                                <CreditBalance mode="ai_interview_only" />
                             </div>
 
                             {/* Card 0: INTERVIEW MODE */}
@@ -2497,6 +2500,7 @@ const MockInterviewPage = () => {
                                         onConfirm={handleCreditConfirmStart}
                                         onCancel={() => setShowCreditPanel(false)}
                                         isStarting={isStarting}
+                                        mode="ai_interview_only"
                                     />
                                 )}
                             </AnimatePresence>
@@ -2511,6 +2515,7 @@ const MockInterviewPage = () => {
                 viewState={modalType}
                 onConfirm={handleConfirmStart}
                 isStarting={isStarting}
+                mode="ai_interview_only"
             />
         </>
     );
@@ -2784,7 +2789,7 @@ const MockInterviewPage = () => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4">
-                            <CreditBalance />
+                            <CreditBalance mode="ai_interview_only" />
                             {/* Round badge */}
                             {roundsConfig && roundsConfig.length > 1 && (
                                 <div className="flex items-center gap-2 px-5 py-2.5 bg-zinc-900 text-white rounded-full text-[10px] font-bold uppercase tracking-widest">
@@ -3412,6 +3417,7 @@ const MockInterviewPage = () => {
                 viewState={modalType}
                 onConfirm={handleCreditConfirmStart}
                 isStarting={isStarting}
+                mode="ai_interview_only"
             />
 
             {/* Discard Confirmation Modal */}

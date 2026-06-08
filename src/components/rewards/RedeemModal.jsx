@@ -108,7 +108,27 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
 
       // Perform local balance credit addition if shop purchase is interview credits
       if (item.grantType === 'interview_credits') {
-        addCredits(item.grantAmount, 'shop_purchase', item.name);
+        const lowerName = (item.name || '').toLowerCase();
+        const lowerDesc = (item.description || '').toLowerCase();
+        
+        const isHumanMock = item.slug === 'human_mock_interview' || lowerName.includes('human mock') || lowerDesc.includes('human mock');
+        const isAiMock = !isHumanMock && (
+          item.slug === 'mock_interview' || 
+          lowerName.includes('mock interview') || 
+          lowerDesc.includes('mock interview')
+        );
+        const isAiMatch = !isHumanMock && !isAiMock && (
+          item.slug === 'check_match' || 
+          lowerName.includes('match') ||
+          lowerDesc.includes('match')
+        );
+        
+        let creditType = 'ai';
+        if (isAiMock) creditType = 'ai_interview';
+        else if (isAiMatch) creditType = 'ai_match';
+        else if (isHumanMock) creditType = 'human';
+
+        addCredits(item.grantAmount, 'shop_purchase', item.name, creditType);
       }
 
       setStep('success');

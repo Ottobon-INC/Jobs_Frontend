@@ -5,18 +5,29 @@ import { useInterviewCreditsContext } from '../../context/InterviewCreditsContex
 export const CreditBalance = ({ mode = 'all' }) => {
   const {
     freeCreditsRemaining,
+    freeMatchCreditsRemaining = 5,
     purchasedCreditsRemaining,
     purchasedHumanCreditsRemaining,
+    purchasedMatchCreditsRemaining = 0,
     totalCreditsRemaining,
     totalUsed,
+    aiInterviewsUsed = 0,
+    humanInterviewsUsed = 0,
+    transactions = [],
     hasFreeTrialRemaining
   } = useInterviewCreditsContext();
+
+  const matchUsed = transactions.filter(t => t.type === 'interview_used' && t.description && t.description.toLowerCase().includes('check match')).length;
 
   let displayCredits = totalCreditsRemaining;
   if (mode === 'purchased_only') {
     displayCredits = purchasedCreditsRemaining;
   } else if (mode === 'purchased_human_only') {
     displayCredits = purchasedHumanCreditsRemaining;
+  } else if (mode === 'ai_interview_only' || mode === 'ai_only') {
+    displayCredits = freeCreditsRemaining + purchasedCreditsRemaining;
+  } else if (mode === 'ai_match_only') {
+    displayCredits = freeMatchCreditsRemaining + purchasedMatchCreditsRemaining;
   }
   const isZero = displayCredits === 0;
 
@@ -94,7 +105,9 @@ export const CreditBalance = ({ mode = 'all' }) => {
       </div>
  
       {/* Free Trial Badge with pulsing effect */}
-      {mode !== 'purchased_only' && hasFreeTrialRemaining && (
+      {mode !== 'purchased_only' && (
+        mode === 'ai_match_only' ? freeMatchCreditsRemaining > 0 : hasFreeTrialRemaining
+      ) && (
         <motion.div
           animate={{ opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -114,11 +127,15 @@ export const CreditBalance = ({ mode = 'all' }) => {
           
           <span className="relative z-20">
             {mode === 'purchased_only' ? (
-              <>Purchased AI: <span className="text-indigo-600 font-black">{purchasedCreditsRemaining}</span></>
+              <>AI Interview: <span className="text-indigo-600 font-black">{purchasedCreditsRemaining}</span></>
             ) : mode === 'purchased_human_only' ? (
               <>Purchased Human: <span className="text-indigo-600 font-black">{purchasedHumanCreditsRemaining}</span></>
+            ) : mode === 'ai_interview_only' || mode === 'ai_only' ? (
+              <>Free: <span className="text-emerald-600 font-black">{freeCreditsRemaining}</span> · AI Interview: <span className="text-indigo-600 font-black">{purchasedCreditsRemaining}</span> · Used: <span className="text-zinc-700 font-black">{aiInterviewsUsed}</span></>
+            ) : mode === 'ai_match_only' ? (
+              <>Free: <span className="text-emerald-600 font-black">{freeMatchCreditsRemaining}</span> · AI Match: <span className="text-indigo-600 font-black">{purchasedMatchCreditsRemaining}</span> · Used: <span className="text-zinc-700 font-black">{matchUsed}</span></>
             ) : (
-              <>Free: <span className="text-emerald-600 font-black">{freeCreditsRemaining}</span> · Purchased AI: <span className="text-indigo-600 font-black">{purchasedCreditsRemaining}</span> · Human: <span className="text-indigo-600 font-black">{purchasedHumanCreditsRemaining}</span> · Used: <span className="text-zinc-700 font-black">{totalUsed}</span></>
+              <>Free Interview: <span className="text-emerald-600 font-black">{freeCreditsRemaining}</span> · Free Match: <span className="text-emerald-600 font-black">{freeMatchCreditsRemaining}</span> · AI Interview: <span className="text-indigo-600 font-black">{purchasedCreditsRemaining}</span> · AI Match: <span className="text-indigo-600 font-black">{purchasedMatchCreditsRemaining}</span> · Human: <span className="text-indigo-600 font-black">{purchasedHumanCreditsRemaining}</span> · Used: <span className="text-zinc-700 font-black">{totalUsed}</span></>
             )}
           </span>
         </div>
