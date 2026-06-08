@@ -729,6 +729,7 @@ const HumanMockInterviewPage = () => {
                 onClose={() => setShowCreditModal(false)}
                 onConfirm={handleConfirmStart}
                 isStarting={isSubmitting}
+                mode="purchased_human_only"
             />
         </div>
     );

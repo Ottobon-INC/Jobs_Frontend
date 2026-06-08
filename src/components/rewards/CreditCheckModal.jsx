@@ -40,8 +40,14 @@ const ConfettiParticle = ({ index }) => {
 
 /* ─── State A: Inline Confirmation Panel ─── */
 export const CreditCheckPanel = ({ onConfirm, onCancel, isStarting, mode = 'all' }) => {
-  const { totalCreditsRemaining, purchasedHumanCreditsRemaining, hasFreeTrialRemaining } = useInterviewCreditsContext();
-  const baseCredits = mode === 'purchased_human_only' ? purchasedHumanCreditsRemaining : totalCreditsRemaining;
+  const { totalCreditsRemaining, freeCreditsRemaining, freeMatchCreditsRemaining = 5, purchasedCreditsRemaining, purchasedHumanCreditsRemaining, purchasedMatchCreditsRemaining = 0, hasFreeTrialRemaining } = useInterviewCreditsContext();
+  const baseCredits = mode === 'purchased_human_only' 
+    ? purchasedHumanCreditsRemaining 
+    : mode === 'ai_interview_only' || mode === 'ai_only' 
+      ? freeCreditsRemaining + purchasedCreditsRemaining 
+      : mode === 'ai_match_only'
+        ? freeMatchCreditsRemaining + purchasedMatchCreditsRemaining
+        : totalCreditsRemaining;
   const remainingAfter = Math.max(0, baseCredits - 1);
 
   return (
@@ -55,11 +61,13 @@ export const CreditCheckPanel = ({ onConfirm, onCancel, isStarting, mode = 'all'
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center flex-wrap gap-2 text-[11px] uppercase tracking-wider text-zinc-400 font-bold">
-            <span>This will use 1 interview credit. You'll have</span>
+            <span>This will use 1 credit. You'll have</span>
             <strong className="text-zinc-900 font-black">{remainingAfter}</strong>
             <span>{remainingAfter === 1 ? 'credit' : 'credits'} remaining.</span>
 
-            {mode !== 'purchased_human_only' && hasFreeTrialRemaining && (
+            {mode !== 'purchased_human_only' && (
+              mode === 'ai_match_only' ? freeMatchCreditsRemaining > 0 : hasFreeTrialRemaining
+            ) && (
               <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2.5 py-0.5 rounded-full border border-emerald-100 uppercase ml-1.5 shrink-0">
                 Free trial credit
               </span>
@@ -80,7 +88,7 @@ export const CreditCheckPanel = ({ onConfirm, onCancel, isStarting, mode = 'all'
             disabled={isStarting}
             className="text-[10px] uppercase tracking-widest font-bold text-white bg-zinc-900 rounded-full px-5 py-3 hover:bg-zinc-800 active:scale-95 transition-all shadow-md shadow-zinc-900/10 disabled:opacity-40"
           >
-            {isStarting ? 'Deducting...' : 'Start Interview'}
+            {isStarting ? 'Deducting...' : 'Start'}
           </button>
         </div>
       </div>
@@ -89,11 +97,21 @@ export const CreditCheckPanel = ({ onConfirm, onCancel, isStarting, mode = 'all'
 };
 
 /* ─── Centered Modal Dialogs (State C & State D) ─── */
-export const CreditCheckModal = ({ isOpen, onClose, viewState, onConfirm, isStarting }) => {
+export const CreditCheckModal = ({ isOpen, onClose, viewState, onConfirm, isStarting, mode = 'all' }) => {
   const navigate = useNavigate();
   const modalRef = useRef(null);
-  const { totalUsed } = useInterviewCreditsContext();
+  const { totalUsed, aiInterviewsUsed = 0, humanInterviewsUsed = 0, transactions = [] } = useInterviewCreditsContext();
   const [coins, setCoins] = useState(0);
+
+  const matchUsed = transactions.filter(t => t.type === 'interview_used' && t.description && t.description.toLowerCase().includes('check match')).length;
+
+  const displayUsed = mode === 'ai_match_only' 
+    ? matchUsed 
+    : mode === 'ai_interview_only' || mode === 'ai_only'
+      ? aiInterviewsUsed 
+      : mode === 'purchased_human_only'
+        ? humanInterviewsUsed
+        : totalUsed;
 
   // Fetch coins balance dynamically when Paywall view is loaded
   useEffect(() => {
@@ -165,18 +183,20 @@ export const CreditCheckModal = ({ isOpen, onClose, viewState, onConfirm, isStar
             </div>
 
             <h3 id="paywall-title" className="text-xl font-bold text-zinc-900 tracking-tight">
-              No Interview Credits Remaining
+              {mode === 'ai_match_only' ? 'No Check Match Credits Remaining' : 'No Interview Credits Remaining'}
             </h3>
             
             <p className="text-sm text-zinc-500 mt-3 leading-relaxed">
-              You've used all your interview credits. Purchase more credits from the Reward Shop using your earned coins, or continue exploring jobs to earn more.
+              {mode === 'ai_match_only'
+                ? "You've used all your Check Match credits. Purchase more Check Match credits from the Reward Shop using your earned coins, or continue exploring jobs to earn more."
+                : "You've used all your interview credits. Purchase more credits from the Reward Shop using your earned coins, or continue exploring jobs to earn more."}
             </p>
 
             {/* Stats Dashboard */}
             <div className="grid grid-cols-3 gap-3 mt-6">
               <div className="bg-zinc-50 rounded-2xl p-3 border border-zinc-100">
                 <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Used</div>
-                <div className="text-lg font-black text-zinc-800 mt-1">{totalUsed}</div>
+                <div className="text-lg font-black text-zinc-800 mt-1">{displayUsed}</div>
               </div>
               <div className="bg-zinc-50 rounded-2xl p-3 border border-zinc-100">
                 <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Coins</div>

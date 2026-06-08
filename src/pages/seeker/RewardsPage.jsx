@@ -111,14 +111,20 @@ const RewardsPage = () => {
       const isAiMock = !isHumanMock && (
         item.slug === 'mock_interview' || 
         lowerName.includes('mock interview') || 
-        lowerDesc.includes('mock interview') ||
-        lowerName.includes('credit') ||
-        lowerName.includes('match')
+        lowerDesc.includes('mock interview')
+      );
+      const isAiMatch = !isHumanMock && !isAiMock && (
+        item.slug === 'check_match' || 
+        lowerName.includes('match') ||
+        lowerDesc.includes('match')
       );
       
       if (isAiMock) {
-        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai');
-        toast.success(`Added 1 AI credit to your balance!`);
+        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_interview');
+        toast.success(`Added 1 AI Interview credit to your balance!`);
+      } else if (isAiMatch) {
+        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_match');
+        toast.success(`Added 1 AI Match credit to your balance!`);
       } else if (isHumanMock) {
         addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'human');
         toast.success(`Added 1 Human interview credit to your balance!`);

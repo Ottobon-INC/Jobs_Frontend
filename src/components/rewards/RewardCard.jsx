@@ -70,7 +70,7 @@ const categoryConfig = {
   },
 };
 
-const RewardCard = ({ item, canAfford, isLocked, onRedeem, index }) => {
+const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemedCount = 0 }) => {
   const config = categoryConfig[item.category] || categoryConfig.Boosts;
   const IconComp = item.grantType === 'interview_credits' ? MicrophoneIcon : (config.icon || TagIcon);
 
@@ -130,7 +130,7 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index }) => {
           <div className="flex items-center gap-2 flex-wrap text-[10px] text-[#313851]/40 font-bold uppercase tracking-wider">
             <span>{item.expiry_days || 30} Days Expiry</span>
             <span className="text-[#C2CBD3]">·</span>
-            <span className="text-[#313851]/60">{item.redeemed || 0} redeemed</span>
+            <span className="text-[#313851]/60">{seekerRedeemedCount} redeemed</span>
           </div>
         </div>
       </div>

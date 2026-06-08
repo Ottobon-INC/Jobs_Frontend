@@ -89,6 +89,7 @@ const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
               return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
             });
             const canAfford = isClamReward ? true : coinBalance >= item.cost;
+            const seekerRedeemedCount = history.filter(h => String(h.reward_item_id) === String(item.id)).length;
             return (
               <RewardCard
                 key={item.id}
@@ -97,6 +98,7 @@ const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
                 canAfford={canAfford}
                 isLocked={isLocked}
                 onRedeem={onRedeem}
+                seekerRedeemedCount={seekerRedeemedCount}
               />
             );
           })}

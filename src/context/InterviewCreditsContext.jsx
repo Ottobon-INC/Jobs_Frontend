@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useRef } from 'react';
 import { useInterviewCredits } from '../hooks/useInterviewCredits';
 import { useAuth } from '../hooks/useAuth';
 import { getMyRedemptions } from '../api/rewardsApi';
@@ -7,17 +7,25 @@ import { getMyMockInterviews } from '../api/mockInterviewApi';
 const InterviewCreditsContext = createContext(null);
 
 export const InterviewCreditsProvider = ({ children }) => {
-  const credits = useInterviewCredits();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
+  const userId = user?.id || session?.user?.id || null;
+  const credits = useInterviewCredits(userId);
 
   // Seed on mount
   useEffect(() => {
     credits.initializeCredits();
   }, []);
 
+  // Use a ref to store the latest reconcileCredits function
+  // to avoid infinite re-render loops since reconcileCredits updates state
+  const reconcileCreditsRef = useRef(credits.reconcileCredits);
+  useEffect(() => {
+    reconcileCreditsRef.current = credits.reconcileCredits;
+  }, [credits.reconcileCredits]);
+
   // Dynamically reconcile purchased credits count with backend redemptions and completed interviews
   useEffect(() => {
-    if (session?.user?.id) {
+    if (userId) {
       Promise.all([
         getMyRedemptions(), 
         getMyMockInterviews(),
@@ -29,13 +37,13 @@ export const InterviewCreditsProvider = ({ children }) => {
           const humanInterviews = humanInterviewsRes || [];
           
           // Pass AI and Human mock interviews separately to handle free credit deduction correctly
-          credits.reconcileCredits(redemptions, aiInterviews, humanInterviews);
+          reconcileCreditsRef.current(redemptions, aiInterviews, humanInterviews);
         })
         .catch((err) => {
           console.error('[InterviewCredits Provider] Failed to auto-reconcile with backend:', err);
         });
     }
-  }, [session, credits.reconcileCredits]);
+  }, [userId]);
 
   return (
     <InterviewCreditsContext.Provider value={credits}>
