@@ -58,51 +58,83 @@ const JobFeedPage = () => {
     }, []);
 
     useEffect(() => {
-        const fetchJobs = async () => {
+        let isMounted = true;
+        const fetchAllJobs = async () => {
+            const pageSize = 100;
+            let currentSkip = 0;
+            let allJobs = [];
+            let hasMoreOnServer = true;
+
             try {
-                const data = await getJobFeed();
-
-                // Clean job list using backend-provided fields
-                const cleanedData = data.map((job) => {
-                    // Use backend-normalized location directly, with title-based fallback
-                    let loc = job.location || 'Remote';
-
-                    // Category inference from title (backend doesn't provide category yet)
-                    let cat = job.category;
-                    const validCats = ['Engineering', 'Data Science', 'Design', 'Product', 'Marketing', 'Operations', 'Finance'];
-                    if (!cat || !validCats.includes(cat)) {
-                        const titleLower = (job.title || '').toLowerCase();
-                        if (titleLower.includes('software') || titleLower.includes('developer') || titleLower.includes('engineer') || titleLower.includes('hardware')) cat = 'Engineering';
-                        else if (titleLower.includes('data') || titleLower.includes('analyst')) cat = 'Data Science';
-                        else if (titleLower.includes('design') || titleLower.includes('ui/ux')) cat = 'Design';
-                        else if (titleLower.includes('product') || titleLower.includes('manager')) cat = 'Product';
-                        else if (titleLower.includes('market')) cat = 'Marketing';
-                        else cat = 'Engineering';
+                while (hasMoreOnServer && isMounted) {
+                    const data = await getJobFeed(currentSkip, pageSize);
+                    if (!data || data.length === 0) {
+                        hasMoreOnServer = false;
+                        break;
                     }
 
-                    return {
-                        ...job,
-                        cleanLocation: loc,
-                        category: cat,
-                        experience_level: job.experience_range || 'Not specified',
-                        key_skills: job.key_skills || getKeySkills(job, 8),
-                    };
-                });
-                setJobs(cleanedData);
+                    // Clean job list using backend-provided fields
+                    const cleanedBatch = data.map((job) => {
+                        // Use backend-normalized location directly, with title-based fallback
+                        let loc = job.location || 'Remote';
+
+                        // Category inference from title (backend doesn't provide category yet)
+                        let cat = job.category;
+                        const validCats = ['Engineering', 'Data Science', 'Design', 'Product', 'Marketing', 'Operations', 'Finance'];
+                        if (!cat || !validCats.includes(cat)) {
+                            const titleLower = (job.title || '').toLowerCase();
+                            if (titleLower.includes('software') || titleLower.includes('developer') || titleLower.includes('engineer') || titleLower.includes('hardware')) cat = 'Engineering';
+                            else if (titleLower.includes('data') || titleLower.includes('analyst')) cat = 'Data Science';
+                            else if (titleLower.includes('design') || titleLower.includes('ui/ux')) cat = 'Design';
+                            else if (titleLower.includes('product') || titleLower.includes('manager')) cat = 'Product';
+                            else if (titleLower.includes('market')) cat = 'Marketing';
+                            else cat = 'Engineering';
+                        }
+
+                        return {
+                            ...job,
+                            cleanLocation: loc,
+                            category: cat,
+                            experience_level: job.experience_range || 'Not specified',
+                            key_skills: job.key_skills || getKeySkills(job, 8),
+                        };
+                    });
+
+                    allJobs = [...allJobs, ...cleanedBatch];
+                    setJobs(allJobs);
+
+                    if (data.length < pageSize) {
+                        hasMoreOnServer = false;
+                    } else {
+                        currentSkip += pageSize;
+                    }
+
+                    // Once the first batch of 100 is loaded, dismiss the full page loader
+                    if (currentSkip === pageSize) {
+                        setLoading(false);
+                    }
+                }
             } catch (err) {
                 console.error('Failed to fetch jobs, using fallback data:', err);
-                // Clean mock data if necessary
-                const cleanedFallback = MOCK_JOBS.map(job => ({
-                    ...job,
-                    cleanLocation: job.location,
-                    experience_level: job.experience_range
-                }));
-                setJobs(cleanedFallback);
+                if (allJobs.length === 0) {
+                    // Clean mock data if necessary
+                    const cleanedFallback = MOCK_JOBS.map(job => ({
+                        ...job,
+                        cleanLocation: job.location,
+                        experience_level: job.experience_range
+                    }));
+                    setJobs(cleanedFallback);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
-        fetchJobs();
+        fetchAllJobs();
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Dynamic Options Derivation based perfectly off scraped UI data
