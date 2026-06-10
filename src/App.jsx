@@ -10,6 +10,7 @@ import Loader from './components/ui/Loader';
 import { FloatingNewGradWidget } from './components/new-grad/FloatingNewGradWidget';
 import PrivacyLockOverlay from './components/auth/PrivacyLockOverlay';
 import AnalyticsTracker from './components/AnalyticsTracker';
+import CookieConsentBanner from './components/shared/CookieConsentBanner';
 
 import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
 
@@ -79,6 +80,7 @@ const GlobalWidgets = () => {
       <>
         <FloatingNewGradWidget isAuthenticated={isAuthenticated} />
         <PrivacyLockOverlay />
+        <CookieConsentBanner />
       </>
     );
   } catch (err) {

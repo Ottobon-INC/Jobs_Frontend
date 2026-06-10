@@ -9,6 +9,7 @@ import { MockInterviewSection } from '../../components/landing/MockInterviewSect
 import { BlogHighlights } from '../../components/landing/BlogHighlights';
 import { UpskillSection } from '../../components/landing/UpskillSection';
 import { NewGradSection } from '../../components/landing/NewGradSection';
+import { TestimonialsSection } from '../../components/landing/TestimonialsSection';
 import { Link } from 'react-router-dom';
 
 const ROBOT_SCENE_URL = "https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode";
@@ -143,6 +144,10 @@ export default function LandingPage() {
 
             <div id="blog-highlights" className="section-optimize">
                 <BlogHighlights />
+            </div>
+
+            <div id="testimonials" className="section-optimize">
+                <TestimonialsSection />
             </div>
 
             <div id="footer">

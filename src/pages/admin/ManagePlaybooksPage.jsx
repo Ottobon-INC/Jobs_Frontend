@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit2, Trash2, ExternalLink, Building2, MapPin, Briefcase } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, ExternalLink, Building2, MapPin, Briefcase, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPlaybooks, deletePlaybook } from '../../api/playbooksApi';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
@@ -47,6 +47,16 @@ const ManagePlaybooksPage = () => {
         pb.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const stats = useMemo(() => {
+        const totalViews = playbooks.reduce((acc, pb) => acc + (pb.views_count || 0), 0);
+        const totalPlaybooks = playbooks.length;
+        const sorted = [...playbooks].sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
+        const topPerforming = sorted[0]?.name || 'N/A';
+        const topViews = sorted[0]?.views_count || 0;
+        
+        return { totalViews, totalPlaybooks, topPerforming, topViews };
+    }, [playbooks]);
+
     return (
         <div className="min-h-screen bg-[#F6F3ED] p-8">
             <div className="max-w-7xl mx-auto">
@@ -64,6 +74,28 @@ const ManagePlaybooksPage = () => {
                         Add New Playbook
                     </button>
                 </div>
+
+                {/* Analytics summary */}
+                {!loading && playbooks.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Total Playbooks</p>
+                            <p className="text-3xl font-black text-[#313851]">{stats.totalPlaybooks}</p>
+                        </div>
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Total Views</p>
+                            <p className="text-3xl font-black text-green-600 flex items-center gap-2">
+                                <Eye size={20} className="text-green-600 animate-pulse" />
+                                {stats.totalViews.toLocaleString()}
+                            </p>
+                        </div>
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Top Performing Playbook</p>
+                            <p className="text-base font-black text-[#313851] truncate">{stats.topPerforming}</p>
+                            <p className="text-[10px] text-zinc-400 font-bold mt-1 uppercase tracking-wider">{stats.topViews} views</p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Search Bar */}
                 <div className="relative mb-8">
@@ -131,9 +163,15 @@ const ManagePlaybooksPage = () => {
                                             {pb.hiring_zone}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-[#313851]/50 text-xs font-bold uppercase tracking-widest mb-4">
-                                        <Briefcase size={12} />
-                                        {pb.industry || 'General'}
+                                    <div className="flex items-center gap-4 text-[#313851]/50 text-xs font-bold uppercase tracking-widest mb-4">
+                                        <span className="flex items-center gap-1.5">
+                                            <Briefcase size={12} />
+                                            {pb.industry || 'General'}
+                                        </span>
+                                        <span className="flex items-center gap-1.5 border-l border-[#313851]/10 pl-4">
+                                            <Eye size={12} className="text-[#313851]/40" />
+                                            {pb.views_count || 0} Views
+                                        </span>
                                     </div>
 
                                     <div className="flex items-center justify-between pt-4 border-t border-[#313851]/5">

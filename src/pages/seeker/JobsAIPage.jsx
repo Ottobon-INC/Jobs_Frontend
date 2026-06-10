@@ -264,7 +264,7 @@ const JobsAIPage = () => {
                         <motion.div 
                             key="search-form"
                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                            className="bg-white rounded-[2.5rem] p-10 shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20"
+                            className="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20"
                         >
                             {/* Progress Indicator */}
                             <div className="flex items-center mb-12 pb-8 border-b border-[#F6F3ED]">
@@ -430,7 +430,7 @@ const JobsAIPage = () => {
                         <motion.div 
                             key="link-form"
                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                            className="bg-white rounded-[2.5rem] p-12 shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20"
+                            className="bg-white rounded-[2.5rem] p-6 sm:p-12 shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20"
                         >
                             <div className="text-center mb-10">
                                 <div className="w-20 h-20 bg-[#F6F3ED] rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-[#313851]">
@@ -499,7 +499,7 @@ const JobsAIPage = () => {
                     {/* Step 4: Results */}
                     {step === 4 && (
                         <motion.div key="results" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-                            <div className="flex justify-between items-end mb-10">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
                                 <div>
                                     <h2 className="text-4xl font-black uppercase tracking-tighter">Matches Found</h2>
                                     <p className="text-[10px] font-black text-[#C2CBD3] uppercase tracking-[0.4em] mt-3">Precision Search Results</p>
@@ -519,11 +519,11 @@ const JobsAIPage = () => {
                                         <motion.div 
                                             key={idx}
                                             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }}
-                                            className="bg-white rounded-[2rem] p-8 shadow-sm border border-[#C2CBD3]/10 hover:shadow-xl hover:shadow-[#313851]/5 transition-all group relative overflow-hidden"
+                                            className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-[#C2CBD3]/10 hover:shadow-xl hover:shadow-[#313851]/5 transition-all group relative overflow-hidden"
                                         >
                                             <div className="absolute top-0 left-0 w-2 h-full bg-[#313851] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                            <div className="flex flex-col md:flex-row gap-8 items-center">
-                                                <div className="w-24 h-24 bg-[#F6F3ED] rounded-[1.5rem] flex flex-col items-center justify-center border border-[#C2CBD3]/20 shrink-0">
+                                            <div className="flex flex-col md:flex-row gap-8 items-stretch md:items-center">
+                                                <div className="w-24 h-24 bg-[#F6F3ED] rounded-[1.5rem] flex flex-col items-center justify-center border border-[#C2CBD3]/20 shrink-0 self-center">
                                                     <span className="text-3xl font-black text-[#313851]">{job.match_score}%</span>
                                                     <span className="text-[8px] font-black uppercase tracking-widest text-[#C2CBD3]">Match</span>
                                                 </div>
