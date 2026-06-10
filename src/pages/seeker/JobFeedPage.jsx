@@ -60,7 +60,7 @@ const JobFeedPage = () => {
     useEffect(() => {
         let isMounted = true;
         const fetchAllJobs = async () => {
-            const pageSize = 100;
+            const pageSize = 20;
             let currentSkip = 0;
             let allJobs = [];
             let hasMoreOnServer = true;
