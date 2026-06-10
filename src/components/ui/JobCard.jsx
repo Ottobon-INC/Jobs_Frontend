@@ -106,8 +106,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                     <CompanyLogo 
                         company={{ 
                             name: job.company_name, 
-                            logo: job.company_logo,
-                            slug: job.company_name?.toLowerCase().replace(/\s+/g, '-')
+                            logo: job.company_logo
                         }} 
                         className="w-12 h-12 sm:w-16 sm:h-16 group-hover/job:scale-110 transition-transform duration-500" 
                     />

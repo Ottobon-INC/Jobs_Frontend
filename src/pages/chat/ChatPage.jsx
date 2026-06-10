@@ -17,6 +17,21 @@ const ChatPage = () => {
     const [sessions, setSessions] = useState([]);
     const [sessionId, setSessionId] = useState(() => location.state?.sessionId || null);
     const [loadingList, setLoadingList] = useState(true);
+    const [creatingSession, setCreatingSession] = useState(false);
+
+    const handleStartNewChat = async () => {
+        if (creatingSession) return;
+        setCreatingSession(true);
+        try {
+            const newSession = await createChatSession(null);
+            setSessions(prev => [newSession, ...prev]);
+            setSessionId(newSession.id);
+        } catch (err) {
+            console.error("Failed to start new chat", err);
+        } finally {
+            setCreatingSession(false);
+        }
+    };
 
     useEffect(() => {
         if (!user?.id) return;
@@ -81,11 +96,19 @@ const ChatPage = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-white/80 backdrop-blur-xl card border border-zinc-100 flex flex-col h-full overflow-hidden shadow-sm"
                     >
-                        <div className="p-6 border-b border-zinc-50 bg-zinc-50/30">
+                        <div className="p-6 border-b border-zinc-50 bg-zinc-50/30 flex items-center justify-between">
                             <h2 className="text-[11px] font-bold text-zinc-400 flex items-center gap-3 uppercase tracking-[0.3em]">
                                 <MessageSquare size={16} />
                                 Active Sessions
                             </h2>
+                            <button
+                                onClick={handleStartNewChat}
+                                disabled={creatingSession}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#313851] hover:bg-[#252b3e] active:scale-95 text-white font-extrabold text-[9px] rounded-xl border border-transparent transition-all shadow-sm shadow-zinc-900/5 hover:shadow-md hover:-translate-y-0.5 tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+                            >
+                                <Plus size={12} className="stroke-[3]" />
+                                New Chat
+                            </button>
                         </div>
 
                         <div className="overflow-y-auto p-4 space-y-2">
