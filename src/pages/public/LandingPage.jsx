@@ -9,6 +9,7 @@ import { MockInterviewSection } from '../../components/landing/MockInterviewSect
 import { BlogHighlights } from '../../components/landing/BlogHighlights';
 import { UpskillSection } from '../../components/landing/UpskillSection';
 import { NewGradSection } from '../../components/landing/NewGradSection';
+import { TestimonialsSection } from '../../components/landing/TestimonialsSection';
 import { Link } from 'react-router-dom';
 import useDocumentMetadata from '../../hooks/useDocumentMetadata';
 
@@ -162,6 +163,10 @@ export default function LandingPage() {
             <section id="blog-highlights" className="section-optimize">
                 <BlogHighlights />
             </section>
+
+            <div id="testimonials" className="section-optimize">
+                <TestimonialsSection />
+            </div>
 
             <footer id="footer">
                 <LandingFooter />

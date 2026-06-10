@@ -16,9 +16,10 @@ import {
     Calendar,
     Star,
     FileText,
-    MapPin
+    MapPin,
+    Eye
 } from 'lucide-react';
-import { fetchPlaybookBySlug } from '../../api/playbooksApi';
+import { fetchPlaybookBySlug, recordPlaybookView } from '../../api/playbooksApi';
 import { CompanyDetailContent } from '../../components/new-grad/CompanyDetailContent';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
 import CompanyDashboardSidebar from '../../components/new-grad/CompanyDashboardSidebar';
@@ -38,6 +39,11 @@ const NewGradDetailPage = () => {
                 setLoading(true);
                 const data = await fetchPlaybookBySlug(slug);
                 setCompany(data);
+                if (data && data.id) {
+                    recordPlaybookView(data.id).catch(err => 
+                        console.error('Failed to record playbook view:', err)
+                    );
+                }
             } catch (error) {
                 console.error('Failed to load company, using fallback data:', error);
                 const fallback = COMPANIES.find(c => c.slug === slug);
@@ -101,8 +107,8 @@ const NewGradDetailPage = () => {
                                 ))}
                             </div>
                         </div>
-                        <p className="text-sm md:text-base text-white/80 mb-3 font-semibold tracking-wide uppercase">
-                            Candidate Insights • {new Date().getFullYear()} Playbook
+                        <p className="text-sm md:text-base text-white/80 mb-3 font-semibold tracking-wide uppercase flex items-center gap-2 justify-center md:justify-start">
+                            Candidate Insights • {new Date().getFullYear()} Playbook • <Eye size={16} className="inline text-white/60 animate-pulse shrink-0" /> {company.views_count || 0} Views
                         </p>
                         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">{company.name}</h1>
                         <p className="text-xl text-white/90 font-medium max-w-3xl leading-relaxed">

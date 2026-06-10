@@ -30,3 +30,8 @@ export const deletePlaybook = async (id) => {
     const response = await api.delete(`/playbooks/${id}`);
     return response.data;
 };
+
+export const recordPlaybookView = async (id) => {
+    const response = await api.post(`/playbooks/${id}/view`);
+    return response.data;
+};

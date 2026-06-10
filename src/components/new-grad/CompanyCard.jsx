@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Layers, DollarSign, TrendingUp } from 'lucide-react';
+import { Layers, DollarSign, TrendingUp, Eye } from 'lucide-react';
 import { CompanyLogo } from './CompanyLogo';
 
 export const CompanyCard = ({ company }) => {
@@ -28,8 +28,14 @@ export const CompanyCard = ({ company }) => {
                     <div className={`px-4 py-2 ${difficultyColors[company.difficulty]} text-white rounded-full text-[9px] font-black uppercase tracking-[0.15em] shadow-lg shadow-black/10`}>
                         {company.difficulty}
                     </div>
-                    <div className="px-3 py-1.5 bg-white text-[var(--color-primary)]/40 rounded-full text-[8px] font-black uppercase tracking-widest border border-[var(--color-primary)]/10 shadow-sm">
-                        {company.hiring_zone || company.hiringZone}
+                    <div className="flex items-center gap-1.5">
+                        <div className="px-3 py-1.5 bg-white text-[var(--color-primary)]/40 rounded-full text-[8px] font-black uppercase tracking-widest border border-[var(--color-primary)]/10 shadow-sm">
+                            {company.hiring_zone || company.hiringZone}
+                        </div>
+                        <div className="px-3 py-1.5 bg-white text-[var(--color-primary)]/75 rounded-full text-[10px] font-black uppercase tracking-widest border border-[var(--color-primary)]/20 shadow-sm flex items-center gap-1">
+                            <Eye size={12} className="text-[var(--color-primary)]/60" />
+                            <span>{company.views_count || company.viewsCount || 0}</span>
+                        </div>
                     </div>
                 </div>
             </div>
