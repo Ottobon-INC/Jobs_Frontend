@@ -12,6 +12,7 @@ import JobOverviewCard from '../../components/ui/JobOverviewCard';
 import { getKeySkills, getRoleOverview } from '../../utils/jobOverview';
 import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import useDocumentMetadata from '../../hooks/useDocumentMetadata';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (
     <motion.div
@@ -41,6 +42,45 @@ const JobDetailPage = () => {
     const [isSummarizing, setIsSummarizing] = useState(false);
     const [genZSummary, setGenZSummary] = useState(null);
     const [isSpecExpanded, setIsSpecExpanded] = useState(false);
+
+    useDocumentMetadata(job ? {
+        title: `${job.cleanTitle} at ${job.company_name || 'Company'} | Ottobon Jobs`,
+        description: job.description_raw || job.role_overview || `Apply for ${job.cleanTitle} at ${job.company_name} on Ottobon Jobs.`,
+        openGraph: {
+            title: `${job.cleanTitle} at ${job.company_name || 'Company'} | Ottobon Jobs`,
+            description: job.description_raw || job.role_overview || `Apply for ${job.cleanTitle} at ${job.company_name} on Ottobon Jobs.`,
+            type: "website",
+            url: typeof window !== 'undefined' ? window.location.href : '',
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image-jobs.png` : ''
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${job.cleanTitle} at ${job.company_name || 'Company'} | Ottobon Jobs`,
+            description: job.description_raw || job.role_overview || `Apply for ${job.cleanTitle} at ${job.company_name} on Ottobon Jobs.`,
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image-jobs.png` : ''
+        },
+        jsonLd: {
+            "@context": "https://schema.org",
+            "@type": "JobPosting",
+            "title": job.cleanTitle,
+            "description": job.description || job.role_overview || job.description_raw,
+            "datePosted": job.posted_at || job.created_at || new Date().toISOString(),
+            "hiringOrganization": {
+                "@type": "Organization",
+                "name": job.company_name || 'Company',
+                "sameAs": job.company_website || ''
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": job.cleanLocation || 'Remote',
+                    "addressCountry": "IN"
+                }
+            },
+            "employmentType": job.work_mode === "remote" ? "TELECOMMUTE" : "FULL_TIME"
+        }
+    } : {});
 
     const fetchJob = async (isRefresh = false) => {
         try {

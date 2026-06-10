@@ -10,10 +10,29 @@ import { BlogHighlights } from '../../components/landing/BlogHighlights';
 import { UpskillSection } from '../../components/landing/UpskillSection';
 import { NewGradSection } from '../../components/landing/NewGradSection';
 import { Link } from 'react-router-dom';
+import useDocumentMetadata from '../../hooks/useDocumentMetadata';
 
 const ROBOT_SCENE_URL = "https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode";
 
 export default function LandingPage() {
+    useDocumentMetadata({
+        title: "Unlock your ultimate career potential | Ottobon Jobs",
+        description: "Access exclusive roles, track hiring timelines, and step into the career you've been building toward.",
+        openGraph: {
+            title: "Unlock your ultimate career potential | Ottobon Jobs",
+            description: "Access exclusive roles, track hiring timelines, and step into the career you've been building toward.",
+            type: "website",
+            url: typeof window !== 'undefined' ? window.location.origin : '',
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image.png` : ''
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "Unlock your ultimate career potential | Ottobon Jobs",
+            description: "Access exclusive roles, track hiring timelines, and step into the career you've been building toward.",
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image.png` : ''
+        }
+    });
+
     const scrollToCategories = () => {
         const el = document.getElementById('categories');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -22,7 +41,7 @@ export default function LandingPage() {
     return (
         <main className="bg-[#F6F3ED]">
             {/* ── Hero Section ─────────────────────────── */}
-            <div className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-[#313851]">
+            <header className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-[#313851]">
                 <div className="pointer-events-none absolute inset-0">
                     <BackgroundPaths />
                 </div>
@@ -42,8 +61,6 @@ export default function LandingPage() {
                         Sign Up
                     </Link>
                 </div>
-
-                {/* No gradient fade into next section */}
 
                 {/* ── Hero Content ───────────────────── */}
                 <div className="absolute z-30 top-0 left-0 right-0 flex flex-col items-center pt-16 px-6">
@@ -112,42 +129,43 @@ export default function LandingPage() {
                         className="w-full h-full"
                     />
                 </div>
-            </div>
+            </header>
 
-            {/* Removed Stats Section */}
-            <NewGradSection />
+            <section id="new-grad">
+                <NewGradSection />
+            </section>
 
-            <div id="path-to-hired" className="section-optimize">
+            <section id="path-to-hired" className="section-optimize">
                 <PathToHired />
-            </div>
+            </section>
 
-            <div id="featured-jobs" className="section-optimize">
+            <section id="featured-jobs" className="section-optimize">
                 <FeaturedJobs />
-            </div>
+            </section>
 
-            <div id="upskill" className="section-optimize">
+            <section id="upskill" className="section-optimize">
                 <UpskillSection />
-            </div>
+            </section>
 
-            <div id="benefits" className="section-optimize">
+            <section id="benefits" className="section-optimize">
                 <BenefitsSection />
-            </div>
+            </section>
 
-            <div id="categories" className="section-optimize">
+            <section id="categories" className="section-optimize">
                 <CategoriesSection />
-            </div>
+            </section>
 
-            <div id="mock-interview" className="section-optimize">
+            <section id="mock-interview" className="section-optimize">
                 <MockInterviewSection />
-            </div>
+            </section>
 
-            <div id="blog-highlights" className="section-optimize">
+            <section id="blog-highlights" className="section-optimize">
                 <BlogHighlights />
-            </div>
+            </section>
 
-            <div id="footer">
+            <footer id="footer">
                 <LandingFooter />
-            </div>
+            </footer>
         </main>
     );
 }

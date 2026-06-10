@@ -8,8 +8,27 @@ import { CompanyCard } from '../../components/new-grad/CompanyCard';
 import { fetchPlaybooks } from '../../api/playbooksApi';
 import Loader from '../../components/ui/Loader';
 import { COMPANIES } from '../../data/newGradData';
+import useDocumentMetadata from '../../hooks/useDocumentMetadata';
 
 const NewGradPage = () => {
+    useDocumentMetadata({
+        title: "New Grad Launchpad - Company Playbooks | Ottobon Jobs",
+        description: "Browse interview rounds, compensation packages, and selection strategies for leading companies hiring new grads.",
+        openGraph: {
+            title: "New Grad Launchpad - Company Playbooks | Ottobon Jobs",
+            description: "Browse interview rounds, compensation packages, and selection strategies for leading companies hiring new grads.",
+            type: "website",
+            url: typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '',
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image-newgrad.png` : ''
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "New Grad Launchpad - Company Playbooks | Ottobon Jobs",
+            description: "Browse interview rounds, compensation packages, and selection strategies for leading companies hiring new grads.",
+            image: typeof window !== 'undefined' ? `${window.location.origin}/og-image-newgrad.png` : ''
+        }
+    });
+
     const [searchQuery, setSearchQuery] = useState('');
     const [category, setCategory] = useState('All Categories');
     const [role, setRole] = useState('All Roles');
@@ -60,7 +79,7 @@ const NewGradPage = () => {
     return (
         <div className="min-h-screen bg-[var(--color-background-soft)]">
             {/* Header Navigation */}
-            <div className="bg-[#1a1f33] py-4 px-6 flex items-center justify-between border-b border-white/5">
+            <header className="bg-[#1a1f33] py-4 px-6 flex items-center justify-between border-b border-white/5">
                 <Link 
                     to="/" 
                     className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
@@ -71,7 +90,7 @@ const NewGradPage = () => {
                     <Sparkles size={14} className="text-amber-400" />
                     <span className="text-[10px] font-black uppercase tracking-[0.3em]">New Grad Launchpad</span>
                 </div>
-            </div>
+            </header>
 
             <NewGradHero onSelectCompany={handleCompanySelect} />
             

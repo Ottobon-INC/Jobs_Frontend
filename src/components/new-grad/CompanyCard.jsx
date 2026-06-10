@@ -12,7 +12,7 @@ export const CompanyCard = ({ company }) => {
     };
 
     return (
-        <motion.div
+        <motion.article
             layout
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -60,6 +60,6 @@ export const CompanyCard = ({ company }) => {
             >
                 View Playbook
             </Link>
-        </motion.div>
+        </motion.article>
     );
 };

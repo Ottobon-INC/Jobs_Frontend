@@ -6,12 +6,52 @@ import remarkGfm from 'remark-gfm';
 import Loader from '../../components/ui/Loader';
 import { ArrowLeft, Calendar, Share2, AlertCircle, Sparkles, ExternalLink, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
+import useDocumentMetadata from '../../hooks/useDocumentMetadata';
 
 const BlogPostPage = () => {
     const { slug } = useParams();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useDocumentMetadata(post ? {
+        title: `${post.title} | Ottobon Insights`,
+        description: post.summary || (post.description ? post.description.substring(0, 150) + "..." : "Read this verified insights report on Ottobon Jobs."),
+        openGraph: {
+            title: `${post.title} | Ottobon Insights`,
+            description: post.summary || (post.description ? post.description.substring(0, 150) + "..." : "Read this verified insights report on Ottobon Jobs."),
+            type: "article",
+            url: typeof window !== 'undefined' ? window.location.href : '',
+            image: post.image_url || (typeof window !== 'undefined' ? `${window.location.origin}/og-image-insights.png` : '')
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${post.title} | Ottobon Insights`,
+            description: post.summary || (post.description ? post.description.substring(0, 150) + "..." : "Read this verified insights report on Ottobon Jobs."),
+            image: post.image_url || (typeof window !== 'undefined' ? `${window.location.origin}/og-image-insights.png` : '')
+        },
+        jsonLd: {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": post.title,
+            "image": post.image_url ? [post.image_url] : [],
+            "datePublished": post.created_at,
+            "description": post.summary || (post.description ? post.description.substring(0, 150) + "..." : ""),
+            "author": {
+                "@type": "Organization",
+                "name": "Ottobon Editorial Board",
+                "url": typeof window !== 'undefined' ? window.location.origin : ''
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Ottobon Jobs",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": typeof window !== 'undefined' ? `${window.location.origin}/logo.png` : ''
+                }
+            }
+        }
+    } : {});
 
     useEffect(() => {
         const fetchPost = async () => {

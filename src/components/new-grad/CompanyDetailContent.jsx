@@ -99,6 +99,72 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* AEO Optimization Section: Executive Summary & FAQ Boxes */}
+                        <hr className="border-zinc-100/80 my-10" />
+                        <section className="space-y-10" id="aeo-overview-insights">
+                            <div>
+                                <h4 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                    <Sparkles size={14} className="text-amber-500" /> Playbook Executive Summary
+                                </h4>
+                                <div className="bg-zinc-50 border border-zinc-100 rounded-3xl p-6 md:p-8 space-y-4">
+                                    <p className="text-sm font-semibold text-zinc-500 leading-relaxed">
+                                        Here is a structured overview of the <strong>{company.name}</strong> campus placement playbook, optimized for quick AI extraction and candidate summary.
+                                    </p>
+                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold text-[#313851]">
+                                        <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl">
+                                            <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Industry:</span> {company.industry || 'Technology'}
+                                        </li>
+                                        <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl">
+                                            <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Target Roles:</span> {company.roles?.slice(0, 3)?.join(', ')}
+                                        </li>
+                                        <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl">
+                                            <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Rounds Count:</span> {company.rounds_count || company.roundsCount || '3'} Rounds
+                                        </li>
+                                        <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl">
+                                            <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Hiring Zone:</span> {company.hiring_zone || company.hiringZone}
+                                        </li>
+                                        <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl md:col-span-2">
+                                            <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Est. Compensation:</span> {company.compensation?.totalYear1 || company.compensation?.total_year_1 || 'Competitive'}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                    <BookOpen size={14} className="text-indigo-500" /> Frequently Asked Questions
+                                </h4>
+                                <div className="space-y-4">
+                                    {[
+                                        {
+                                            q: `What is the recruitment process for new grads at ${company.name}?`,
+                                            a: `The recruitment process generally consists of ${company.rounds_count || company.roundsCount || '3'} main evaluation rounds, starting from resume screening or an online assessment, followed by technical evaluation rounds, and concluding with a hiring manager or HR interview.`
+                                        },
+                                        {
+                                            q: `What is the average compensation package at ${company.name}?`,
+                                            a: `The first-year compensation package is approximately ${company.compensation?.totalYear1 || company.compensation?.total_year_1 || 'competitive'}, which typically includes a base salary component, signing bonuses, and stock RSUs depending on the specific profile offered.`
+                                        },
+                                        {
+                                            q: `What should I focus on to prepare for the ${company.name} recruitment?`,
+                                            a: company.prep_focus || company.prepFocus || `Candidates should primarily focus on core technical syllabus subjects, practicing past online assessment questions, and refining their storytelling for HR and technical interview rounds.`
+                                        }
+                                    ].map((faq, i) => (
+                                        <details key={i} className="group bg-white border border-zinc-100 rounded-2xl p-5 [&_summary::-webkit-details-marker]:hidden cursor-pointer select-none">
+                                            <summary className="flex items-center justify-between font-bold text-sm text-[#313851] gap-4">
+                                                <span>{faq.q}</span>
+                                                <span className="text-zinc-400 group-open:rotate-180 transition-transform">
+                                                    <ChevronRight size={16} />
+                                                </span>
+                                            </summary>
+                                            <p className="mt-4 text-xs font-semibold text-zinc-500 leading-relaxed pl-1">
+                                                {faq.a}
+                                            </p>
+                                        </details>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
                     </motion.div>
                 );
             }
