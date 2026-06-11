@@ -46,3 +46,17 @@ export const rejectCommunityJob = async (jobId) => {
     const response = await api.post(`/admin/community/reject/${jobId}`);
     return response.data;
 };
+
+export const getUserStats = async () => {
+    const response = await api.get('/admin/users/stats');
+    return response.data;
+};
+
+export const getUsers = async (role = null) => {
+    const response = await api.get('/admin/users', {
+        params: role ? { role } : {}
+    });
+    return response.data;
+};
+
+
