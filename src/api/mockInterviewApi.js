@@ -212,3 +212,13 @@ export const uploadProfileResumeToSession = async (resumeText, sessionId) => {
     });
     return res.data;
 };
+
+export const updateIntermediateTranscript = async (id, { transcript = [], userTranscript = [], aiTranscript = [] }) => {
+    const res = await api.patch(`/mock-interviews/${id}/transcript`, {
+        transcript,
+        user_transcript: userTranscript,
+        ai_transcript: aiTranscript,
+    });
+    return res.data;
+};
+

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, startMockInterview, setMockInterviewStructure, uploadProfileResumeToSession } from '../../api/mockInterviewApi';
+import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, startMockInterview, setMockInterviewStructure, uploadProfileResumeToSession, updateIntermediateTranscript } from '../../api/mockInterviewApi';
 import { getCompanyRounds } from '../../shared/companyRounds';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../context/NotificationContext';
@@ -923,14 +923,35 @@ const MockInterviewPage = () => {
             timestamp: performance.now()
         });
 
-        setConversationLog((prev) => [
-            ...prev,
-            {
-                role,
-                content: sanitized,
-                created_at: new Date().toISOString(),
-            },
-        ]);
+        const newEntry = {
+            role,
+            content: sanitized,
+            created_at: new Date().toISOString(),
+        };
+
+        setConversationLog((prev) => {
+            const updated = [...prev, newEntry];
+            
+            const recordId = interviewRecordIdRef.current;
+            if (recordId) {
+                const intermediateUserTranscript = updated
+                    .filter(item => item.role === 'user')
+                    .map(item => item.content);
+                const intermediateAiTranscript = updated
+                    .filter(item => item.role === 'assistant' || item.role === 'system')
+                    .map(item => item.content);
+
+                updateIntermediateTranscript(recordId, {
+                    transcript: updated,
+                    userTranscript: intermediateUserTranscript,
+                    aiTranscript: intermediateAiTranscript,
+                }).catch(err => {
+                    console.error('Failed to save intermediate transcript:', err);
+                });
+            }
+
+            return updated;
+        });
     }, []);
 
     // ── Per-sentence playback-start callback ─────────────────────────────────
@@ -1735,6 +1756,21 @@ const MockInterviewPage = () => {
             setIsStarting(true);
             setIsInitializing(true);
             updateStatus('Connecting', 'connecting');
+
+            // If the interview session hasn't been registered with the FastAPI backend yet (e.g. first-time onboarding bypass), register it now
+            if (!interviewRecordIdRef.current) {
+                try {
+                    const startedSession = await startMockInterview(id || null);
+                    interviewRecordIdRef.current = startedSession.id;
+                } catch (err) {
+                    console.error('Failed to start interview on backend during confirm start:', err);
+                    const detail = err.response?.data?.detail || 'Failed to initialize session with server.';
+                    setErrorMsg(detail);
+                    setIsStarting(false);
+                    setIsInitializing(false);
+                    return;
+                }
+            }
 
             const currentSessionId = currentSessionIdRef.current;
 

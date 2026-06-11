@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, Bot, CheckCircle, ClipboardList, Search, Send, User } from 'lucide-react';
+import { 
+    Activity, Bot, CheckCircle, ClipboardList, Search, Send, User, 
+    Clock, Award, MessageSquare, Sparkles, ChevronRight, Check, 
+    BookOpen, Target, ListTodo, HelpCircle, ArrowRight, CornerDownRight, XCircle,
+    LayoutGrid, MessageSquareQuote, CheckSquare, AlertTriangle, AlertCircle
+} from 'lucide-react';
 import {
     getAdminMockInterviewReview,
     getAdminMockInterviewReviews,
@@ -21,6 +26,42 @@ const splitLines = (value) =>
         .split('\n')
         .map((item) => item.trim())
         .filter(Boolean);
+
+const getAvatarStyle = (name) => {
+    if (!name) return { bg: 'bg-zinc-100 border-zinc-200 text-zinc-600', text: 'text-zinc-600', initials: '?' };
+    const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || name.substring(0, 2).toUpperCase();
+    const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+    const colors = [
+        { bg: 'bg-indigo-50 border-indigo-100 text-indigo-600', text: 'text-indigo-600', initials },
+        { bg: 'bg-emerald-50 border-emerald-100 text-emerald-600', text: 'text-emerald-600', initials },
+        { bg: 'bg-amber-50 border-amber-100 text-amber-600', text: 'text-amber-600', initials },
+        { bg: 'bg-rose-50 border-rose-100 text-rose-600', text: 'text-rose-600', initials },
+        { bg: 'bg-violet-50 border-violet-100 text-violet-600', text: 'text-violet-600', initials },
+        { bg: 'bg-cyan-50 border-cyan-100 text-cyan-600', text: 'text-cyan-600', initials },
+    ];
+    return colors[Math.abs(hash) % colors.length];
+};
+
+const StatusBadge = ({ status }) => {
+    let bg = 'bg-zinc-50 text-zinc-700 border-zinc-200';
+    let label = 'Unknown';
+    if (status === 'reviewed') {
+        bg = 'bg-emerald-50 text-emerald-700 border-emerald-100/80';
+        label = 'Reviewed';
+    } else if (status === 'pending_review') {
+        bg = 'bg-indigo-50 text-indigo-700 border-indigo-100/80';
+        label = 'Pending Review';
+    } else if (status === 'in_progress') {
+        bg = 'bg-amber-50 text-amber-700 border-amber-100/80';
+        label = 'In Progress';
+    }
+    return (
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${bg}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${status === 'pending_review' ? 'bg-indigo-600 animate-ping' : 'bg-current'}`} />
+            {label}
+        </span>
+    );
+};
 
 const buildFeedbackMarkdown = ({ overallSummary, strengths, improvements, topics, nextSteps }) => {
     const sections = [
@@ -58,6 +99,7 @@ const InterviewReviewsPage = () => {
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
+    const [viewMode, setViewMode] = useState('chat'); // 'chat' | 'split'
 
     const loadReviews = async () => {
         setLoading(true);
@@ -187,58 +229,67 @@ const InterviewReviewsPage = () => {
     }, [reviews]);
 
     return (
-        <div className="max-w-7xl mx-auto py-12 px-8">
-            <div className="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div className="max-w-7xl mx-auto py-12 px-6 lg:px-8 font-sans text-[#313851]">
+            {/* Header section with modern pill and sleek typography */}
+            <div className="mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-[#C2CBD3]/40 pb-8">
                 <div>
-                    <h1 className="text-4xl font-sans font-bold tracking-tight text-zinc-900 flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-[20px] bg-zinc-900 grid place-items-center shadow-lg shadow-zinc-900/15">
-                            <ClipboardList size={28} className="text-white" />
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#313851]/5 border border-[#313851]/10 text-[#313851] text-[9px] font-black uppercase tracking-[0.2em] mb-4">
+                        <Sparkles size={10} className="animate-spin-slow text-[#313851]" />
+                        Admin Workspace
+                    </div>
+                    <h1 className="text-4xl font-extrabold tracking-tight text-[#313851] flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-[#313851] flex items-center justify-center shadow-lg shadow-[#313851]/10 shrink-0">
+                            <ClipboardList size={22} className="text-white" />
                         </div>
                         Interview Reviews
                     </h1>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.4em] mt-4">Admin Analysis Workspace</p>
+                    <p className="text-xs text-[#313851]/60 font-medium mt-2 leading-relaxed">
+                        Evaluate seeker responses, review AI insights, and issue expert reviews for mock interviews.
+                    </p>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto">
-                    <div className="relative">
-                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" />
+                {/* Filter and search with premium styled inputs */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                    <div className="relative flex-1 sm:flex-initial">
+                        <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#313851]/50" />
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search user, email, role"
-                            className="w-full md:w-72 pl-11 pr-4 py-3 rounded-2xl border border-zinc-100 bg-white text-sm font-medium text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
+                            placeholder="Search user, email, or role..."
+                            className="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-[#C2CBD3] bg-[#ffffff] text-sm font-medium text-[#313851] placeholder:text-[#313851]/40 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                         />
                     </div>
 
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-3 rounded-2xl border border-zinc-100 bg-white text-sm font-semibold text-zinc-900 focus:outline-none"
+                        className="px-4 py-3 rounded-2xl border border-[#C2CBD3] bg-[#ffffff] text-sm font-semibold text-[#313851] focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                     >
+                        <option value="all">All Reviews</option>
                         <option value="pending_review">Pending Review</option>
                         <option value="reviewed">Reviewed</option>
-                        <option value="all">All Reviews</option>
                     </select>
                 </div>
             </div>
 
+            {/* Alert banner for submit state feedback */}
             {message && (
-                <div className={`mb-8 rounded-[28px] border p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 transform translate-y-0 animate-in fade-in slide-in-from-top-4 ${
+                <div className={`mb-8 rounded-3xl border p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 transform translate-y-0 animate-in fade-in slide-in-from-top-4 shadow-[0_12px_30px_rgba(0,0,0,0.02)] ${
                     isSuccess 
-                    ? 'bg-emerald-50/60 border-emerald-100 text-emerald-800 shadow-lg shadow-emerald-500/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]' 
-                    : 'bg-rose-50/60 border-rose-100 text-rose-800 shadow-lg shadow-rose-500/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]'
+                    ? 'bg-emerald-50/40 border-emerald-100 text-emerald-900' 
+                    : 'bg-rose-50/40 border-rose-100 text-rose-900'
                 }`}>
                     <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-[18px] grid place-items-center shrink-0 ${
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
                             isSuccess ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
                         }`}>
-                            {isSuccess ? <CheckCircle size={22} className="animate-bounce" /> : <Activity size={22} />}
+                            {isSuccess ? <CheckCircle size={20} className="animate-pulse" /> : <Activity size={20} />}
                         </div>
                         <div>
-                            <p className="text-sm font-bold leading-tight">
-                                {isSuccess ? 'Review Submitted Successfully!' : 'Something went wrong'}
+                            <p className="text-sm font-extrabold leading-tight">
+                                {isSuccess ? 'Review Submitted Successfully!' : 'Review Submission Failed'}
                             </p>
-                            <p className={`text-xs mt-1.5 font-medium ${isSuccess ? 'text-emerald-600/90' : 'text-rose-600/90'}`}>
+                            <p className="text-xs mt-1 font-semibold opacity-80">
                                 {message}
                             </p>
                         </div>
@@ -247,7 +298,7 @@ const InterviewReviewsPage = () => {
                         <button
                             type="button"
                             onClick={selectNextPending}
-                            className="shrink-0 self-start md:self-auto rounded-full bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all shadow-md shadow-emerald-600/10 hover:shadow-lg hover:shadow-emerald-600/20 active:scale-95"
+                            className="shrink-0 self-start md:self-auto rounded-full bg-[#313851] hover:bg-[#434c6d] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-[#313851]/10 cursor-pointer"
                         >
                             Review Next Ticket →
                         </button>
@@ -255,192 +306,386 @@ const InterviewReviewsPage = () => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)] gap-6">
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-4 shadow-xl shadow-zinc-900/5">
-                    <div className="px-4 py-3 border-b border-zinc-100 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">
-                        Interview Queue
+            {/* Queue & Details Layout Grid */}
+            <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-8 items-start">
+                {/* Left Queue Panel */}
+                <div className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-5 shadow-lg shadow-[#313851]/5 lg:sticky lg:top-24">
+                    <div className="px-3 pb-4 mb-4 border-b border-[#C2CBD3]/40 flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/60">
+                            Interview Queue
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-[#F6F3ED] border border-[#C2CBD3]/40 text-[9px] font-bold text-[#313851]">
+                            {displayedReviews.length} item{displayedReviews.length !== 1 && 's'}
+                        </span>
                     </div>
-                    <div className="mt-3 space-y-3 max-h-[70vh] overflow-y-auto pr-1">
-                        {loading && <div className="p-6 text-sm text-zinc-400">Loading reviews...</div>}
-                        {!loading && displayedReviews.length === 0 && <div className="p-6 text-sm text-zinc-400">No interview reviews found.</div>}
-                        {displayedReviews.map((review) => (
-                            <button
-                                key={review.id}
-                                onClick={() => setSelectedReviewId(review.id)}
-                                className={`group relative w-full text-left rounded-[24px] border p-5 transition-all ${selectedReviewId === review.id ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/20' : 'bg-white border-zinc-100 hover:border-zinc-300 hover:shadow-lg'}`}
-                            >
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="min-w-0">
-                                        <p className="text-lg font-bold tracking-tight truncate">
-                                            {review.user?.full_name || review.user?.email || `ID: ${review.user_id?.substring(0, 8)}...`}
-                                        </p>
-                                        <p className={`text-xs mt-0.5 truncate ${selectedReviewId === review.id ? 'text-white/60' : 'text-zinc-400'}`}>
-                                            {review.user?.email || (review.user ? 'No email' : 'Relation Missing')}
-                                        </p>
-                                    </div>
-                                    <div className={`shrink-0 w-2.5 h-2.5 rounded-full mt-1.5 transition-all duration-500 ${
-                                        review.status === 'reviewed' 
-                                        ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' 
-                                        : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
-                                    }`} />
-                                </div>
 
-                                <div className="space-y-1">
-                                    <p className={`text-[10px] uppercase tracking-[0.25em] ${selectedReviewId === review.id ? 'text-white/50' : 'text-zinc-300'}`}>
-                                        Company: {review.job?.company_name || 'None'}
-                                    </p>
-                                    {review.job?.title && (
-                                        <p className={`text-[9px] font-bold ${selectedReviewId === review.id ? 'text-white/40' : 'text-zinc-400'}`}>
-                                            Role: {review.job.title}
-                                        </p>
-                                    )}
+                    <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar">
+                        {loading && (
+                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#313851]/60">
+                                <Activity size={22} className="animate-spin text-[#313851]/40" />
+                                <p className="text-xs font-semibold">Loading reviews...</p>
+                            </div>
+                        )}
+                        {!loading && displayedReviews.length === 0 && (
+                            <div className="flex flex-col items-center justify-center py-20 text-center gap-4 text-[#313851]/40">
+                                <div className="w-12 h-12 rounded-full bg-[#F6F3ED] border border-[#C2CBD3]/40 flex items-center justify-center">
+                                    <ClipboardList size={18} className="text-[#313851]/30" />
                                 </div>
-                            </button>
-                        ))}
+                                <div>
+                                    <p className="text-sm font-bold text-[#313851]">Queue is empty</p>
+                                    <p className="text-xs mt-1">No reviews match the current filters.</p>
+                                </div>
+                            </div>
+                        )}
+                        {displayedReviews.map((review) => {
+                            const isSelected = selectedReviewId === review.id;
+                            const name = review.user?.full_name || review.user_name || review.user_email || `ID: ${review.user_id?.substring(0, 8)}...`;
+                            const avatar = getAvatarStyle(name);
+                            return (
+                                <button
+                                    key={review.id}
+                                    onClick={() => setSelectedReviewId(review.id)}
+                                    className={`group relative w-full text-left rounded-2xl border p-4.5 transition-all duration-300 ${
+                                        isSelected 
+                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl shadow-[#313851]/20' 
+                                        : 'bg-[#ffffff] border-[#C2CBD3]/60 hover:border-[#313851]/60 hover:shadow-[0_8px_20px_rgba(49,56,81,0.04)]'
+                                    }`}
+                                >
+                                    <div className="flex items-start gap-3.5">
+                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center text-xs font-black shrink-0 ${isSelected ? 'bg-white/10 border-white/10 text-white' : avatar.bg}`}>
+                                            {avatar.initials}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <p className={`text-sm font-extrabold tracking-tight truncate transition-colors duration-200 ${
+                                                    isSelected ? 'text-white' : 'text-[#313851] group-hover:text-[#313851]'
+                                                }`}>
+                                                    {name}
+                                                </p>
+                                                <span className={`shrink-0 w-2 h-2 rounded-full ${
+                                                    review.status === 'reviewed' ? 'bg-emerald-500' : 'bg-indigo-500 animate-pulse'
+                                                }`} />
+                                            </div>
+                                            <p className={`text-[10px] font-medium truncate mt-0.5 ${isSelected ? 'text-white/60' : 'text-[#313851]/60'}`}>
+                                                {review.user?.email || review.user_email || 'No email associated'}
+                                            </p>
+                                            
+                                            <div className={`flex flex-wrap gap-2 mt-3 pt-3 border-t ${isSelected ? 'border-white/10' : 'border-[#C2CBD3]/40'}`}>
+                                                <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider ${
+                                                    isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F6F3ED] text-[#313851] border border-[#C2CBD3]/50'
+                                                }`}>
+                                                    {review.job?.company_name || 'General'}
+                                                </span>
+                                                {review.job?.title && (
+                                                    <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider truncate max-w-[150px] ${
+                                                        isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F6F3ED] text-[#313851] border border-[#C2CBD3]/50'
+                                                    }`}>
+                                                        {review.job.title}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-xl shadow-zinc-900/5">
-                        {detailLoading && <div className="text-sm text-zinc-400">Loading interview details...</div>}
-                        {!detailLoading && !selectedReview && <div className="text-sm text-zinc-400">Select a user review to begin.</div>}
-                        {selectedReview && (
-                            <div className="space-y-6">
-                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                {/* Right Details & Review Panel */}
+                <div className="space-y-8">
+                    {/* Selected Interview Details */}
+                    <div className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#313851]/5 min-h-[40vh] flex flex-col justify-between">
+                        {detailLoading && (
+                            <div className="flex flex-col items-center justify-center py-32 gap-3 text-[#313851]/60">
+                                <Activity size={24} className="animate-spin text-[#313851]/40" />
+                                <p className="text-xs font-semibold">Loading session details...</p>
+                            </div>
+                        )}
+                        {!detailLoading && !selectedReview && (
+                            <div className="flex flex-col items-center justify-center py-36 text-center gap-4 text-[#313851]/60">
+                                <div className="w-16 h-16 rounded-[24px] bg-[#F6F3ED] border border-[#C2CBD3]/40 flex items-center justify-center">
+                                    <Sparkles size={24} className="text-[#313851]/40" />
+                                </div>
+                                <div>
+                                    <p className="text-base font-bold text-[#313851]">Select an Interview</p>
+                                    <p className="text-xs mt-1.5 max-w-sm text-[#313851]/60 leading-relaxed">
+                                        Choose an applicant profile from the queue to start assessing their transcript, viewing AI scorecards, and submitting final reviews.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {selectedReview && !detailLoading && (
+                            <div className="space-y-8">
+                                {/* Details Header */}
+                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-[#C2CBD3]/40">
+                                    <div className="flex items-start gap-4">
+                                        <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center text-lg font-black shrink-0 ${getAvatarStyle(selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email).bg}`}>
+                                            {getAvatarStyle(selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email).initials}
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-black text-[#313851] tracking-tight">
+                                                {selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email || selectedReview.user_email || 'Unnamed Candidate'}
+                                            </h2>
+                                            <p className="text-sm font-semibold text-[#313851]/60 mt-1 flex items-center gap-1.5">
+                                                {selectedReview.user?.email || selectedReview.user_email || 'No email registered'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        <StatusBadge status={selectedReview.status} />
+                                    </div>
+                                </div>
+
+                                {/* Performance Grid Dashboard */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                            <Clock size={16} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Duration</p>
+                                            <p className="text-base font-extrabold text-[#313851]">{selectedReview.ai_scorecard?.duration_minutes || '0'} Mins</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                            <Award size={16} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Round Type</p>
+                                            <p className="text-base font-extrabold text-[#313851] capitalize">{selectedReview.ai_scorecard?.interview_type || 'General'}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                            <MessageSquare size={16} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Depth</p>
+                                            <p className="text-base font-extrabold text-[#313851]">
+                                                {selectedReview.ai_scorecard?.combined_transcript?.length || (userTranscript.length + aiTranscript.length) || '0'} Turns
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* System Insights Context */}
+                                <div className="p-5 rounded-2xl bg-[#313851]/5 border border-[#313851]/15 flex items-start gap-3.5">
+                                    <Bot size={18} className="text-[#313851] mt-0.5 shrink-0" />
                                     <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-3">Selected User</p>
-                                        <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-                                            {selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email || selectedReview.user_email || `User ${selectedReview.user_id || selectedReview.interview_id || 'ID unknown'}`}
-                                        </h2>
-                                        <p className="text-sm text-zinc-500 mt-2">
-                                            {selectedReview.user?.email || selectedReview.user_email || 'The database could not join the user profile for this interview.'}
+                                        <p className="text-[10px] font-black text-[#313851] uppercase tracking-widest mb-1.5 leading-none">System Context</p>
+                                        <p className="text-xs text-[#313851]/90 font-medium leading-relaxed">
+                                            {selectedReview.ai_scorecard?.combined_transcript?.length > 10
+                                                ? "Active conversation session. Review the unified timeline below to evaluate the candidate's communication and technical skills."
+                                                : "Limited engagement session. The user may have abandoned the interview mid-way or exited shortly after starting."}
                                         </p>
                                     </div>
-                                    <div className="rounded-[24px] border border-zinc-100 bg-white px-6 py-4 shadow-sm min-w-[140px]">
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Status</p>
-                                        <div className="flex items-center gap-3 mt-2">
-                                            <div className={`w-2.5 h-2.5 rounded-full ${
-                                                selectedReview.status === 'reviewed' 
-                                                ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' 
-                                                : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
-                                            }`} />
-                                            <p className="text-sm font-bold text-zinc-900 capitalize">
-                                                {selectedReview.status.replace('_', ' ')}
-                                            </p>
-                                        </div>
-                                    </div>
                                 </div>
 
-                                <div className="rounded-[28px] border border-zinc-100 bg-[#FAFAFA] p-6 col-span-1 lg:col-span-2">
-                                    <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-400 flex items-center gap-3 mb-5">
-                                        <Activity size={16} className="text-zinc-300" /> Performance Overview
-                                    </h3>
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="p-4 rounded-2xl bg-white border border-zinc-50">
-                                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Duration</p>
-                                                <p className="text-lg font-bold text-zinc-900">{selectedReview.ai_scorecard?.duration_minutes || '0'} Minutes</p>
-                                            </div>
-                                            <div className="p-4 rounded-2xl bg-white border border-zinc-50">
-                                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Interview Type</p>
-                                                <p className="text-lg font-bold text-zinc-900 capitalize">{selectedReview.ai_scorecard?.interview_type || 'General'}</p>
-                                            </div>
-                                        </div>
-                                        <div className="p-5 rounded-2xl bg-white border border-zinc-50 mt-4">
-                                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">System Insights</p>
-                                            <p className="text-sm text-zinc-600 leading-relaxed">
-                                                {selectedReview.ai_scorecard?.combined_transcript?.length > 10
-                                                    ? "This interview has been successfully processed and contains a substantial conversation for review."
-                                                    : "Short interview session. Review transcripts below for engagement details."}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div className="rounded-[28px] border border-zinc-100 bg-[#FAFAFA] p-6">
-                                        <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-400 flex items-center gap-3 mb-5">
-                                            <User size={16} className="text-zinc-300" /> User Responses
+                                {/* Transcripts View Mode Selector */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between border-b border-[#C2CBD3]/40 pb-3">
+                                        <h3 className="text-sm font-extrabold text-[#313851] flex items-center gap-2">
+                                            <MessageSquareQuote size={16} className="text-[#313851]/50" />
+                                            Interview Conversation Transcript
                                         </h3>
-                                        <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
-                                            {selectedReview.ai_scorecard?.user_transcript?.length === 0 && <p className="text-sm text-zinc-400">No student transcript captured.</p>}
-                                            {selectedReview.ai_scorecard?.user_transcript?.map((entry, index) => (
-                                                <div key={index} className="p-3 rounded-xl bg-white border border-zinc-50 text-sm leading-relaxed text-zinc-700">
-                                                    {entry}
-                                                </div>
-                                            ))}
+                                        
+                                        {/* Toggle button */}
+                                        <div className="flex rounded-xl bg-[#F6F3ED]/80 border border-[#C2CBD3]/40 p-0.5">
+                                            <button
+                                                type="button"
+                                                onClick={() => setViewMode('chat')}
+                                                className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                                                    viewMode === 'chat' ? 'bg-[#313851] text-[#F6F3ED] shadow-sm' : 'text-[#313851]/60 hover:text-[#313851]'
+                                                }`}
+                                            >
+                                                <LayoutGrid size={11} /> Unified
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setViewMode('split')}
+                                                className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                                                    viewMode === 'split' ? 'bg-[#313851] text-[#F6F3ED] shadow-sm' : 'text-[#313851]/60 hover:text-[#313851]'
+                                                }`}
+                                            >
+                                                <Clock size={11} /> Split View
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <div className="rounded-[28px] border border-zinc-100 bg-[#FAFAFA] p-6">
-                                        <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-400 flex items-center gap-3 mb-5">
-                                            <Bot size={16} className="text-zinc-300" /> AI Interviewer
-                                        </h3>
-                                        <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
-                                            {selectedReview.ai_scorecard?.ai_transcript?.length === 0 && <p className="text-sm text-zinc-400">No AI interviewer transcript captured.</p>}
-                                            {selectedReview.ai_scorecard?.ai_transcript?.map((entry, index) => (
-                                                <div key={index} className="p-3 rounded-xl bg-white border border-zinc-50 text-sm leading-relaxed text-zinc-700">
-                                                    {entry}
-                                                </div>
-                                            ))}
+                                    {/* Transcript container */}
+                                    {viewMode === 'chat' && selectedReview.ai_scorecard?.combined_transcript?.length > 0 ? (
+                                        /* Chronological Unified Chat Feed */
+                                        <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2 bg-[#F6F3ED]/30 border border-[#C2CBD3]/60 rounded-2xl p-5 custom-scrollbar">
+                                            {selectedReview.ai_scorecard.combined_transcript.map((msg, index) => {
+                                                const isAI = msg.role === 'assistant' || msg.role === 'system';
+                                                return (
+                                                    <div key={index} className={`flex items-start gap-3.5 ${isAI ? 'justify-start' : 'justify-end'}`}>
+                                                        {isAI && (
+                                                            <div className="w-8 h-8 rounded-lg bg-[#313851] border border-[#313851] flex items-center justify-center text-white shrink-0">
+                                                                <Bot size={13} />
+                                                            </div>
+                                                        )}
+                                                        <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed border shadow-[0_2px_4px_rgba(0,0,0,0.01)] ${
+                                                            isAI 
+                                                            ? 'bg-[#313851]/5 border-[#313851]/15 text-[#313851]' 
+                                                            : 'bg-[#ffffff] border-[#C2CBD3] text-[#313851]'
+                                                        }`}>
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                 <span className={`text-[9px] font-black uppercase tracking-wider ${isAI ? 'text-[#313851]/60' : 'text-[#313851]/60'}`}>
+                                                                    {isAI ? 'AI Interviewer' : 'Candidate'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="font-semibold">{msg.content}</p>
+                                                        </div>
+                                                        {!isAI && (
+                                                            <div className="w-8 h-8 rounded-lg bg-[#C2CBD3] border border-[#C2CBD3] flex items-center justify-center text-[#313851] shrink-0">
+                                                                <User size={13} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    </div>
+                                    ) : (
+                                        /* Columns Split View Fallback */
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                            <div className="rounded-2xl border border-[#C2CBD3]/60 bg-[#F6F3ED]/30 p-5">
+                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#313851]/60 flex items-center gap-2 mb-4">
+                                                    <User size={14} /> Candidate Responses
+                                                </h4>
+                                                <div className="space-y-3 max-h-72 overflow-y-auto pr-1.5 custom-scrollbar">
+                                                    {userTranscript.length === 0 && (
+                                                        <p className="text-xs text-[#313851]/50 italic">No candidate responses captured.</p>
+                                                    )}
+                                                    {userTranscript.map((entry, index) => (
+                                                        <div key={index} className="p-3.5 rounded-xl bg-[#ffffff] border border-[#C2CBD3] text-xs font-semibold leading-relaxed text-[#313851] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                                                            {entry}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="rounded-2xl border border-[#C2CBD3]/60 bg-[#F6F3ED]/30 p-5">
+                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#313851]/60 flex items-center gap-2 mb-4">
+                                                    <Bot size={14} /> AI Questions
+                                                </h4>
+                                                <div className="space-y-3 max-h-72 overflow-y-auto pr-1.5 custom-scrollbar">
+                                                    {aiTranscript.length === 0 && (
+                                                        <p className="text-xs text-[#313851]/50 italic">No AI questions captured.</p>
+                                                    )}
+                                                    {aiTranscript.map((entry, index) => (
+                                                        <div key={index} className="p-3.5 rounded-xl bg-[#313851]/5 border border-[#313851]/15 text-xs font-semibold leading-relaxed text-[#313851] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                                                            {entry}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <form onSubmit={handleSubmit} className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-xl shadow-zinc-900/5 space-y-5">
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-2">Admin Template</p>
-                            <h3 className="text-2xl font-bold tracking-tight text-zinc-900">Send analysis to the user</h3>
-                        </div>
+                    {/* Feedback Form Card */}
+                    {selectedReview && (
+                        <form onSubmit={handleSubmit} className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#313851]/5 space-y-6">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#313851]/5 text-[#313851] text-[9px] font-black uppercase tracking-[0.2em] mb-3 border border-[#313851]/10">
+                                    <BookOpen size={10} />
+                                    Review Form
+                                </div>
+                                <h3 className="text-2xl font-black tracking-tight text-[#313851]">Send Expert Feedback</h3>
+                                <p className="text-xs text-[#313851]/60 font-medium mt-1">Provide helpful feedback, recommendations, and next steps to the candidate.</p>
+                            </div>
 
-                        <textarea
-                            value={form.overallSummary}
-                            onChange={(e) => setForm((prev) => ({ ...prev, overallSummary: e.target.value }))}
-                            placeholder="Overall summary of the interview performance"
-                            rows={4}
-                            className="w-full rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-5 py-4 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
-                        />
-                        <textarea
-                            value={form.strengths}
-                            onChange={(e) => setForm((prev) => ({ ...prev, strengths: e.target.value }))}
-                            placeholder={"Skills you are good at\nAdd one skill per line"}
-                            rows={4}
-                            className="w-full rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-5 py-4 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
-                        />
-                        <textarea
-                            value={form.improvements}
-                            onChange={(e) => setForm((prev) => ({ ...prev, improvements: e.target.value }))}
-                            placeholder={"Skills that need improvement\nAdd one skill per line"}
-                            rows={4}
-                            className="w-full rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-5 py-4 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
-                        />
-                        <textarea
-                            value={form.topics}
-                            onChange={(e) => setForm((prev) => ({ ...prev, topics: e.target.value }))}
-                            placeholder={"Topics to work on\nAdd one topic per line"}
-                            rows={4}
-                            className="w-full rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-5 py-4 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
-                        />
-                        <textarea
-                            value={form.nextSteps}
-                            onChange={(e) => setForm((prev) => ({ ...prev, nextSteps: e.target.value }))}
-                            placeholder="Suggested next steps for the user"
-                            rows={4}
-                            className="w-full rounded-[24px] border border-zinc-100 bg-[#FAFAFA] px-5 py-4 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none"
-                        />
+                            <div className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <BookOpen size={12} className="text-[#313851]/40" />
+                                        Overall Summary
+                                    </label>
+                                    <textarea
+                                        value={form.overallSummary}
+                                        onChange={(e) => setForm((prev) => ({ ...prev, overallSummary: e.target.value }))}
+                                        placeholder="Summarize their general performance and communication..."
+                                        rows={4}
+                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                    />
+                                </div>
 
-                        <button
-                            type="submit"
-                            disabled={!selectedReviewId || saving}
-                            className="inline-flex items-center gap-3 rounded-full bg-zinc-900 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40"
-                        >
-                            {saving ? <Activity size={16} className="animate-spin" /> : <Send size={16} />}
-                            {saving ? 'Sending...' : 'Send Analysis'}
-                        </button>
-                    </form>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <CheckSquare size={12} className="text-emerald-600" />
+                                        Key Strengths (One per line)
+                                    </label>
+                                    <textarea
+                                        value={form.strengths}
+                                        onChange={(e) => setForm((prev) => ({ ...prev, strengths: e.target.value }))}
+                                        placeholder={"Excellent database querying knowledge\nSolid architectural understanding"}
+                                        rows={3}
+                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <AlertTriangle size={12} className="text-rose-600" />
+                                        Areas for Improvement (One per line)
+                                    </label>
+                                    <textarea
+                                        value={form.improvements}
+                                        onChange={(e) => setForm((prev) => ({ ...prev, improvements: e.target.value }))}
+                                        placeholder={"Explain time complexity before writing code\nFalter under pressure"}
+                                        rows={3}
+                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <Target size={12} className="text-amber-600" />
+                                        Topics to Practice (One per line)
+                                    </label>
+                                    <textarea
+                                        value={form.topics}
+                                        onChange={(e) => setForm((prev) => ({ ...prev, topics: e.target.value }))}
+                                        placeholder={"Big-O Notation\nSystem Design Scaling Patterns"}
+                                        rows={3}
+                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <ListTodo size={12} className="text-indigo-600" />
+                                        Suggested Next Steps
+                                    </label>
+                                    <textarea
+                                        value={form.nextSteps}
+                                        onChange={(e) => setForm((prev) => ({ ...prev, nextSteps: e.target.value }))}
+                                        placeholder="Review playbooks on system architecture, and schedule a mock session next week..."
+                                        rows={3}
+                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={!selectedReviewId || saving}
+                                className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-[#313851] hover:bg-[#434c6d] py-4.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40 active:scale-[0.99] transition-all shadow-lg shadow-[#313851]/10 cursor-pointer"
+                            >
+                                {saving ? <Activity size={16} className="animate-spin" /> : <Send size={15} />}
+                                {saving ? 'Submitting Analysis...' : 'Send Review Analysis'}
+                            </button>
+                        </form>
+                    )}
                 </div>
             </div>
         </div>
