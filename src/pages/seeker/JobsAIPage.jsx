@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Sparkles, 
@@ -28,8 +29,8 @@ import { CreditBalance } from '../../components/rewards/CreditBalance';
 import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 const JobsAIPage = () => {
-    const navigate = useNavigate();
-    const { user } = useAuth();
+    const _navigate = useNavigate();
+    const { user: _user } = useAuth();
 
     const howItWorksSteps = [
         {
@@ -51,25 +52,60 @@ const JobsAIPage = () => {
     const { 
         freeMatchCreditsRemaining = 5,
         purchasedMatchCreditsRemaining = 0, 
-        useCredit 
+        useCredit: deductCredit 
     } = useInterviewCreditsContext();
     const aiCreditsRemaining = freeMatchCreditsRemaining + purchasedMatchCreditsRemaining;
     const [isPaywallOpen, setIsPaywallOpen] = useState(false);
-    const [mode, setMode] = useState(null); // null, 'search', 'link'
-    const [step, setStep] = useState(1);
-    const [preferences, setPreferences] = useState({
-        location: '',
-        jobType: 'remote' // remote, hybrid, onsite
+    const [mode, setMode] = useState(() => sessionStorage.getItem('jobsai_mode') || null);
+    const [step, setStep] = useState(() => {
+        const saved = sessionStorage.getItem('jobsai_step');
+        return saved ? parseInt(saved, 10) : 1;
     });
-    const [resumeOption, setResumeOption] = useState('profile'); // profile, upload
-    const [experienceLevel, setExperienceLevel] = useState('profile'); // 'fresher', '1-3', '3-5', '5+', 'profile'
+    const [preferences, setPreferences] = useState(() => {
+        const saved = sessionStorage.getItem('jobsai_preferences');
+        return saved ? JSON.parse(saved) : { location: '', jobType: 'remote' };
+    });
+    const [resumeOption, setResumeOption] = useState(() => sessionStorage.getItem('jobsai_resumeOption') || 'profile');
+    const [experienceLevel, setExperienceLevel] = useState(() => sessionStorage.getItem('jobsai_experienceLevel') || 'profile');
     const [file, setFile] = useState(null);
-    const [externalUrl, setExternalUrl] = useState('');
-    const [isSearching, setIsSearching] = useState(false);
-    const [results, setResults] = useState([]);
-    const [singleJobResult, setSingleJobResult] = useState(null);
+    const [externalUrl, setExternalUrl] = useState(() => sessionStorage.getItem('jobsai_externalUrl') || '');
+    const [_isSearching, setIsSearching] = useState(() => sessionStorage.getItem('jobsai_isSearching') === 'true');
+    const [results, setResults] = useState(() => {
+        const saved = sessionStorage.getItem('jobsai_results');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [singleJobResult, setSingleJobResult] = useState(() => {
+        const saved = sessionStorage.getItem('jobsai_singleJobResult');
+        return saved ? JSON.parse(saved) : null;
+    });
 
-    const handleSearch = async () => {
+    // Sync state changes to sessionStorage
+    useEffect(() => {
+        if (mode) sessionStorage.setItem('jobsai_mode', mode);
+        else sessionStorage.removeItem('jobsai_mode');
+    }, [mode]);
+
+    useEffect(() => {
+        sessionStorage.setItem('jobsai_step', step.toString());
+    }, [step]);
+
+    useEffect(() => {
+        sessionStorage.setItem('jobsai_preferences', JSON.stringify(preferences));
+    }, [preferences]);
+
+    useEffect(() => {
+        sessionStorage.setItem('jobsai_resumeOption', resumeOption);
+    }, [resumeOption]);
+
+    useEffect(() => {
+        sessionStorage.setItem('jobsai_experienceLevel', experienceLevel);
+    }, [experienceLevel]);
+
+    useEffect(() => {
+        sessionStorage.setItem('jobsai_externalUrl', externalUrl);
+    }, [externalUrl]);
+
+    const handleSearch = async (skipCreditDeduction = false) => {
         if (!preferences.location) {
             toast.error("Please enter a preferred location.");
             return;
@@ -80,21 +116,28 @@ const JobsAIPage = () => {
             return;
         }
 
-        if (aiCreditsRemaining <= 0) {
+        if (!skipCreditDeduction && aiCreditsRemaining <= 0) {
             setIsPaywallOpen(true);
             return;
         }
 
         setIsSearching(true);
         setStep(3); // Loading step
+        sessionStorage.setItem('jobsai_isSearching', 'true');
+        sessionStorage.setItem('jobsai_step', '3');
 
         try {
-            const creditRes = useCredit('Check Match: Scrape the Web');
-            if (!creditRes.success) {
-                setIsPaywallOpen(true);
-                setIsSearching(false);
-                setStep(2);
-                return;
+            if (!skipCreditDeduction) {
+                const creditRes = deductCredit('Check Match: Scrape the Web');
+                if (!creditRes.success) {
+                    setIsPaywallOpen(true);
+                    setIsSearching(false);
+                    setStep(2);
+                    sessionStorage.setItem('jobsai_isSearching', 'false');
+                    sessionStorage.setItem('jobsai_step', '2');
+                    return;
+                }
+                sessionStorage.setItem('jobsai_creditsDeducted', 'true');
             }
 
             const formData = new FormData();
@@ -110,51 +153,87 @@ const JobsAIPage = () => {
             }
 
             const data = await searchJobsAI(formData);
-            setResults(data.jobs || []);
+            const jobs = data.jobs || [];
+            setResults(jobs);
             setStep(4); // Results step
+            sessionStorage.setItem('jobsai_results', JSON.stringify(jobs));
+            sessionStorage.setItem('jobsai_step', '4');
+            sessionStorage.removeItem('jobsai_creditsDeducted');
         } catch (error) {
             console.error(error);
             toast.error("Failed to perform AI search. Please try again.");
             setStep(2); // Go back
+            sessionStorage.setItem('jobsai_step', '2');
+            sessionStorage.removeItem('jobsai_creditsDeducted');
         } finally {
             setIsSearching(false);
+            sessionStorage.setItem('jobsai_isSearching', 'false');
         }
     };
 
-    const handleLinkMatch = async () => {
+    const handleLinkMatch = async (skipCreditDeduction = false) => {
         if (!externalUrl) {
             toast.error("Please enter a job URL.");
             return;
         }
 
-        if (aiCreditsRemaining <= 0) {
+        if (!skipCreditDeduction && aiCreditsRemaining <= 0) {
             setIsPaywallOpen(true);
             return;
         }
 
         setIsSearching(true);
         setStep(3); // Reuse loading step
+        sessionStorage.setItem('jobsai_isSearching', 'true');
+        sessionStorage.setItem('jobsai_step', '3');
 
         try {
-            const creditRes = useCredit('Check Match: Bring Your Job');
-            if (!creditRes.success) {
-                setIsPaywallOpen(true);
-                setIsSearching(false);
-                setStep(1);
-                return;
+            if (!skipCreditDeduction) {
+                const creditRes = deductCredit('Check Match: Bring Your Job');
+                if (!creditRes.success) {
+                    setIsPaywallOpen(true);
+                    setIsSearching(false);
+                    setStep(1);
+                    sessionStorage.setItem('jobsai_isSearching', 'false');
+                    sessionStorage.setItem('jobsai_step', '1');
+                    return;
+                }
+                sessionStorage.setItem('jobsai_creditsDeducted', 'true');
             }
 
             const data = await scrapeJobAI(externalUrl);
             setSingleJobResult(data.job);
             setStep(5); // New result step for single job
+            sessionStorage.setItem('jobsai_singleJobResult', JSON.stringify(data.job));
+            sessionStorage.setItem('jobsai_step', '5');
+            sessionStorage.removeItem('jobsai_creditsDeducted');
         } catch (error) {
             console.error(error);
             toast.error("Failed to analyze the link. Make sure it's a valid job posting URL.");
             setStep(1);
+            sessionStorage.setItem('jobsai_step', '1');
+            sessionStorage.removeItem('jobsai_creditsDeducted');
         } finally {
             setIsSearching(false);
+            sessionStorage.setItem('jobsai_isSearching', 'false');
         }
     };
+
+    // Auto-resume search if page is reloaded/remounted during search
+    useEffect(() => {
+        const wasSearching = sessionStorage.getItem('jobsai_isSearching') === 'true';
+        const creditsDeducted = sessionStorage.getItem('jobsai_creditsDeducted') === 'true';
+        const savedMode = sessionStorage.getItem('jobsai_mode');
+
+        if (wasSearching) {
+            if (savedMode === 'link') {
+                handleLinkMatch(creditsDeducted);
+            } else if (savedMode === 'search') {
+                handleSearch(creditsDeducted);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const reset = () => {
         setMode(null);
@@ -162,6 +241,16 @@ const JobsAIPage = () => {
         setResults([]);
         setSingleJobResult(null);
         setExternalUrl('');
+        sessionStorage.removeItem('jobsai_mode');
+        sessionStorage.removeItem('jobsai_step');
+        sessionStorage.removeItem('jobsai_preferences');
+        sessionStorage.removeItem('jobsai_resumeOption');
+        sessionStorage.removeItem('jobsai_experienceLevel');
+        sessionStorage.removeItem('jobsai_externalUrl');
+        sessionStorage.removeItem('jobsai_isSearching');
+        sessionStorage.removeItem('jobsai_results');
+        sessionStorage.removeItem('jobsai_singleJobResult');
+        sessionStorage.removeItem('jobsai_creditsDeducted');
     };
 
     const renderLanding = () => (
