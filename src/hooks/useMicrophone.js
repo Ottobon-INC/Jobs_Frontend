@@ -12,6 +12,7 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
   const isSpeakingRef = useRef(false);
   const animationFrameRef = useRef(null);
   const isDisabledRef = useRef(isDisabled);
+  const noiseFloorRef = useRef(2.0);
 
   // Sync prop to ref for closure safety
   useEffect(() => {
@@ -217,11 +218,27 @@ export function useMicrophone(onAudioData, onError, isDisabled = false, forcedMu
           streamRef.current.getAudioTracks().forEach(t => t.enabled = true);
         }
 
-        analyser.getByteFrequencyData(dataArray);
-        const sum = dataArray.reduce((S, v) => S + v, 0);
-        const average = sum / dataArray.length;
+        analyser.getByteTimeDomainData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += Math.abs(dataArray[i] - 128);
+        }
+        const volume = sum / dataArray.length;
 
-        if (average > 12) {
+        // Update adaptive noise floor
+        let currentNoiseFloor = noiseFloorRef.current;
+        if (volume < currentNoiseFloor) {
+          currentNoiseFloor = currentNoiseFloor * 0.95 + volume * 0.05;
+        } else {
+          currentNoiseFloor = currentNoiseFloor * 0.995 + volume * 0.005;
+        }
+        noiseFloorRef.current = currentNoiseFloor;
+
+        // Speech threshold is dynamically set above the noise floor
+        const speechThreshold = Math.max(3.0, currentNoiseFloor + 3.5);
+        const isSpeechDetected = volume > speechThreshold;
+
+        if (isSpeechDetected) {
           if (!isSpeakingRef.current) {
             isSpeakingRef.current = true;
             // Fire the speech-start callback for interruption detection

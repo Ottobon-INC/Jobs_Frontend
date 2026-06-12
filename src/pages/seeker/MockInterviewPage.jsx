@@ -692,6 +692,7 @@ const MockInterviewPage = () => {
 
     // Session step: 'selection' | 'entry' | 'briefing' | 'interview'
     const [step, setStep] = useState('selection');
+    const [setupStep, setSetupStep] = useState(1);
 
     // Credit System Gating State
     const { 
@@ -840,7 +841,7 @@ const MockInterviewPage = () => {
     const forcedMuteRef = useRef(false);
     const stopSessionRef = useRef(null);
     const endingRef = useRef(false);
-    const interviewRecordIdRef = useRef(generateUUID());
+    const interviewRecordIdRef = useRef(null);
     // ── Sentence-streaming refs (consolidated — state machine owns most state) ──
     const sentenceRafRef             = useRef(null); // rAF id for per-sentence word reveal
 
@@ -1069,8 +1070,6 @@ const MockInterviewPage = () => {
                             if (!whisperText && ut.backupText) {
                                 whisperText = ut.backupText;
                             }
-                            
-                            ut.whisperText = whisperText;
 
                             if (!whisperText) {
                                 // Ignore empty transcript and just clear partial
@@ -1089,34 +1088,38 @@ const MockInterviewPage = () => {
 
                             setPartialTranscript('');
 
-                            if (ut.committed && ut.commitSource === 'backup') {
-                                // Backup was already committed — overwrite with Whisper
+                            // Accumulate Whisper transcript for the current turn
+                            const previousWhisper = ut.whisperText || '';
+                            const combinedWhisper = previousWhisper 
+                                ? (previousWhisper.trim() + ' ' + whisperText.trim()).trim()
+                                : whisperText.trim();
+                            ut.whisperText = combinedWhisper;
+
+                            if (ut.committed) {
+                                // Overwrite the last committed transcript (whether it was backup or previous whisper chunk)
                                 setTranscripts((prev) => {
-                                    if (prev.length === 0) return [...prev, whisperText];
-                                    // Only overwrite if it actually changed to avoid unnecessary re-renders
-                                    if (prev[prev.length - 1] === whisperText) return prev;
-                                    return [...prev.slice(0, -1), whisperText];
+                                    if (prev.length === 0) return [combinedWhisper];
+                                    return [...prev.slice(0, -1), combinedWhisper];
                                 });
                                 setConversationLog((prev) => {
                                     const lastUserIdx = [...prev].reverse().findIndex(e => e.role === 'user');
                                     if (lastUserIdx === -1) {
-                                        return [...prev, { role: 'user', content: whisperText, created_at: new Date().toISOString() }];
+                                        return [...prev, { role: 'user', content: combinedWhisper, created_at: new Date().toISOString() }];
                                     }
                                     const realIdx = prev.length - 1 - lastUserIdx;
                                     const updated = [...prev];
-                                    updated[realIdx] = { ...updated[realIdx], content: whisperText };
+                                    updated[realIdx] = { ...updated[realIdx], content: combinedWhisper };
                                     return updated;
                                 });
-                                ut.commitSource = 'whisper'; // upgrade source
-                            } else if (!ut.committed) {
-                                // No backup committed yet — commit Whisper directly
-                                setTranscripts((prev) => [...prev, whisperText]);
-                                appendConversationEntry('user', whisperText);
+                                ut.commitSource = 'whisper';
+                            } else {
+                                // First chunk of the turn — commit directly
+                                setTranscripts((prev) => [...prev, combinedWhisper]);
+                                appendConversationEntry('user', combinedWhisper);
                                 setRoundQuestionsAsked((prev) => prev + 1);
                                 ut.committed = true;
                                 ut.commitSource = 'whisper';
                             }
-                            // else: already committed via whisper, ignore duplicate
 
                             setTimeout(() => setIsThinking(true), 200);
                             break;
@@ -1263,6 +1266,7 @@ const MockInterviewPage = () => {
                             }
                             setCurrentSentenceText('');
                             setIsThinking(false);
+                            _resetUserTurn();
                             break;
                         }
 
@@ -1673,7 +1677,7 @@ const MockInterviewPage = () => {
         forcedMuteRef.current = false;
         endingRef.current = false;
         stopSessionRef.current = null;
-        interviewRecordIdRef.current = generateUUID();
+        interviewRecordIdRef.current = null;
 
         // Reset all interview state
         setIsActive(false);
@@ -1717,11 +1721,15 @@ const MockInterviewPage = () => {
         setShowDebrief(false);
         setPersonaInfo(null);
         setCheckedItems({});
-    }, [stopMic, stopAudio, disconnect]);
+        setSetupStep(1);
+    }, [stopMic, stopAudio, disconnect, setSetupStep]);
 
     const handleProceedToBriefing = async () => {
         if (!hasResume && interviewType !== 'hr') return;
         setCheckedItems({});  // fresh checklist each time
+
+        // Full state wipe (media, timers, refs, all React state)
+        resetSession();
 
         // ── Defensive hard-reset before every start ──────────────────────────
         endingRef.current = false;
@@ -1740,14 +1748,12 @@ const MockInterviewPage = () => {
         // Keep the stable session ID so the uploaded resume is retained
         currentSessionIdRef.current = sessionId;
 
-        // Full state wipe (media, timers, refs, all React state)
-        resetSession();
-
         setIsStarting(true);
         setErrorMsg('');
 
         // Go to briefing — WS connect happens there
-        setStep('briefing');
+        setStep('entry');
+        setSetupStep(4);
         setIsStarting(false);
     };
 
@@ -1915,9 +1921,11 @@ const MockInterviewPage = () => {
             endingRef.current = false;
             forcedMuteRef.current = false;
             stopSessionRef.current = null;
+            interviewRecordIdRef.current = null;
 
             // 4. Reset ALL interview state
             setStep('selection');
+            setSetupStep(1);
             setIsActive(false);
             setIsStarting(false);
             setIsMuted(false);
@@ -2146,419 +2154,8 @@ const MockInterviewPage = () => {
         );
     }
 
-    // ── AI ENTRY SCREEN ──────────────────────────────────────────
+    // ── AI ENTRY / SETUP WIZARD SCREEN ───────────────────────────
     if (step === 'entry') {
-        return (
-            <>
-                <div className="min-h-screen py-8 px-6 bg-[#FBFBFB] flex items-center justify-center">
-                <div className="w-full max-w-6xl mx-auto">
-                    {/* Full width header */}
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mb-6 border-b border-zinc-100 pb-6 flex items-center justify-between"
-                    >
-                        <div className="flex items-center gap-5">
-                            <button
-                                onClick={() => setStep('selection')}
-                                className="inline-flex items-center justify-center w-10 h-10 bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 rounded-full transition-colors"
-                            >
-                                <ArrowLeft size={16} />
-                            </button>
-                            <div>
-                                <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">
-                                    Mock Interview
-                                </h1>
-                                {(companyName || jobTitle) && (
-                                    <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-400 mt-2 flex items-center gap-3">
-                                        {companyName && `${companyName} • `}{jobTitle}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                        <Link
-                            to={id ? `/jobs/${id}` : '/jobs'}
-                            className="inline-flex items-center gap-3 text-zinc-400 font-bold uppercase text-[10px] tracking-[0.3em] hover:text-zinc-900 transition-colors bg-white px-5 py-3 rounded-full border border-zinc-100 shadow-sm"
-                        >
-                            Back to Job Feed
-                        </Link>
-                    </motion.div>
-
-                    <HowItWorksWidget
-                        pageKey="ai-mock"
-                        title="How AI Mock Interview Works"
-                        icon={Radio}
-                        steps={howItWorksSteps}
-                        creditsInfo="Each practice session consumes 1 credit. First-time users are given free welcome credits to get started!"
-                        theme="neutral"
-                    />
-
-                    {/* Grid Layout */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-                    >
-                        {/* LEFT COLUMN */}
-                        <div className="flex flex-col gap-6 lg:col-span-1">
-                            {/* Credit Balance Widget */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <CreditBalance mode="ai_interview_only" />
-                            </div>
-
-                            {/* Card 0: INTERVIEW MODE */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
-                                    00 / INTERVIEW MODE
-                                </p>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {[
-                                        { id: 'voice', label: 'Voice', Icon: Mic, desc: 'Speak your answers' },
-                                        { id: 'text', label: 'Text', Icon: FileText, desc: 'Type your answers' },
-                                        { id: 'hybrid', label: 'Hybrid', Icon: Activity, desc: 'Voice + text together' },
-                                    ].map(({ id: modeId, label, Icon, desc }) => (
-                                        <button
-                                            key={modeId}
-                                            onClick={() => setInterviewInputMode(modeId)}
-                                            className={`py-3 px-2 rounded-xl border transition-all duration-300 flex flex-col items-center gap-1.5 ${interviewInputMode === modeId
-                                                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
-                                                    : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
-                                                }`}
-                                        >
-                                            <Icon size={18} />
-                                            <span className="font-bold text-[10px] uppercase tracking-widest">{label}</span>
-                                            <span className={`text-[8px] font-medium ${interviewInputMode === modeId ? 'text-zinc-300' : 'text-zinc-300'}`}>{desc}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card 1: SELECT MODE */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
-                                    01 / SELECT MODE
-                                </p>
-                                <div className="flex flex-col gap-3">
-                                    {['technical', 'hr'].map((type) => (
-                                        <button
-                                            key={type}
-                                            onClick={() => setInterviewType(type)}
-                                            className={`py-3 rounded-xl border transition-all duration-300 font-bold text-[11px] uppercase tracking-widest ${interviewType === type
-                                                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-xl shadow-zinc-900/10'
-                                                    : 'bg-zinc-50 text-zinc-400 border-zinc-100 premium-tag'
-                                                }`}
-                                        >
-                                            {type === 'technical' ? 'Technical Interview' : 'Behavioral Interview'}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card 2: INTERVIEW DURATION */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
-                                    02 / INTERVIEW DURATION
-                                </p>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {[15, 30].map((d) => (
-                                        <button
-                                            key={d}
-                                            onClick={() => setDuration(d)}
-                                            className={`py-2.5 rounded-xl border transition-all duration-500 font-bold text-[11px] uppercase tracking-widest ${duration === d
-                                                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/10'
-                                                    : 'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'
-                                                }`}
-                                        >
-                                            {d}m
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card 3: SELECT COMPANY */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm flex-1">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
-                                    03 / SELECT COMPANY
-                                </p>
-                                <div className="relative mb-4">
-                                    <input
-                                        type="text"
-                                        value={companySearch}
-                                        onChange={(e) => {
-                                            setCompanySearch(e.target.value);
-                                            setShowCompanyDropdown(true);
-                                        }}
-                                        onFocus={(e) => {
-                                            setCompanySearch('');
-                                            setShowCompanyDropdown(true);
-                                            e.target.select();
-                                        }}
-                                        onBlur={() => setTimeout(() => setShowCompanyDropdown(false), 200)}
-                                        placeholder="Search or select a company…"
-                                        className="w-full px-4 py-3 pr-10 rounded-xl border border-zinc-100 bg-zinc-50 text-[11px] font-bold uppercase tracking-wider text-zinc-900 placeholder:text-zinc-300 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/5 transition-all"
-                                    />
-                                    <ChevronRight
-                                        size={14}
-                                        className={`absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300 transition-transform duration-200 ${showCompanyDropdown ? 'rotate-90' : ''}`}
-                                    />
-                                    {showCompanyDropdown && (
-                                        <div className="absolute z-30 w-full mt-1.5 bg-white border border-zinc-200 rounded-xl shadow-2xl shadow-zinc-900/10 overflow-hidden max-h-[200px] overflow-y-auto">
-                                            {KNOWN_COMPANIES.filter(c =>
-                                                c.toLowerCase().includes(companySearch.toLowerCase())
-                                            ).length === 0 ? (
-                                                <p className="px-4 py-3 text-[10px] font-medium text-zinc-400 italic">No matching companies</p>
-                                            ) : (
-                                                KNOWN_COMPANIES.filter(c =>
-                                                    c.toLowerCase().includes(companySearch.toLowerCase())
-                                                ).map((c) => (
-                                                    <button
-                                                        key={c}
-                                                        onMouseDown={() => {
-                                                            setCompanyName(c);
-                                                            setCompanySearch(c);
-                                                            if (interviewType === 'technical') {
-                                                                setRoundsConfig(getCompanyRounds(c));
-                                                            } else {
-                                                                setRoundsConfig([]);
-                                                            }
-                                                            setShowCompanyDropdown(false);
-                                                        }}
-                                                        className={`w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all duration-150 flex items-center justify-between ${
-                                                            companyName === c
-                                                                ? 'bg-zinc-900 text-white'
-                                                                : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'
-                                                        }`}
-                                                    >
-                                                        {c}
-                                                        {companyName === c && <CheckCircle size={12} />}
-                                                    </button>
-                                                ))
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                {/* Compact inline rounds preview */}
-                                {roundsConfig && roundsConfig.length > 0 && (
-                                    <div className="flex flex-col mt-2">
-                                        {roundsConfig.map((r, i) => (
-                                            <div key={i} className="flex items-center gap-2 py-1 border-b border-zinc-50 last:border-0">
-                                                <span className="w-4 h-4 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[8px] font-bold shrink-0">
-                                                    {i + 1}
-                                                </span>
-                                                <span className="text-[10px] font-bold text-zinc-700 uppercase tracking-wide flex-1 truncate">{r.round_name}</span>
-                                                <span className="text-[9px] text-zinc-300 font-bold shrink-0">
-                                                    {r.question_limit}Q
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* MIDDLE COLUMN */}
-                        <div className="flex flex-col gap-6 lg:col-span-1">
-                            {/* Card 4: INTERVIEW STRUCTURE */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm flex-1 flex flex-col max-h-[300px]">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3 shrink-0">
-                                    04 / INTERVIEW STRUCTURE
-                                </p>
-                                {roundsConfig.length === 0 ? (
-                                    <div className="flex flex-1 items-center justify-center h-32 text-zinc-300 text-[11px] font-medium text-center italic bg-zinc-50/50 rounded-xl border border-zinc-50">
-                                        Select a company to preview<br/>interview structure
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col gap-3 overflow-y-auto pr-1">
-                                        {roundsConfig.map((round, idx) => (
-                                            <div key={idx} className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
-                                                <div className="w-6 h-6 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">
-                                                    {idx + 1}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-[10px] font-bold text-zinc-900 uppercase tracking-wide">{round.round_name}</p>
-                                                    <p className="text-[9px] text-zinc-400 leading-relaxed mt-0.5 line-clamp-2">{round.focus_description}</p>
-                                                </div>
-                                                <span className="text-[9px] font-bold text-zinc-300 shrink-0 mt-1">
-                                                    {round.question_limit}Q
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Card 5: INTERVIEW SETTINGS */}
-                            <div className="bg-white rounded-2xl border border-zinc-100 p-5 shadow-sm">
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-3">
-                                    05 / INTERVIEW SETTINGS
-                                </p>
-                                <div className="space-y-3">
-                                    {/* Persona Selector */}
-                                    <div className="p-3 bg-zinc-50/50 rounded-xl border border-zinc-50">
-                                        <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-2">Interviewer Persona</p>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {['Neutral', 'Friendly', 'Tough', 'Speed Round'].map((p) => (
-                                                <button
-                                                    key={p}
-                                                    onClick={() => setInterviewerPersona(p)}
-                                                    className={`py-2 px-2 rounded-lg border transition-all duration-300 font-bold text-[8px] uppercase tracking-widest ${interviewerPersona === p
-                                                            ? 'bg-zinc-900 text-white border-zinc-900 shadow-md'
-                                                            : 'bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50'
-                                                        }`}
-                                                >
-                                                    {p}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Whiteboard Mode Toggle */}
-                                    <div className="p-3 bg-zinc-50/50 rounded-xl border border-zinc-50 flex items-center justify-between">
-                                        <div>
-                                            <p className="font-bold text-[10px] uppercase tracking-widest text-zinc-900">Whiteboard Mode</p>
-                                            <p className="text-[8px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5">
-                                                Verbal walkthrough for technical
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => setWhiteboardMode((prev) => !prev)}
-                                            className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center ${whiteboardMode ? 'bg-zinc-900 border-zinc-900' : 'bg-zinc-200 border-zinc-200'
-                                                }`}
-                                        >
-                                            <div
-                                                className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-500 ${whiteboardMode ? 'translate-x-[14px]' : ''
-                                                    }`}
-                                            />
-                                        </button>
-                                    </div>
-
-                                    {/* Proctor Toggle */}
-                                    <div className="p-3 bg-zinc-50/50 rounded-xl border border-zinc-50 flex items-center justify-between">
-                                        <div>
-                                            <p className="font-bold text-[10px] uppercase tracking-widest text-zinc-900">Enable Proctoring</p>
-                                            <p className="text-[8px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5">
-                                                Monitor focus during session
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => setProctorMode((prev) => !prev)}
-                                            className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center ${proctorMode ? 'bg-zinc-900 border-zinc-900' : 'bg-zinc-200 border-zinc-200'
-                                                }`}
-                                        >
-                                            <div
-                                                className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-500 ${proctorMode ? 'translate-x-[14px]' : ''
-                                                    }`}
-                                            />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* RIGHT COLUMN */}
-                        <div className="flex flex-col gap-4 lg:col-span-1 h-full">
-                            {/* Card 6: RESUME CONTEXT */}
-                            <div className={`flex-1 p-5 rounded-2xl border transition-all duration-500 shadow-sm flex flex-col justify-center items-center text-center ${hasResume ? 'border-zinc-100 bg-white' : 'border-red-100 bg-[#FFF5F5]'
-                                }`}>
-                                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-300 mb-5 self-start w-full text-left">
-                                    06 / RESUME CONTEXT
-                                </p>
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${hasResume ? 'bg-zinc-900 shadow-lg shadow-zinc-900/10' : 'bg-red-500 shadow-lg shadow-red-500/20'
-                                    }`}>
-                                    <FileText size={24} className="text-white" />
-                                </div>
-                                <h3 className="font-bold text-sm uppercase tracking-widest text-zinc-900 mb-1.5">
-                                    {sessionResumeName
-                                        ? 'Custom Session Resume'
-                                        : profile?.resume_text
-                                            ? 'Using Profile Data'
-                                            : 'Resume Missing'}
-                                </h3>
-                                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mb-6 px-4">
-                                    {sessionResumeName
-                                        ? `${sessionResumeName}`
-                                        : profile?.resume_text
-                                            ? 'Automated mapping enabled for tailored questions'
-                                            : 'Upload your resume to enable personalized interview logic'}
-                                </p>
-                                <label className="cursor-pointer group mt-auto w-full">
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        onChange={handleResumeUpload}
-                                        accept=".pdf,.docx"
-                                        disabled={uploadingResume}
-                                    />
-                                    <div className={`flex items-center justify-center gap-2.5 w-full py-3 border rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${
-                                        hasResume ? 'bg-zinc-50 border-zinc-200 hover:border-zinc-900 text-zinc-600 hover:text-zinc-900' : 'bg-white border-red-200 text-red-600 hover:bg-red-50'
-                                    }`}>
-                                        {uploadingResume ? <Activity size={14} className="animate-pulse" /> : <Upload size={14} />}
-                                        {hasResume ? 'Update Resume' : 'Upload Resume'}
-                                    </div>
-                                </label>
-                            </div>
-
-                            {/* Card 7: Advisory */}
-                            <div className="shrink-0 p-4 bg-zinc-50 border border-zinc-100 rounded-2xl">
-                                <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest leading-relaxed flex items-center gap-2.5">
-                                    <Zap size={14} className="text-zinc-900 shrink-0" />
-                                    Requires silent environment & high-fidelity audio.
-                                </p>
-                            </div>
-
-                            {/* START BUTTON */}
-                            <button
-                                onClick={handleStartClick}
-                                disabled={isStarting || !hasResume || uploadingResume || showCreditPanel}
-                                className="shrink-0 w-full py-5 bg-zinc-900 text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 shadow-xl shadow-zinc-900/20 disabled:opacity-30 active:scale-95"
-                            >
-                                {isStarting ? (
-                                    <>
-                                        <Activity size={18} className="animate-pulse" /> STARTING...
-                                    </>
-                                ) : (
-                                    <>
-                                        {!hasResume ? 'UPLOAD RESUME TO START' : (
-                                            <>
-                                                START INTERVIEW
-                                                <ChevronRight size={18} />
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </button>
-
-                            <AnimatePresence>
-                                {showCreditPanel && (
-                                    <CreditCheckPanel
-                                        onConfirm={handleCreditConfirmStart}
-                                        onCancel={() => setShowCreditPanel(false)}
-                                        isStarting={isStarting}
-                                        mode="ai_interview_only"
-                                    />
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-
-            <CreditCheckModal
-                isOpen={showCreditModal}
-                onClose={() => setShowCreditModal(false)}
-                viewState={modalType}
-                onConfirm={handleConfirmStart}
-                isStarting={isStarting}
-                mode="ai_interview_only"
-            />
-        </>
-    );
-}
-
-    // ── BRIEFING ROOM SCREEN ──────────────────────────────────
-    if (step === 'briefing') {
         const PERSONA_PROFILES = {
             'Neutral':     { name: 'Marcus Reid',   title: 'Senior Engineering Manager', style: 'Direct, technical, no small talk',        years: 9,  rating: 4.4 },
             'Friendly':    { name: 'Sarah Kim',     title: 'Engineering Lead',            style: 'Warm, collaborative, rigorous',           years: 5,  rating: 4.7 },
@@ -2614,145 +2211,502 @@ const MockInterviewPage = () => {
             { key: 'time', label: `I have ${duration} minutes uninterrupted` },
         ];
 
-        // checkedItems state is declared at top of component (Rules of Hooks)
         const allChecked = checklistItems.every(item => checkedItems[item.key]);
 
         return (
-            <div
-                className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto"
-                style={{ background: 'radial-gradient(ellipse at center, #FFFFFF 0%, #F6F3ED 100%)' }}
-            >
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full max-w-[720px] mx-auto px-8 py-12"
-                >
-                    {/* Back button */}
-                    <button
-                        onClick={() => setStep('entry')}
-                        className="flex items-center gap-2 text-[#313851]/60 font-bold text-[10px] uppercase tracking-widest hover:text-[#313851] transition-colors mb-10"
-                    >
-                        <ArrowLeft size={14} /> Change Settings
-                    </button>
-
-                    {/* Mission Header */}
+            <div className="min-h-screen bg-[#F6F3ED] text-[#313851] py-10 px-6 font-sans flex items-center justify-center">
+                <div className="w-full max-w-4xl bg-white border border-[#313851]/10 rounded-[2.5rem] shadow-2xl p-8 lg:p-12 relative overflow-hidden">
+                    
+                    {/* Header: Steps progress indicator */}
                     <div className="mb-10">
-                        <span className="inline-block px-4 py-1.5 bg-[#313851]/10 text-[#313851] rounded-full text-[9px] font-bold uppercase tracking-[0.4em] mb-4 border border-[#313851]/20">
-                            <Shield size={10} className="inline mr-2 -mt-0.5" />Classified Mission
-                        </span>
-                        <h1 className="text-5xl font-bold text-[#313851] tracking-tight mb-2">
-                            {companyName || 'Interview'}
-                        </h1>
-                        {jobTitle && (
-                            <p className="text-sm font-medium text-[#313851]/75">{jobTitle}</p>
-                        )}
-                        <p className="text-[11px] text-[#313851]/60 mt-3 font-black uppercase tracking-wider">
-                            Interview begins when you are ready
-                        </p>
-                    </div>
-
-                    {/* Interviewer Card */}
-                    <div className="bg-white border border-[#313851]/10 rounded-2xl p-6 mb-8 flex items-start gap-5 shadow-sm">
-                        <div className="w-12 h-12 rounded-full bg-[#313851] flex items-center justify-center shrink-0 border border-[#313851]/20">
-                            <span className="text-[#F6F3ED] font-bold text-lg">{persona.name[0]}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[#313851] font-bold text-sm">{persona.name}</p>
-                            <p className="text-[#313851]/70 text-[11px] font-semibold">{persona.title}</p>
-                            <p className="text-[#313851]/60 text-[10px] mt-2">
-                                Interview style: <span className="text-[#313851]/80 font-bold">{persona.style}</span>
-                            </p>
-                            <p className="text-[#313851]/40 text-[10px] mt-1 font-medium">
-                                {persona.years} years at {companyName || 'company'} · Glassdoor ★ {persona.rating}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Mission Timeline */}
-                    {roundsConfig && roundsConfig.length > 0 && (
-                        <div className="mb-8">
-                            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-[#313851]/50 mb-5">
-                                Mission Timeline
-                            </p>
-                            <div className="space-y-0">
-                                {roundsConfig.map((round, idx) => (
-                                    <div key={idx} className="relative pl-8 pb-6 last:pb-0">
-                                        {idx < roundsConfig.length - 1 && (
-                                            <div className="absolute left-[9px] top-6 bottom-0 w-[2px] bg-[#313851]/10" />
-                                        )}
-                                        <div className="absolute left-0 top-0 w-5 h-5 rounded-full bg-white border-2 border-[#313851]/30 flex items-center justify-center text-[9px] font-black text-[#313851]">
-                                            {idx + 1}
-                                        </div>
-                                        <p className="text-[#313851] font-black text-[11px] uppercase tracking-widest">
-                                            Phase {idx + 1} — {round.round_name} ({roundTimes[idx]}m)
-                                        </p>
-                                        <p className="text-[#313851]/60 text-[10px] mt-1 leading-relaxed line-clamp-1 font-medium">
-                                            {round.focus_description}
-                                        </p>
-                                    </div>
+                        <div className="flex items-center justify-between mb-6">
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/40">
+                                Step {setupStep} of 4
+                            </span>
+                            <div className="flex gap-2">
+                                {[1, 2, 3, 4].map((s) => (
+                                    <div 
+                                        key={s} 
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                                            setupStep === s ? 'w-8 bg-[#313851]' : 'w-2 bg-[#313851]/10'
+                                        }`} 
+                                    />
                                 ))}
                             </div>
                         </div>
+
+                        {/* Title dynamic to step */}
+                        <h1 className="text-3xl font-black uppercase tracking-tight text-[#313851]">
+                            {setupStep === 1 && "Role & Resume Setup"}
+                            {setupStep === 2 && "Choose Format & Duration"}
+                            {setupStep === 3 && "Interviewer Profile"}
+                            {setupStep === 4 && "Pre-Flight Checklist"}
+                        </h1>
+                        <p className="text-[#313851]/60 text-xs font-semibold uppercase tracking-wider mt-1">
+                            {setupStep === 1 && "Specify your target position and load your resume logic."}
+                            {setupStep === 2 && "Configure the interview format, type, and practice duration."}
+                            {setupStep === 3 && "Meet your custom AI evaluator and fine-tune system rules."}
+                            {setupStep === 4 && "Review configuration and complete audio checks before launch."}
+                        </p>
+                    </div>
+
+                    {/* Step Content panels */}
+                    <div className="min-h-[300px] mb-8">
+                        {setupStep === 1 && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                {/* Job Title */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-2">Target Job Title</label>
+                                    <input 
+                                        type="text" 
+                                        value={jobTitle} 
+                                        readOnly
+                                        disabled
+                                        className="w-full px-5 py-4 rounded-2xl border border-[#313851]/10 bg-zinc-50 text-sm font-semibold text-[#313851]/60 cursor-not-allowed"
+                                    />
+                                </div>
+
+                                {/* Company Selector */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-2">Target Company</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={companySearch}
+                                            onChange={(e) => {
+                                                setCompanySearch(e.target.value);
+                                                setShowCompanyDropdown(true);
+                                            }}
+                                            onFocus={(e) => {
+                                                setCompanySearch('');
+                                                setShowCompanyDropdown(true);
+                                                e.target.select();
+                                            }}
+                                            onBlur={() => setTimeout(() => setShowCompanyDropdown(false), 200)}
+                                            placeholder="Search or select a company…"
+                                            className="w-full px-5 py-4 pr-12 rounded-2xl border border-[#313851]/10 bg-[#FAFAFA] text-xs font-bold uppercase tracking-wider text-[#313851] placeholder:text-[#313851]/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-[#313851] focus:ring-1 focus:ring-[#313851]/5 transition-all"
+                                        />
+                                        <ChevronRight
+                                            size={16}
+                                            className={`absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 transition-transform duration-200 ${showCompanyDropdown ? 'rotate-90' : ''}`}
+                                        />
+                                        {showCompanyDropdown && (
+                                            <div className="absolute z-30 w-full mt-2 bg-white border border-[#313851]/10 rounded-2xl shadow-2xl overflow-hidden max-h-[180px] overflow-y-auto">
+                                                {KNOWN_COMPANIES.filter(c =>
+                                                    c.toLowerCase().includes(companySearch.toLowerCase())
+                                                ).length === 0 ? (
+                                                    <p className="px-5 py-4 text-xs font-medium text-zinc-400 italic">No matching companies</p>
+                                                ) : (
+                                                    KNOWN_COMPANIES.filter(c =>
+                                                        c.toLowerCase().includes(companySearch.toLowerCase())
+                                                    ).map((c) => (
+                                                        <button
+                                                            key={c}
+                                                            onMouseDown={() => {
+                                                                setCompanyName(c);
+                                                                setCompanySearch(c);
+                                                                if (interviewType === 'technical') {
+                                                                    setRoundsConfig(getCompanyRounds(c));
+                                                                } else {
+                                                                    setRoundsConfig([]);
+                                                                }
+                                                                setShowCompanyDropdown(false);
+                                                            }}
+                                                            className={`w-full text-left px-5 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-150 flex items-center justify-between ${
+                                                                companyName === c
+                                                                    ? 'bg-[#313851] text-white'
+                                                                    : 'text-[#313851]/70 hover:bg-zinc-50 hover:text-[#313851]'
+                                                            }`}
+                                                        >
+                                                            {c}
+                                                            {companyName === c && <CheckCircle size={14} />}
+                                                        </button>
+                                                    ))
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Choose Interview Type */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">Choose Interview Type</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[
+                                            { id: 'technical', label: 'Technical Assessment', desc: 'Focus on coding, design, and CS algorithms.' },
+                                            { id: 'hr', label: 'Behavioral Assessment', desc: 'Focus on soft skills, culture fit, and experience.' },
+                                        ].map(({ id: typeId, label, desc }) => (
+                                            <button
+                                                key={typeId}
+                                                type="button"
+                                                onClick={() => {
+                                                    setInterviewType(typeId);
+                                                    if (typeId !== 'technical') setRoundsConfig([]);
+                                                    else if (companyName) setRoundsConfig(getCompanyRounds(companyName));
+                                                }}
+                                                className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col gap-1 relative ${
+                                                    interviewType === typeId
+                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl'
+                                                        : 'bg-[#FAFAFA] text-[#313851]/50 border-zinc-100 hover:bg-zinc-50'
+                                                }`}
+                                            >
+                                                <span className="font-bold text-[11px] uppercase tracking-widest block">{label}</span>
+                                                <span className={`text-[8.5px] font-medium leading-relaxed block ${interviewType === typeId ? 'text-zinc-300' : 'text-zinc-400'}`}>{desc}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Resume Upload Container */}
+                                <div className={`p-6 rounded-2xl border-2 border-dashed text-center flex flex-col items-center justify-center transition-all ${
+                                    hasResume 
+                                        ? 'border-zinc-200 bg-zinc-50/50' 
+                                        : (interviewType === 'hr' ? 'border-zinc-200 bg-zinc-50/10' : 'border-red-200 bg-red-50/30')
+                                }`}>
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${
+                                        hasResume ? 'bg-[#313851] text-white' : (interviewType === 'hr' ? 'bg-zinc-400 text-white' : 'bg-red-500 text-white')
+                                    }`}>
+                                        <FileText size={20} />
+                                    </div>
+                                    <h3 className="font-bold text-xs uppercase tracking-widest text-[#313851] mb-1">
+                                        {sessionResumeName
+                                            ? 'Custom Session Resume Loaded'
+                                            : profile?.resume_text
+                                                ? 'Using Profile Resume Data'
+                                                : (interviewType === 'hr' ? 'Add Resume (Optional)' : 'Resume Required')}
+                                    </h3>
+                                    <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mb-4 max-w-md">
+                                        {sessionResumeName
+                                            ? `File: ${sessionResumeName}`
+                                            : profile?.resume_text
+                                                ? 'Your account profile resume will tailors this simulation.'
+                                                : (interviewType === 'hr' 
+                                                    ? 'Upload a resume to personalize behavioral scenarios, or skip to continue.'
+                                                    : 'Please upload a PDF/TXT resume to customize interview logic.')}
+                                    </p>
+                                    <label className="cursor-pointer group">
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleResumeUpload}
+                                            accept=".pdf,.txt"
+                                            disabled={uploadingResume}
+                                        />
+                                        <div className="flex items-center gap-2 px-6 py-3 border border-[#313851]/10 bg-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] text-[#313851] transition-all">
+                                            {uploadingResume ? <Activity size={12} className="animate-pulse" /> : <Upload size={12} />}
+                                            {hasResume ? 'Change Resume File' : 'Upload Resume'}
+                                        </div>
+                                    </label>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {setupStep === 2 && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                {/* Format cards */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">01 / Choose Format</label>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {[
+                                            { id: 'voice', label: 'Voice Mode', Icon: Mic, desc: 'Real-time conversational voice' },
+                                            { id: 'text', label: 'Text Mode', Icon: FileText, desc: 'Chat-based typing layout' },
+                                            { id: 'hybrid', label: 'Hybrid Mode', Icon: Activity, desc: 'Voice playbacks + typing options' },
+                                        ].map(({ id: modeId, label, Icon, desc }) => (
+                                            <button
+                                                key={modeId}
+                                                onClick={() => setInterviewInputMode(modeId)}
+                                                className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col gap-2 relative ${
+                                                    interviewInputMode === modeId
+                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl shadow-[#313851]/10'
+                                                        : 'bg-[#FAFAFA] text-[#313851]/50 border-zinc-100 hover:bg-zinc-50'
+                                                }`}
+                                            >
+                                                <Icon size={20} className={interviewInputMode === modeId ? 'text-white' : 'text-[#313851]/50'} />
+                                                <span className="font-bold text-[11px] uppercase tracking-widest block mt-2">{label}</span>
+                                                <span className={`text-[8.5px] font-medium leading-relaxed block ${interviewInputMode === modeId ? 'text-zinc-300' : 'text-zinc-400'}`}>{desc}</span>
+                                                {interviewInputMode === modeId && (
+                                                    <span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-white animate-pulse" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Duration Selector */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">02 / Select Duration</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[15, 30].map((d) => (
+                                            <button
+                                                key={d}
+                                                onClick={() => setDuration(d)}
+                                                className={`py-4 rounded-xl border transition-all duration-300 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 ${
+                                                    duration === d
+                                                        ? 'bg-[#313851] text-white border-[#313851]'
+                                                        : 'bg-[#FAFAFA] text-[#313851]/40 border-zinc-100 hover:bg-zinc-50'
+                                                }`}
+                                            >
+                                                <Clock size={14} /> {d} Minutes Practice
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {setupStep === 3 && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                {/* Interviewer Persona Selector */}
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">01 / Select Interviewer Persona</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {Object.entries(PERSONA_PROFILES).map(([key, val]) => (
+                                            <button
+                                                key={key}
+                                                onClick={() => setInterviewerPersona(key)}
+                                                className={`p-4 rounded-2xl border text-left transition-all duration-300 flex items-start gap-4 ${
+                                                    interviewerPersona === key
+                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl'
+                                                        : 'bg-[#FAFAFA] text-[#313851]/60 border-zinc-100 hover:bg-zinc-50'
+                                                }`}
+                                            >
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 border ${
+                                                    interviewerPersona === key ? 'bg-white/10 border-white/20 text-white' : 'bg-white border-zinc-100 text-[#313851]'
+                                                }`}>
+                                                    {val.name[0]}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <span className="font-bold text-[11px] uppercase tracking-widest block leading-tight">{val.name}</span>
+                                                    <span className={`text-[8.5px] font-semibold block uppercase tracking-wider ${interviewerPersona === key ? 'text-zinc-300' : 'text-zinc-400'}`}>{val.title}</span>
+                                                    <span className={`text-[8.5px] font-medium leading-relaxed block mt-1 line-clamp-1 ${interviewerPersona === key ? 'text-zinc-400' : 'text-zinc-450'}`}>{val.style}</span>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Whiteboard & Proctor settings */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Whiteboard mode */}
+                                    <div className="p-4 bg-[#FAFAFA] rounded-2xl border border-zinc-100 flex items-center justify-between">
+                                        <div>
+                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#313851]">Whiteboard Mode</p>
+                                            <p className="text-[8.5px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5 leading-relaxed">
+                                                Verbally solve algorithm/design logic
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => setWhiteboardMode(prev => !prev)}
+                                            className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center shrink-0 ${
+                                                whiteboardMode ? 'bg-[#313851] border-[#313851]' : 'bg-zinc-200 border-zinc-200'
+                                            }`}
+                                        >
+                                            <div className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-300 ${whiteboardMode ? 'translate-x-[14px]' : ''}`} />
+                                        </button>
+                                    </div>
+
+                                    {/* Proctoring */}
+                                    <div className="p-4 bg-[#FAFAFA] rounded-2xl border border-zinc-100 flex items-center justify-between">
+                                        <div>
+                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#313851]">Enable Proctoring</p>
+                                            <p className="text-[8.5px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5 leading-relaxed">
+                                                Monitor browser focus issues
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => setProctorMode(prev => !prev)}
+                                            className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center shrink-0 ${
+                                                proctorMode ? 'bg-[#313851] border-[#313851]' : 'bg-zinc-200 border-zinc-200'
+                                            }`}
+                                        >
+                                            <div className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-300 ${proctorMode ? 'translate-x-[14px]' : ''}`} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Rounds preview */}
+                                {roundsConfig.length > 0 && (
+                                    <div className="p-4 bg-[#FAFAFA] rounded-2xl border border-zinc-100">
+                                        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-3">Target Round Structure</p>
+                                        <div className="flex gap-2 flex-wrap">
+                                            {roundsConfig.map((r, i) => (
+                                                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-100 rounded-xl text-[9px] font-bold uppercase tracking-wider text-[#313851]">
+                                                    <span className="w-4.5 h-4.5 rounded-full bg-[#313851] text-white flex items-center justify-center text-[8px]">{i + 1}</span>
+                                                    {r.round_name} ({r.question_limit}Q)
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {setupStep === 4 && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                {/* Briefing details */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Left: Interviewer summary & details */}
+                                    <div className="bg-[#FAFAFA] border border-zinc-100 rounded-2xl p-5 shadow-sm">
+                                        <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-4">Assigned Interviewer</p>
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-[#313851] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                                                {persona.name[0]}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-[#313851] font-bold text-sm leading-none">{persona.name}</p>
+                                                <p className="text-[#313851]/70 text-[10px] mt-1 font-semibold">{persona.title}</p>
+                                                <p className="text-[#313851]/60 text-[9px] mt-2 font-medium">Style: <span className="font-bold text-[#313851]">{persona.style}</span></p>
+                                                <p className="text-zinc-400 text-[9px] mt-1 font-medium">{persona.years} years experience · Glassdoor ★ {persona.rating}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Right: Round timeline list */}
+                                    {roundsConfig && roundsConfig.length > 0 ? (
+                                        <div className="bg-[#FAFAFA] border border-zinc-100 rounded-2xl p-5 shadow-sm overflow-y-auto max-h-[140px]">
+                                            <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-3">Timeline Phases</p>
+                                            <div className="space-y-2">
+                                                {roundsConfig.map((r, idx) => (
+                                                    <div key={idx} className="flex items-center gap-2.5">
+                                                        <span className="w-4 h-4 rounded-full bg-white border border-[#313851]/20 text-[#313851] flex items-center justify-center text-[8px] font-black shrink-0">{idx + 1}</span>
+                                                        <span className="text-[9px] font-bold text-[#313851]/80 uppercase tracking-widest truncate">{r.round_name}</span>
+                                                        <span className="text-zinc-300 text-[9.5px] font-medium ml-auto">{roundTimes[idx]}m</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-[#FAFAFA] border border-zinc-100 rounded-2xl p-5 flex items-center justify-center text-center">
+                                            <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-widest">Single-round assessment</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Tips */}
+                                <div>
+                                    <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-3">Company Target Advice</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        {tips.slice(0, 3).map((tip, i) => (
+                                            <div key={i} className="p-4 bg-zinc-50 border border-zinc-100/50 rounded-xl flex items-start gap-2.5">
+                                                <Zap size={12} className="text-[#313851]/40 shrink-0 mt-0.5" />
+                                                <p className="text-[#313851]/75 text-[10px] font-semibold leading-relaxed">{tip}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Checklist boxes */}
+                                <div className="space-y-2.5">
+                                    <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-400">Pre-Flight Toggles</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {checklistItems.map((item) => (
+                                            <button
+                                                key={item.key}
+                                                onClick={() => setCheckedItems(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
+                                                className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAFAFA] border border-zinc-100 hover:border-zinc-300 text-left transition-all shadow-sm shrink-0"
+                                            >
+                                                <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                                                    checkedItems[item.key] ? 'bg-[#313851] border-[#313851]' : 'border-zinc-300 bg-white'
+                                                }`}>
+                                                    {checkedItems[item.key] && <CheckCircle size={10} className="text-white" />}
+                                                </div>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider truncate transition-colors ${
+                                                    checkedItems[item.key] ? 'text-[#313851]' : 'text-[#313851]/60'
+                                                }`}>
+                                                    {item.label}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
+
+                    {/* Navigation bar at bottom of wizard */}
+                    <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+                        {setupStep > 1 ? (
+                            <button
+                                onClick={() => setSetupStep((s) => s - 1)}
+                                className="px-6 py-3.5 border border-[#313851]/10 text-[#313851]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] hover:text-[#313851] rounded-xl transition-all"
+                            >
+                                Back
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setStep('selection')}
+                                className="px-6 py-3.5 border border-[#313851]/10 text-[#313851]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] hover:text-[#313851] rounded-xl transition-all"
+                            >
+                                Back to Selection
+                            </button>
+                        )}
+
+                        {setupStep < 3 && (
+                            <button
+                                onClick={() => {
+                                    if (setupStep === 1 && !hasResume && interviewType !== 'hr') {
+                                        setErrorMsg('Please upload a resume before starting your technical interview.');
+                                        setTimeout(() => setErrorMsg(''), 5000);
+                                        return;
+                                    }
+                                    setSetupStep((s) => s + 1);
+                                }}
+                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5"
+                            >
+                                Next
+                            </button>
+                        )}
+
+                        {setupStep === 3 && (
+                            <button
+                                onClick={handleStartClick}
+                                disabled={isStarting || (interviewType !== 'hr' && !hasResume) || uploadingResume || showCreditPanel}
+                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-[#313851]/10 disabled:opacity-30"
+                            >
+                                {isStarting ? 'Loading...' : 'Pre-Flight Briefing'}
+                            </button>
+                        )}
+
+                        {setupStep === 4 && (
+                            <button
+                                onClick={handleConfirmStart}
+                                disabled={!allChecked}
+                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-xl shadow-[#313851]/10 disabled:opacity-20 disabled:cursor-not-allowed"
+                            >
+                                Launch Simulator →
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Inline Error messages inside layout */}
+                    {errorMsg && (
+                        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-red-50 border border-red-100 rounded-xl px-5 py-2.5 flex items-center gap-2 shadow-lg">
+                            <AlertTriangle size={14} className="text-red-500" />
+                            <span className="text-red-600 font-bold text-[9px] uppercase tracking-widest">{errorMsg}</span>
+                        </div>
                     )}
 
-                    {/* Intelligence Briefing */}
-                    <div className="mb-8">
-                        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-[#313851]/50 mb-4">
-                            Intelligence Briefing
-                        </p>
-                        <div className="space-y-2.5">
-                            {tips.map((tip, i) => (
-                                <div key={i} className="flex items-start gap-3">
-                                    <Zap size={12} className="text-[#313851]/40 shrink-0 mt-0.5" />
-                                    <p className="text-[#313851]/70 text-[11px] font-semibold leading-relaxed">{tip}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Credit panel */}
+                    <AnimatePresence>
+                        {showCreditPanel && (
+                            <CreditCheckPanel
+                                onConfirm={handleCreditConfirmStart}
+                                onCancel={() => setShowCreditPanel(false)}
+                                isStarting={isStarting}
+                                mode="ai_interview_only"
+                            />
+                        )}
+                    </AnimatePresence>
+                </div>
 
-                    {/* Pre-Mission Check */}
-                    <div className="mb-10">
-                        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-[#313851]/50 mb-4">
-                            Pre-Mission Check
-                        </p>
-                        <div className="space-y-3">
-                            {checklistItems.map((item) => (
-                                <button
-                                    key={item.key}
-                                    onClick={() => setCheckedItems(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
-                                    className="w-full flex items-center gap-4 p-4 rounded-xl bg-white border border-[#313851]/10 hover:border-[#313851]/35 transition-all text-left group shadow-sm"
-                                >
-                                    <motion.div
-                                        animate={{
-                                            backgroundColor: checkedItems[item.key] ? '#313851' : 'transparent',
-                                            borderColor: checkedItems[item.key] ? '#313851' : '#31385133',
-                                        }}
-                                        className="w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0"
-                                    >
-                                        {checkedItems[item.key] && (
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                                                <CheckCircle size={14} className="text-white" />
-                                            </motion.div>
-                                        )}
-                                    </motion.div>
-                                    <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${checkedItems[item.key] ? 'text-[#313851]' : 'text-[#313851]/60 group-hover:text-[#313851]'}`}>
-                                        {item.label}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Enter Interview Button */}
-                    <button
-                        onClick={handleConfirmStart}
-                        disabled={!allChecked}
-                        className="w-full py-5 bg-[#313851] text-white rounded-full font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-[#313851]/90 transition-all shadow-xl shadow-[#313851]/10 disabled:opacity-20 disabled:cursor-not-allowed active:scale-95"
-                    >
-                        Enter Interview →
-                    </button>
-                </motion.div>
+                <CreditCheckModal
+                    isOpen={showCreditModal}
+                    onClose={() => setShowCreditModal(false)}
+                    viewState={modalType}
+                    onConfirm={handleConfirmStart}
+                    isStarting={isStarting}
+                    mode="ai_interview_only"
+                />
             </div>
         );
     }
