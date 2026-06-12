@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getActiveSessions, getUserStats, getUsers } from '../../api/adminApi';
+import { getActiveSessions, getUserStats, getUsers, getScrapingLogs } from '../../api/adminApi';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
-import { Ear, AlertTriangle, RefreshCw, Zap, Shield, Users, UserCheck, Briefcase, TrendingUp, Search, X, Mail, Phone } from 'lucide-react';
+import { Ear, AlertTriangle, RefreshCw, Zap, Shield, Users, UserCheck, Briefcase, TrendingUp, Search, X, Mail, Phone, Database, Radio } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const ControlTowerPage = () => {
 
@@ -47,6 +47,35 @@ const ControlTowerPage = () => {
         }
     };
 
+    const [scrapingLogs, setScrapingLogs] = useState([]);
+
+    const calculateGrowth = (rates) => {
+        if (!rates || rates.length < 14) return null;
+        const last7 = rates.slice(-7);
+        const prev7 = rates.slice(-14, -7);
+        const last7Count = last7.reduce((sum, r) => sum + r.count, 0);
+        const prev7Count = prev7.reduce((sum, r) => sum + r.count, 0);
+        if (prev7Count === 0) return last7Count > 0 ? { percentage: 100, isPositive: true } : null;
+        const diff = last7Count - prev7Count;
+        const percentage = Math.round((diff / prev7Count) * 100);
+        return {
+            percentage: Math.abs(percentage),
+            isPositive: percentage >= 0
+        };
+    };
+
+    const renderGrowthBadge = (rates) => {
+        const growth = calculateGrowth(rates);
+        if (!growth) return null;
+        return (
+            <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-2 ${
+                growth.isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+            }`}>
+                {growth.isPositive ? '+' : '-'}{growth.percentage}% WoW
+            </span>
+        );
+    };
+
     const fetchData = useCallback(async (isSilent = false) => {
         if (!isSilent) {
             setLoading(true);
@@ -55,12 +84,14 @@ const ControlTowerPage = () => {
         }
 
         try {
-            const [sessionsData, statsData] = await Promise.all([
+            const [sessionsData, statsData, logsData] = await Promise.all([
                 getActiveSessions(),
-                getUserStats()
+                getUserStats(),
+                getScrapingLogs(10)
             ]);
             setSessions(sessionsData || []);
             setStats(statsData || null);
+            setScrapingLogs(logsData || []);
             
             if (selectedRole) {
                 const membersData = await getUsers(selectedRole === 'all' ? null : selectedRole);
@@ -179,7 +210,10 @@ const ControlTowerPage = () => {
                             className={`bg-white border p-6 card shadow-xl shadow-zinc-900/5 flex items-center justify-between cursor-pointer transition-all duration-300 hover:scale-[1.02] ${selectedRole === 'all' ? 'ring-2 ring-zinc-900 border-zinc-900 bg-zinc-50/50' : 'border-zinc-100'}`}
                         >
                             <div>
-                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Registered</p>
+                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center">
+                                    Total Registered
+                                    {renderGrowthBadge(stats.daily_registration_rates)}
+                                </p>
                                 <p className="text-3xl font-extrabold text-zinc-900 mt-2">{stats.total_users}</p>
                             </div>
                             <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 shadow-sm">
@@ -192,7 +226,10 @@ const ControlTowerPage = () => {
                             className={`bg-white border p-6 card shadow-xl shadow-zinc-900/5 flex items-center justify-between cursor-pointer transition-all duration-300 hover:scale-[1.02] ${selectedRole === 'seeker' ? 'ring-2 ring-zinc-900 border-zinc-900 bg-zinc-50/50' : 'border-zinc-100'}`}
                         >
                             <div>
-                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Seekers</p>
+                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center">
+                                    Total Seekers
+                                    {renderGrowthBadge(stats.daily_seeker_registration_rates)}
+                                </p>
                                 <p className="text-3xl font-extrabold text-zinc-900 mt-2">{stats.total_seekers}</p>
                             </div>
                             <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 shadow-sm">
@@ -391,10 +428,140 @@ const ControlTowerPage = () => {
                                     <Tooltip 
                                         contentStyle={{ background: '#18181b', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px', fontWeight: 'bold' }} 
                                         labelStyle={{ color: '#a1a1aa', fontSize: '9px', textTransform: 'uppercase', tracking: '0.1em' }}
+                                        itemStyle={{ color: '#fff' }}
                                     />
                                     <Area type="monotone" dataKey="count" name="Registrations" stroke="#18181b" strokeWidth={2} fillOpacity={1} fill="url(#userRegGrad)" />
                                 </AreaChart>
                             </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Visual Data Charts Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* 1. Registered Seeker Trends (Last 7 Days) */}
+                        <div className="bg-white border border-zinc-100 card p-6 shadow-xl shadow-zinc-900/5 flex flex-col justify-between">
+                            <div>
+                                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
+                                    <TrendingUp size={14} className="text-zinc-900" /> Seeker Trends (7 Days)
+                                </h3>
+                                <p className="text-xs text-zinc-400 mb-6">New seeker registrations per day</p>
+                            </div>
+                            <div className="h-48 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={stats.daily_seeker_registration_rates?.slice(-7) || []} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="seekerRegGrad" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#18181b" stopOpacity={0.15}/>
+                                                <stop offset="95%" stopColor="#18181b" stopOpacity={0.01}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <XAxis 
+                                            dataKey="date" 
+                                            tickLine={false} 
+                                            axisLine={false} 
+                                            tickFormatter={(str) => {
+                                                try {
+                                                    const d = new Date(str);
+                                                    return d.toLocaleDateString([], { weekday: 'short' });
+                                                } catch (e) {
+                                                    return str;
+                                                }
+                                            }}
+                                            tick={{ fontSize: 9, fill: '#71717a', fontWeight: 500 }} 
+                                        />
+                                        <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 9, fill: '#71717a', fontWeight: 500 }} />
+                                        <Tooltip 
+                                            contentStyle={{ background: '#18181b', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '10px' }} 
+                                            itemStyle={{ color: '#fff' }}
+                                            labelStyle={{ color: '#a1a1aa' }}
+                                        />
+                                        <Area type="monotone" dataKey="count" name="Seekers" stroke="#18181b" strokeWidth={2} fillOpacity={1} fill="url(#seekerRegGrad)" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* 2. Active Sessions Breakout */}
+                        <div className="bg-white border border-zinc-100 card p-6 shadow-xl shadow-zinc-900/5 flex flex-col justify-between">
+                            <div>
+                                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
+                                    <Radio size={14} className="text-zinc-900" /> Active Sessions Breakout
+                                </h3>
+                                <p className="text-xs text-zinc-400 mb-6">AI Coach vs Human Experts</p>
+                            </div>
+                            <div className="h-48 w-full flex items-center justify-center relative">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={[
+                                                { name: 'AI Coach', value: activeAiCount || 0 },
+                                                { name: 'Human Support', value: humanCount || 0 }
+                                            ].filter(i => i.value > 0).length > 0 ? [
+                                                { name: 'AI Coach', value: activeAiCount || 0 },
+                                                { name: 'Human Support', value: humanCount || 0 }
+                                            ] : [{ name: 'No Active Sessions', value: 1 }]}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={50}
+                                            outerRadius={70}
+                                            paddingAngle={4}
+                                            dataKey="value"
+                                        >
+                                            <Cell fill="#18181b" />
+                                            <Cell fill="#71717a" />
+                                        </Pie>
+                                        <Tooltip 
+                                            contentStyle={{ background: '#18181b', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '10px' }} 
+                                            itemStyle={{ color: '#fff' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="absolute flex flex-col items-center justify-center">
+                                    <span className="text-2xl font-bold text-zinc-900">{sessions.length}</span>
+                                    <span className="text-[9px] uppercase tracking-wider text-zinc-400 font-bold">Total</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. Scraper Success Rate */}
+                        <div className="bg-white border border-zinc-100 card p-6 shadow-xl shadow-zinc-900/5 flex flex-col justify-between">
+                            <div>
+                                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
+                                    <Database size={14} className="text-zinc-900" /> Scraper Success Rate
+                                </h3>
+                                <p className="text-xs text-zinc-400 mb-6">Percentage of successful run logs</p>
+                            </div>
+                            <div className="h-48 w-full flex items-center justify-center relative">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={[
+                                                { name: 'Success', value: scrapingLogs.filter(l => l.status === 'success').length || (scrapingLogs.length === 0 ? 1 : 0) },
+                                                { name: 'Failed', value: scrapingLogs.filter(l => l.status === 'failed').length || 0 }
+                                            ]}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={50}
+                                            outerRadius={70}
+                                            paddingAngle={4}
+                                            dataKey="value"
+                                        >
+                                            <Cell fill="#18181b" />
+                                            <Cell fill="#e4e4e7" />
+                                        </Pie>
+                                        <Tooltip 
+                                            contentStyle={{ background: '#18181b', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '10px' }} 
+                                            itemStyle={{ color: '#fff' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="absolute flex flex-col items-center justify-center">
+                                    <span className="text-2xl font-bold text-zinc-900">
+                                        {scrapingLogs.length > 0 ? Math.round((scrapingLogs.filter(l => l.status === 'success').length / scrapingLogs.length) * 100) : 100}%
+                                    </span>
+                                    <span className="text-[9px] uppercase tracking-wider text-zinc-400 font-bold">Success</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </motion.div>

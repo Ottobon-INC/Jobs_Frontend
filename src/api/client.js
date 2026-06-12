@@ -123,6 +123,14 @@ api.interceptors.response.use(
             }
             // If refresh failed, clear the stale cached token
             setToken(null);
+            // Redirect to force re-authentication and stop background polling
+            if (window.location.pathname !== '/login' && window.location.pathname !== '/admin/login') {
+                if (window.location.pathname.startsWith('/admin')) {
+                    window.location.href = '/admin/login';
+                } else {
+                    window.location.href = '/login';
+                }
+            }
         }
 
         const isSavedCheck = error.config?.url?.includes('/is-saved');

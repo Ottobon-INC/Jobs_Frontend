@@ -14,7 +14,7 @@ const MobileBottomNav = ({ onMenuClick }) => {
         { to: '/market-intelligence', label: 'Market', icon: Search },
         { to: '/profile', label: 'Profile', icon: User }
     ] : role === ROLES.ADMIN ? [
-        { to: '/admin/tower', label: 'Tower', icon: LayoutDashboard },
+        { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/admin/feedback', label: 'Feedback', icon: BarChart3 },
         { to: '/admin/playbooks', label: 'Playbooks', icon: BookOpen }
     ] : [
