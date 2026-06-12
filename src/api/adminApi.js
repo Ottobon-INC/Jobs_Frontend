@@ -59,4 +59,11 @@ export const getUsers = async (role = null) => {
     return response.data;
 };
 
+export const getScrapingLogs = async (limit = 20) => {
+    const response = await api.get('/admin/scraping-logs', {
+        params: { limit }
+    });
+    return response.data;
+};
+
 

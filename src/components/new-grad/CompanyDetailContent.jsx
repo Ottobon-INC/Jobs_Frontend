@@ -5,7 +5,7 @@ import {
     DollarSign, 
     BookOpen, 
     Sparkles, 
-    ChevronRight, 
+    ChevronRight,
     CheckCircle2, 
     AlertCircle,
     Calendar,
@@ -274,21 +274,22 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             }
 
             case 'syllabus': {
+                const syllabusData = company.syllabus || [];
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <h3 className="text-3xl font-bold text-[#313851] mb-6">Syllabus Details</h3>
-                        {company.syllabus ? (
+                        {syllabusData.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {company.syllabus.map((round, idx) => (
+                                {syllabusData.map((round, idx) => (
                                     <div key={idx} className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100">
                                         <div className="flex items-center gap-3 mb-6">
                                             <div className="w-8 h-8 bg-[#313851] rounded-xl flex items-center justify-center text-white text-[10px] font-black">
                                                 {idx + 1}
                                             </div>
-                                            <h4 className="text-lg font-bold text-[#313851]">{round.round}</h4>
+                                            <h4 className="text-lg font-bold text-[#313851]">{round.round || round.category || round.name || `Round ${idx + 1}`}</h4>
                                         </div>
                                         <ul className="space-y-3">
-                                            {round.topics.map((topic, tIdx) => (
+                                            {round.topics && round.topics.map((topic, tIdx) => (
                                                 <li key={tIdx} className="flex items-center gap-3 text-zinc-600 font-bold text-xs">
                                                     <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
                                                     {topic}

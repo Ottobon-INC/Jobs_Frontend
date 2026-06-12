@@ -45,6 +45,7 @@ const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
 const MyListingsPage = lazy(() => import('./pages/provider/MyListingsPage'));
 
 // Admin Pages
+const AdminDashboardHome = lazy(() => import('./pages/admin/AdminDashboardHome'));
 const ControlTowerPage = lazy(() => import('./pages/admin/ControlTowerPage'));
 const IngestionPage = lazy(() => import('./pages/admin/IngestionPage'));
 const HelpDeskPage = lazy(() => import('./pages/admin/HelpDeskPage'));
@@ -157,6 +158,7 @@ function App() {
 
                 {/* Protected: Admin Only */}
                 <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
+                  <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
                   <Route path="/admin/tower" element={<ControlTowerPage />} />
                   <Route path="/admin/ingest" element={<IngestionPage />} />
                   <Route path="/admin/helpdesk" element={<HelpDeskPage />} />
