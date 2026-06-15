@@ -454,7 +454,7 @@ const ProfilePage = () => {
                                 <p className="text-sm font-medium text-black">{profile?.phone || 'No Phone Linked'}</p>
                             )}
                         </div>
-                    
+                    </div>
 
                     {/* Skills Selection */}
                     <motion.div
@@ -570,7 +570,6 @@ const ProfilePage = () => {
                             ))}
                         </div>
                     </motion.div>
-</div>
                 </div>
 
                 {/* Right Column: Questionnaire (Skills & Interests) */}
@@ -821,7 +820,7 @@ const ProfilePage = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="glass-card p-12 overflow-hidden relative"
+                        className="glass-card p-5 md:p-12 overflow-hidden relative"
                     >
                         {/* Subtle background decoration */}
                         <div className="absolute -right-10 -bottom-10 opacity-[0.03]">

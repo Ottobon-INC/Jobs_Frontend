@@ -146,13 +146,13 @@ const SiriVisualizer = ({ isActive, analyserNode }) => {
 const RoundProgressIndicator = ({ rounds, currentRoundIndex }) => {
     if (!rounds || rounds.length <= 1) return null;
     return (
-        <div className="flex items-center gap-0">
+        <div className="flex items-center gap-0 overflow-x-auto max-w-full no-scrollbar py-2 snap-x">
             {rounds.map((round, idx) => {
                 const isDone = idx < currentRoundIndex;
                 const isActive = idx === currentRoundIndex;
                 const isPending = idx > currentRoundIndex;
                 return (
-                    <div key={idx} className="flex items-center">
+                    <div key={idx} className="flex items-center shrink-0 snap-center">
                         <div className="flex flex-col items-center gap-1.5">
                             <motion.div
                                 layout
@@ -462,7 +462,7 @@ const TextInterviewScreen = ({
     PERSONA_PROFILES['Neutral'];
   
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[500px] bg-white rounded-2xl border border-zinc-100 shadow-2xl shadow-zinc-900/5 overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-180px)] min-h-[500px] bg-white rounded-2xl border border-zinc-100 shadow-2xl shadow-zinc-900/5 overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 bg-zinc-900 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -611,12 +611,16 @@ const WaveformVisualizer = ({ analyserRef, isActive, isMuted }) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 320 * dpr;
+        canvas.height = 64 * dpr;
+        ctx.scale(dpr, dpr);
         let animId;
 
         const draw = () => {
             const analyser = analyserRef?.current;
-            const W = canvas.width;
-            const H = canvas.height;
+            const W = 320;
+            const H = 64;
             const bW = (W / 32) - 4;
             ctx.clearRect(0, 0, W, H);
 
