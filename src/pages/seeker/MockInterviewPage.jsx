@@ -2224,9 +2224,12 @@ const MockInterviewPage = () => {
                     {/* Header: Steps progress indicator */}
                     <div className="mb-10">
                         <div className="flex items-center justify-between mb-6">
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/40">
-                                Step {setupStep} of 4
-                            </span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/40">
+                                    Step {setupStep} of 4
+                                </span>
+                                <CreditBalance mode="ai_interview_only" />
+                            </div>
                             <div className="flex gap-2">
                                 {[1, 2, 3, 4].map((s) => (
                                     <div 
