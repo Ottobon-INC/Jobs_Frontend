@@ -97,9 +97,9 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="group/job relative w-full min-w-0"
+            className="group/job relative w-full min-w-0 h-full"
         >
-            <div className="relative bg-white border border-zinc-100 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden w-full min-w-0">
+            <div className="relative bg-white border border-zinc-100 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden w-full min-w-0 h-full">
                 
                 {/* 1. Top Row: Logo & Badges */}
                 <div className="flex items-start justify-between mb-5 sm:mb-8">

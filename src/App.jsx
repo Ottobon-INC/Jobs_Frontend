@@ -57,6 +57,8 @@ const EditPlaybookPage = lazy(() => import('./pages/admin/EditPlaybookPage'));
 const ManageTimelinePage = lazy(() => import('./pages/admin/ManageTimelinePage'));
 const ManageRewardsPage = lazy(() => import('./pages/admin/ManageRewardsPage'));
 const HumanMockInterviewsDashboard = lazy(() => import('./pages/admin/HumanMockInterviewsDashboard'));
+const ManageKnowledgeHubPage = lazy(() => import('./pages/admin/ManageKnowledgeHubPage'));
+const ManageCoursesPage = lazy(() => import('./pages/admin/ManageCoursesPage'));
 
 // Chat
 const ChatPage = lazy(() => import('./pages/chat/ChatPage'));
@@ -159,6 +161,7 @@ function App() {
                 {/* Protected: Admin Only */}
                 <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
                   <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
+                  <Route path="/admin/knowledge" element={<ManageKnowledgeHubPage />} />
                   <Route path="/admin/tower" element={<ControlTowerPage />} />
                   <Route path="/admin/ingest" element={<IngestionPage />} />
                   <Route path="/admin/helpdesk" element={<HelpDeskPage />} />
@@ -170,6 +173,7 @@ function App() {
                   <Route path="/admin/playbooks/edit/:id" element={<EditPlaybookPage />} />
                   <Route path="/admin/timeline" element={<ManageTimelinePage />} />
                   <Route path="/admin/rewards" element={<ManageRewardsPage />} />
+                  <Route path="/admin/courses" element={<ManageCoursesPage />} />
                   <Route path="/admin/human-mock-interviews" element={<HumanMockInterviewsDashboard />} />
                 </Route>
 

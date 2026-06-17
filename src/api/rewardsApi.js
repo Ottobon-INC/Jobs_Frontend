@@ -27,9 +27,10 @@ export const getRewardItems = async () => {
 };
 
 /** Redeem a reward item. */
-export const redeemReward = async (rewardItemId) => {
+export const redeemReward = async (rewardItemId, quantity = 1) => {
     const response = await api.post('/rewards/redeem', {
         reward_item_id: rewardItemId,
+        quantity,
     });
     return response.data;
 };

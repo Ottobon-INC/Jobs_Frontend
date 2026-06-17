@@ -98,11 +98,11 @@ const RewardsPage = () => {
     setModalItem(item);
   }, []);
 
-  const handleConfirmRedeem = useCallback(async (item) => {
+  const handleConfirmRedeem = useCallback(async (item, quantity = 1) => {
     try {
-      const result = await redeemReward(item.id);
-      toast.success(`Successfully redeemed ${item.name}!`);
-
+      const result = await redeemReward(item.id, quantity);
+      toast.success(quantity > 1 ? `Successfully redeemed ${quantity} x ${item.name}!` : `Successfully redeemed ${item.name}!`);
+ 
       // Detect if this is a mock interview session and add interview credits!
       const lowerName = (item.name || '').toLowerCase();
       const lowerDesc = (item.description || '').toLowerCase();
@@ -119,17 +119,19 @@ const RewardsPage = () => {
         lowerDesc.includes('match')
       );
       
+      const multiplier = (item.grantAmount || 1) * quantity;
+      
       if (isAiMock) {
-        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_interview');
-        toast.success(`Added 1 AI Interview credit to your balance!`);
+        addCredits(multiplier, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_interview');
+        toast.success(`Added ${multiplier} AI Interview credit${multiplier > 1 ? 's' : ''} to your balance!`);
       } else if (isAiMatch) {
-        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_match');
-        toast.success(`Added 1 AI Match credit to your balance!`);
+        addCredits(multiplier, 'shop_purchase', `Redeemed: ${item.name}`, 'ai_match');
+        toast.success(`Added ${multiplier} AI Match credit${multiplier > 1 ? 's' : ''} to your balance!`);
       } else if (isHumanMock) {
-        addCredits(1, 'shop_purchase', `Redeemed: ${item.name}`, 'human');
-        toast.success(`Added 1 Human interview credit to your balance!`);
+        addCredits(multiplier, 'shop_purchase', `Redeemed: ${item.name}`, 'human');
+        toast.success(`Added ${multiplier} Human interview credit${multiplier > 1 ? 's' : ''} to your balance!`);
       }
-
+ 
       // Refresh all data to update balance and history
       fetchData();
       setModalItem(null);

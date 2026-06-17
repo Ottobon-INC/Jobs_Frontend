@@ -59,6 +59,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
   const [step, setStep] = useState('confirm'); // 'confirm' | 'loading' | 'success'
   const [errorMsg, setErrorMsg] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const modalRef = useRef(null);
   const { addCredits } = useInterviewCreditsContext();
 
@@ -68,6 +69,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
       setStep('confirm');
       setShowConfetti(false);
       setErrorMsg(null);
+      setQuantity(1);
     }
   }, [isOpen]);
 
@@ -104,7 +106,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
     setStep('loading');
     setErrorMsg(null);
     try {
-      await onConfirm(item);
+      await onConfirm(item, quantity);
 
       // Perform local balance credit addition if shop purchase is interview credits
       if (item.grantType === 'interview_credits') {
@@ -128,7 +130,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
         else if (isAiMatch) creditType = 'ai_match';
         else if (isHumanMock) creditType = 'human';
 
-        addCredits(item.grantAmount, 'shop_purchase', item.name, creditType);
+        addCredits(item.grantAmount * quantity, 'shop_purchase', item.name, creditType);
       }
 
       setStep('success');
@@ -139,12 +141,14 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
       setStep('confirm');
       setErrorMsg(err.response?.data?.detail || err.message || 'Failed to redeem reward');
     }
-  }, [item, onConfirm, addCredits]);
+  }, [item, onConfirm, addCredits, quantity]);
 
   if (!item) return null;
 
   const isClamReward = item.category === 'clam reward' || item.category === 'Claim Reward';
-  const balanceAfter = isClamReward ? coinBalance + item.cost : coinBalance - item.cost;
+  const totalCost = item.cost * quantity;
+  const balanceAfter = isClamReward ? coinBalance + totalCost : coinBalance - totalCost;
+  const canAffordMore = isClamReward ? true : coinBalance >= (item.cost * (quantity + 1));
 
   return (
     <AnimatePresence>
@@ -202,11 +206,37 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                   )}
 
                   {item.grantType === 'interview_credits' && (
-                    <div className="flex items-center gap-2 text-xs text-[#10b981] font-semibold mb-5 bg-[#10b981]/5 px-3.5 py-2.5 rounded-lg border border-[#10b981]/25 w-full">
+                    <div className="flex items-center gap-2 text-xs text-[#10b981] font-semibold mb-4 bg-[#10b981]/5 px-3.5 py-2.5 rounded-lg border border-[#10b981]/25 w-full text-left">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
-                      <span>You'll receive {item.grantAmount} {item.grantAmount === 1 ? 'credit' : 'credits'} added to your balance</span>
+                      <span>You'll receive {item.grantAmount * quantity} {item.grantAmount * quantity === 1 ? 'credit' : 'credits'} added to your balance</span>
+                    </div>
+                  )}
+
+                  {/* Quantity Stepper (only for non-claim rewards) */}
+                  {!isClamReward && (
+                    <div className="w-full flex items-center justify-between mb-4 px-4 py-3 rounded-xl border border-[#C2CBD3]/20" style={{ background: '#F6F3ED/30' }}>
+                      <span className="text-xs font-bold text-[#313851]/70 uppercase tracking-wider">Quantity</span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                          disabled={quantity <= 1}
+                          className="w-8 h-8 rounded-lg border border-[#C2CBD3]/60 flex items-center justify-center font-bold text-[#313851] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F6F3ED] transition-colors"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center text-sm font-bold text-[#313851]">{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => setQuantity(q => q + 1)}
+                          disabled={!canAffordMore}
+                          className="w-8 h-8 rounded-lg border border-[#C2CBD3]/60 flex items-center justify-center font-bold text-[#313851] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F6F3ED] transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -218,7 +248,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                       <div className="flex items-center gap-1.5">
                         <GoldCoinIcon size={16} />
                         <span className="font-bold text-[#313851]">
-                          {isClamReward ? `+${item.cost.toLocaleString()}` : item.cost.toLocaleString()}
+                          {isClamReward ? `+${totalCost.toLocaleString()}` : totalCost.toLocaleString()}
                         </span>
                       </div>
                     </div>

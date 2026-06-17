@@ -6,9 +6,9 @@
     --color-background: #F6F3ED;
     --color-foreground: #313851;
 
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-display: 'Inter', system-ui, sans-serif;
-    --font-heading: 'Inter', system-ui, sans-serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
     --radius-sm: 12px;
     --radius-md: 12px;
@@ -102,9 +102,13 @@
     font-family: var(--font-display) !important;
     letter-spacing: -0.025em !important; /* tracking-tight */
     color: var(--text-main);
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     font-style: normal !important;
     line-height: 1.15; /* stable line height */
+  }
+
+  .font-display, .font-heading {
+    font-weight: 700 !important;
   }
 
   button,

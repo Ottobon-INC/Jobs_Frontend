@@ -28,6 +28,7 @@ import { supabase } from '../../api/client';
 import { useState, useRef, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import PillNav from './PillNav';
 
 const seekerNavigationLinks = [
     { to: '/jobs', label: 'Job Board', icon: Search, category: 'Jobs' },
@@ -75,6 +76,21 @@ const Navbar = () => {
         navigate('/login');
     };
 
+    const getPillItems = () => {
+        return ['Jobs', 'Resources', 'Analytics'].map((cat) => {
+            const isRelated = seekerNavigationLinks.some(link => {
+                if (link.category !== cat) return false;
+                return location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));
+            });
+            const isActive = activeCategory ? activeCategory === cat : isRelated;
+            return {
+                label: cat,
+                active: isActive,
+                onClick: () => setActiveCategory(activeCategory === cat ? null : cat)
+            };
+        });
+    };
+
     // Close dropdown on click outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -107,32 +123,15 @@ const Navbar = () => {
                 {/* Centered Category Navigation Pills (Desktop-only for Seeker) */}
                 {user && role === 'seeker' && (
                     <div className="hidden md:flex items-center gap-1.5 relative z-30" ref={navPillsRef}>
-                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[#313851]/8 border border-[#313851]/20">
-                            {['Jobs', 'Resources', 'Analytics'].map((cat) => {
-                                const isOpen = activeCategory === cat;
-                                const isRelated = seekerNavigationLinks.some(link => {
-                                    if (link.category !== cat) return false;
-                                    return location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));
-                                });
-
-                                let btnClass = 'text-[#313851]/80 hover:text-[#313851] hover:bg-[#313851]/10 bg-transparent';
-                                if (isOpen) {
-                                    btnClass = 'text-[#F6F3ED] bg-[#313851] shadow-sm font-bold';
-                                } else if (isRelated) {
-                                    btnClass = 'text-[#313851] bg-[#313851]/20 font-bold';
-                                }
-
-                                return (
-                                    <button
-                                        key={cat}
-                                        onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                                        className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 border-none cursor-pointer ${btnClass}`}
-                                    >
-                                        {cat}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        <PillNav
+                            items={getPillItems()}
+                            ease="power3.easeOut"
+                            baseColor="#313851"
+                            pillColor="transparent"
+                            pillTextColor="#313851"
+                            hoveredPillTextColor="#F6F3ED"
+                            initialLoadAnimation={false}
+                        />
                         
                         {/* Dropdown Panel (AnimatePresence) */}
                         <AnimatePresence>

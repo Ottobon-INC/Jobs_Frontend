@@ -18,42 +18,77 @@ export const NewGradSection = () => {
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="text-left relative z-10 flex flex-col items-start"
                 >
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#313851]/10 text-[#313851] text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#313851] animate-pulse" />
+                        New Grad Launchpad
+                    </div>
+
                     <h2 
-                        className="text-6xl md:text-7xl font-extrabold text-[#313851] tracking-tighter mb-4"
+                        className="text-5xl md:text-6xl font-extrabold text-[#313851] tracking-tighter mb-4 leading-none"
                         style={{ fontFamily: "'Inter', 'Roboto', system-ui, sans-serif" }}
                     >
-                        New Grad?
+                        Ready to start your career?
                     </h2>
-
-                    <p 
-                        className="text-xl md:text-2xl text-[#313851]/60 font-medium mb-12 max-w-xl tracking-tight"
+                    
+                    <h3 
+                        className="text-2xl md:text-3xl font-extrabold text-[#313851]/70 tracking-tight mb-6"
                         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
                     >
-                        Stop searching. Start building.
+                        Get the exact guides to ace your interviews.
+                    </h3>
+
+                    <p 
+                        className="text-base md:text-lg text-[#313851]/60 font-medium mb-10 max-w-xl tracking-tight leading-relaxed"
+                        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+                    >
+                        Stop sending hundreds of resumes. Access verified interview playbooks, step-by-step preparation roadmaps, and 1-on-1 mentorship to land your dream job.
                     </p>
 
                     <Link
                         to="/new-grad"
-                        className="group relative inline-flex items-center justify-center px-12 py-5 bg-[#313851] text-white rounded-full font-bold text-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(49,56,81,0.3)] active:scale-95 overflow-hidden"
+                        className="group relative inline-flex items-center justify-center px-10 py-4 bg-[#313851] text-white rounded-full font-bold text-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_35px_-10px_rgba(49,56,81,0.4)] active:scale-98 overflow-hidden gap-2"
                     >
-                        <span className="relative z-10 uppercase tracking-[0.15em]">Explore</span>
+                        <span className="relative z-10 uppercase tracking-[0.15em]">Explore Playbooks</span>
+                        <svg
+                            className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300 text-[#C2CBD3] relative z-10"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
                     </Link>
                 </motion.div>
                 
                 {/* Right Side: Interactive UI Showcase */}
-                <div className="relative h-[420px] flex items-center justify-center lg:justify-end">
+                <div className="relative h-[480px] flex items-center justify-center lg:justify-end">
                     {/* Floating Cards Container */}
-                    <div className="relative w-full max-w-[440px] h-[380px] mt-8 lg:mt-0">
+                    <div className="relative w-full max-w-[460px] h-[440px] mt-8 lg:mt-0">
                         
+                        {/* Thinking Man Illustration as the background base */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className="absolute bottom-[60px] left-1/2 -translate-x-1/2 w-[250px] h-[270px] z-10 pointer-events-none mix-blend-multiply select-none"
+                        >
+                            <img 
+                                src="/illustrations/thinking_man.png" 
+                                alt="Thinking Grad" 
+                                className="w-full h-full object-contain"
+                            />
+                        </motion.div>
+
                         {/* Card 3: Interview Stats (Top Left) */}
                         <motion.div
                             initial={{ opacity: 0, y: 50, rotate: 0 }}
-                            whileInView={{ opacity: 1, y: 0, rotate: -4 }}
+                            whileInView={{ opacity: 1, y: 0, rotate: -2 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            className="absolute top-0 left-2 z-10 bg-white p-5 rounded-[1.5rem] shadow-xl border border-zinc-100 w-56 group hover:scale-105 transition-transform"
+                            className="absolute top-0 left-[-10px] z-20 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-lg hover:shadow-2xl border border-white/60 w-56 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 bg-zinc-50 rounded-xl flex items-center justify-center text-[#313851]">
+                                <div className="w-8 h-8 bg-[#313851]/10 rounded-xl flex items-center justify-center text-[#313851]">
                                     <Layers size={16} />
                                 </div>
                                 <div>
@@ -61,38 +96,47 @@ export const NewGradSection = () => {
                                     <p className="text-xs font-bold text-[#313851]">4 Technical Rounds</p>
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                {[1, 2, 3].map(i => (
-                                    <div key={i} className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                        <div className="h-1.5 flex-1 bg-zinc-100 rounded-full" />
+                            <div className="space-y-2.5">
+                                {[
+                                    { label: "Online Assessment", checked: true },
+                                    { label: "Technical Interview I", checked: true },
+                                    { label: "System Design", checked: false },
+                                ].map((round, idx) => (
+                                    <div key={idx} className="flex items-center justify-between text-[10px] font-semibold text-[#313851]/80">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${round.checked ? 'bg-green-500 animate-pulse' : 'bg-zinc-200'}`} />
+                                            <span>{round.label}</span>
+                                        </div>
+                                        {round.checked && <span className="text-[8px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-md uppercase">Pass</span>}
                                     </div>
                                 ))}
                             </div>
                         </motion.div>
 
-                        {/* Card 1: Verified Playbook (Middle Left) */}
+                        {/* Card 1: Verified Playbook (Bottom Left) */}
                         <motion.div
                             initial={{ opacity: 0, y: 20, rotate: 0 }}
                             whileInView={{ opacity: 1, y: 0, rotate: -6 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
-                            className="absolute top-24 -left-6 z-30 bg-white p-5 rounded-[1.5rem] shadow-2xl shadow-[#313851]/10 border border-zinc-100 w-60 group hover:scale-105 transition-transform"
+                            className="absolute bottom-[20px] -left-20 z-20 bg-white/95 backdrop-blur-md p-5 rounded-3xl shadow-xl hover:shadow-2xl border border-white/70 w-60 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
                             <div className="flex items-center justify-between mb-3">
-                                <div className="w-10 h-10 bg-zinc-50 rounded-xl flex items-center justify-center border border-zinc-100">
-                                    <div className="w-6 h-6 bg-[#313851] rounded-md" />
+                                <div className="w-10 h-10 bg-[#313851]/5 rounded-2xl flex items-center justify-center border border-zinc-100">
+                                    <img src="/logos/google.svg" alt="Google" className="w-6 h-6 object-contain" />
                                 </div>
-                                <ShieldCheck className="text-green-500" size={20} />
+                                <div className="flex items-center gap-1 bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider">
+                                    <ShieldCheck size={10} /> Verified
+                                </div>
                             </div>
-                            <h4 className="font-bold text-[#313851] text-base">Google Playbook</h4>
-                            <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-1">Verified Guide</p>
-                            <div className="mt-3 space-y-1.5">
+                            <h4 className="font-extrabold text-[#313851] text-base">Google Playbook</h4>
+                            <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-0.5">Prep Guide & Mocks</p>
+                            <div className="mt-4 space-y-1.5">
                                 <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
-                                    <div className="h-full w-4/5 bg-green-500" />
+                                    <div className="h-full w-[85%] bg-green-500 rounded-full transition-all duration-1000" />
                                 </div>
-                                <div className="flex justify-between text-[7px] font-bold text-zinc-400 uppercase">
+                                <div className="flex justify-between text-[8px] font-bold text-zinc-400 uppercase tracking-wider">
                                     <span>Preparation</span>
-                                    <span>80%</span>
+                                    <span className="text-green-600 font-extrabold">85% Ready</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -102,23 +146,24 @@ export const NewGradSection = () => {
                             initial={{ opacity: 0, scale: 0.8, x: 20 }}
                             whileInView={{ opacity: 1, scale: 1, x: 0, rotate: 5 }}
                             transition={{ duration: 0.8, delay: 0.3 }}
-                            className="absolute top-4 right-0 z-20 bg-white p-4 rounded-[1.5rem] shadow-2xl shadow-[#313851]/5 border border-zinc-100 w-40 group hover:scale-105 transition-transform"
+                            className="absolute top-4 -right-6 z-20 bg-white/90 backdrop-blur-md p-4 rounded-3xl shadow-lg hover:shadow-2xl border border-white/60 w-44 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-3">
                                 <div className="w-6 h-6 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
                                     <ShieldCheck size={14} />
                                 </div>
-                                <p className="text-[8px] font-black text-zinc-400 uppercase tracking-[0.1em]">ATS Score</p>
+                                <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">ATS Optimizer</p>
                             </div>
-                            <div className="flex items-baseline gap-1">
-                                <h4 className="text-3xl font-bold text-[#313851]">94</h4>
-                                <span className="text-[10px] font-bold text-green-500">Perfect</span>
+                            <div className="flex items-baseline gap-1 mb-2">
+                                <h4 className="text-3xl font-black text-[#313851] tracking-tighter">94</h4>
+                                <span className="text-[10px] font-black text-green-500 uppercase tracking-wider">Perfect</span>
                             </div>
-                            <div className="mt-2 flex gap-1">
+                            <div className="mt-2 flex gap-1.5">
                                 {[1, 2, 3, 4, 5].map(i => (
-                                    <div key={i} className={`h-1 flex-1 rounded-full ${i <= 4 ? 'bg-green-400' : 'bg-zinc-100'}`} />
+                                    <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= 4 ? 'bg-green-500' : 'bg-zinc-100'}`} />
                                 ))}
                             </div>
+                            <p className="text-[8px] font-semibold text-zinc-400 mt-2">Ready for top-tier hiring pools</p>
                         </motion.div>
 
                         {/* Card 5: Mentors (Middle Right) */}
@@ -126,23 +171,27 @@ export const NewGradSection = () => {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0, rotate: -2 }}
                             transition={{ duration: 0.8, delay: 0.6 }}
-                            className="absolute top-28 -right-4 z-40 bg-white p-4 rounded-[1.5rem] shadow-2xl border border-zinc-100 w-52 group hover:scale-105 transition-transform"
+                            className="absolute top-40 -right-16 z-20 bg-white/90 backdrop-blur-md p-4.5 rounded-3xl shadow-xl hover:shadow-2xl border border-white/60 w-52 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
-                            <div className="flex -space-x-2 mb-3">
+                            <div className="flex -space-x-2.5 mb-3">
                                 {[1, 2, 3, 4].map(i => (
-                                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 overflow-hidden shadow-sm">
-                                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i+20}`} alt="mentor" className="w-full h-full object-cover" />
-                                    </div>
+                                    <motion.div 
+                                        key={i} 
+                                        whileHover={{ y: -4, zIndex: 50 }}
+                                        className="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 overflow-hidden shadow-sm transition-transform cursor-pointer"
+                                    >
+                                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i+25}`} alt="mentor" className="w-full h-full object-cover" />
+                                    </motion.div>
                                 ))}
                                 <div className="w-8 h-8 rounded-full border-2 border-white bg-[#313851] flex items-center justify-center text-[9px] text-white font-bold shadow-sm">
                                     +50
                                 </div>
                             </div>
-                            <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Network</p>
-                            <h4 className="text-xs font-bold text-[#313851] mt-1">1-on-1 Mentorship</h4>
-                            <div className="mt-2 py-1 px-2.5 bg-zinc-50 rounded-full inline-flex items-center gap-1.5">
-                                <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-wider">Live Support</span>
+                            <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Expert Network</p>
+                            <h4 className="text-xs font-bold text-[#313851] mt-0.5">1-on-1 Mentorship</h4>
+                            <div className="mt-2 py-1 px-2.5 bg-green-50 rounded-full inline-flex items-center gap-1.5">
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                <span className="text-[8px] font-black text-green-600 uppercase tracking-wider">Live Coaching Available</span>
                             </div>
                         </motion.div>
 
@@ -151,19 +200,19 @@ export const NewGradSection = () => {
                             initial={{ opacity: 0, x: 20 }}
                             whileInView={{ opacity: 1, x: 0, rotate: 3 }}
                             transition={{ duration: 0.8, delay: 0.8 }}
-                            className="absolute bottom-0 right-6 z-50 bg-[#313851] p-5 rounded-[1.5rem] shadow-2xl text-white w-52 group hover:scale-105 transition-transform"
+                            className="absolute bottom-[-30px] right-[24px] z-20 bg-[#313851] p-5 rounded-3xl shadow-xl hover:shadow-2xl text-white w-52 group hover:-translate-y-1 hover:scale-105 transition-all duration-300 border border-[#313851]/10"
                         >
-                            <div className="flex items-center gap-2 mb-3">
-                                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
                                     <DollarSign size={16} className="text-green-400" />
                                 </div>
-                                <TrendingUp size={16} className="text-white/40" />
+                                <span className="text-[8px] font-black text-white/50 bg-white/5 px-2 py-0.5 rounded-full uppercase tracking-wider">Top Decile</span>
                             </div>
-                            <p className="text-[9px] font-black text-white/50 uppercase tracking-widest">Starting TC</p>
-                            <h4 className="text-xl font-bold mt-1">$180k - $220k</h4>
-                            <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold text-green-400">
-                                <CheckCircle2 size={10} />
-                                <span>Verified by Community</span>
+                            <p className="text-[9px] font-black text-[#C2CBD3] uppercase tracking-widest">Avg Starting TC</p>
+                            <h4 className="text-xl font-bold mt-0.5 text-white">$180k - $220k</h4>
+                            <div className="mt-3.5 flex items-center gap-1.5 text-[9px] font-bold text-green-400">
+                                <CheckCircle2 size={11} />
+                                <span className="tracking-wide">Verified by Community</span>
                             </div>
                         </motion.div>
 

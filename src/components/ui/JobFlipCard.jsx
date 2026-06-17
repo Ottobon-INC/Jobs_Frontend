@@ -97,7 +97,7 @@ export function JobFlipCard({ job }) {
                     
                     <div className="pt-2">
                         <p className="text-[10px] text-[#F6F3ED]/65 font-medium">
-                            Missing skills? <a href="/ottolearn" className="text-[#C2CBD3] hover:underline">Learn on our Course Platform</a>
+                            Missing skills? <a href="https://learn.ottobon.in/our-courses/cohort" target="_blank" rel="noopener noreferrer" className="text-[#C2CBD3] hover:underline">Learn on our Course Platform</a>
                         </p>
                     </div>
                 </div>

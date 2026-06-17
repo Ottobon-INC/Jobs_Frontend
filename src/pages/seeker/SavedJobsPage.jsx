@@ -53,7 +53,7 @@ const SavedJobsPage = () => {
                 </div>
 
                 {jobs.length > 0 ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-start">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-stretch">
                         {jobs.map(job => (
                             <JobCard key={job.id} job={job} isAuthenticated={isAuthenticated} />
                         ))}
