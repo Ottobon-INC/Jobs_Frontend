@@ -27,9 +27,9 @@ import {
     ShieldCheck,
     Trophy,
     Users,
-    IconContext,
-    Award
+    IconContext
 } from '@phosphor-icons/react';
+import { Award } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
