@@ -1,5 +1,5 @@
 # Stage 1: Build the React Application
-FROM node:20-alpine AS build
+FROM node:20-slim AS build
 
 # Set working directory
 WORKDIR /app
@@ -31,7 +31,7 @@ ENV VITE_MOCK_WS_URL=$VITE_MOCK_WS_URL
 RUN npm run build
 
 # Stage 2: Serve the application
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
