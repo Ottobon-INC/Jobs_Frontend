@@ -52,7 +52,8 @@ const JobsAIPage = () => {
     const { 
         freeMatchCreditsRemaining = 5,
         purchasedMatchCreditsRemaining = 0, 
-        useCredit: deductCredit 
+        useCredit: deductCredit,
+        syncCreditsWithBackend
     } = useInterviewCreditsContext();
     const aiCreditsRemaining = freeMatchCreditsRemaining + purchasedMatchCreditsRemaining;
     const [isPaywallOpen, setIsPaywallOpen] = useState(false);
@@ -105,7 +106,9 @@ const JobsAIPage = () => {
         sessionStorage.setItem('jobsai_externalUrl', externalUrl);
     }, [externalUrl]);
 
-    const handleSearch = async (skipCreditDeduction = false) => {
+    const handleSearch = async (skipCreditArg = false) => {
+        const skipCreditDeduction = typeof skipCreditArg === 'boolean' ? skipCreditArg : false;
+
         if (!preferences.location) {
             toast.error("Please enter a preferred location.");
             return;
@@ -120,6 +123,10 @@ const JobsAIPage = () => {
             setIsPaywallOpen(true);
             return;
         }
+
+        // Clear stale results immediately when a new search starts
+        setResults([]);
+        sessionStorage.removeItem('jobsai_results');
 
         setIsSearching(true);
         setStep(3); // Loading step
@@ -159,6 +166,13 @@ const JobsAIPage = () => {
             sessionStorage.setItem('jobsai_results', JSON.stringify(jobs));
             sessionStorage.setItem('jobsai_step', '4');
             sessionStorage.removeItem('jobsai_creditsDeducted');
+
+            // Sync credits with backend to reflect real-time credit consumption
+            try {
+                await syncCreditsWithBackend();
+            } catch (syncError) {
+                console.error("Failed to sync credits with backend:", syncError);
+            }
         } catch (error) {
             console.error(error);
             toast.error("Failed to perform AI search. Please try again.");
@@ -171,7 +185,9 @@ const JobsAIPage = () => {
         }
     };
 
-    const handleLinkMatch = async (skipCreditDeduction = false) => {
+    const handleLinkMatch = async (skipCreditArg = false) => {
+        const skipCreditDeduction = typeof skipCreditArg === 'boolean' ? skipCreditArg : false;
+
         if (!externalUrl) {
             toast.error("Please enter a job URL.");
             return;
@@ -181,6 +197,10 @@ const JobsAIPage = () => {
             setIsPaywallOpen(true);
             return;
         }
+
+        // Clear stale results immediately when a new check starts
+        setSingleJobResult(null);
+        sessionStorage.removeItem('jobsai_singleJobResult');
 
         setIsSearching(true);
         setStep(3); // Reuse loading step
@@ -207,6 +227,13 @@ const JobsAIPage = () => {
             sessionStorage.setItem('jobsai_singleJobResult', JSON.stringify(data.job));
             sessionStorage.setItem('jobsai_step', '5');
             sessionStorage.removeItem('jobsai_creditsDeducted');
+
+            // Sync credits with backend to reflect real-time credit consumption
+            try {
+                await syncCreditsWithBackend();
+            } catch (syncError) {
+                console.error("Failed to sync credits with backend:", syncError);
+            }
         } catch (error) {
             console.error(error);
             toast.error("Failed to analyze the link. Make sure it's a valid job posting URL.");

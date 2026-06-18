@@ -231,7 +231,12 @@ const cleanSlug = (name) => {
 export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 }) => {
     const name = (company?.name || 'Company').trim();
     const slug = cleanSlug(company?.slug || name);
-    const externalLogo = company?.logo || company?.logo_url || null;
+    
+    // Intercept and rewrite obsolete clearbit logo URLs from the DB or mock data
+    let externalLogo = company?.logo || company?.logo_url || null;
+    if (externalLogo && externalLogo.includes('logo.clearbit.com')) {
+        externalLogo = externalLogo.replace('logo.clearbit.com', 'logos.hunter.io');
+    }
     
     const [imgIdx, setImgIdx] = useState(0);
 
@@ -243,10 +248,12 @@ export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 })
         LOGO_MAP[slug],
         LOGO_MAP[baseName],
         externalLogo,
-        `https://logo.clearbit.com/${slug}.com`,
-        `https://logo.clearbit.com/${baseName}.com`,
+        `https://logos.hunter.io/${slug}.com`,
+        `https://logos.hunter.io/${baseName}.com`,
         `https://unavatar.io/${slug}.com?fallback=false`,
-        `https://unavatar.io/${baseName}.com?fallback=false`
+        `https://unavatar.io/${baseName}.com?fallback=false`,
+        `https://www.google.com/s2/favicons?sz=64&domain_url=${slug}.com`,
+        `https://www.google.com/s2/favicons?sz=64&domain_url=${baseName}.com`
     ].filter(Boolean))];
 
     const hasValidSource = imgIdx < sources.length;

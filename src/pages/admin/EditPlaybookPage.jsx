@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
     ChevronLeft, Save, Plus, Trash2, Building2, 
-    Layers, ClipboardList, Zap, DollarSign, Info, Code 
+    Layers, ClipboardList, Zap, DollarSign, Info, Code,
+    Eye, EyeOff
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchPlaybookById, createPlaybook, updatePlaybook } from '../../api/playbooksApi';
@@ -25,6 +26,7 @@ const EditPlaybookPage = () => {
         locations: [],
         category: '',
         hiring_zone: 'on-campus',
+        is_published: true,
         hiring_seasons: '',
         hiring_type: '',
         roles: [],
@@ -120,6 +122,7 @@ const EditPlaybookPage = () => {
         { id: 'basic', label: 'Basic Info', icon: Building2 },
         { id: 'hiring', label: 'Hiring & Roles', icon: Layers },
         { id: 'process', label: 'Selection Process', icon: ClipboardList },
+        { id: 'syllabus', label: 'Syllabus & Test Pattern', icon: ClipboardList },
         { id: 'prep', label: 'Prep & Benefits', icon: Zap },
         { id: 'json', label: 'Raw JSON', icon: Code },
     ];
@@ -294,6 +297,28 @@ const EditPlaybookPage = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-xs font-black uppercase tracking-widest text-[#313851]/40 mb-2">Publish Status</label>
+                                        <div className="flex gap-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData(prev => ({ ...prev, is_published: true }))}
+                                                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${formData.is_published !== false ? 'bg-emerald-600 text-white shadow-md' : 'bg-[#F6F3ED] text-[#313851]/40'}`}
+                                            >
+                                                <Eye size={16} /> Published
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData(prev => ({ ...prev, is_published: false }))}
+                                                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${formData.is_published === false ? 'bg-amber-600 text-white shadow-md' : 'bg-[#F6F3ED] text-[#313851]/40'}`}
+                                            >
+                                                <EyeOff size={16} /> Draft
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -404,6 +429,236 @@ const EditPlaybookPage = () => {
                                             </button>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'syllabus' && (
+                            <div className="space-y-8">
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-black text-[#313851] text-lg">Test Pattern Sections</h4>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => addItem('test_pattern', { section: '', questions: '', duration: '' })} 
+                                            className="text-xs font-black text-[#313851] flex items-center gap-1 hover:underline"
+                                        >
+                                            <Plus size={14} /> Add Section
+                                        </button>
+                                    </div>
+                                    {formData.test_pattern.map((item, idx) => (
+                                        <div key={idx} className="flex gap-4 items-center bg-[#F6F3ED]/30 p-4 rounded-2xl relative group">
+                                            <div className="grid grid-cols-3 gap-4 flex-1">
+                                                <div>
+                                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">Section Name</label>
+                                                    <input 
+                                                        placeholder="e.g. Coding"
+                                                        value={item.section} onChange={(e) => handleArrayItemChange('test_pattern', idx, 'section', e.target.value)}
+                                                        className="w-full bg-white border-none rounded-lg p-2.5 font-bold text-sm text-[#313851]"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">No. of Questions</label>
+                                                    <input 
+                                                        placeholder="e.g. 2 Questions"
+                                                        value={item.questions} onChange={(e) => handleArrayItemChange('test_pattern', idx, 'questions', e.target.value)}
+                                                        className="w-full bg-white border-none rounded-lg p-2.5 font-medium text-sm text-[#313851]"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">Duration</label>
+                                                    <input 
+                                                        placeholder="e.g. 45 Mins"
+                                                        value={item.duration} onChange={(e) => handleArrayItemChange('test_pattern', idx, 'duration', e.target.value)}
+                                                        className="w-full bg-white border-none rounded-lg p-2.5 font-medium text-sm text-[#313851]"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <button type="button" onClick={() => removeItem('test_pattern', idx)} className="p-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="space-y-6 pt-6 border-t border-[#313851]/10">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-black text-[#313851] text-lg">Syllabus Rounds</h4>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => addItem('syllabus', { round: '', topics: [] })} 
+                                            className="text-xs font-black text-[#313851] flex items-center gap-1 hover:underline"
+                                        >
+                                            <Plus size={14} /> Add Syllabus Round
+                                        </button>
+                                    </div>
+                                    
+                                    {formData.syllabus.map((round, rIdx) => {
+                                        const isTabular = round.topics && round.topics.length > 0 && typeof round.topics[0] === 'object';
+                                        
+                                        return (
+                                            <div key={rIdx} className="bg-[#F6F3ED]/30 p-6 rounded-3xl space-y-4 border border-[#313851]/5 relative group">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => removeItem('syllabus', rIdx)} 
+                                                    className="absolute top-4 right-4 p-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">Round Name</label>
+                                                        <input 
+                                                            placeholder="e.g. Cognitive Assessment"
+                                                            value={round.round || ''} 
+                                                            onChange={(e) => handleArrayItemChange('syllabus', rIdx, 'round', e.target.value)}
+                                                            className="w-full bg-white border-none rounded-lg p-2.5 font-bold text-sm text-[#313851]"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">Display Mode</label>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newTopics = round.topics.map(t => typeof t === 'object' ? t.name : t).filter(Boolean);
+                                                                    handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                }}
+                                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${!isTabular ? 'bg-[#313851] text-white' : 'bg-white text-[#313851]/60'}`}
+                                                            >
+                                                                Checklist
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newTopics = round.topics.map(t => typeof t === 'string' ? { name: t, questions: '', time: '', difficulty: 'Medium' } : t);
+                                                                    handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                }}
+                                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${isTabular ? 'bg-[#313851] text-white' : 'bg-white text-[#313851]/60'}`}
+                                                            >
+                                                                Tabular (4-Column)
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Topics Editor */}
+                                                {!isTabular ? (
+                                                    <div>
+                                                        <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30 mb-1">Topics List (one topic per line)</label>
+                                                        <textarea 
+                                                            value={Array.isArray(round.topics) ? round.topics.join('\n') : ''}
+                                                            onChange={(e) => {
+                                                                const lines = e.target.value.split('\n').filter(line => line.trim());
+                                                                handleArrayItemChange('syllabus', rIdx, 'topics', lines);
+                                                            }}
+                                                            className="w-full bg-white border-none rounded-lg p-3 font-semibold text-sm text-[#313851] h-32"
+                                                            placeholder="Topic 1&#10;Topic 2&#10;Topic 3"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/30">Tabular Topics</label>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => {
+                                                                    const newTopics = [...(round.topics || []), { name: '', questions: '', time: '', difficulty: 'Medium' }];
+                                                                    handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                }}
+                                                                className="text-[11px] font-bold text-[#313851] flex items-center gap-0.5 hover:underline"
+                                                            >
+                                                                <Plus size={12} /> Add Topic Row
+                                                            </button>
+                                                        </div>
+                                                        <div className="overflow-x-auto border border-zinc-100 rounded-xl bg-white">
+                                                            <table className="w-full border-collapse text-left text-xs">
+                                                                <thead>
+                                                                    <tr className="bg-zinc-50 border-b border-zinc-100 text-[#313851]/40 uppercase font-black tracking-wider">
+                                                                        <th className="p-3">Topic Name</th>
+                                                                        <th className="p-3 w-[120px]">Questions</th>
+                                                                        <th className="p-3 w-[120px]">Time</th>
+                                                                        <th className="p-3 w-[120px]">Difficulty</th>
+                                                                        <th className="p-3 w-[50px]"></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {(round.topics || []).map((topic, tIdx) => (
+                                                                        <tr key={tIdx} className="border-b border-zinc-50">
+                                                                            <td className="p-2">
+                                                                                <input 
+                                                                                    value={topic.name || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newTopics = [...round.topics];
+                                                                                        newTopics[tIdx] = { ...topic, name: e.target.value };
+                                                                                        handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                                    }}
+                                                                                    className="w-full bg-zinc-50 border-none rounded p-1.5 font-bold"
+                                                                                    placeholder="Topic Name"
+                                                                                />
+                                                                            </td>
+                                                                            <td className="p-2">
+                                                                                <input 
+                                                                                    value={topic.questions || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newTopics = [...round.topics];
+                                                                                        newTopics[tIdx] = { ...topic, questions: e.target.value };
+                                                                                        handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                                    }}
+                                                                                    className="w-full bg-zinc-50 border-none rounded p-1.5 font-semibold"
+                                                                                    placeholder="e.g. 5"
+                                                                                />
+                                                                            </td>
+                                                                            <td className="p-2">
+                                                                                <input 
+                                                                                    value={topic.time || topic.duration || ''} 
+                                                                                    onChange={(e) => {
+                                                                                        const newTopics = [...round.topics];
+                                                                                        newTopics[tIdx] = { ...topic, time: e.target.value, duration: e.target.value };
+                                                                                        handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                                    }}
+                                                                                    className="w-full bg-zinc-50 border-none rounded p-1.5 font-semibold"
+                                                                                    placeholder="e.g. 10m"
+                                                                                />
+                                                                            </td>
+                                                                            <td className="p-2">
+                                                                                <select 
+                                                                                    value={topic.difficulty || 'Medium'} 
+                                                                                    onChange={(e) => {
+                                                                                        const newTopics = [...round.topics];
+                                                                                        newTopics[tIdx] = { ...topic, difficulty: e.target.value };
+                                                                                        handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                                    }}
+                                                                                    className="w-full bg-zinc-50 border-none rounded p-1.5 font-bold appearance-none"
+                                                                                >
+                                                                                    <option>Low</option>
+                                                                                    <option>Medium</option>
+                                                                                    <option>High</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td className="p-2 text-center">
+                                                                                <button 
+                                                                                    type="button" 
+                                                                                    onClick={() => {
+                                                                                        const newTopics = round.topics.filter((_, i) => i !== tIdx);
+                                                                                        handleArrayItemChange('syllabus', rIdx, 'topics', newTopics);
+                                                                                    }}
+                                                                                    className="text-red-500 hover:text-red-700"
+                                                                                >
+                                                                                    <Trash2 size={14} />
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

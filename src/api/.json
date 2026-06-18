@@ -1,0 +1,1253 @@
+{
+    "placement_syllabus_and_patterns": [
+        {
+            "company": "Accenture",
+            "year_covered": [
+                "2025",
+                "2026"
+            ],
+            "highlights": [
+                "3 Rounds in the hiring test divided into 5 sections, followed by an interview round.",
+                "Initial 5 Sections consist of 125 Questions to be solved in 175 minutes.",
+                "The last section is the Communication Assessment Test.",
+                "Technical and HR Interview follows the assessment.",
+                "Inter Sectional Navigation is allowed.",
+                "There is no negative marking.",
+                "Each section in the Online Test is an Elimination Section."
+            ],
+            "exam_pattern_2026": [
+                {
+                    "round": "1st Round",
+                    "assessment_name": "Behavioral Assessment (Psychometric)",
+                    "number_of_questions": 54,
+                    "duration_minutes": 20
+                },
+                {
+                    "round": "1st Round",
+                    "assessment_name": "Cognitive Assessment (Gamified)",
+                    "number_of_questions": 3,
+                    "duration_minutes": 20
+                },
+                {
+                    "round": "2nd Round",
+                    "assessment_name": "Technical Assessment (MCQs)",
+                    "number_of_questions": 45,
+                    "duration_minutes": 45
+                },
+                {
+                    "round": "2nd Round",
+                    "assessment_name": "Coding Assessment",
+                    "number_of_questions": 3,
+                    "duration_minutes": 60
+                },
+                {
+                    "round": "3rd Round",
+                    "assessment_name": "Communication Assessment",
+                    "number_of_questions": "20-25 (approx.)",
+                    "duration_minutes": 30
+                }
+            ],
+            "syllabus": {
+                "technical_assessment": {
+                    "topics": [
+                        "Fundamentals of Networking, Security, and Cloud",
+                        "Common Applications and MS Office",
+                        "Pseudo Code"
+                    ],
+                    "note": "Sectional cut-off clearance required to attend Coding Assessment Round."
+                },
+                "verbal_ability": {
+                    "topics": [
+                        {
+                            "name": "Sentence Correction",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Preposition",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Grammar",
+                            "questions": "0-3",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Reading Comprehension",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Synonym and Antonyms",
+                            "questions": "0-4",
+                            "difficulty": "High"
+                        },
+                        {
+                            "name": "Idioms and Phrases",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Speech and Voices",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Article",
+                            "questions": "1-2",
+                            "difficulty": "High"
+                        },
+                        {
+                            "name": "Sentence Selection",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Spotting Error",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Sentence Arrangement",
+                            "questions": "1-2",
+                            "difficulty": "High"
+                        }
+                    ]
+                },
+                "critical_reasoning_and_logical": {
+                    "topics": [
+                        {
+                            "name": "Arrangements",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Visual Reasoning",
+                            "questions": "0-1",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Blood Relations",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Flow chart",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Statement and Conclusion",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Coding-Decoding",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Psychometric",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Directional Sense",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Analogies",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Seating Arrangement",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Inferred Meaning",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        },
+                        {
+                            "name": "Logical Sequence",
+                            "questions": "1-2",
+                            "difficulty": "Medium"
+                        }
+                    ]
+                },
+                "coding": {
+                    "total_questions": 3,
+                    "duration_minutes": 60,
+                    "languages_allowed": [
+                        "C",
+                        "C++",
+                        "Java",
+                        "JavaScript",
+                        "Python",
+                        "Dot Net",
+                        "HTML/CSS"
+                    ],
+                    "selection_criteria": "2 Complete Output and 1 Partial Output",
+                    "negative_marking": "No",
+                    "rules": [
+                        "Start code from scratch.",
+                        "Errors are clearly mentioned.",
+                        "Write the whole program."
+                    ]
+                }
+            },
+            "2025_specific_notes": {
+                "verbal_ability": {
+                    "status": "Replaced by Game-Based Aptitude Test for on-campus.",
+                    "questions": 17,
+                    "time_shared_mins": 50,
+                    "difficulty": "Moderate"
+                },
+                "critical_reasoning": {
+                    "status": "Replaced by Game-Based Aptitude Test for on-campus.",
+                    "questions": 18,
+                    "time_shared_mins": 50,
+                    "difficulty": "Medium - High"
+                },
+                "abstract_reasoning": {
+                    "status": "Not asked anymore (now internal section)",
+                    "questions": 15,
+                    "time_shared_mins": 50,
+                    "topics": [
+                        "Visual Reasoning",
+                        "Flowcharts-Visual Reasoning-DI",
+                        "Directional Sense",
+                        "Seating Arrangement"
+                    ]
+                }
+            }
+        },
+        {
+            "company": "Capgemini Exceller",
+            "year_covered": [
+                "2025",
+                "2026"
+            ],
+            "highlights": [
+                "Completely updated syllabus and recruitment structure.",
+                "Hiring process begins with a Technical Test conducted through Superset.",
+                "Essay Writing Test (WET) removed."
+            ],
+            "exam_pattern_2026": [
+                {
+                    "round": "Round 1: Online Assessment",
+                    "sections": [
+                        {
+                            "name": "Technical MCQs + Pseudocode",
+                            "questions": 40,
+                            "duration": "40–50 minutes"
+                        },
+                        {
+                            "name": "English / Communication Test",
+                            "questions": 30,
+                            "duration": "30 minutes"
+                        },
+                        {
+                            "name": "Game Based Cognitive Test",
+                            "questions": "4 Games out of 24",
+                            "duration": "20–30 minutes"
+                        },
+                        {
+                            "name": "Behavioral / PowerSkills (mainly Off Campus)",
+                            "questions": "~100",
+                            "duration": "20–25 minutes"
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 2: Coding Round",
+                    "sections": [
+                        {
+                            "name": "Coding Questions",
+                            "questions": 2,
+                            "duration": "45 minutes"
+                        }
+                    ],
+                    "note": "1 question solved = 5.75 LPA, 2 questions solved = 7.50 LPA. Preferred languages: C, C++, Java, Python. Difficulty: High."
+                },
+                {
+                    "round": "Round 3: Technical Interview",
+                    "sections": [
+                        {
+                            "name": "Technical + Resume Discussion",
+                            "questions": "Q&A",
+                            "duration": "20–35 minutes"
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 4: HR Interview",
+                    "sections": [
+                        {
+                            "name": "Behavioral Assessment",
+                            "questions": "Q&A",
+                            "duration": "10–20 minutes"
+                        }
+                    ]
+                }
+            ],
+            "syllabus": {
+                "technical_test": [
+                    "C",
+                    "C++",
+                    "OOPS",
+                    "Data Structures",
+                    "Pseudo Code",
+                    "SQL / DBMS",
+                    "Computer Networks",
+                    "Operating System"
+                ],
+                "english_communication": [
+                    "Sentence Correction",
+                    "Prepositions",
+                    "Grammar",
+                    "Reading Comprehension",
+                    "Synonyms & Antonym",
+                    "Speech and Tenses",
+                    "Article",
+                    "Sentence Selection",
+                    "Spotting Error",
+                    "Sentence Arrangement"
+                ],
+                "game_based_aptitude": [
+                    "Deductive Logical Thinking(Geo-Sudo)",
+                    "Inductive-logical Thinking",
+                    "Motion Challenge",
+                    "Switch Challenge",
+                    "Digit Challenge",
+                    "Grid Challenge"
+                ]
+            }
+        },
+        {
+            "company": "Cognizant GenC",
+            "year_covered": [
+                "2025"
+            ],
+            "highlights": [
+                "Conducted through the Superset platform.",
+                "Targets candidates with minimal or no work experience."
+            ],
+            "exam_pattern_2025": [
+                {
+                    "round": "Round 1 - Communication Assessment",
+                    "duration_minutes": 60,
+                    "details": "AI-based online test. Sections: Reading + Listening, Speaking, Grammar. Elimination round with strict cutoff.",
+                    "negative_marking": "N/A"
+                },
+                {
+                    "round": "Round 2 - Quants + Game Based Assessment",
+                    "duration_minutes": 80,
+                    "details": "30 Quants questions (30 mins) + 4 Games based questions out of 24 (50 mins). Section is Mandatory.",
+                    "negative_marking": "N/A"
+                },
+                {
+                    "round": "Round 3 - Technical Assessment (Coding)",
+                    "duration_minutes": 120,
+                    "details": "2 Coding questions (1 medium, 1 hard).",
+                    "negative_marking": "N/A"
+                },
+                {
+                    "round": "Round 4 - GenC Technical + HR Interview",
+                    "details": "Interview phase."
+                }
+            ],
+            "syllabus": {
+                "quantitative_aptitude": [
+                    "Basic Mathematics: LCM & HCF, Divisibility, Numbers/decimals/power, Averages, Ratio & Proportion, Algebra, Surds & Indices",
+                    "Applied Mathematics: Profit and Loss, Simple/Compound Interest, Time/Speed/Distance, Inverse, Time and Work, Allegation & Mixtures, Percentage, Area/shape/perimeter",
+                    "Engineering Mathematics: Logarithms, Permutation/Combinations, Probability, Pipes and Cisterns, Geometry/Coordinate Geometry, Clocks & Calendar, Problem on Ages"
+                ],
+                "game_based_aptitude": [
+                    "Deductive Logical Thinking(Geo-Sudo)",
+                    "Inductive-logical Thinking",
+                    "Grid Challenge",
+                    "Motion Challenge",
+                    "Switch Challenge",
+                    "Digit Challenge"
+                ]
+            }
+        },
+        {
+            "company": "HCL",
+            "year_covered": [
+                "2025"
+            ],
+            "highlights": [
+                "New section added to the paper pattern.",
+                "Total 4 Rounds, 5 Sections, 77 Questions, 95 Minutes.",
+                "There is no negative marking.",
+                "HCL test is adaptive this year.",
+                "Difficulty Level: Moderate."
+            ],
+            "exam_pattern_2025": [
+                {
+                    "section": "Aptitude (Numerical Ability)",
+                    "questions": 15,
+                    "duration_minutes": 15
+                },
+                {
+                    "section": "Logical Reasoning",
+                    "questions": 15,
+                    "duration_minutes": 15
+                },
+                {
+                    "section": "Verbal Ability",
+                    "questions": 15,
+                    "duration_minutes": 15
+                },
+                {
+                    "section": "Computer Fundamentals",
+                    "questions": 30,
+                    "duration_minutes": 30,
+                    "type": "MCQs"
+                },
+                {
+                    "section": "Coding",
+                    "questions": 2,
+                    "duration_minutes": 20
+                }
+            ],
+            "syllabus": {
+                "numerical_ability": [
+                    {
+                        "topic": "HCF and LCM",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Number System",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Time, Work, Pipes and Cisterns",
+                        "questions": "0-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Permutations and Combinations",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Geometry",
+                        "questions": "0-1",
+                        "difficulty": "High"
+                    },
+                    {
+                        "topic": "Time, Speed and Distance",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Probability",
+                        "questions": "0-1",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Profit and Loss",
+                        "questions": "0-1",
+                        "difficulty": "High"
+                    },
+                    {
+                        "topic": "Interest, Mixture and Allegation",
+                        "questions": "0-1",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Logarithm",
+                        "questions": "0-1",
+                        "difficulty": "High"
+                    }
+                ],
+                "verbal_ability": [
+                    {
+                        "topic": "Sentence correction",
+                        "questions": "1-3",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Reading Comprehension",
+                        "questions": "1-3",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Grammar",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Synonyms and Antonyms",
+                        "questions": "1-3",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Fill in the blanks",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Spellings",
+                        "questions": "1-3",
+                        "difficulty": "Medium"
+                    }
+                ],
+                "logical_reasoning": [
+                    {
+                        "topic": "Directional Sense",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Logical Reasoning",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Coding and Decoding",
+                        "questions": "0-3",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Data Sufficiency",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Pattern Analogy",
+                        "questions": "0-2",
+                        "difficulty": "High"
+                    },
+                    {
+                        "topic": "Number Series",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Logical Statement Assumption",
+                        "questions": "1-2",
+                        "difficulty": "Medium"
+                    }
+                ],
+                "computer_fundamentals": [
+                    {
+                        "topic": "Computer Basics",
+                        "questions": "1-5",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Data Structures",
+                        "questions": "1-4",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "OOPs",
+                        "questions": "1-4",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Code input Output",
+                        "questions": "1-4",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "Networking",
+                        "questions": "1-4",
+                        "difficulty": "High"
+                    },
+                    {
+                        "topic": "OS",
+                        "questions": "1-5",
+                        "difficulty": "Medium"
+                    },
+                    {
+                        "topic": "DBMS",
+                        "questions": "1-4",
+                        "difficulty": "Medium"
+                    }
+                ]
+            }
+        },
+        {
+            "company": "Hexaware",
+            "year_covered": [
+                "2025"
+            ],
+            "highlights": [
+                "Hiring for two profiles: GET (Graduate Engineer Trainee - 4 LPA) and PGET (Premier Graduate Engineer Trainee - 6 LPA)."
+            ],
+            "exam_pattern_GET": [
+                {
+                    "round": "Round 1: Aptitude Test + Domain based",
+                    "sections": [
+                        {
+                            "section": "Verbal Ability",
+                            "questions": 20,
+                            "duration": "Shared within 60 mins"
+                        },
+                        {
+                            "section": "Logical Ability",
+                            "questions": 20,
+                            "duration": "Shared within 60 mins"
+                        },
+                        {
+                            "section": "Numerical Ability",
+                            "questions": 20,
+                            "duration": "Shared within 60 mins"
+                        },
+                        {
+                            "section": "Domain-based",
+                            "questions": 30,
+                            "duration": "30 mins"
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 2: Communication Assessment"
+                },
+                {
+                    "round": "Round 3: Technical Interview"
+                },
+                {
+                    "round": "Round 4: HR Interview"
+                }
+            ],
+            "exam_pattern_PGET": [
+                {
+                    "round": "Round 1: Aptitude Test + Domain based",
+                    "sections": [
+                        {
+                            "section": "Verbal Ability",
+                            "questions": 20
+                        },
+                        {
+                            "section": "Logical Ability",
+                            "questions": 20
+                        },
+                        {
+                            "section": "Numerical Ability",
+                            "questions": 20
+                        },
+                        {
+                            "section": "Domain-based",
+                            "questions": 30
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 2: Coding Test",
+                    "questions": 2,
+                    "duration": "60 mins",
+                    "languages": [
+                        "C",
+                        "C++",
+                        "Java",
+                        "Python"
+                    ]
+                },
+                {
+                    "round": "Round 3: Communication Assessment"
+                },
+                {
+                    "round": "Round 4: Technical Interview"
+                },
+                {
+                    "round": "Round 5: HR Interview"
+                }
+            ],
+            "syllabus": {
+                "numerical_ability": [
+                    "LCM and HCF",
+                    "Percentages",
+                    "Ranking based",
+                    "Ratio and Proportions",
+                    "Ages",
+                    "Speed Time and Distance",
+                    "Probability",
+                    "Profit and Loss",
+                    "Time and Work",
+                    "Bar Graph",
+                    "Line Graph",
+                    "Pie chart",
+                    "Tabular DI"
+                ],
+                "logical_reasoning": [
+                    "Syllogism",
+                    "Arrangements",
+                    "Letter Series",
+                    "Coding and decoding",
+                    "Ranking and Sequence",
+                    "Blood relations",
+                    "Relationship b/w words",
+                    "Visual reasoning",
+                    "Odd one out",
+                    "Statements and Conclusions",
+                    "Statements and Arguments"
+                ],
+                "verbal_ability": [
+                    "Preposition and Conjunction",
+                    "Idioms and phrases",
+                    "Fill in the blanks",
+                    "Spelling",
+                    "Analogy",
+                    "One word Substitution",
+                    "Synonyms and Antonyms",
+                    "Sentence improvement",
+                    "Reading Comprehension",
+                    "Articles",
+                    "Speech and Tense",
+                    "Sentence Ordering",
+                    "Error Identification"
+                ],
+                "domain_based": [
+                    "Pseudocode",
+                    "Computer Fundamentals"
+                ]
+            }
+        },
+        {
+            "company": "IBM",
+            "year_covered": [
+                "2026"
+            ],
+            "highlights": [
+                "Revised hiring process focusing primarily on the Coding Test and English Test.",
+                "Cognitive ability games and Psychometric test are NO LONGER ASKED.",
+                "Each section in the Online Written Test is an Elimination Round."
+            ],
+            "exam_pattern_2026": [
+                {
+                    "round": "Round 1: Online Coding + English Test",
+                    "sections": [
+                        {
+                            "section": "Coding Test",
+                            "questions": 2,
+                            "duration": "Approx. 60 Minutes",
+                            "details": "Conducted on HackerRank. Includes String/Array based coding and 5-6 MCQs on DBMS, OS, OOPS, Programming."
+                        },
+                        {
+                            "section": "English Language Test",
+                            "questions": 10,
+                            "duration": "10 Min",
+                            "topics": [
+                                "Active/Passive Voice",
+                                "Fill in The Blanks",
+                                "Spotting Error",
+                                "Spelling",
+                                "Synonyms",
+                                "Antonyms",
+                                "Preposition and Conjunctions",
+                                "Tenses and Articles"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 2: Group Discussion Round"
+                },
+                {
+                    "round": "Round 3: Interview (HR + Technical)"
+                }
+            ]
+        },
+        {
+            "company": "Infosys",
+            "year_covered": [
+                "2026"
+            ],
+            "highlights": [
+                "Written Test is considered tough.",
+                "Contains 7 sections with a total time limit of 120 minutes.",
+                "Exam is Adaptive."
+            ],
+            "exam_pattern_2026": [
+                {
+                    "section": "Logical Ability",
+                    "questions": 15,
+                    "duration_minutes": 25,
+                    "difficulty": "Hard"
+                },
+                {
+                    "section": "Technical Ability (Mathematical)",
+                    "questions": 10,
+                    "duration_minutes": 35,
+                    "difficulty": "Easy-Medium"
+                },
+                {
+                    "section": "Verbal Ability",
+                    "questions": 20,
+                    "duration_minutes": 20,
+                    "difficulty": "Medium-Hard"
+                },
+                {
+                    "section": "Pseudo Code",
+                    "questions": 5,
+                    "duration_minutes": 10,
+                    "difficulty": "High"
+                },
+                {
+                    "section": "Puzzle Solving",
+                    "questions": 4,
+                    "duration_minutes": 10,
+                    "difficulty": "High"
+                },
+                {
+                    "section": "English Grammar",
+                    "questions": 5,
+                    "duration_minutes": 10
+                },
+                {
+                    "section": "English Writing",
+                    "questions": 1,
+                    "duration_minutes": 10
+                }
+            ],
+            "syllabus": {
+                "mathematical_ability": [
+                    "Percentages",
+                    "Data Interpretation",
+                    "Permutation and Combination",
+                    "Probability",
+                    "Areas, Shapes, Perimeter",
+                    "Speed Time and Distance / Boats and Streams",
+                    "Time and Work",
+                    "Profit and Loss | Mixtures & Allegation",
+                    "Problem on Ages",
+                    "Divisibility",
+                    "Number Decimal & Fractions",
+                    "Series and Progression",
+                    "LCM and HCF"
+                ],
+                "logical_reasoning": [
+                    "Arrangements",
+                    "Puzzles",
+                    "Syllogisms",
+                    "Coding-Decoding",
+                    "Number series",
+                    "Cryptarithmetic",
+                    "Clocks and Calendar",
+                    "Data Sufficiency",
+                    "Most logical choice",
+                    "Logical Deduction"
+                ],
+                "verbal_ability": [
+                    "Reading Comprehension",
+                    "Sentence Correction",
+                    "Sentence selection",
+                    "Sentence Completion",
+                    "Para Jumbles",
+                    "Spotting error",
+                    "Analogy",
+                    "Fill in the Blanks",
+                    "One Word Substitution",
+                    "Critical Reasoning"
+                ]
+            }
+        },
+        {
+            "company": "Microsoft",
+            "year_covered": [
+                "Previous Year/Placement"
+            ],
+            "highlights": [
+                "Eligibility: Min 70% in X and XII, Min 6 CGPA in degree, Max 2 Years Gap, No Backlogs.",
+                "Coding rounds conducted via Cocubes (tougher than usual)."
+            ],
+            "exam_pattern": [
+                {
+                    "round": "Written Test",
+                    "sections": [
+                        {
+                            "name": "Coding Round 1",
+                            "questions": 1,
+                            "duration": "60 mins"
+                        }
+                    ]
+                },
+                {
+                    "round": "Coding",
+                    "sections": [
+                        {
+                            "name": "Coding Round 2",
+                            "questions": 2,
+                            "duration": "60 mins"
+                        }
+                    ]
+                },
+                {
+                    "round": "Interviews",
+                    "details": "2 Technical Rounds, 1 HR Round"
+                }
+            ],
+            "syllabus": {
+                "coding_topics": [
+                    "C",
+                    "C++",
+                    "OOPS Concepts",
+                    "Basics of data structures",
+                    "Networking",
+                    "Windows ad",
+                    "Exchange servers",
+                    "DNS",
+                    "DHCP",
+                    "DBMS",
+                    "Pointers",
+                    "Arrays",
+                    "Threads",
+                    "Classes",
+                    "Inheritance",
+                    "Preprocessors",
+                    "C Datatypes"
+                ]
+            }
+        },
+        {
+            "company": "LTIMindTree",
+            "year_covered": [
+                "2025"
+            ],
+            "highlights": [
+                "Total Questions: 111 - 112.",
+                "Total Time: 130 Minutes.",
+                "Difficulty Level: Medium to High.",
+                "Elimination Round: Yes.",
+                "Negative Marking: No.",
+                "Non-adaptive type exam."
+            ],
+            "exam_pattern_2025": [
+                {
+                    "round": "Round 1: Online Assessment",
+                    "sections": [
+                        {
+                            "section": "English Comprehension",
+                            "questions": "12 (3-4 Passages)",
+                            "duration_minutes": 15
+                        },
+                        {
+                            "section": "Quantitative Ability",
+                            "questions": 12,
+                            "duration_minutes": 15
+                        },
+                        {
+                            "section": "Logical Reasoning",
+                            "questions": 12,
+                            "duration_minutes": 15
+                        },
+                        {
+                            "section": "Basic Analytical Ability",
+                            "questions": 10,
+                            "duration_minutes": 10
+                        },
+                        {
+                            "section": "Computer Science (Programming/Fundamentals)",
+                            "questions": 20,
+                            "duration_minutes": 20
+                        },
+                        {
+                            "section": "Spoken English",
+                            "questions": 20,
+                            "duration_minutes": 20
+                        }
+                    ]
+                },
+                {
+                    "round": "Round 2: Technical Interview"
+                },
+                {
+                    "round": "Round 3: HR Interview"
+                }
+            ],
+            "syllabus": {
+                "quantitative_ability": [
+                    "LCM & HCF",
+                    "Divisibility",
+                    "Number Decimal, fraction & power",
+                    "Time & Work",
+                    "Pipes & Cistern",
+                    "Averages",
+                    "Profit & Loss",
+                    "Simple & Compound Interest",
+                    "Time, Speed & Distance",
+                    "Inverse",
+                    "Ratio & Proportion",
+                    "Algebra",
+                    "Surds & Indices",
+                    "Logarithms",
+                    "Permutations & Combinations",
+                    "Probability",
+                    "Area, Shapes & Perimeter",
+                    "Percentages",
+                    "Boats and Streams",
+                    "Clocks and Calendars"
+                ],
+                "logical_reasoning": [
+                    "Blood Relation",
+                    "Directional Sense",
+                    "Analogy and Classification pattern recognition",
+                    "Odd Man Out",
+                    "Statement & Conclusion",
+                    "Seating Arrangement",
+                    "Logical word sequence",
+                    "Inferred Meaning"
+                ],
+                "basic_analytical_ability": [
+                    "Coding deductive logic",
+                    "Objective Reasoning",
+                    "Selection decision tables",
+                    "Coding pattern and Number series pattern recognition",
+                    "Data sufficiency",
+                    "Mathematical Order"
+                ],
+                "computer_science": [
+                    "Basic Programming",
+                    "Data Structures",
+                    "OOPs",
+                    "Psuedo Code",
+                    "DBMS",
+                    "Operating Systems",
+                    "Computer Networks"
+                ],
+                "spoken_english": [
+                    "Making correct and meaningful sentences",
+                    "Subject-verb agreement",
+                    "Proper use of tenses",
+                    "Articles and prepositions",
+                    "Conjunctions and connectors",
+                    "Pronouns and modifiers",
+                    "Converting direct speech to indirect speech"
+                ]
+            }
+        },
+        {
+            "company": "TCS",
+            "year_covered": [
+                "2026"
+            ],
+            "highlights": [
+                "Test is divided into Foundation and Advanced rounds.",
+                "Profiles: Ninja, Digital, Prime.",
+                "No negative marking.",
+                "TCS NQT is non-adaptive this year.",
+                "No extra rough paper; screen calculator and rough paper provided."
+            ],
+            "exam_pattern_2026": [
+                {
+                    "round": "Round 1 (Foundation)",
+                    "sections": [
+                        {
+                            "section": "Numerical Ability",
+                            "questions": 20,
+                            "duration_minutes": 25
+                        },
+                        {
+                            "section": "Verbal English",
+                            "questions": 25,
+                            "duration_minutes": 25
+                        },
+                        {
+                            "section": "Reasoning Ability",
+                            "questions": 20,
+                            "duration_minutes": 25
+                        }
+                    ],
+                    "note": "Programming Logic (C MCQ) is NO LONGER ASKED."
+                },
+                {
+                    "round": "Round 2 (Advanced)",
+                    "mandatory_for": "Digital and Prime Aspirants",
+                    "sections": [
+                        {
+                            "section": "Advanced Aptitude + Advanced Reasoning Ability",
+                            "questions": "Approx. 15 (8 Quants, 7-8 Reasoning)",
+                            "duration_minutes": 25,
+                            "difficulty": "High"
+                        },
+                        {
+                            "section": "Advanced Coding",
+                            "questions": 3,
+                            "duration_minutes": 90,
+                            "languages": [
+                                "C",
+                                "C++",
+                                "Java",
+                                "Python"
+                            ],
+                            "difficulty": "Moderate to High (2 mod, 1 high)"
+                        }
+                    ]
+                }
+            ],
+            "syllabus": {
+                "verbal_ability": [
+                    "Spelling",
+                    "Grammar",
+                    "Selecting Words",
+                    "Error Correction",
+                    "Error Identification",
+                    "Sentence Completion",
+                    "Synonyms and Antonyms",
+                    "Cloze Test",
+                    "Reading and Comprehension"
+                ],
+                "advanced_quantitative": [
+                    "HCF & LCM and Number System",
+                    "Geometry",
+                    "Ages",
+                    "Allegations and Mixtures",
+                    "Averages",
+                    "Clocks and Calendars",
+                    "Equations",
+                    "Percentages",
+                    "Permutations and Combinations",
+                    "Probability",
+                    "Profit and Loss",
+                    "Ratios and Proportion",
+                    "Series and Progressions",
+                    "Time, Speed and Distance",
+                    "Time and Work",
+                    "Mean, Median, Mode, Standard Deviation, and Variance",
+                    "Data Interpretation",
+                    "Graphical Data Interpretation",
+                    "Pie Charts",
+                    "Tabular Data Interpretation",
+                    "Simple Arithmetic Operations"
+                ],
+                "advanced_reasoning": [
+                    "Words Identification",
+                    "Meaningful Word Creation",
+                    "Letter Analogy",
+                    "Blood Relations",
+                    "Complex Seating Arrangements",
+                    "Distance and Directions",
+                    "Odd Man Out",
+                    "Symbols and Notations",
+                    "Cube and Paper Folding",
+                    "Data Sufficiency",
+                    "Decision Making",
+                    "Syllogism",
+                    "Prepositional Reasoning",
+                    "Visual Reasoning"
+                ]
+            }
+        },
+        {
+            "company": "Wipro",
+            "year_covered": [
+                "2025"
+            ],
+            "highlights": [
+                "First Round is Online Assessment Round followed by Coding and Interview.",
+                "Total timing for the test: 128 minutes.",
+                "No negative marking."
+            ],
+            "exam_pattern_2025": [
+                {
+                    "section": "Quants",
+                    "questions": 16,
+                    "duration_minutes": 16,
+                    "difficulty": "High"
+                },
+                {
+                    "section": "Logical",
+                    "questions": 14,
+                    "duration_minutes": 14,
+                    "difficulty": "Moderate"
+                },
+                {
+                    "section": "Verbal",
+                    "questions": "18 - 22",
+                    "duration_minutes": 18,
+                    "difficulty": "Moderate"
+                },
+                {
+                    "section": "Coding",
+                    "questions": 2,
+                    "duration_minutes": 60,
+                    "languages": [
+                        "C",
+                        "C++",
+                        "Java",
+                        "Python",
+                        "Perl",
+                        "C#"
+                    ],
+                    "difficulty": "High"
+                },
+                {
+                    "section": "Essay Writing",
+                    "questions": 1,
+                    "duration_minutes": 20,
+                    "word_limit": "200-400 words",
+                    "difficulty": "Medium"
+                }
+            ],
+            "syllabus": {
+                "quants": [
+                    "LCM & HCF",
+                    "Divisibility",
+                    "Numbers, decimal fractions, and power",
+                    "Time & Work",
+                    "Pipes and Cisterns",
+                    "Averages",
+                    "Profit and Loss",
+                    "Simple and Compound Interest",
+                    "Time, Speed, and Distance",
+                    "Problems on Trains",
+                    "Geometry, Coordinate Geometry",
+                    "Clocks & Calendar",
+                    "Logarithms",
+                    "Permutation and Combinations",
+                    "Probability",
+                    "Ratio & Proportion",
+                    "Algebra",
+                    "Surds & Indices",
+                    "Allegations and Mixtures",
+                    "Problem on Ages"
+                ],
+                "verbal": [
+                    "Synonyms & Antonyms",
+                    "Contextual Vocabulary",
+                    "Jumbled Sentence",
+                    "Sentence Formation, Improvement & Construction",
+                    "Inferential and Literal Comprehension (Ordering)",
+                    "Error Identification",
+                    "Subject-Verb Agreement",
+                    "Tenses & Articles",
+                    "Preposition & Conjunctions",
+                    "Speech & Voices"
+                ],
+                "logical": [
+                    "Coding deductive logic",
+                    "Blood Relation",
+                    "Directional Sense",
+                    "Objective Reasoning",
+                    "Selection decision tables",
+                    "Seating Arrangements",
+                    "Mathematical Orders",
+                    "Inferred Meaning",
+                    "Logical word sequence",
+                    "Data sufficiency",
+                    "Syllogism",
+                    "Data Arrangement"
+                ],
+                "coding": [
+                    "Arrays and Matrices (1D, Rotation, Multiplication, Operations, Inverting)",
+                    "Linked List (Basic Operations, Circular)",
+                    "Strings (Manipulation, Character operations)",
+                    "Stacks (Push/Pop, Applications)",
+                    "Searching and Sorting (Algorithms, Applications)"
+                ]
+            }
+        }
+    ]
+}

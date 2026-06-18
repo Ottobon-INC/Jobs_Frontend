@@ -63,8 +63,9 @@ const NewGradPage = () => {
             const matchesRole = role === 'All Roles' || company.roles.includes(role);
             const matchesDifficulty = difficulty === 'All Levels' || company.difficulty === difficulty;
             const matchesZone = (company.hiring_zone || company.hiringZone) === hiringZone;
+            const matchesPublished = company.is_published !== false;
 
-            return matchesSearch && matchesCategory && matchesRole && matchesDifficulty && matchesZone;
+            return matchesSearch && matchesCategory && matchesRole && matchesDifficulty && matchesZone && matchesPublished;
         });
     }, [companies, searchQuery, category, role, difficulty, hiringZone]);
 

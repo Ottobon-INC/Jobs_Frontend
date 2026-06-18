@@ -16,7 +16,7 @@ export const scrapeJobAI = async (url) => {
     const config = {
         timeout: 60000 // 60 seconds as Tavily + AI extraction can be slow
     };
-    const response = await api.get(`/jobs-ai/scrape?url=${encodeURIComponent(url)}`, config);
+    const response = await api.get(`/jobs-ai/scrape?url=${encodeURIComponent(url)}&t=${Date.now()}`, config);
     return response.data;
 };
 

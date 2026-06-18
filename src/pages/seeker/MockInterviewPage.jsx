@@ -703,7 +703,8 @@ const MockInterviewPage = () => {
         freeCreditsRemaining,
         purchasedCreditsRemaining, 
         useCredit, 
-        isFirstTimeUser 
+        isFirstTimeUser,
+        syncCreditsWithBackend
     } = useInterviewCreditsContext();
 
     const aiCreditsRemaining = freeCreditsRemaining + purchasedCreditsRemaining;
@@ -1644,8 +1645,7 @@ const MockInterviewPage = () => {
         setShowCreditPanel(false);
         setShowCreditModal(false);
 
-        const res = useCredit(jobTitle || 'General Practice');
-        if (res.success) {
+        if (aiCreditsRemaining > 0) {
             if (isFirstTimeUser) {
                 localStorage.setItem('ottobon_onboarding_seen', 'true');
             }
@@ -1741,6 +1741,14 @@ const MockInterviewPage = () => {
             // Register session with the FastAPI backend
             const startedSession = await startMockInterview(id || null);
             interviewRecordIdRef.current = startedSession.id;
+
+            // Deduct credit only after backend session is successfully registered
+            useCredit(jobTitle || 'General Practice');
+
+            // Sync credits with backend here!
+            if (syncCreditsWithBackend) {
+                await syncCreditsWithBackend();
+            }
         } catch (err) {
             console.error('Failed to start interview on backend:', err);
             const detail = err.response?.data?.detail || 'Failed to initialize session with server.';
@@ -1772,6 +1780,14 @@ const MockInterviewPage = () => {
                 try {
                     const startedSession = await startMockInterview(id || null);
                     interviewRecordIdRef.current = startedSession.id;
+
+                    // Deduct credit only after backend session is successfully registered
+                    useCredit(jobTitle || 'General Practice');
+
+                    // Sync credits with backend here!
+                    if (syncCreditsWithBackend) {
+                        await syncCreditsWithBackend();
+                    }
                 } catch (err) {
                     console.error('Failed to start interview on backend during confirm start:', err);
                     const detail = err.response?.data?.detail || 'Failed to initialize session with server.';
@@ -1895,6 +1911,11 @@ const MockInterviewPage = () => {
             link: '/interview-reviews'
         });
 
+        // Sync credits with backend here!
+        if (syncCreditsWithBackend) {
+            await syncCreditsWithBackend();
+        }
+
         // Regenerate suffix for any subsequent interview to get a brand new session ID
         const newSuffix = Date.now().toString();
         setSessionSuffix(newSuffix);
@@ -1917,6 +1938,11 @@ const MockInterviewPage = () => {
                 prepTimerRef.current = null;
             }
             clearTimeout(typingTimeoutRef.current);
+
+            // Sync credits with backend here to ensure cancellation/discard updates state
+            if (syncCreditsWithBackend) {
+                syncCreditsWithBackend();
+            }
 
             // 3. Reset state machine, user turn, and refs
             stateMachine.reset();
@@ -2710,7 +2736,7 @@ const MockInterviewPage = () => {
                     isOpen={showCreditModal}
                     onClose={() => setShowCreditModal(false)}
                     viewState={modalType}
-                    onConfirm={handleConfirmStart}
+                    onConfirm={handleCreditConfirmStart}
                     isStarting={isStarting}
                     mode="ai_interview_only"
                 />

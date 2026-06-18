@@ -39,6 +39,7 @@ const CommunityJobsPage = lazy(() => import('./pages/seeker/CommunityJobsPage'))
 const RewardsPage = lazy(() => import('./pages/seeker/RewardsPage'));
 const HumanMockInterviewPage = lazy(() => import('./pages/seeker/HumanMockInterviewPage'));
 const MyHumanMockInterviewsPage = lazy(() => import('./pages/seeker/MyHumanMockInterviewsPage'));
+const ProfileScoreDashboardPage = lazy(() => import('./pages/seeker/ProfileScoreDashboardPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -138,6 +139,7 @@ function App() {
                   <Route path="/interview-reviews" element={<InterviewReviewsPage />} />
                   <Route path="/saved" element={<SavedJobsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile-score" element={<ProfileScoreDashboardPage />} />
                   <Route path="/courses" element={<CoursesPage />} />
                   <Route path="/chat" element={<ChatPage />} />
                   <Route path="/feedback" element={<FeedbackPage />} />

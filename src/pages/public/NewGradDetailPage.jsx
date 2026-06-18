@@ -72,7 +72,7 @@ const NewGradDetailPage = () => {
         return <Loader fullScreen />;
     }
 
-    if (!company) {
+    if (!company || company.is_published === false) {
         return <NotFoundPage />;
     }
 
