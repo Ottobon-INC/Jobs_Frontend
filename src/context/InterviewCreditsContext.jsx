@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef, useCallback } from 'react';
 import { useInterviewCredits } from '../hooks/useInterviewCredits';
 import { useAuth } from '../hooks/useAuth';
 import { getMyRedemptions } from '../api/rewardsApi';
@@ -23,10 +23,10 @@ export const InterviewCreditsProvider = ({ children }) => {
     reconcileCreditsRef.current = credits.reconcileCredits;
   }, [credits.reconcileCredits]);
 
-  // Dynamically reconcile purchased credits count with backend redemptions and completed interviews
-  useEffect(() => {
+  // Expose a helper to trigger backend sync on demand (real-time reconciliation)
+  const syncCreditsWithBackend = useCallback(() => {
     if (userId) {
-      Promise.all([
+      return Promise.all([
         getMyRedemptions(), 
         getMyMockInterviews(),
         import('../api/humanMockInterviewApi').then(m => m.getMyHumanMockInterviews())
@@ -36,17 +36,25 @@ export const InterviewCreditsProvider = ({ children }) => {
           const aiInterviews = aiInterviewsRes || [];
           const humanInterviews = humanInterviewsRes || [];
           
-          // Pass AI and Human mock interviews separately to handle free credit deduction correctly
           reconcileCreditsRef.current(redemptions, aiInterviews, humanInterviews);
+          return { redemptions, aiInterviews, humanInterviews };
         })
         .catch((err) => {
-          console.error('[InterviewCredits Provider] Failed to auto-reconcile with backend:', err);
+          console.error('[InterviewCredits Provider] Failed to sync credits with backend:', err);
         });
     }
+    return Promise.resolve();
   }, [userId]);
 
+  // Dynamically reconcile purchased credits count with backend redemptions and completed interviews
+  useEffect(() => {
+    if (userId) {
+      syncCreditsWithBackend();
+    }
+  }, [userId, syncCreditsWithBackend]);
+
   return (
-    <InterviewCreditsContext.Provider value={credits}>
+    <InterviewCreditsContext.Provider value={{ ...credits, syncCreditsWithBackend }}>
       {children}
     </InterviewCreditsContext.Provider>
   );

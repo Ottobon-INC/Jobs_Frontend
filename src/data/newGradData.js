@@ -27,17 +27,338 @@ export const COMPANIES = [
             { name: 'Advanced Section', details: 'Advanced Quants, Reasoning, and Coding.' },
             { name: 'Interview', details: 'Technical + Managerial + HR round.' }
         ],
-        testPattern: [
-            { section: 'Foundation (Numerical)', questions: '20 Qs', duration: '25 mins' },
-            { section: 'Foundation (Verbal)', questions: '25 Qs', duration: '25 mins' },
-            { section: 'Foundation (Reasoning)', questions: '20 Qs', duration: '25 mins' },
-            { section: 'Advanced (Quants)', questions: '10 Qs', duration: '25 mins' },
-            { section: 'Advanced (Coding)', questions: '3 Qs', duration: '90 mins' }
+                                        testPattern: [
+            {
+                section: 'Round 1 (Foundation) - Numerical Ability',
+                questions: '20 Qs',
+                duration: '25 mins'
+            },
+            {
+                section: 'Round 1 (Foundation) - Verbal English',
+                questions: '25 Qs',
+                duration: '25 mins'
+            },
+            {
+                section: 'Round 1 (Foundation) - Reasoning Ability',
+                questions: '20 Qs',
+                duration: '25 mins'
+            },
+            {
+                section: 'Round 2 (Advanced) - Advanced Aptitude + Advanced Reasoning Ability',
+                questions: 'Approx. 15 (8 Quants, 7-8 Reasoning)',
+                duration: '25 mins'
+            },
+            {
+                section: 'Round 2 (Advanced) - Advanced Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
         ],
-        syllabus: [
-            { round: 'Foundation', topics: ['Averages', 'Percentages', 'Ratios', 'Syllogism', 'Series'] },
-            { round: 'Advanced', topics: ['Complex Quants', 'Advanced Data Structures', 'Algorithms'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Verbal Ability',
+            topics: [
+                {
+                    name: 'Spelling',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grammar',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Selecting Words',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Error Correction',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Error Identification',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Completion',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Synonyms and Antonyms',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Cloze Test',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Reading and Comprehension',
+                    questions: '1',
+                    duration: '3 mins',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Advanced Quantitative',
+            topics: [
+                {
+                    name: 'HCF & LCM and Number System',
+                    questions: '0 or 1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Geometry',
+                    questions: '0 or 1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Ages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Allegations and Mixtures',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Averages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Clocks and Calendars',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Equations',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Percentages',
+                    questions: '0 or 1',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Permutations and Combinations',
+                    questions: '1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0 or 1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Profit and Loss',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Ratios and Proportion',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Series and Progressions',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Time, Speed and Distance',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Time and Work',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Mean, Median, Mode, Standard Deviation, and Variance',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Interpretation',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Graphical Data Interpretation',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Pie Charts',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Tabular Data Interpretation',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Simple Arithmetic Operations',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Advanced Reasoning',
+            topics: [
+                {
+                    name: 'Words Identification',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Meaningful Word Creation',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Letter Analogy',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Blood Relations',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Complex Seating Arrangements',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Distance and Directions',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Odd Man Out',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Symbols and Notations',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Cube and Paper Folding',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Sufficiency',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Decision Making',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Syllogism',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Prepositional Reasoning',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Visual Reasoning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Round 1 (Foundation) - Numerical Ability',
+            topics: [
+                'Total Questions: 20 Qs',
+                'Duration: 25 mins',
+                'Note: Programming Logic (C MCQ) is NO LONGER ASKED.',
+            ]
+        },
+        {
+            round: 'Round 1 (Foundation) - Reasoning Ability',
+            topics: [
+                'Total Questions: 20 Qs',
+                'Duration: 25 mins',
+                'Note: Programming Logic (C MCQ) is NO LONGER ASKED.',
+            ]
+        },
+        {
+            round: 'Round 2 (Advanced) - Advanced Coding',
+            topics: [
+                'Total Questions: 3 Qs',
+                'Duration: 90 mins',
+                'Languages Allowed: C, C++, Java, Python',
+            ]
+        },
+    ],
         registrationProcess: [
             'Visit TCS NextStep portal',
             'Register under "IT" category',
@@ -81,16 +402,344 @@ export const COMPANIES = [
             { name: 'Online Assessment', details: 'Aptitude + Essay Writing.' },
             { name: 'Business Discussion', details: 'Interview round with technical and behavioral questions.' }
         ],
-        testPattern: [
-            { section: 'Quants', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Analytical', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Verbal', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Written Communication', questions: '1 Essay', duration: '20 mins' }
+                                        testPattern: [
+            {
+                section: 'Quants',
+                questions: '16 Qs',
+                duration: '16 mins'
+            },
+            {
+                section: 'Logical',
+                questions: '14 Qs',
+                duration: '14 mins'
+            },
+            {
+                section: 'Verbal',
+                questions: '18 - 22',
+                duration: '18 mins'
+            },
+            {
+                section: 'Coding',
+                questions: '2 Qs',
+                duration: '60 mins'
+            },
+            {
+                section: 'Essay Writing',
+                questions: '1 Qs',
+                duration: '20 mins'
+            },
         ],
-        syllabus: [
-            { round: 'Aptitude', topics: ['Percentages', 'Profit & Loss', 'Series', 'Blood Relations'] },
-            { round: 'Verbal', topics: ['RC', 'Grammar', 'Synonyms/Antonyms'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Quants',
+            topics: [
+                {
+                    name: 'LCM & HCF',
+                    questions: '0 or 1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Divisibility',
+                    questions: '1 or 2',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Numbers, decimal fractions, and power',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time & Work',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Pipes and Cisterns',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Averages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Profit and Loss',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Simple and Compound Interest',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time, Speed, and Distance',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Problems on Trains',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Geometry, Coordinate Geometry',
+                    questions: '0 or 1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Clocks & Calendar',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logarithms',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Permutation and Combinations',
+                    questions: '1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0 or 1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Ratio & Proportion',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Algebra',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Surds & Indices',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Allegations and Mixtures',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Problem on Ages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Verbal',
+            topics: [
+                {
+                    name: 'Synonyms & Antonyms',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Contextual Vocabulary',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Jumbled Sentence',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Formation, Improvement & Construction',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inferential and Literal Comprehension (Ordering)',
+                    questions: '1',
+                    duration: '3 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Error Identification',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Subject-Verb Agreement',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Tenses & Articles',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Preposition & Conjunctions',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Speech & Voices',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Logical',
+            topics: [
+                {
+                    name: 'Coding deductive logic',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Blood Relation',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Directional Sense',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Objective Reasoning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Selection decision tables',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Seating Arrangements',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Mathematical Orders',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inferred Meaning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logical word sequence',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data sufficiency',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Syllogism',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Data Arrangement',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Coding',
+            topics: [
+                {
+                    name: 'Arrays and Matrices (1D, Rotation, Multiplication, Operations, Inverting)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Linked List (Basic Operations, Circular)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Strings (Manipulation, Character operations)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Stacks (Push/Pop, Applications)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Searching and Sorting (Algorithms, Applications)',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Essay Writing',
+            topics: [
+                'Total Questions: 1 Qs',
+                'Duration: 20 mins',
+            ]
+        },
+    ],
         registrationProcess: [
             'Register on SuperSet or Wipro career portal',
             'Complete profile and fill details',
@@ -134,17 +783,286 @@ export const COMPANIES = [
             { name: 'Online Assessment', details: '6 sections including coding and puzzles.' },
             { name: 'Interview', details: 'Technical and HR mixed round.' }
         ],
-        testPattern: [
-            { section: 'Logical Reasoning', questions: '15 Qs', duration: '25 mins' },
-            { section: 'Mathematical Ability', questions: '10 Qs', duration: '35 mins' },
-            { section: 'Verbal Ability', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Pseudocode', questions: '5 Qs', duration: '10 mins' },
-            { section: 'Numerical Puzzle', questions: '4 Qs', duration: '10 mins' }
+                                        testPattern: [
+            {
+                section: 'Logical Ability',
+                questions: '15 Qs',
+                duration: '25 mins'
+            },
+            {
+                section: 'Technical Ability (Mathematical)',
+                questions: '10 Qs',
+                duration: '35 mins'
+            },
+            {
+                section: 'Verbal Ability',
+                questions: '20 Qs',
+                duration: '20 mins'
+            },
+            {
+                section: 'Pseudo Code',
+                questions: '5 Qs',
+                duration: '10 mins'
+            },
+            {
+                section: 'Puzzle Solving',
+                questions: '4 Qs',
+                duration: '10 mins'
+            },
+            {
+                section: 'English Grammar',
+                questions: '5 Qs',
+                duration: '10 mins'
+            },
+            {
+                section: 'English Writing',
+                questions: '1 Qs',
+                duration: '10 mins'
+            },
         ],
-        syllabus: [
-            { round: 'Aptitude', topics: ['Data Interpretation', 'Syllogisms', 'Percentages', 'Time & Work'] },
-            { round: 'Technical', topics: ['Pseudocode', 'Programming Logic', 'DSA', 'Logic Puzzles'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Mathematical Ability',
+            topics: [
+                {
+                    name: 'Percentages',
+                    questions: '0 or 1',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Interpretation',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Permutation and Combination',
+                    questions: '1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0 or 1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Areas, Shapes, Perimeter',
+                    questions: '0 or 1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Speed Time and Distance / Boats and Streams',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Time and Work',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Profit and Loss | Mixtures & Allegation',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Problem on Ages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Divisibility',
+                    questions: '1 or 2',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Number Decimal & Fractions',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Series and Progression',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'LCM and HCF',
+                    questions: '0 or 1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Logical Reasoning',
+            topics: [
+                {
+                    name: 'Arrangements',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Puzzles',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Syllogisms',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Coding-Decoding',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Number series',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Cryptarithmetic',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Clocks and Calendar',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Sufficiency',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Most logical choice',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logical Deduction',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Verbal Ability',
+            topics: [
+                {
+                    name: 'Reading Comprehension',
+                    questions: '1',
+                    duration: '3 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Sentence Correction',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence selection',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Completion',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Para Jumbles',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Spotting error',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Analogy',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Fill in the Blanks',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'One Word Substitution',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Critical Reasoning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Pseudo Code',
+            topics: [
+                'Total Questions: 5 Qs',
+                'Duration: 10 mins',
+            ]
+        },
+        {
+            round: 'Puzzle Solving',
+            topics: [
+                'Total Questions: 4 Qs',
+                'Duration: 10 mins',
+            ]
+        },
+        {
+            round: 'English Grammar',
+            topics: [
+                'Total Questions: 5 Qs',
+                'Duration: 10 mins',
+            ]
+        },
+        {
+            round: 'English Writing',
+            topics: [
+                'Total Questions: 1 Qs',
+                'Duration: 10 mins',
+            ]
+        },
+    ],
         registrationProcess: [
             'Visit Infosys Careers portal',
             'Register and create a profile',
@@ -444,14 +1362,152 @@ export const COMPANIES = [
             { name: 'Technical Rounds', details: '3 sessions focusing on DSA, OS, and LLD.' },
             { name: 'As-Appropriate', details: 'Final bar-raising round for culture and fit.' }
         ],
-        testPattern: [
-            { section: 'Coding', questions: '3 Qs', duration: '90 mins' },
-            { section: 'Technical MCQ', questions: 'N/A', duration: 'N/A' }
+                                        testPattern: [
+            {
+                section: 'Written Test - Coding Round 1',
+                questions: '1 Qs',
+                duration: '60 mins'
+            },
+            {
+                section: 'Coding - Coding Round 2',
+                questions: '2 Qs',
+                duration: '60 mins'
+            },
+            {
+                section: 'Interviews',
+                questions: '-',
+                duration: '-'
+            },
         ],
-        syllabus: [
-            { round: 'DSA', topics: ['Linked Lists', 'Trees', 'Graphs', 'Hash Maps', 'Topological Sort'] },
-            { round: 'System Design', topics: ['OOD', 'Parking Lot', 'API Design', 'Basic Scalability'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Coding Topics',
+            topics: [
+                {
+                    name: 'C',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'C++',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'OOPS Concepts',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Basics of data structures',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Networking',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Windows ad',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Exchange servers',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'DNS',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'DHCP',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'DBMS',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Pointers',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Arrays',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Threads',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Classes',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inheritance',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Preprocessors',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'C Datatypes',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Written Test - Coding Round 1',
+            topics: [
+                'Total Questions: 1 Qs',
+                'Duration: 60 mins',
+            ]
+        },
+        {
+            round: 'Coding - Coding Round 2',
+            topics: [
+                'Total Questions: 2 Qs',
+                'Duration: 60 mins',
+            ]
+        },
+        {
+            round: 'Interviews',
+            topics: [
+                'Details: 2 Technical Rounds, 1 HR Round',
+            ]
+        },
+    ],
         registrationProcess: [
             'Apply via Microsoft University portal',
             'Submit updated resume with projects',
@@ -598,16 +1654,240 @@ export const COMPANIES = [
             { name: 'Communication Assessment', details: 'Aura/speaking assessment.' },
             { name: 'Interview', details: 'Technical + HR interview.' }
         ],
-        testPattern: [
-            { section: 'Cognitive & Technical', questions: '90 Qs', duration: '90 mins' },
-            { section: 'Coding', questions: '2 Qs', duration: '45 mins' },
-            { section: 'Communication', questions: '20 Qs', duration: '20 mins' }
+                                        testPattern: [
+            {
+                section: '1st Round - Behavioral Assessment (Psychometric)',
+                questions: '54 Qs',
+                duration: '20 mins'
+            },
+            {
+                section: '1st Round - Cognitive Assessment (Gamified)',
+                questions: '3 Qs',
+                duration: '20 mins'
+            },
+            {
+                section: '2nd Round - Technical Assessment (MCQs)',
+                questions: '45 Qs',
+                duration: '45 mins'
+            },
+            {
+                section: '2nd Round - Coding Assessment',
+                questions: '3 Qs',
+                duration: '60 mins'
+            },
+            {
+                section: '3rd Round - Communication Assessment',
+                questions: '20-25 (approx.)',
+                duration: '30 mins'
+            },
         ],
-        syllabus: [
-            { round: 'Cognitive', topics: ['Verbal Ability', 'Reasoning', 'Numerical Ability'] },
-            { round: 'Technical', topics: ['MS Office', 'Pseudo Code', 'Networking', 'Cloud'] },
-            { round: 'Coding', topics: ['C/C++/Java/Python DSA Problems'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Technical Assessment',
+            topics: [
+                {
+                    name: 'Fundamentals of Networking, Security, and Cloud',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Common Applications and MS Office',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Pseudo Code',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Verbal Ability',
+            topics: [
+                {
+                    name: 'Sentence Correction',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Preposition',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grammar',
+                    questions: '0-3',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Reading Comprehension',
+                    questions: '1-2',
+                    duration: '3 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Synonym and Antonyms',
+                    questions: '0-4',
+                    duration: '30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Idioms and Phrases',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Speech and Voices',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Article',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Sentence Selection',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Spotting Error',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Arrangement',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Critical Reasoning And Logical',
+            topics: [
+                {
+                    name: 'Arrangements',
+                    questions: '1-2',
+                    duration: '1 min 30 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Visual Reasoning',
+                    questions: '0-1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Blood Relations',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Flow chart',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Statement and Conclusion',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Coding-Decoding',
+                    questions: '1-2',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Psychometric',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Directional Sense',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Analogies',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Seating Arrangement',
+                    questions: '1-2',
+                    duration: '1 min 30 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inferred Meaning',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logical Sequence',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Coding',
+            topics: [
+                'Total Questions: 3',
+                'Duration: 60 minutes',
+                'Languages Allowed: C, C++, Java, JavaScript, Python, Dot Net, HTML/CSS',
+                'Selection Criteria: 2 Complete Output and 1 Partial Output',
+                'Negative Marking: No',
+                'Rule: Start code from scratch.',
+                'Rule: Errors are clearly mentioned.',
+                'Rule: Write the whole program.',
+            ]
+        },
+        {
+            round: '1st Round - Behavioral Assessment (Psychometric)',
+            topics: [
+                'Total Questions: 54 Qs',
+                'Duration: 20 mins',
+            ]
+        },
+        {
+            round: '1st Round - Cognitive Assessment (Gamified)',
+            topics: [
+                'Total Questions: 3 Qs',
+                'Duration: 20 mins',
+            ]
+        },
+        {
+            round: '3rd Round - Communication Assessment',
+            topics: [
+                'Total Questions: 20-25 (approx.)',
+                'Duration: 30 mins',
+            ]
+        },
+    ],
         registrationProcess: [
             'Visit Accenture India Campus portal',
             'Register and choose role (ASE/Advanced ASE)',
@@ -653,15 +1933,61 @@ export const COMPANIES = [
             { name: 'Group Discussion', details: 'Optional round for some campus drives.' },
             { name: 'Interview', details: 'Technical + HR Combined Round.' }
         ],
-        testPattern: [
-            { section: 'Coding', questions: '2 Qs', duration: '55 mins' },
-            { section: 'English', questions: '15 Qs', duration: '15 mins' }
+                                        testPattern: [
+            {
+                section: 'Round 1: Online Coding + English Test - Coding Test',
+                questions: '2 Qs',
+                duration: 'Approx. 60 Minutes'
+            },
+            {
+                section: 'Round 1: Online Coding + English Test - English Language Test',
+                questions: '10 Qs',
+                duration: '10 Min'
+            },
+            {
+                section: 'Round 2: Group Discussion Round',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'Round 3: Interview (HR + Technical)',
+                questions: '-',
+                duration: '-'
+            },
         ],
-        syllabus: [
-            { round: 'Coding', topics: ['Arrays', 'Strings', 'Logic Building', 'Basic DSA'] },
-            { round: 'English', topics: ['Grammar', 'Vocabulary', 'Reading Comprehension'] },
-            { round: 'Technical', topics: ['OOPs', 'DBMS (SQL)', 'OS', 'Projects'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Round 1: Online Coding + English Test - Coding Test',
+            topics: [
+                'Total Questions: 2 Qs',
+                'Duration: Approx. 60 Minutes',
+                'Details: Conducted on HackerRank. Includes String/Array based coding and 5-6 MCQs on DBMS, OS, OOPS, Programming.',
+            ]
+        },
+        {
+            round: 'Round 1: Online Coding + English Test - English Language Test',
+            topics: [
+                'Total Questions: 10 Qs',
+                'Duration: 10 Min',
+                'Active/Passive Voice',
+                'Fill in The Blanks',
+                'Spotting Error',
+                'Spelling',
+                'Synonyms',
+                'Antonyms',
+                'Preposition and Conjunctions',
+                'Tenses and Articles',
+            ]
+        },
+        {
+            round: 'Round 2: Group Discussion Round',
+            topics: []
+        },
+        {
+            round: 'Round 3: Interview (HR + Technical)',
+            topics: []
+        },
+    ],
         registrationProcess: [
             'Visit IBM Careers portal',
             'Register and create an IBMid',
@@ -707,16 +2033,242 @@ export const COMPANIES = [
             { name: 'Technical Interview', details: 'Core CS subjects and Coding basics.' },
             { name: 'HR Interview', details: 'Communication and behavioral fit.' }
         ],
-        testPattern: [
-            { section: 'Quantitative', questions: '15 Qs', duration: '20 mins' },
-            { section: 'Logical', questions: '15 Qs', duration: '20 mins' },
-            { section: 'Technical MCQs', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Coding/Pseudocode', questions: '5-10 Qs', duration: '15 mins' }
+                                        testPattern: [
+            {
+                section: 'Aptitude (Numerical Ability)',
+                questions: '15 Qs',
+                duration: '15 mins'
+            },
+            {
+                section: 'Logical Reasoning',
+                questions: '15 Qs',
+                duration: '15 mins'
+            },
+            {
+                section: 'Verbal Ability',
+                questions: '15 Qs',
+                duration: '15 mins'
+            },
+            {
+                section: 'Computer Fundamentals',
+                questions: '30 Qs',
+                duration: '30 mins'
+            },
+            {
+                section: 'Coding',
+                questions: '2 Qs',
+                duration: '20 mins'
+            },
         ],
-        syllabus: [
-            { round: 'Aptitude', topics: ['Ratios', 'Profit & Loss', 'Puzzles', 'Blood Relations'] },
-            { round: 'Technical', topics: ['OS', 'DBMS', 'Networking', 'Pseudocode'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Numerical Ability',
+            topics: [
+                {
+                    name: 'HCF and LCM',
+                    questions: '1-2',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Number System',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Time, Work, Pipes and Cisterns',
+                    questions: '0-2',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Permutations and Combinations',
+                    questions: '1-2',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Geometry',
+                    questions: '0-1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time, Speed and Distance',
+                    questions: '1-2',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0-1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Profit and Loss',
+                    questions: '0-1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Interest, Mixture and Allegation',
+                    questions: '0-1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logarithm',
+                    questions: '0-1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Verbal Ability',
+            topics: [
+                {
+                    name: 'Sentence correction',
+                    questions: '1-3',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Reading Comprehension',
+                    questions: '1-3',
+                    duration: '3 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grammar',
+                    questions: '1-2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Synonyms and Antonyms',
+                    questions: '1-3',
+                    duration: '30 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Fill in the blanks',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Spellings',
+                    questions: '1-3',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Logical Reasoning',
+            topics: [
+                {
+                    name: 'Directional Sense',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logical Reasoning',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Coding and Decoding',
+                    questions: '0-3',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Sufficiency',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Pattern Analogy',
+                    questions: '0-2',
+                    duration: '30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Number Series',
+                    questions: '1-2',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logical Statement Assumption',
+                    questions: '1-2',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Computer Fundamentals',
+            topics: [
+                {
+                    name: 'Computer Basics',
+                    questions: '1-5',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Structures',
+                    questions: '1-4',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'OOPs',
+                    questions: '1-4',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Code input Output',
+                    questions: '1-4',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Networking',
+                    questions: '1-4',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'OS',
+                    questions: '1-5',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'DBMS',
+                    questions: '1-4',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Coding',
+            topics: [
+                'Total Questions: 2 Qs',
+                'Duration: 20 mins',
+            ]
+        },
+    ],
         registrationProcess: [
             'Visit HCLTech Careers portal',
             'Register to generate Candidate ID',
@@ -761,15 +2313,378 @@ export const COMPANIES = [
             { name: 'Technical Interview', details: 'Focus on projects and CS fundamentals.' },
             { name: 'HR Interview', details: 'Behavioral and relocation check.' }
         ],
-        testPattern: [
-            { section: 'Aptitude (Quant/Log)', questions: '30 Qs', duration: '40 mins' },
-            { section: 'Technical MCQs', questions: '20 Qs', duration: '20 mins' },
-            { section: 'Communication Assessment', questions: '20 Qs', duration: '20 mins' }
+                                        testPattern: [
+            {
+                section: 'Round 1: Online Assessment - English Comprehension',
+                questions: '12 (3-4 Passages)',
+                duration: '15 mins'
+            },
+            {
+                section: 'Round 1: Online Assessment - Quantitative Ability',
+                questions: '12 Qs',
+                duration: '15 mins'
+            },
+            {
+                section: 'Round 1: Online Assessment - Logical Reasoning',
+                questions: '12 Qs',
+                duration: '15 mins'
+            },
+            {
+                section: 'Round 1: Online Assessment - Basic Analytical Ability',
+                questions: '10 Qs',
+                duration: '10 mins'
+            },
+            {
+                section: 'Round 1: Online Assessment - Computer Science (Programming/Fundamentals)',
+                questions: '20 Qs',
+                duration: '20 mins'
+            },
+            {
+                section: 'Round 1: Online Assessment - Spoken English',
+                questions: '20 Qs',
+                duration: '20 mins'
+            },
+            {
+                section: 'Round 2: Technical Interview',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'Round 3: HR Interview',
+                questions: '-',
+                duration: '-'
+            },
         ],
-        syllabus: [
-            { round: 'Aptitude', topics: ['Number Systems', 'Averages', 'Syllogism', 'Direction Sense'] },
-            { round: 'Technical', topics: ['DBMS (SQL focus)', 'OOPS', 'OS', 'Networking'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Quantitative Ability',
+            topics: [
+                {
+                    name: 'LCM & HCF',
+                    questions: '0 or 1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Divisibility',
+                    questions: '1 or 2',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Number Decimal, fraction & power',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time & Work',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Pipes & Cistern',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Averages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Profit & Loss',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Simple & Compound Interest',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time, Speed & Distance',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inverse',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Ratio & Proportion',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Algebra',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Surds & Indices',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Logarithms',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Permutations & Combinations',
+                    questions: '1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0 or 1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Area, Shapes & Perimeter',
+                    questions: '0 or 1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Percentages',
+                    questions: '0 or 1',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Boats and Streams',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Clocks and Calendars',
+                    questions: '0 or 1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Logical Reasoning',
+            topics: [
+                {
+                    name: 'Blood Relation',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Directional Sense',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Analogy and Classification pattern recognition',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Odd Man Out',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Statement & Conclusion',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Seating Arrangement',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Logical word sequence',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inferred Meaning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Basic Analytical Ability',
+            topics: [
+                {
+                    name: 'Coding deductive logic',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Objective Reasoning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Selection decision tables',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Coding pattern and Number series pattern recognition',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data sufficiency',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Mathematical Order',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Computer Science',
+            topics: [
+                {
+                    name: 'Basic Programming',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Data Structures',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'OOPs',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Psuedo Code',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'DBMS',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Operating Systems',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Computer Networks',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Spoken English',
+            topics: [
+                {
+                    name: 'Making correct and meaningful sentences',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Subject-verb agreement',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Proper use of tenses',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Articles and prepositions',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Conjunctions and connectors',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Pronouns and modifiers',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Converting direct speech to indirect speech',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Round 1: Online Assessment - English Comprehension',
+            topics: [
+                'Total Questions: 12 (3-4 Passages)',
+                'Duration: 15 mins',
+            ]
+        },
+        {
+            round: 'Round 2: Technical Interview',
+            topics: []
+        },
+        {
+            round: 'Round 3: HR Interview',
+            topics: []
+        },
+    ],
         registrationProcess: [
             'Visit LTIMindtree career portal',
             'Register for freshers drive',
@@ -815,15 +2730,371 @@ export const COMPANIES = [
             { name: 'Communication Assessment', details: 'SpeechX AI-based round.' },
             { name: 'Interviews', details: 'Technical and HR rounds.' }
         ],
-        testPattern: [
-            { section: 'Aptitude (Q/L/V)', questions: '60 Qs', duration: '60 mins' },
-            { section: 'Domain (Pseudocode/CS)', questions: '30 Qs', duration: '30 mins' },
-            { section: 'Coding (PGET)', questions: '2 Qs', duration: '60 mins' }
+                                        testPattern: [
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Verbal Ability',
+                questions: '20 Qs',
+                duration: 'Shared within 60 mins'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Logical Ability',
+                questions: '20 Qs',
+                duration: 'Shared within 60 mins'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Numerical Ability',
+                questions: '20 Qs',
+                duration: 'Shared within 60 mins'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Domain-based',
+                questions: '30 Qs',
+                duration: '30 mins'
+            },
+            {
+                section: 'GET - Round 2: Communication Assessment',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 3: Technical Interview',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 4: HR Interview',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Verbal Ability',
+                questions: '20 Qs',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Logical Ability',
+                questions: '20 Qs',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Numerical Ability',
+                questions: '20 Qs',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 1: Aptitude Test + Domain based - Domain-based',
+                questions: '30 Qs',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 2: Coding Test',
+                questions: '2 Qs',
+                duration: '60 mins'
+            },
+            {
+                section: 'GET - Round 3: Communication Assessment',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 4: Technical Interview',
+                questions: '-',
+                duration: '-'
+            },
+            {
+                section: 'GET - Round 5: HR Interview',
+                questions: '-',
+                duration: '-'
+            },
         ],
-        syllabus: [
-            { round: 'Aptitude', topics: ['Percentages', 'Time & Work', 'Syllogism', 'Grammar'] },
-            { round: 'Domain', topics: ['Pseudocode', 'Computer Fundamentals', 'OS', 'DBMS'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Numerical Ability',
+            topics: [
+                {
+                    name: 'LCM and HCF',
+                    questions: '0 or 1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Percentages',
+                    questions: '0 or 1',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Ranking based',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Ratio and Proportions',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Ages',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Speed Time and Distance',
+                    questions: '1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Probability',
+                    questions: '0 or 1',
+                    duration: '1 min 25 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Profit and Loss',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Time and Work',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Bar Graph',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Line Graph',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Pie chart',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Tabular DI',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Logical Reasoning',
+            topics: [
+                {
+                    name: 'Syllogism',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Arrangements',
+                    questions: '1',
+                    duration: '1 min 30 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Letter Series',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Coding and decoding',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Ranking and Sequence',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Blood relations',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Relationship b/w words',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Visual reasoning',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Odd one out',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Statements and Conclusions',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Statements and Arguments',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Verbal Ability',
+            topics: [
+                {
+                    name: 'Preposition and Conjunction',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Idioms and phrases',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Fill in the blanks',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Spelling',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Analogy',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'One word Substitution',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Synonyms and Antonyms',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Sentence improvement',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Reading Comprehension',
+                    questions: '1',
+                    duration: '3 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Articles',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Speech and Tense',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Ordering',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Error Identification',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Domain Based',
+            topics: [
+                {
+                    name: 'Pseudocode',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Computer Fundamentals',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'GET - Round 2: Communication Assessment',
+            topics: []
+        },
+        {
+            round: 'GET - Round 3: Technical Interview',
+            topics: []
+        },
+        {
+            round: 'GET - Round 4: HR Interview',
+            topics: []
+        },
+        {
+            round: 'GET - Round 2: Coding Test',
+            topics: [
+                'Total Questions: 2 Qs',
+                'Duration: 60 mins',
+                'Languages Allowed: C, C++, Java, Python',
+            ]
+        },
+        {
+            round: 'GET - Round 3: Communication Assessment',
+            topics: []
+        },
+        {
+            round: 'GET - Round 4: Technical Interview',
+            topics: []
+        },
+        {
+            round: 'GET - Round 5: HR Interview',
+            topics: []
+        },
+    ],
         registrationProcess: [
             'Register on Superset portal for Hexaware',
             'Complete your profile and upload resume',
@@ -1320,16 +3591,116 @@ export const COMPANIES = [
             { name: 'Technical Assessment', details: 'Coding assessment with 3 questions.' },
             { name: 'Technical + HR Interview', details: 'Final round focusing on projects and culture fit.' }
         ],
-        testPattern: [
-            { section: 'Communication', questions: '5 Sections', duration: '58 mins' },
-            { section: 'Aptitude', questions: '80 Qs', duration: '100 mins' },
-            { section: 'Technical (Coding)', questions: '3 Qs', duration: '105/120 mins' }
+                                        testPattern: [
+            {
+                section: 'Round 1 - Communication Assessment',
+                questions: '-',
+                duration: '60 mins'
+            },
+            {
+                section: 'Round 2 - Quants + Game Based Assessment',
+                questions: '-',
+                duration: '80 mins'
+            },
+            {
+                section: 'Round 3 - Technical Assessment (Coding)',
+                questions: '-',
+                duration: '120 mins'
+            },
+            {
+                section: 'Round 4 - GenC Technical + HR Interview',
+                questions: '-',
+                duration: '-'
+            },
         ],
-        syllabus: [
-            { round: 'Communication', topics: ['Reading Sentences', 'Repeat Sentences', 'Jumbled Sentences', 'Story Retelling'] },
-            { round: 'Aptitude', topics: ['Percentages', 'Averages', 'Ratios', 'Syllogism', 'Grammar'] },
-            { round: 'Technical', topics: ['Data Structures', 'Algorithms', 'DBMS', 'OOPS', 'OS'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Quantitative Aptitude',
+            topics: [
+                {
+                    name: 'Basic Mathematics: LCM & HCF, Divisibility, Numbers/decimals/power, Averages, Ratio & Proportion, Algebra, Surds & Indices',
+                    questions: '0 or 1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Applied Mathematics: Profit and Loss, Simple/Compound Interest, Time/Speed/Distance, Inverse, Time and Work, Allegation & Mixtures, Percentage, Area/shape/perimeter',
+                    questions: '0 or 1',
+                    duration: '2 mins',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Engineering Mathematics: Logarithms, Permutation/Combinations, Probability, Pipes and Cisterns, Geometry/Coordinate Geometry, Clocks & Calendar, Problem on Ages',
+                    questions: '1',
+                    duration: '1 min 10 secs',
+                    difficulty: 'High'
+                },
+            ]
+        },
+        {
+            round: 'Game Based Aptitude',
+            topics: [
+                {
+                    name: 'Deductive Logical Thinking(Geo-Sudo)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inductive-logical Thinking',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grid Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Motion Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Switch Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Digit Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Round 1 - Communication Assessment',
+            topics: [
+                'Duration: 60 mins',
+                'Details: AI-based online test. Sections: Reading + Listening, Speaking, Grammar. Elimination round with strict cutoff.',
+                'Negative Marking: N/A',
+            ]
+        },
+        {
+            round: 'Round 3 - Technical Assessment (Coding)',
+            topics: [
+                'Duration: 120 mins',
+                'Details: 2 Coding questions (1 medium, 1 hard).',
+                'Negative Marking: N/A',
+            ]
+        },
+        {
+            round: 'Round 4 - GenC Technical + HR Interview',
+            topics: [
+                'Details: Interview phase.',
+            ]
+        },
+    ],
         registrationProcess: [
             'Receive registration email from Cognizant',
             'Register on the official career portal',
@@ -1375,15 +3746,247 @@ export const COMPANIES = [
             { name: 'Technical Interview', details: 'Core subjects and projects.' },
             { name: 'HR Interview', details: 'Behavioral and communication.' }
         ],
-        testPattern: [
-            { section: 'Assessment', questions: 'MCQs & Games', duration: 'Various' },
-            { section: 'Coding', questions: '2 Qs', duration: '45 mins' }
+                                        testPattern: [
+            {
+                section: 'Round 1: Online Assessment - Technical MCQs + Pseudocode',
+                questions: '40 Qs',
+                duration: '40–50 minutes'
+            },
+            {
+                section: 'Round 1: Online Assessment - English / Communication Test',
+                questions: '30 Qs',
+                duration: '30 minutes'
+            },
+            {
+                section: 'Round 1: Online Assessment - Game Based Cognitive Test',
+                questions: '4 Games out of 24',
+                duration: '20–30 minutes'
+            },
+            {
+                section: 'Round 1: Online Assessment - Behavioral / PowerSkills (mainly Off Campus)',
+                questions: '~100',
+                duration: '20–25 minutes'
+            },
+            {
+                section: 'Round 2: Coding Round - Coding Questions',
+                questions: '2 Qs',
+                duration: '45 minutes'
+            },
+            {
+                section: 'Round 3: Technical Interview - Technical + Resume Discussion',
+                questions: 'Q&A',
+                duration: '20–35 minutes'
+            },
+            {
+                section: 'Round 4: HR Interview - Behavioral Assessment',
+                questions: 'Q&A',
+                duration: '10–20 minutes'
+            },
         ],
-        syllabus: [
-            { round: 'Technical', topics: ['Data Structures', 'Algorithms', 'DBMS', 'OOPS'] },
-            { round: 'English', topics: ['Grammar', 'RC', 'Vocabulary'] },
-            { round: 'Game Based', topics: ['Inductive/Deductive Reasoning', 'Grid Challenge'] }
-        ],
+                                        syllabus: [
+        {
+            round: 'Technical Test',
+            topics: [
+                {
+                    name: 'C',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'C++',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'OOPS',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Data Structures',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Pseudo Code',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'SQL / DBMS',
+                    questions: '1 or 2',
+                    duration: '2 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Computer Networks',
+                    questions: '1',
+                    duration: '1 min 15 secs',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Operating System',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'English Communication',
+            topics: [
+                {
+                    name: 'Sentence Correction',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Prepositions',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grammar',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Reading Comprehension',
+                    questions: '1',
+                    duration: '3 mins',
+                    difficulty: 'High'
+                },
+                {
+                    name: 'Synonyms & Antonym',
+                    questions: '1 or 2',
+                    duration: '30 secs',
+                    difficulty: 'Easy'
+                },
+                {
+                    name: 'Speech and Tenses',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Article',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Selection',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Spotting Error',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Sentence Arrangement',
+                    questions: '1 or 2',
+                    duration: '45 secs',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Game Based Aptitude',
+            topics: [
+                {
+                    name: 'Deductive Logical Thinking(Geo-Sudo)',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Inductive-logical Thinking',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Motion Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Switch Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Digit Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+                {
+                    name: 'Grid Challenge',
+                    questions: '1',
+                    duration: '1 min',
+                    difficulty: 'Medium'
+                },
+            ]
+        },
+        {
+            round: 'Round 1: Online Assessment - Technical MCQs + Pseudocode',
+            topics: [
+                'Total Questions: 40 Qs',
+                'Duration: 40–50 minutes',
+            ]
+        },
+        {
+            round: 'Round 1: Online Assessment - English / Communication Test',
+            topics: [
+                'Total Questions: 30 Qs',
+                'Duration: 30 minutes',
+            ]
+        },
+        {
+            round: 'Round 1: Online Assessment - Behavioral / PowerSkills (mainly Off Campus)',
+            topics: [
+                'Total Questions: ~100',
+                'Duration: 20–25 minutes',
+            ]
+        },
+        {
+            round: 'Round 2: Coding Round - Coding Questions',
+            topics: [
+                'Total Questions: 2 Qs',
+                'Duration: 45 minutes',
+                'Note: 1 question solved = 5.75 LPA, 2 questions solved = 7.50 LPA. Preferred languages: C, C++, Java, Python. Difficulty: High.',
+            ]
+        },
+        {
+            round: 'Round 3: Technical Interview - Technical + Resume Discussion',
+            topics: [
+                'Total Questions: Q&A',
+                'Duration: 20–35 minutes',
+            ]
+        },
+        {
+            round: 'Round 4: HR Interview - Behavioral Assessment',
+            topics: [
+                'Total Questions: Q&A',
+                'Duration: 10–20 minutes',
+            ]
+        },
+    ],
         registrationProcess: [
             'Register on Capgemini Career Portal',
             'Fill application form and submit'

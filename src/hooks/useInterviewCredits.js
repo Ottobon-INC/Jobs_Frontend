@@ -12,6 +12,7 @@ const getInitialState = () => ({
   totalUsed: 0,
   aiInterviewsUsed: 0,
   humanInterviewsUsed: 0,
+  redemptions: [],
   transactions: [
     {
       id: generateUUID(),
@@ -50,6 +51,9 @@ export const useInterviewCredits = (userId) => {
           }
           if (typeof parsed.humanInterviewsUsed !== 'number') {
             parsed.humanInterviewsUsed = 0;
+          }
+          if (!Array.isArray(parsed.redemptions)) {
+            parsed.redemptions = [];
           }
           return parsed;
         }
@@ -101,6 +105,9 @@ export const useInterviewCredits = (userId) => {
           }
           if (typeof parsed.humanInterviewsUsed !== 'number') {
             parsed.humanInterviewsUsed = 0;
+          }
+          if (!Array.isArray(parsed.redemptions)) {
+            parsed.redemptions = [];
           }
           setState(parsed);
           return;
@@ -306,13 +313,16 @@ export const useInterviewCredits = (userId) => {
     const correctedHumanPurchasedRemaining = Math.max(0, humanRedeemedCount - humanUsedPurchased);
     const correctedMatchPurchasedRemaining = Math.max(0, matchRedeemedCount - matchUsedPurchased);
 
+    const hasRedemptionsChanged = JSON.stringify(backendRedemptions) !== JSON.stringify(currentState.redemptions || []);
+
     if (
       correctedAiPurchasedRemaining !== purchasedCreditsRemaining ||
       correctedHumanPurchasedRemaining !== purchasedHumanCreditsRemaining ||
       correctedMatchPurchasedRemaining !== purchasedMatchCreditsRemaining ||
       correctedFreeRemaining !== freeCreditsRemaining ||
       correctedFreeMatchRemaining !== freeMatchCreditsRemaining ||
-      totalInterviewsTaken !== totalUsed
+      totalInterviewsTaken !== totalUsed ||
+      hasRedemptionsChanged
     ) {
       console.log('[InterviewCredits Sync] Reconciling with backend:', {
         totalInterviewsTaken,
@@ -323,7 +333,8 @@ export const useInterviewCredits = (userId) => {
         correctedFreeMatchRemaining,
         correctedAiPurchasedRemaining,
         correctedHumanPurchasedRemaining,
-        correctedMatchPurchasedRemaining
+        correctedMatchPurchasedRemaining,
+        hasRedemptionsChanged
       });
 
       const newState = {
@@ -335,7 +346,8 @@ export const useInterviewCredits = (userId) => {
         purchasedMatchCreditsRemaining: correctedMatchPurchasedRemaining,
         totalUsed: totalInterviewsTaken,
         aiInterviewsUsed: totalAiInterviewsTaken,
-        humanInterviewsUsed: totalHumanInterviewsTaken
+        humanInterviewsUsed: totalHumanInterviewsTaken,
+        redemptions: backendRedemptions
       };
       saveState(newState);
     }
@@ -380,6 +392,7 @@ export const useInterviewCredits = (userId) => {
     totalUsed: state.totalUsed,
     aiInterviewsUsed: state.aiInterviewsUsed || 0,
     humanInterviewsUsed: state.humanInterviewsUsed || 0,
+    redemptions: state.redemptions || [],
     transactions: state.transactions,
     useCredit,
     addCredits,

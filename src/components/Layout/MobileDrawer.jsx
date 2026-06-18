@@ -5,7 +5,7 @@ import { useNotifications } from '../../context/NotificationContext';
 import { 
     Search, Bookmark, User, BookOpen, Radio, MessageSquare, TrendingUp, Newspaper, 
     LayoutDashboard, LogOut, Briefcase, PlusCircle, ClipboardList, Upload, BarChart3, 
-    Heart, Calendar, FileText, Target, ShieldCheck, X, Trophy, Users
+    Heart, Calendar, FileText, Target, ShieldCheck, X, Trophy, Users, Award
 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 
@@ -26,6 +26,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
         { to: '/jobs', label: 'Job Board', icon: Search, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
         { to: '/jobs-ai', label: 'Jobs AI', icon: Target, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/profile-score', label: 'Profile Rating', icon: Award, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, roles: [ROLES.SEEKER], category: 'Resources' },

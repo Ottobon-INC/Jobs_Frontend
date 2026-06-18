@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit2, Trash2, ExternalLink, Building2, MapPin, Briefcase, Eye } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, ExternalLink, Building2, MapPin, Briefcase, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { fetchPlaybooks, deletePlaybook } from '../../api/playbooksApi';
+import { fetchPlaybooks, deletePlaybook, updatePlaybook } from '../../api/playbooksApi';
 import { CompanyLogo } from '../../components/new-grad/CompanyLogo';
 import toast from 'react-hot-toast';
 
@@ -38,6 +38,18 @@ const ManagePlaybooksPage = () => {
             } catch (error) {
                 toast.error('Failed to delete playbook');
             }
+        }
+    };
+
+    const handleTogglePublish = async (id, currentStatus, name) => {
+        try {
+            const nextStatus = !currentStatus;
+            await updatePlaybook(id, { is_published: nextStatus });
+            setPlaybooks(prev => prev.map(pb => pb.id === id ? { ...pb, is_published: nextStatus } : pb));
+            toast.success(`${name} playbook is now ${nextStatus ? 'published' : 'unpublished'}`);
+        } catch (error) {
+            console.error('Failed to toggle publish status:', error);
+            toast.error('Failed to update publication status');
         }
     };
 
@@ -140,6 +152,13 @@ const ManagePlaybooksPage = () => {
                                     </div>
                                     <div className="flex gap-2">
                                         <button 
+                                            onClick={() => handleTogglePublish(pb.id, pb.is_published !== false, pb.name)}
+                                            className={`p-2.5 rounded-xl transition-all shadow-sm ${pb.is_published !== false ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white' : 'bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white'}`}
+                                            title={pb.is_published !== false ? "Unpublish Playbook" : "Publish Playbook"}
+                                        >
+                                            {pb.is_published !== false ? <Eye size={18} /> : <EyeOff size={18} />}
+                                        </button>
+                                        <button 
                                             onClick={() => navigate(`/admin/playbooks/edit/${pb.id}`)}
                                             className="p-2.5 bg-[#D45B34]/5 text-[#1C1A17] rounded-xl hover:bg-[#D45B34] hover:text-white transition-all shadow-sm"
                                             title="Edit Playbook"
@@ -157,10 +176,13 @@ const ManagePlaybooksPage = () => {
                                 </div>
 
                                 <div className="mt-6 relative z-10">
-                                    <div className="flex items-center gap-2 mb-1">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                                         <h3 className="text-xl font-black text-[#1C1A17] leading-tight">{pb.name}</h3>
                                         <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${pb.hiring_zone === 'on-campus' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
                                             {pb.hiring_zone}
+                                        </span>
+                                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${pb.is_published !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                                            {pb.is_published !== false ? 'Published' : 'Draft'}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-4 text-[#1C1A17]/50 text-xs font-bold uppercase tracking-widest mb-4">

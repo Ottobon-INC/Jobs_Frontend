@@ -16,6 +16,8 @@ import {
 } from '../../api/rewardsApi';
 
 const RewardsPage = () => {
+  const { addCredits, syncCreditsWithBackend, redemptions: history } = useInterviewCreditsContext();
+
   // State
   const [loading, setLoading] = useState(true);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -27,7 +29,6 @@ const RewardsPage = () => {
   });
   const isClaimingRef = useRef(false);
   const [shopItems, setShopItems] = useState([]);
-  const [history, setHistory] = useState([]);
   const [coinDelta, setCoinDelta] = useState(0);
   const [weekOffset, setWeekOffset] = useState(0);
   const [modalItem, setModalItem] = useState(null);
@@ -35,21 +36,21 @@ const RewardsPage = () => {
   // Fetch all data
   const fetchData = useCallback(async () => {
     try {
-      const [stateRes, itemsRes, historyRes] = await Promise.all([
+      const [stateRes, itemsRes] = await Promise.all([
         getRewardsState(),
-        getRewardItems(),
-        getMyRedemptions()
+        getRewardItems()
       ]);
       setRewardsState(stateRes);
       setShopItems(itemsRes.items || []);
-      setHistory(historyRes.redemptions || []);
+      // Sync credits & redemptions with backend
+      await syncCreditsWithBackend();
     } catch (error) {
       console.error('Failed to fetch rewards data:', error);
       toast.error('Could not load rewards. Please refresh.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [syncCreditsWithBackend]);
 
   useEffect(() => {
     fetchData();
@@ -91,8 +92,6 @@ const RewardsPage = () => {
   const handleWeekChange = useCallback((dir) => {
     setWeekOffset(prev => Math.min(0, prev + dir));
   }, []);
-
-  const { addCredits } = useInterviewCreditsContext();
 
   const handleOpenRedeem = useCallback((item) => {
     setModalItem(item);

@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 // Professional Palette
 const COLORS = ['#313851', '#C2CBD3', '#F6F3ED'];
 
+
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
@@ -57,7 +58,16 @@ const MarketPage = () => {
         </div>
     );
 
-    const { total_jobs, top_skills, salary_trends, work_styles, experience_levels } = stats;
+    const { 
+        total_jobs, 
+        top_skills, 
+        salary_trends, 
+        work_styles, 
+        experience_levels,
+        hiring_trends,
+        top_locations,
+        top_companies
+    } = stats;
 
     return (
         <div className="min-h-screen pt-8 pb-12 px-6 md:px-10 max-w-[1600px] mx-auto bg-[#FBFBFB] overflow-x-hidden">
@@ -80,12 +90,39 @@ const MarketPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <StatCard icon={<Briefcase size={20} />} label="Total Listings" value={total_jobs} delay={0} />
                     <StatCard icon={<TrendingUp size={20} />} label="Top Skill" value={top_skills?.[0]?.name || "N/A"} sub={`${top_skills?.[0]?.count || 0} listings`} delay={0.05} />
-                    <StatCard icon={<DollarSign size={20} />} label="Salary Peak" value={`$${((salary_trends?.[0]?.avg_max || 0) / 1000).toFixed(0)}k`} sub={salary_trends?.[0]?.role || "N/A"} delay={0.1} />
-                    <StatCard icon={<Globe size={20} />} label="Remote Presence" value={`${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%`} sub="Global Distribution" delay={0.15} />
+                    <StatCard icon={<DollarSign size={20} />} label="Salary Peak" value={salary_trends?.[0]?.avg_max ? `$${((salary_trends?.[0]?.avg_max) / 1000).toFixed(0)}k` : "N/A"} sub={salary_trends?.[0]?.role || "N/A"} delay={0.1} />
+                    <StatCard icon={<Globe size={20} />} label="Remote Presence" value={total_jobs > 0 ? `${((work_styles?.find(w => w.name === 'Remote')?.value || 0) / total_jobs * 100).toFixed(0)}%` : "0%"} sub="Global Distribution" delay={0.15} />
                 </div>
 
                 {/* Charts Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Hiring Trends */}
+                    <ChartCard title="Hiring Volume Trend">
+                        <ResponsiveContainer width="100%" height={300} minWidth={0}>
+                            <LineChart data={hiring_trends} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#313851" stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor="#313851" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+                                <XAxis 
+                                    dataKey="date" 
+                                    tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }}
+                                    axisLine={false} 
+                                    tickLine={false} 
+                                />
+                                <YAxis 
+                                    stroke="transparent"
+                                    tick={{ fontSize: 10, fill: '#71717a', fontWeight: 600 }}
+                                />
+                                <Tooltip content={<CustomTooltip />} />
+                                <Line type="monotone" dataKey="count" stroke="#313851" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </ChartCard>
+
                     {/* Skills Bar Chart */}
                     <ChartCard title="Skill Demand">
                         <ResponsiveContainer width="100%" height={300} minWidth={0}>
@@ -156,6 +193,54 @@ const MarketPage = () => {
                                     <Tooltip content={<CustomTooltip />} />
                                 </PieChart>
                             </ResponsiveContainer>
+                        </div>
+                    </ChartCard>
+
+                    {/* Top Locations */}
+                    <ChartCard title="Top Hiring Locations">
+                        <div className="space-y-4 py-2">
+                            {top_locations?.map((loc, idx) => {
+                                const maxCount = Math.max(...(top_locations?.map(l => l.count) || [1]));
+                                const percent = ((loc.count / maxCount) * 100).toFixed(0);
+                                return (
+                                    <div key={idx} className="space-y-1.5">
+                                        <div className="flex justify-between items-center text-xs font-semibold text-[#313851]">
+                                            <span>{loc.name}</span>
+                                            <span className="font-bold">{loc.count} jobs</span>
+                                        </div>
+                                        <div className="w-full bg-zinc-100 h-2 rounded-full overflow-hidden">
+                                            <div 
+                                                className="bg-[#313851] h-full rounded-full transition-all duration-500" 
+                                                style={{ width: `${percent}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </ChartCard>
+
+                    {/* Top Hiring Companies */}
+                    <ChartCard title="Top Hiring Companies">
+                        <div className="space-y-4 py-2">
+                            {top_companies?.map((comp, idx) => {
+                                const maxCount = Math.max(...(top_companies?.map(c => c.count) || [1]));
+                                const percent = ((comp.count / maxCount) * 100).toFixed(0);
+                                return (
+                                    <div key={idx} className="space-y-1.5">
+                                        <div className="flex justify-between items-center text-xs font-semibold text-[#313851]">
+                                            <span>{comp.name}</span>
+                                            <span className="font-bold">{comp.count} postings</span>
+                                        </div>
+                                        <div className="w-full bg-zinc-100 h-2 rounded-full overflow-hidden">
+                                            <div 
+                                                className="bg-[#C2CBD3] h-full rounded-full transition-all duration-500" 
+                                                style={{ width: `${percent}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </ChartCard>
 

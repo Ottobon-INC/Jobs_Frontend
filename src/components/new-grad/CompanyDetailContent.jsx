@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Layers, 
     DollarSign, 
     BookOpen, 
     Sparkles, 
+    ChevronLeft,
     ChevronRight,
     CheckCircle2, 
     AlertCircle,
@@ -22,6 +23,12 @@ import { useAuth } from '../../hooks/useAuth';
 export const CompanyDetailContent = ({ company, activeSection }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
+    const [activeSyllabusTab, setActiveSyllabusTab] = useState(0);
+    const tabsContainerRef = useRef(null);
+
+    useEffect(() => {
+        setActiveSyllabusTab(0);
+    }, [company, activeSection]);
 
     const handleMockInterviewClick = () => {
         if (isAuthenticated) {
@@ -275,29 +282,141 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
 
             case 'syllabus': {
                 const syllabusData = company.syllabus || [];
+                const activeRound = syllabusData[activeSyllabusTab] || (syllabusData.length > 0 ? syllabusData[0] : null);
+
+                // Helper to check if topics are structured objects (for tables)
+                const isTabular = activeRound && activeRound.topics && activeRound.topics.length > 0 && typeof activeRound.topics[0] === 'object';
+
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Syllabus Details</h3>
                         {syllabusData.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {syllabusData.map((round, idx) => (
-                                    <div key={idx} className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <div className="w-8 h-8 bg-[#D45B34] rounded-xl flex items-center justify-center text-white text-[10px] font-black">
-                                                {idx + 1}
-                                            </div>
-                                            <h4 className="text-lg font-bold text-[#1C1A17]">{round.round || round.category || round.name || `Round ${idx + 1}`}</h4>
-                                        </div>
-                                        <ul className="space-y-3">
-                                            {round.topics && round.topics.map((topic, tIdx) => (
-                                                <li key={tIdx} className="flex items-center gap-3 text-zinc-600 font-bold text-xs">
-                                                    <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
-                                                    {topic}
-                                                </li>
-                                            ))}
-                                        </ul>
+                            <div className="space-y-6">
+                                {/* Horizontal Tabs Navigation */}
+                                <div className="flex items-center gap-3 border-b border-zinc-100 pb-4">
+                                    {/* Left Scroll Button */}
+                                    <button 
+                                        type="button"
+                                        onClick={() => {
+                                            if (tabsContainerRef.current) {
+                                                tabsContainerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
+                                            }
+                                        }}
+                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
+                                        aria-label="Scroll left"
+                                    >
+                                        <ChevronLeft size={16} strokeWidth={3} />
+                                    </button>
+
+                                    {/* Scrollable Tabs */}
+                                    <div 
+                                        ref={tabsContainerRef}
+                                        className="flex items-center gap-3 overflow-x-auto scrollbar-none py-1 scroll-smooth flex-1"
+                                    >
+                                        {syllabusData.map((round, idx) => {
+                                            const roundName = round.round || round.category || round.name || `Round ${idx + 1}`;
+                                            const isActive = activeSyllabusTab === idx;
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    onClick={() => setActiveSyllabusTab(idx)}
+                                                    className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all duration-300 border ${
+                                                        isActive 
+                                                            ? 'bg-[#313851] text-white border-[#313851] shadow-md shadow-zinc-200' 
+                                                            : 'bg-white text-zinc-400 border-zinc-100 hover:text-[#313851] hover:bg-zinc-50'
+                                                    }`}
+                                                >
+                                                    {roundName}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
-                                ))}
+
+                                    {/* Right Scroll Button */}
+                                    <button 
+                                        type="button"
+                                        onClick={() => {
+                                            if (tabsContainerRef.current) {
+                                                tabsContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+                                            }
+                                        }}
+                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
+                                        aria-label="Scroll right"
+                                    >
+                                        <ChevronRight size={16} strokeWidth={3} />
+                                    </button>
+                                </div>
+
+                                {/* Active Round Content Rendering */}
+                                <AnimatePresence mode="wait">
+                                    {activeRound && (
+                                        <motion.div 
+                                            key={activeSyllabusTab}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="space-y-4"
+                                        >
+                                            {isTabular ? (
+                                                /* Rich Table View (Ref: Image 1) */
+                                                <div className="overflow-x-auto border border-zinc-100 rounded-[2rem] bg-white shadow-sm">
+                                                    <table className="w-full border-collapse text-left text-xs font-bold">
+                                                        <thead>
+                                                            <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 uppercase tracking-wider">
+                                                                <th className="py-4 px-6 font-black">{company.name} {activeRound.round} Topics</th>
+                                                                <th className="py-4 px-6 font-black w-[150px]">No. of questions</th>
+                                                                <th className="py-4 px-6 font-black w-[150px]">Time</th>
+                                                                <th className="py-4 px-6 font-black w-[150px]">Difficulty Level</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-zinc-50 text-[#1C1A17]">
+                                                            {activeRound.topics.map((topic, tIdx) => (
+                                                                <tr key={tIdx} className="hover:bg-zinc-50/50 transition-colors">
+                                                                    <td className="py-4 px-6">{topic.name}</td>
+                                                                    <td className="py-4 px-6 font-semibold text-zinc-500">{topic.questions || '-'}</td>
+                                                                    <td className="py-4 px-6 font-semibold text-zinc-500">{topic.duration || topic.time || '-'}</td>
+                                                                    <td className="py-4 px-6">
+                                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                                                            topic.difficulty?.toLowerCase() === 'high' 
+                                                                                ? 'bg-rose-50 text-rose-600'
+                                                                                : topic.difficulty?.toLowerCase() === 'medium'
+                                                                                ? 'bg-amber-50 text-amber-600'
+                                                                                : 'bg-emerald-50 text-emerald-600'
+                                                                        }`}>
+                                                                            {topic.difficulty || 'Medium'}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            ) : (
+                                                /* Checklist View */
+                                                <div className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100 shadow-sm">
+                                                    <div className="flex items-center gap-3 mb-6">
+                                                        <div className="w-8 h-8 bg-[#D45B34] rounded-xl flex items-center justify-center text-white text-[10px] font-black">
+                                                            {activeSyllabusTab + 1}
+                                                        </div>
+                                                        <h4 className="text-lg font-bold text-[#1C1A17]">
+                                                            {activeRound.round || activeRound.category || activeRound.name || `Round ${activeSyllabusTab + 1}`}
+                                                        </h4>
+                                                    </div>
+                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                                                        {activeRound.topics && activeRound.topics.map((topic, tIdx) => (
+                                                            <li key={tIdx} className="flex items-start gap-3 text-zinc-600 font-bold text-xs leading-relaxed">
+                                                                <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                                <span>{topic}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         ) : (
                             <p className="text-zinc-500 font-medium italic">Detailed syllabus not yet available.</p>

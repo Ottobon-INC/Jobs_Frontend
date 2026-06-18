@@ -27,7 +27,8 @@ import {
     ShieldCheck,
     Trophy,
     Users,
-    IconContext
+    IconContext,
+    Award
 } from '@phosphor-icons/react';
 import { ROLES } from '../../utils/constants';
 import { motion } from 'framer-motion';
@@ -49,6 +50,7 @@ const Sidebar = () => {
         { to: '/jobs', label: 'Job Board', icon: MagnifyingGlass, roles: [ROLES.SEEKER, ROLES.PROVIDER, ROLES.ADMIN], category: 'Jobs' },
         { to: '/jobs-ai', label: 'Check Match', icon: Target, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/profile-score', label: 'Profile Rating', icon: Award, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },

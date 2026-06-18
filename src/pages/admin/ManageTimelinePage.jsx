@@ -159,9 +159,9 @@ const ManageTimelinePage = () => {
         const updatedEvents = [...editingMonth.events];
         updatedEvents[index] = { ...updatedEvents[index], [field]: value };
         
-        // Auto-generate Clearbit logo URL if company domain is entered
+        // Auto-generate Hunter.io logo URL if company domain is entered
         if (field === 'company' && value && value.includes('.')) {
-            updatedEvents[index].logo = `https://logo.clearbit.com/${value.toLowerCase().trim()}`;
+            updatedEvents[index].logo = `https://logos.hunter.io/${value.toLowerCase().trim()}`;
         } else if (field === 'company' && value && !updatedEvents[index].logo) {
             // Suggest standard domain mapping for known companies
             const commonDomains = {
@@ -185,7 +185,7 @@ const ManageTimelinePage = () => {
             };
             const mappedDomain = commonDomains[value.toLowerCase().trim()];
             if (mappedDomain) {
-                updatedEvents[index].logo = `https://logo.clearbit.com/${mappedDomain}`;
+                updatedEvents[index].logo = `https://logos.hunter.io/${mappedDomain}`;
             }
         }
         

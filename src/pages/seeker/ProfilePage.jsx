@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { uploadResume, getMyProfile, updateProfile, extractSkills, uploadAvatar, getResumeDownloadUrl } from '../../api/usersApi';
+import { getMyProfileScore } from '../../api/profileScoreApi';
 import { supabase } from '../../api/client';
 import { LIMITS, isValidText, isValidPhone, validateSkills, validateAspirations, validateFile, MAX_AVATAR_SIZE, MAX_RESUME_SIZE, ALLOWED_AVATAR_TYPES, ALLOWED_RESUME_TYPES } from '../../utils/validators';
 import Loader from '../../components/ui/Loader';
@@ -22,7 +23,8 @@ import {
     User,
     ChevronRight,
     Calendar,
-    Target
+    Target,
+    Award
 } from 'lucide-react';
 import { DESIRED_JOB_ROLES, WORK_PREFERENCES, EXPERIENCE_LEVELS, JOB_TITLES } from '../../utils/constants';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,6 +63,7 @@ const ProfilePage = () => {
     const [workExperienceDescription, setWorkExperienceDescription] = useState('');
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
     const [viewingResume, setViewingResume] = useState(false);
+    const [profileScore, setProfileScore] = useState(null);
 
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -93,6 +96,14 @@ const ProfilePage = () => {
             }
 
             setWorkExperienceDescription(data.work_experience_description || '');
+
+            // Fetch profile score
+            try {
+                const scoreData = await getMyProfileScore();
+                setProfileScore(scoreData);
+            } catch (scoreErr) {
+                console.error("Failed to load profile score:", scoreErr);
+            }
         } catch (err) {
             console.error(err);
             setError("Failed to fetch profile details.");
@@ -302,6 +313,42 @@ const ProfilePage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Left Column: Basic Info */}
                 <div className="lg:col-span-1 space-y-4">
+                    {/* Profile Score Summary Widget */}
+                    {profileScore && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            onClick={() => navigate('/profile-score')}
+                            className="bg-black text-white rounded-xl p-5 shadow-xl shadow-zinc-900/10 cursor-pointer overflow-hidden relative group"
+                        >
+                            {/* Decorative background shape */}
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-8 -mt-8 transition-transform duration-700 group-hover:scale-125" />
+                            
+                            <div className="flex justify-between items-start mb-4 relative z-10">
+                                <div>
+                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 block">PROFILE SCORE</span>
+                                    <span className="text-2xl font-black tracking-tight text-white mt-1 block">{Math.round(profileScore.total_score)}<span className="text-zinc-500 text-sm font-normal">/100</span></span>
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-zinc-800 text-zinc-300 px-2.5 py-1 rounded-full border border-zinc-700 flex items-center gap-1">
+                                    <Award size={10} /> {profileScore.score_tier}
+                                </span>
+                            </div>
+
+                            <div className="space-y-2 relative z-10">
+                                <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-white rounded-full transition-all duration-1000" 
+                                        style={{ width: `${profileScore.total_score}%` }}
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] font-bold text-zinc-400 pt-1">
+                                    <span>Optimize Rating</span>
+                                    <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -454,7 +501,7 @@ const ProfilePage = () => {
                                 <p className="text-sm font-medium text-black">{profile?.phone || 'No Phone Linked'}</p>
                             )}
                         </div>
-                    
+                    </div>
 
                     {/* Skills Selection */}
                     <motion.div
@@ -570,7 +617,6 @@ const ProfilePage = () => {
                             ))}
                         </div>
                     </motion.div>
-</div>
                 </div>
 
                 {/* Right Column: Questionnaire (Skills & Interests) */}
@@ -821,7 +867,7 @@ const ProfilePage = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="glass-card p-12 overflow-hidden relative"
+                        className="glass-card p-5 md:p-12 overflow-hidden relative"
                     >
                         {/* Subtle background decoration */}
                         <div className="absolute -right-10 -bottom-10 opacity-[0.03]">
