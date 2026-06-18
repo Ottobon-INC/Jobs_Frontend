@@ -25,7 +25,7 @@ const MobileBottomNav = ({ onMenuClick }) => {
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-[#313851] text-[#F6F3ED] z-[999] rounded-t-2xl shadow-[0_-10px_40px_rgba(49,56,81,0.2)] pb-[env(safe-area-inset-bottom,0px)] md:hidden">
+        <nav className="fixed bottom-0 left-0 right-0 bg-[var(--bg-dark)] text-[var(--text-on-dark)] z-[999] rounded-t-2xl shadow-[0_-10px_40px_rgba(28,26,23,0.2)] pb-[env(safe-area-inset-bottom,0px)] md:hidden">
             <div className="flex justify-around items-center h-16 px-2">
                 {navItems.map((item) => (
                     <NavLink
@@ -33,7 +33,7 @@ const MobileBottomNav = ({ onMenuClick }) => {
                         to={item.to}
                         className={({ isActive }) => `
                             flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors
-                            ${isActive ? 'text-[#FFD700]' : 'text-[#F6F3ED]/40 hover:text-[#F6F3ED]'}
+                            ${isActive ? 'text-[var(--accent)] font-extrabold' : 'text-[var(--text-on-dark)]/40 hover:text-[var(--text-on-dark)]'}
                         `}
                     >
                         <item.icon size={20} />
@@ -42,7 +42,7 @@ const MobileBottomNav = ({ onMenuClick }) => {
                 ))}
                 <button
                     onClick={onMenuClick}
-                    className="flex flex-col items-center justify-center w-full h-full space-y-1 text-[#F6F3ED]/40 hover:text-[#F6F3ED] transition-colors"
+                    className="flex flex-col items-center justify-center w-full h-full space-y-1 text-[var(--text-on-dark)]/40 hover:text-[var(--text-on-dark)] transition-colors"
                 >
                     <Menu size={20} />
                     <span className="text-[10px] font-bold">Menu</span>

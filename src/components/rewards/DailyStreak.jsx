@@ -90,7 +90,7 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="rounded-2xl border border-[#C2CBD3]/40 p-5 sm:p-7 shadow-sm"
+      className="rounded-2xl border border-[#1C1A17]/15 p-5 sm:p-7 shadow-sm"
       style={{
         background: '#ffffff',
       }}
@@ -99,17 +99,17 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
           <FireIcon />
-          <h2 className="text-lg sm:text-xl font-bold text-[#313851]">Daily Login Streak</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-[#1C1A17]">Daily Login Streak</h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-[#313851]/60">
+          <span className="text-sm font-bold text-[#1C1A17]/60">
             Day {completedCount} / {STREAK_LENGTH}
           </span>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full h-1.5 rounded-full bg-[#F6F3ED] mb-7 overflow-hidden border border-[#C2CBD3]/20">
+      <div className="w-full h-1.5 rounded-full bg-[#F4F1EA] mb-7 overflow-hidden border border-[#1C1A17]/10">
         <motion.div
           className="h-full rounded-full relative"
           style={{ background: '#313851' }}
@@ -131,18 +131,18 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => onWeekChange(-1)}
-          className="p-1.5 rounded-lg text-[#C2CBD3] hover:text-[#313851] hover:bg-[#F6F3ED] transition-all focus:outline-none"
+          className="p-1.5 rounded-lg text-[#1C1A17]/40 hover:text-[#D45B34] hover:bg-[#F4F1EA] transition-all focus:outline-none"
           aria-label="Previous week"
         >
           <ChevronLeftIcon />
         </button>
-        <span className="text-[10px] text-[#313851]/50 font-bold tracking-widest uppercase">
+        <span className="text-[10px] text-[#1C1A17]/50 font-bold tracking-widest uppercase">
           {weekOffset === 0 ? 'Current Week' : `${Math.abs(weekOffset)} week${Math.abs(weekOffset) > 1 ? 's' : ''} ago`}
         </span>
         <button
           onClick={() => onWeekChange(1)}
           disabled={weekOffset === 0}
-          className="p-1.5 rounded-lg text-[#C2CBD3] hover:text-[#313851] hover:bg-[#F6F3ED] transition-all disabled:opacity-20 focus:outline-none"
+          className="p-1.5 rounded-lg text-[#1C1A17]/40 hover:text-[#D45B34] hover:bg-[#F4F1EA] transition-all disabled:opacity-20 focus:outline-none"
           aria-label="Next week"
         >
           <ChevronRightIcon />
@@ -179,17 +179,17 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
                     background: '#ffffff',
                     border: '2px solid #313851',
                   } : day.status === 'missed' ? {
-                    background: '#F6F3ED',
+                    background: '#F4F1EA',
                     border: '1px solid #ef4444',
                   } : {
-                    background: '#F6F3ED',
-                    border: '1px solid #C2CBD3',
+                    background: '#F4F1EA',
+                    border: '1px solid var(--border-main)',
                   }),
                 }}
               >
                 {day.status === 'completed' && <CheckIcon />}
                 {day.status === 'claimable' && (
-                  <span className="text-sm font-bold text-[#313851]">+{DAILY_COIN_REWARD}</span>
+                  <span className="text-sm font-bold text-[#1C1A17]">+{DAILY_COIN_REWARD}</span>
                 )}
                 {day.status === 'locked' && <LockIcon />}
                 {day.status === 'missed' && <XIcon />}
@@ -203,7 +203,7 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
                 color: day.status === 'completed' ? '#313851'
                   : day.status === 'claimable' ? '#313851'
                   : day.status === 'missed' ? '#ef4444'
-                  : '#C2CBD3',
+                  : '#D3D0C8',
               }}
             >
               {DAY_LABELS[i]}
@@ -212,7 +212,7 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
             {/* Micro label */}
             {day.status === 'claimable' && (
               <motion.span
-                className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#313851]/10 text-[#313851]"
+                className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#D45B34]/10 text-[#1C1A17]"
                 animate={{ opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
@@ -241,24 +241,24 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
           style={{
             ...(buttonState === 'claimable' ? {
               background: '#313851',
-              color: '#F6F3ED',
+              color: '#F4F1EA',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(49,56,81,0.2)',
             } : buttonState === 'claiming' ? {
               background: '#313851',
-              color: '#F6F3ED',
+              color: '#F4F1EA',
               cursor: 'wait',
               opacity: 0.8,
             } : buttonState === 'claimed' || buttonState === 'all-done' ? {
-              background: '#F6F3ED',
+              background: '#F4F1EA',
               color: '#313851',
               cursor: 'default',
-              border: '1px solid #C2CBD3',
+              border: '1px solid var(--border-main)',
             } : {
-              background: '#F6F3ED',
+              background: '#F4F1EA',
               color: '#313851',
               cursor: 'pointer',
-              border: '1px solid #C2CBD3',
+              border: '1px solid var(--border-main)',
             }),
           }}
         >
@@ -294,9 +294,9 @@ const DailyStreak = ({ streakData, onClaim, isClaiming, weekOffset, onWeekChange
       </div>
 
       {/* Bonus info */}
-      <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-[#313851]/40 font-bold uppercase tracking-[0.1em]">
+      <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-[#1C1A17]/40 font-bold uppercase tracking-[0.1em]">
         <SparkleIcon />
-        <span>7-Day Streak Bonus: <span className="text-[#313851]">2X Coins</span></span>
+        <span>7-Day Streak Bonus: <span className="text-[#1C1A17]">2X Coins</span></span>
       </div>
     </motion.section>
   );

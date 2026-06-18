@@ -24,17 +24,17 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative w-full max-w-2xl max-h-[85vh] bg-[#F6F3ED] card border border-[#313851]/15 p-6 md:p-8 flex flex-col shadow-2xl overflow-hidden z-10"
+                    className="relative w-full max-w-2xl max-h-[85vh] bg-[#F4F1EA] card border border-[#1C1A17]/15 p-6 md:p-8 flex flex-col shadow-2xl overflow-hidden z-10"
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between pb-4 border-b border-[#313851]/10">
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-[#313851]/40 uppercase tracking-[0.25em]">Legal documentation</span>
-                            <h2 className="text-2xl font-black text-[#313851] tracking-tight">Privacy Policy Agreement</h2>
+                            <span className="text-[9px] font-black text-[#1C1A17]/40 uppercase tracking-[0.25em]">Legal documentation</span>
+                            <h2 className="text-2xl font-black text-[#1C1A17] tracking-tight">Privacy Policy Agreement</h2>
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-10 h-10 card bg-white hover:bg-[#313851]/5 border border-[#313851]/10 flex items-center justify-center text-[#313851] hover:text-[#313851]/80 transition-all shadow-md active:scale-95"
+                            className="w-10 h-10 card bg-white hover:bg-[#313851]/5 border border-[#313851]/10 flex items-center justify-center text-[#1C1A17] hover:text-[#1C1A17]/80 transition-all shadow-md active:scale-95"
                         >
                             <X size={18} strokeWidth={2.5} />
                         </button>

@@ -7,21 +7,21 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
-        className="group flex flex-col p-8 rounded-2xl border border-[#C2CBD3]/10 bg-[#F6F3ED]/[0.03] backdrop-blur-xl hover:border-[#C2CBD3]/30 transition-all duration-300"
+        className="group flex flex-col p-8 rounded-2xl border border-[#D45B34]/10 bg-[#F4F1EA]/[0.03] backdrop-blur-xl hover:border-[#D45B34]/30 transition-all duration-300"
         style={{ minHeight: '240px' }}
     >
         {/* Icon box */}
         <div
-            className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl border border-[#C2CBD3]/20 bg-[#F6F3ED]/5 transition-all duration-500 group-hover:bg-[#C2CBD3] group-hover:border-[#C2CBD3]"
+            className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl border border-[#D45B34]/20 bg-[#F4F1EA]/5 transition-all duration-500 group-hover:bg-[#D45B34] group-hover:border-[#D45B34]"
         >
             <Icon
-                className="h-6 w-6 text-[#C2CBD3] transition-colors duration-500 group-hover:text-[#313851]"
+                className="h-6 w-6 text-[#D45B34] transition-colors duration-500 group-hover:text-[#222222]"
             />
         </div>
 
         {/* Title */}
         <h3
-            className="mb-3 font-medium leading-snug tracking-tight text-[#F6F3ED]"
+            className="mb-3 font-medium leading-snug tracking-tight text-[#F4F1EA]"
             style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontSize: '1.1rem',
@@ -32,7 +32,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
 
         {/* Description */}
         <p
-            className="font-medium leading-7 text-[#F6F3ED]/85"
+            className="font-medium leading-7 text-[#F4F1EA]/85"
             style={{ fontSize: '0.9rem' }}
         >
             {description}
@@ -42,7 +42,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
 
 export function MockInterviewSection() {
     return (
-        <section className="py-24 px-6 md:px-12 lg:px-20 overflow-hidden relative bg-[#313851]">
+        <section className="py-24 px-6 md:px-12 lg:px-20 overflow-hidden relative bg-[#222222]">
             <div className="max-w-7xl mx-auto relative z-10">
                 <div className="flex flex-col lg:flex-row items-center gap-20">
 
@@ -56,28 +56,28 @@ export function MockInterviewSection() {
                         >
                             {/* Badge */}
                             <div
-                                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#F6F3ED]/20 bg-[#F6F3ED]/10 px-4 py-2"
-                                style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#F6F3ED' }}
+                                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#F4F1EA]/20 bg-[#F4F1EA]/10 px-4 py-2"
+                                style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#F4F1EA' }}
                             >
-                                <Sparkles size={12} className="text-[#C2CBD3]" />
+                                <Sparkles size={12} className="text-[#D45B34]" />
                                 <span>Next-Gen Preparation</span>
                             </div>
 
                             {/* Heading */}
                             <h2
-                                className="mb-8 pr-4 font-medium leading-tight tracking-tight text-[#F6F3ED]"
+                                className="mb-8 pr-4 font-medium leading-tight tracking-tight text-[#F4F1EA]"
                                 style={{
                                     fontFamily: "'Inter', system-ui, sans-serif",
                                     fontSize: 'clamp(2.5rem, 5vw, 4rem)',
                                 }}
                             >
                                 Master Your<br />
-                                <span className="text-[#F6F3ED]/30">Mock Interview</span>
+                                <span className="text-[#F4F1EA]/30">Mock Interview</span>
                             </h2>
 
                             {/* Body */}
                             <p
-                                className="font-medium leading-9 max-w-lg mb-10 text-[#F6F3ED]/85"
+                                className="font-medium leading-9 max-w-lg mb-10 text-[#F4F1EA]/85"
                                 style={{ fontSize: '1.1rem' }}
                             >
                                 Experience a simulation so real, you'll forget it's AI. We've synthesized the collective
@@ -86,22 +86,22 @@ export function MockInterviewSection() {
 
                             {/* Dark quote panel */}
                             <div
-                                className="group relative overflow-hidden rounded-xl p-8 border border-[#C2CBD3]/20 bg-[#F6F3ED]/[0.03] backdrop-blur-xl"
+                                className="group relative overflow-hidden rounded-xl p-8 border border-[#D45B34]/20 bg-[#F4F1EA]/[0.03] backdrop-blur-xl"
                             >
                                 <div className="absolute top-0 right-0 p-4 opacity-5 transition-opacity group-hover:opacity-10">
-                                    <MessageSquare size={64} className="text-[#C2CBD3]" />
+                                    <MessageSquare size={64} className="text-[#D45B34]" />
                                 </div>
                                 <h3
-                                    className="mb-4 flex items-center gap-3 font-medium tracking-tight text-[#F6F3ED]"
+                                    className="mb-4 flex items-center gap-3 font-medium tracking-tight text-[#F4F1EA]"
                                     style={{
                                         fontFamily: "'Inter', system-ui, sans-serif",
                                         fontSize: '1.25rem',
                                     }}
                                 >
-                                    <Bot className="text-[#C2CBD3]" />
+                                    <Bot className="text-[#D45B34]" />
                                     The Core Message
                                 </h3>
-                                <p className="font-medium leading-8 text-[#F6F3ED]/85" style={{ fontSize: '1.05rem' }}>
+                                <p className="font-medium leading-8 text-[#F4F1EA]/85" style={{ fontSize: '1.05rem' }}>
                                     "Real insights are used from the people of the company and AI is used to present it."
                                 </p>
                             </div>

@@ -90,7 +90,7 @@ const Sidebar = () => {
         <IconContext.Provider value={{ weight: 'duotone', size: 24 }}>
             <aside 
                 className="sidebar hidden md:flex fixed left-0 top-0 h-screen z-[1000] flex-col p-3 transition-[width] duration-[0.25s] ease-[cubic-bezier(0.4,0,0.2,1)] rounded-r-lg will-change-[width] transform translate-z-0 shadow-[4px_0_12px_-2px_rgba(49,56,81,0.15)] overflow-hidden"
-                style={{ backgroundColor: '#313851', color: '#F6F3ED' }}
+                style={{ backgroundColor: 'var(--bg-dark)', color: 'var(--text-on-dark)' }}
             >
                 <style>
                     {`
@@ -100,24 +100,24 @@ const Sidebar = () => {
                             .header-and-content { transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1); margin-left: 70px; }
                             .sidebar:hover + .header-and-content, .sidebar:hover ~ .header-and-content { margin-left: 260px; }
                         }
-                        .top-arrow { position: absolute; top: 16px; right: 16px; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(246, 243, 237, 0.1); border: none; color: #F6F3ED; cursor: pointer; padding: 6px; border-radius: 6px; z-index: 10; }
+                        .top-arrow { position: absolute; top: 16px; right: 16px; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(244, 241, 234, 0.1); border: none; color: var(--text-on-dark); cursor: pointer; padding: 6px; border-radius: 6px; z-index: 10; }
                         .sidebar:hover .top-arrow { transform: rotate(180deg); }
                         .sidebar-nav { padding-top: 68px; }
                         .no-scrollbar::-webkit-scrollbar { display: none; }
                         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
                         .nav-item { position: relative; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; white-space: nowrap; }
-                        .nav-item:hover { background-color: rgba(194, 203, 211, 0.18) !important; border-radius: 8px; }
-                        .nav-item:hover::before { content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 4px; height: 28px; background: #C2CBD3; border-radius: 0 4px 4px 0; }
-                        .sidebar-item-active { background-color: #C2CBD3 !important; color: #313851 !important; font-weight: 700; }
+                        .nav-item:hover { background-color: rgba(244, 241, 234, 0.12) !important; border-radius: 8px; }
+                        .nav-item:hover::before { content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 4px; height: 28px; background: var(--accent); border-radius: 0 4px 4px 0; }
+                        .sidebar-item-active { background-color: var(--accent) !important; color: #ffffff !important; font-weight: 700; }
                         .nav-text { opacity: 0; visibility: hidden; transition: opacity 0.2s ease; margin-left: 12px; font-size: 13px; letter-spacing: 0.02em; }
                         .sidebar:hover .nav-text { opacity: 1; visibility: visible; }
                         .nav-icon { width: 24px; height: 24px; min-width: 24px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-                        .nav-item:hover .nav-icon { transform: translateY(-1px) scale(1.08); color: #F6F3ED; }
+                        .nav-item:hover .nav-icon { transform: translateY(-1px) scale(1.08); color: var(--text-on-dark); }
                         .nav-icon svg path[opacity="0.2"] { transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
                         .nav-item:hover .nav-icon svg path[opacity="0.2"] { opacity: 0.6; }
                         .sidebar-item-active .nav-icon svg path[opacity="0.2"] { opacity: 0.5; }
-                        .sidebar-item-active::before { content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 4px; height: 28px; background: #313851; border-radius: 0 4px 4px 0; }
-                        .category-label { height: 0; opacity: 0; visibility: hidden; transition: all 0.2s ease; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(246, 243, 237, 0.4); margin: 0; overflow: hidden; }
+                        .sidebar-item-active::before { content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 4px; height: 28px; background: #ffffff; border-radius: 0 4px 4px 0; }
+                        .category-label { height: 0; opacity: 0; visibility: hidden; transition: all 0.2s ease; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(244, 241, 234, 0.4); margin: 0; overflow: hidden; }
                         .sidebar:hover .category-label { height: auto; opacity: 1; visibility: visible; margin: 12px 0 4px 12px; }
                         .sidebar-nav { transition: gap 0.2s ease; gap: 4px !important; }
                         .sidebar:hover .sidebar-nav { gap: 8px !important; }
@@ -158,11 +158,11 @@ const Sidebar = () => {
                     ))}
                 </nav>
 
-                <div className="border-t border-[#C2CBD3]/20 pt-3 mt-3 flex flex-col gap-2">
+                <div className="border-t border-[var(--accent)]/20 pt-3 mt-3 flex flex-col gap-2">
                     <button 
                         title="Logout"
                         onClick={handleLogout}
-                        className="nav-item p-3 rounded-lg w-full border-none bg-red-500/15 text-[#F6F3ED] cursor-pointer"
+                        className="nav-item p-3 rounded-lg w-full border-none bg-red-500/15 text-[#F4F1EA] cursor-pointer"
                     >
                         <div className="nav-icon">
                             <SignOut />

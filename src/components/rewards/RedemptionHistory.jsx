@@ -66,14 +66,14 @@ const RedemptionHistory = ({ history }) => {
       {/* Header / Toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-[#C2CBD3]/40 transition-all duration-300 active:scale-[0.99] focus:outline-none"
+        className="w-full flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-[#1C1A17]/15 transition-all duration-300 active:scale-[0.99] focus:outline-none"
         style={{ background: '#ffffff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
           <ClockIcon />
-          <h2 className="text-base font-bold text-[#313851] uppercase tracking-wider">Transaction History</h2>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F6F3ED] text-[#313851] border border-[#C2CBD3]/20">
+          <h2 className="text-base font-bold text-[#1C1A17] uppercase tracking-wider">Transaction History</h2>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F4F1EA] text-[#1C1A17] border border-[#1C1A17]/10">
             {sortedHistory.length + sortedTransactions.length}
           </span>
         </div>
@@ -91,13 +91,13 @@ const RedemptionHistory = ({ history }) => {
             className="overflow-hidden"
           >
             {/* Custom Tab Selector */}
-            <div className="flex gap-2 p-1 bg-[#F6F3ED] rounded-xl mt-3 max-w-sm border border-[#C2CBD3]/15">
+            <div className="flex gap-2 p-1 bg-[#F4F1EA] rounded-xl mt-3 max-w-sm border border-[#1C1A17]/10">
               <button
                 onClick={() => setActiveTab('redemptions')}
                 className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200 ${
                   activeTab === 'redemptions'
-                    ? 'bg-white text-[#313851] shadow-sm border border-[#C2CBD3]/10'
-                    : 'text-[#313851]/40 hover:text-[#313851]/60'
+                    ? 'bg-white text-[#1C1A17] shadow-sm border border-[#1C1A17]/10'
+                    : 'text-[#1C1A17]/40 hover:text-[#1C1A17]/60'
                 }`}
               >
                 Redemptions ({sortedHistory.length})
@@ -106,21 +106,21 @@ const RedemptionHistory = ({ history }) => {
                 onClick={() => setActiveTab('credits')}
                 className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200 ${
                   activeTab === 'credits'
-                    ? 'bg-white text-[#313851] shadow-sm border border-[#C2CBD3]/10'
-                    : 'text-[#313851]/40 hover:text-[#313851]/60'
+                    ? 'bg-white text-[#1C1A17] shadow-sm border border-[#1C1A17]/10'
+                    : 'text-[#1C1A17]/40 hover:text-[#1C1A17]/60'
                 }`}
               >
                 Credit Activity ({sortedTransactions.length})
               </button>
             </div>
 
-            <div className="mt-3 rounded-2xl border border-[#C2CBD3]/40 overflow-hidden shadow-sm" style={{ background: '#ffffff' }}>
+            <div className="mt-3 rounded-2xl border border-[#1C1A17]/15 overflow-hidden shadow-sm" style={{ background: '#ffffff' }}>
               {activeTab === 'redemptions' ? (
                 /* ─── TAB 1: COIN SHOP REDEMPTIONS ─── */
                 sortedHistory.length > 0 ? (
-                  <div className="divide-y divide-[#C2CBD3]/10">
+                  <div className="divide-y divide-[#1C1A17]/10">
                     {/* Desktop header */}
-                    <div className="hidden sm:grid grid-cols-4 gap-4 px-6 py-4 text-[10px] font-bold text-[#313851]/40 uppercase tracking-[0.2em] bg-[#F6F3ED]/50">
+                    <div className="hidden sm:grid grid-cols-4 gap-4 px-6 py-4 text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-[0.2em] bg-[#F4F1EA]/50">
                       <span>Date</span>
                       <span>Reward Item</span>
                       <span>Coins Spent</span>
@@ -134,13 +134,13 @@ const RedemptionHistory = ({ history }) => {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.03 }}
-                          className="px-6 py-4 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-center flex flex-col gap-2 hover:bg-[#F6F3ED]/30 transition-colors"
+                          className="px-6 py-4 sm:grid sm:grid-cols-4 sm:gap-4 sm:items-center flex flex-col gap-2 hover:bg-[#F4F1EA]/30 transition-colors"
                         >
-                          <span className="text-xs text-[#313851]/60 font-medium">
+                          <span className="text-xs text-[#1C1A17]/60 font-medium">
                             {new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
-                          <span className="text-sm text-[#313851] font-bold">{entry.rewardName}</span>
-                          <span className="text-sm font-bold text-[#313851]">
+                          <span className="text-sm text-[#1C1A17] font-bold">{entry.rewardName}</span>
+                          <span className="text-sm font-bold text-[#1C1A17]">
                             -{entry.coinsSpent.toLocaleString()}
                           </span>
                           <span>
@@ -161,11 +161,11 @@ const RedemptionHistory = ({ history }) => {
                   </div>
                 ) : (
                   <div className="p-12 text-center">
-                    <div className="flex justify-center mb-4 text-[#313851]/20">
+                    <div className="flex justify-center mb-4 text-[#1C1A17]/20">
                       <ClockIcon />
                     </div>
-                    <p className="text-sm text-[#313851]/60 font-semibold">No transaction records found</p>
-                    <p className="text-[10px] text-[#313851]/40 mt-2 font-bold uppercase tracking-widest">Rewards you redeem will appear here</p>
+                    <p className="text-sm text-[#1C1A17]/60 font-semibold">No transaction records found</p>
+                    <p className="text-[10px] text-[#1C1A17]/40 mt-2 font-bold uppercase tracking-widest">Rewards you redeem will appear here</p>
                   </div>
                 )
               ) : (
@@ -173,7 +173,7 @@ const RedemptionHistory = ({ history }) => {
                 sortedTransactions.length > 0 ? (
                   <div className="p-6 space-y-6 relative">
                     {/* Vertical Timeline Bar */}
-                    <div className="absolute left-[37px] top-8 bottom-8 w-0.5 bg-[#F6F3ED]" />
+                    <div className="absolute left-[37px] top-8 bottom-8 w-0.5 bg-[#F4F1EA]" />
 
                     {sortedTransactions.map((tx, index) => {
                       const isPositive = tx.amount > 0;
@@ -206,8 +206,8 @@ const RedemptionHistory = ({ history }) => {
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-[#313851] truncate">{tx.description}</p>
-                            <p className="text-xs text-[#313851]/60 mt-0.5 font-medium">
+                            <p className="text-sm font-bold text-[#1C1A17] truncate">{tx.description}</p>
+                            <p className="text-xs text-[#1C1A17]/60 mt-0.5 font-medium">
                               {new Date(tx.timestamp).toLocaleString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -230,11 +230,11 @@ const RedemptionHistory = ({ history }) => {
                   </div>
                 ) : (
                   <div className="p-12 text-center">
-                    <div className="flex justify-center mb-4 text-[#313851]/20">
+                    <div className="flex justify-center mb-4 text-[#1C1A17]/20">
                       <MicIcon />
                     </div>
-                    <p className="text-sm text-[#313851]/60 font-semibold">No credit activities logged yet</p>
-                    <p className="text-[10px] text-[#313851]/40 mt-2 font-bold uppercase tracking-widest">Your mock interview credits will be tracked here</p>
+                    <p className="text-sm text-[#1C1A17]/60 font-semibold">No credit activities logged yet</p>
+                    <p className="text-[10px] text-[#1C1A17]/40 mt-2 font-bold uppercase tracking-widest">Your mock interview credits will be tracked here</p>
                   </div>
                 )
               )}

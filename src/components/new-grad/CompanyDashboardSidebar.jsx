@@ -43,8 +43,8 @@ const CompanyDashboardSidebar = ({ activeSection, setActiveSection, sections }) 
                             onClick={() => handleSectionClick(section)}
                             className={`flex lg:w-full items-center gap-4 px-5 lg:px-4 py-4 lg:py-3.5 rounded-[1.25rem] lg:rounded-2xl transition-all duration-300 group whitespace-nowrap ${
                                 activeSection === section.id
-                                    ? 'bg-[#313851] text-white shadow-xl shadow-[#313851]/20'
-                                    : 'text-zinc-500 hover:bg-zinc-50 hover:text-[#313851]'
+                                    ? 'bg-[#D45B34] text-white shadow-xl shadow-[#D45B34]/20'
+                                    : 'text-zinc-500 hover:bg-zinc-50 hover:text-[#D45B34]'
                             }`}
                         >
                             <div className={`p-2.5 rounded-[1rem] transition-colors ${

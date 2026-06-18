@@ -143,11 +143,11 @@ const RewardsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F6F3ED]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F1EA]">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="w-10 h-10 border-4 border-[#C2CBD3]/20 border-t-[#313851] rounded-full"
+          className="w-10 h-10 border-4 border-[#D45B34]/20 border-t-[#D45B34] rounded-full"
         />
       </div>
     );
@@ -165,8 +165,8 @@ const RewardsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#313851] mb-2 tracking-tight">Rewards Shop</h1>
-          <p className="text-base text-[#313851]/70 font-medium">Earn coins daily & redeem for premium job-seeking perks</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#1C1A17] mb-2 tracking-tight">Rewards Shop</h1>
+          <p className="text-base text-[#1C1A17]/70 font-medium">Earn coins daily & redeem for premium job-seeking perks</p>
         </motion.div>
 
         {/* Coin Balance */}

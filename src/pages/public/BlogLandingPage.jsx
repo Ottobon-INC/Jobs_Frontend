@@ -48,12 +48,12 @@ const BlogLandingPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED]">
+        <div className="min-h-screen bg-[#F4F1EA]">
             {/* Header Section */}
-            <header className="relative pt-24 pb-20 px-6 md:px-12 bg-[#313851] overflow-hidden">
+            <header className="relative pt-24 pb-20 px-6 md:px-12 bg-[#222222] overflow-hidden">
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[120px] -ml-48 -mt-48" />
-                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#C2CBD3] rounded-full blur-[120px] -mr-48 -mb-48" />
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#D45B34] rounded-full blur-[120px] -mr-48 -mb-48" />
                 </div>
                 
                 <div className="max-w-7xl mx-auto relative z-10">
@@ -62,11 +62,11 @@ const BlogLandingPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <p className="text-[#F6F3ED]/60 text-xs font-black uppercase tracking-[0.3em] mb-4">
+                        <p className="text-[#F4F1EA]/60 text-xs font-black uppercase tracking-[0.3em] mb-4">
                             Knowledge Base
                         </p>
                         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-8">
-                            Industry <span className="text-[#C2CBD3]">Insights</span>
+                            Industry <span className="text-[#D45B34]">Insights</span>
                         </h1>
                         <p className="text-xl text-white/80 max-w-2xl leading-relaxed font-medium">
                             Expert analysis, hiring trends, and career strategies to help you navigate the modern job market with precision.
@@ -88,7 +88,7 @@ const BlogLandingPage = () => {
                             placeholder="Search insights..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-14 pr-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#C2CBD3]/50 backdrop-blur-md transition-all font-bold"
+                            className="w-full pl-14 pr-6 py-5 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/50 backdrop-blur-md transition-all font-bold"
                         />
                     </motion.div>
                 </div>
@@ -118,7 +118,7 @@ const BlogLandingPage = () => {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                         <div className="absolute top-6 left-6">
-                                            <span className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-[#313851] shadow-sm">
+                                            <span className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-[#D45B34] shadow-sm">
                                                 {post.domain || "Analysis"}
                                             </span>
                                         </div>
@@ -131,7 +131,7 @@ const BlogLandingPage = () => {
                                         <span>{new Date(post.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                                     </div>
                                     
-                                    <h2 className="text-2xl font-bold text-[#313851] mb-6 leading-tight group-hover:text-black transition-colors">
+                                    <h2 className="text-2xl font-bold text-[#1C1A17] mb-6 leading-tight group-hover:text-black transition-colors">
                                         {post.title}
                                     </h2>
                                     
@@ -141,7 +141,7 @@ const BlogLandingPage = () => {
                                     
                                     <Link 
                                         to={`/blogs/${post.id}`} 
-                                        className="inline-flex items-center gap-3 text-[#313851] font-black text-xs uppercase tracking-[0.2em] group/link hover:gap-5 transition-all"
+                                        className="inline-flex items-center gap-3 text-[#D45B34] font-black text-xs uppercase tracking-[0.2em] group/link hover:gap-5 transition-all"
                                     >
                                         Read Analysis <ArrowRight size={16} className="transition-transform" />
                                     </Link>
@@ -154,11 +154,11 @@ const BlogLandingPage = () => {
                         <div className="w-24 h-24 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-8">
                             <BookOpen size={40} className="text-zinc-200" />
                         </div>
-                        <h3 className="text-2xl font-bold text-[#313851] mb-2">No insights found</h3>
+                        <h3 className="text-2xl font-bold text-[#1C1A17] mb-2">No insights found</h3>
                         <p className="text-zinc-400 font-medium">Try refining your search parameters.</p>
                         <button 
                             onClick={() => setSearchTerm('')}
-                            className="mt-8 text-[#313851] font-black text-xs uppercase tracking-widest underline underline-offset-8"
+                            className="mt-8 text-[#D45B34] font-black text-xs uppercase tracking-widest underline underline-offset-8"
                         >
                             Clear Search
                         </button>

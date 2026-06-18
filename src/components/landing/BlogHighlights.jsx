@@ -32,14 +32,14 @@ export function BlogHighlights() {
     const displayPosts = posts?.length > 0 ? posts.slice(0, 3) : MOCK_FALLBACKS;
 
     return (
-        <section className="py-28 px-6 md:px-12 lg:px-20 border-t border-[#313851]/[0.07] bg-[#F6F3ED]">
+        <section className="py-28 px-6 md:px-12 lg:px-20 border-t border-[#1C1A17]/[0.07] bg-[#F4F1EA]">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-14 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div className="max-w-2xl">
-                        <p className="text-[#313851]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4">Market Intelligence</p>
+                        <p className="text-[#1C1A17]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4">Market Intelligence</p>
                         <h2
-                            className="font-medium leading-tight tracking-tight text-[#313851]"
+                            className="font-medium leading-tight tracking-tight text-[#1C1A17]"
                             style={{
                                 fontFamily: "'Inter', system-ui, sans-serif",
                                 fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -48,7 +48,7 @@ export function BlogHighlights() {
                             Latest Signals
                         </h2>
                         <p
-                            className="mt-4 max-w-xl font-medium leading-8 text-[#313851]/85"
+                            className="mt-4 max-w-xl font-medium leading-8 text-[#1C1A17]/85"
                             style={{ fontSize: '1rem' }}
                         >
                             Clear hiring trends, company insights, and career moves for candidates who want a sharper edge.
@@ -56,7 +56,7 @@ export function BlogHighlights() {
                     </div>
                     <Link
                         to="/blogs"
-                        className="inline-flex items-center justify-center gap-3 rounded-lg border border-[#313851]/14 bg-[#313851]/[0.06] px-5 py-3 text-sm font-bold text-[#313851] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#313851]/30 hover:bg-[#313851]/[0.12]"
+                        className="inline-flex items-center justify-center gap-3 rounded-lg border border-[#D45B34]/20 bg-[#D45B34]/[0.06] px-5 py-3 text-sm font-bold text-[#D45B34] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D45B34]/40 hover:bg-[#D45B34]/[0.12]"
                     >
                         Explore Blogs <ArrowRight size={16} />
                     </Link>
@@ -71,16 +71,16 @@ export function BlogHighlights() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                            className="group flex flex-col p-8 rounded-2xl border border-[#313851]/[0.14] bg-[#313851]/[0.03] backdrop-blur-xl hover:border-[#313851]/30 transition-all duration-300 shadow-sm"
+                            className="group flex flex-col p-8 rounded-2xl border border-[#1C1A17]/10 bg-white hover:border-[#D45B34]/40 transition-all duration-300 shadow-sm"
                             style={{ minHeight: '320px' }}
                         >
                             {/* Meta */}
-                            <div className="mb-5 flex flex-wrap items-center gap-3 text-[#313851]/65" style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+                            <div className="mb-5 flex flex-wrap items-center gap-3 text-[#1C1A17]/65" style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
                                 <span className="inline-flex items-center gap-1.5">
-                                    <TrendingUp size={12} className="text-[#313851]" />
+                                    <TrendingUp size={12} className="text-[#D45B34]" />
                                     {post.category || post.domain || 'Analysis'}
                                 </span>
-                                <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'rgba(49, 56, 81, 0.3)', display: 'inline-block' }} />
+                                <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'rgba(28, 26, 23, 0.3)', display: 'inline-block' }} />
                                 <span className="inline-flex items-center gap-1.5">
                                     <Calendar size={12} />
                                     {new Date(post.created_at || post.published_at).toLocaleDateString()}
@@ -89,7 +89,7 @@ export function BlogHighlights() {
 
                             {/* Title */}
                             <h3
-                                className="mb-4 font-medium leading-snug tracking-tight text-[#313851]"
+                                className="mb-4 font-medium leading-snug tracking-tight text-[#1C1A17]"
                                 style={{
                                     fontFamily: "'Inter', system-ui, sans-serif",
                                     fontSize: '1.1rem',
@@ -100,7 +100,7 @@ export function BlogHighlights() {
 
                             {/* Summary */}
                             <p
-                                className="flex-1 font-medium leading-7 line-clamp-4 text-[#313851]/85"
+                                className="flex-1 font-medium leading-7 line-clamp-4 text-[#1C1A17]/85"
                                 style={{ fontSize: '0.9rem' }}
                             >
                                 {post.summary || post.abstract || (post.content ? post.content.substring(0, 150) + "..." : "Full signal decryption available for verified operators.")}
@@ -109,7 +109,7 @@ export function BlogHighlights() {
                             {/* CTA */}
                             <Link to={`/blogs/${post.slug || post.id}`} className="mt-6">
                                 <span
-                                    className="inline-flex items-center gap-2 font-bold transition-transform duration-300 group-hover:translate-x-1 text-[#313851]"
+                                    className="inline-flex items-center gap-2 font-bold transition-transform duration-300 group-hover:translate-x-1 text-[#D45B34]"
                                     style={{ fontSize: '0.875rem' }}
                                 >
                                     Read full signal <ArrowRight size={15} />

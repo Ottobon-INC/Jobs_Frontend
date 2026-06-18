@@ -20,7 +20,7 @@ const BentoCard = ({ children, className = "", delay = 0 }) => (
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
         className={`bg-white rounded-xl border p-5 md:p-5 flex flex-col shadow-xl shadow-zinc-900/5 overflow-hidden min-w-0 ${className}`}
-        style={{ borderColor: 'rgba(49, 56, 81, 0.25)' }}
+        style={{ borderColor: 'var(--border-main)' }}
     >
         {children}
     </motion.div>
@@ -194,7 +194,7 @@ const JobDetailPage = () => {
     };
 
     return (
-        <div className="min-h-screen pt-4 md:pt-8 pb-12 px-4 md:px-12 max-w-[1400px] mx-auto bg-[#FBFBFB] overflow-x-hidden">
+        <div className="min-h-screen pt-4 md:pt-8 pb-12 px-4 md:px-12 max-w-[1400px] mx-auto bg-[#F4F1EA] overflow-x-hidden">
             <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-6">
                 <Link to="/jobs" className="inline-flex items-center gap-2 text-zinc-400 font-bold uppercase text-[10px] tracking-widest hover:text-zinc-900 transition-all">
                     <ArrowLeft size={14} /> Back to Job Board
@@ -259,7 +259,7 @@ const JobDetailPage = () => {
                                         href={job.external_apply_url || job.external_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-full sm:w-auto bg-[#313851] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#434c6d] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 border border-white/10"
+                                        className="w-full sm:w-auto bg-[#D45B34] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#B84A27] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#D45B34]/20 active:scale-95 border border-white/10"
                                     >
                                         <ExternalLink size={18} className="text-white" />
                                         Apply Now
@@ -308,16 +308,16 @@ const JobDetailPage = () => {
                                             const question = typeof item === 'string' ? item : item.question;
                                             const strategy = typeof item === 'string' ? "DEPLOY STAR METHOD" : item.answer_strategy;
                                             return (
-                                                <div key={idx} className="p-5 bg-white rounded-xl border border-zinc-100 hover:border-zinc-200 transition-all flex flex-col items-start text-left shadow-sm">
-                                                    <div className="px-3 py-1 bg-zinc-900 text-white rounded-lg text-[9px] font-bold uppercase tracking-widest mb-4">
+                                                <div key={idx} className="p-6 md:p-8 bg-white rounded-3xl border border-[#1C1A17]/10 hover:border-[#1C1A17]/25 hover:shadow-md transition-all flex flex-col items-start text-left shadow-sm w-full">
+                                                    <div className="px-3.5 py-1 bg-[#D45B34]/10 text-[#D45B34] rounded-full text-[10px] font-black uppercase tracking-[0.15em] mb-4">
                                                         Question {idx + 1}
                                                     </div>
-                                                    <p className="font-bold text-zinc-900 mb-6 text-sm leading-relaxed">{question}</p>
-                                                    <div className="text-[10px] text-zinc-500 font-medium flex items-start justify-start gap-3 p-4 bg-zinc-50 rounded-xl border border-zinc-100/50 leading-[1.8] w-full">
-                                                        <span>
-                                                            <span className="text-zinc-400 font-bold uppercase tracking-widest mr-2 text-[8px]">Strategy</span>
-                                                            {strategy}
-                                                        </span>
+                                                    <p className="font-bold text-[#1C1A17] mb-6 text-base md:text-lg leading-relaxed">{question}</p>
+                                                    <div className="text-xs md:text-sm text-[#1C1A17]/70 font-medium p-5 bg-[#F4F1EA]/40 rounded-2xl border border-[#1C1A17]/5 leading-relaxed w-full">
+                                                        <div className="flex flex-col md:flex-row md:items-start gap-2">
+                                                            <span className="text-[#D45B34] font-black uppercase tracking-[0.2em] text-[10px] shrink-0 mt-0.5">Strategy</span>
+                                                            <span className="text-zinc-600 font-medium">{strategy}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );

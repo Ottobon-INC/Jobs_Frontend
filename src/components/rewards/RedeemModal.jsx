@@ -168,7 +168,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md rounded-2xl border border-[#C2CBD3]/40 p-6 sm:p-8 shadow-2xl"
+            className="relative w-full max-w-md rounded-2xl border border-[#1C1A17]/15 p-6 sm:p-8 shadow-2xl"
             style={{ background: '#ffffff' }}
             role="dialog"
             aria-modal="true"
@@ -184,8 +184,8 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                   className="flex flex-col items-center text-center"
                 >
                   {/* Icon */}
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 border border-[#C2CBD3]/20"
-                    style={{ background: '#F6F3ED', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }}
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 border border-[#1C1A17]/10"
+                    style={{ background: '#F4F1EA', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }}
                   >
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#313851" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 12v10H4V12"/>
@@ -196,8 +196,8 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                     </svg>
                   </div>
 
-                  <h3 className="text-xl font-bold text-[#313851] mb-2">{item.name}</h3>
-                  <p className="text-sm text-[#313851]/60 mb-4 leading-relaxed font-medium">{item.description}</p>
+                  <h3 className="text-xl font-bold text-[#1C1A17] mb-2">{item.name}</h3>
+                  <p className="text-sm text-[#1C1A17]/60 mb-4 leading-relaxed font-medium">{item.description}</p>
 
                   {errorMsg && (
                     <div className="w-full mb-4 p-3 rounded-lg bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold text-center">
@@ -216,23 +216,23 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
 
                   {/* Quantity Stepper (only for non-claim rewards) */}
                   {!isClamReward && (
-                    <div className="w-full flex items-center justify-between mb-4 px-4 py-3 rounded-xl border border-[#C2CBD3]/20" style={{ background: '#F6F3ED/30' }}>
-                      <span className="text-xs font-bold text-[#313851]/70 uppercase tracking-wider">Quantity</span>
+                    <div className="w-full flex items-center justify-between mb-4 px-4 py-3 rounded-xl border border-[#1C1A17]/10" style={{ background: 'var(--bg-primary)' }}>
+                      <span className="text-xs font-bold text-[#1C1A17]/70 uppercase tracking-wider">Quantity</span>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
                           onClick={() => setQuantity(q => Math.max(1, q - 1))}
                           disabled={quantity <= 1}
-                          className="w-8 h-8 rounded-lg border border-[#C2CBD3]/60 flex items-center justify-center font-bold text-[#313851] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F6F3ED] transition-colors"
+                          className="w-8 h-8 rounded-lg border border-[#1C1A17]/25 flex items-center justify-center font-bold text-[#1C1A17] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F4F1EA] transition-colors"
                         >
                           -
                         </button>
-                        <span className="w-8 text-center text-sm font-bold text-[#313851]">{quantity}</span>
+                        <span className="w-8 text-center text-sm font-bold text-[#1C1A17]">{quantity}</span>
                         <button
                           type="button"
                           onClick={() => setQuantity(q => q + 1)}
                           disabled={!canAffordMore}
-                          className="w-8 h-8 rounded-lg border border-[#C2CBD3]/60 flex items-center justify-center font-bold text-[#313851] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F6F3ED] transition-colors"
+                          className="w-8 h-8 rounded-lg border border-[#1C1A17]/25 flex items-center justify-center font-bold text-[#1C1A17] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F4F1EA] transition-colors"
                         >
                           +
                         </button>
@@ -240,32 +240,32 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                     </div>
                   )}
 
-                  <div className="w-full rounded-xl border border-[#C2CBD3]/20 p-5 mb-6 space-y-3" style={{ background: '#F6F3ED' }}>
+                  <div className="w-full rounded-xl border border-[#1C1A17]/10 p-5 mb-6 space-y-3" style={{ background: '#F4F1EA' }}>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-wider">
                         {isClamReward ? 'Reward Amount' : 'Redemption Cost'}
                       </span>
                       <div className="flex items-center gap-1.5">
                         <GoldCoinIcon size={16} />
-                        <span className="font-bold text-[#313851]">
+                        <span className="font-bold text-[#1C1A17]">
                           {isClamReward ? `+${totalCost.toLocaleString()}` : totalCost.toLocaleString()}
                         </span>
                       </div>
                     </div>
-                    <div className="border-t border-[#C2CBD3]/20" />
+                    <div className="border-t border-[#1C1A17]/10" />
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-[#313851]/40 uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-wider">
                         {isClamReward ? 'New Balance' : 'Remaining Balance'}
                       </span>
-                      <span className="font-bold text-[#313851]">{balanceAfter.toLocaleString()} Coins</span>
+                      <span className="font-bold text-[#1C1A17]">{balanceAfter.toLocaleString()} Coins</span>
                     </div>
                   </div>
 
                   <button
                     onClick={handleConfirm}
-                    className="w-full py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-[#F6F3ED] transition-all duration-300 active:scale-[0.98] focus:outline-none"
+                    className="w-full py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-[#F4F1EA] transition-all duration-300 active:scale-[0.98] focus:outline-none"
                     style={{
-                      background: '#313851',
+                      background: '#D45B34',
                       boxShadow: '0 4px 12px rgba(49,56,81,0.2)',
                     }}
                   >
@@ -274,7 +274,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
 
                   <button
                     onClick={onClose}
-                    className="mt-4 text-[10px] font-bold text-[#313851]/40 hover:text-[#313851] uppercase tracking-widest transition-colors focus:outline-none"
+                    className="mt-4 text-[10px] font-bold text-[#1C1A17]/40 hover:text-[#1C1A17] uppercase tracking-widest transition-colors focus:outline-none"
                   >
                     Cancel Transaction
                   </button>
@@ -294,7 +294,7 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     className="w-12 h-12 rounded-full border-2 border-[#F6F3ED] border-t-[#313851]"
                   />
-                  <span className="mt-5 text-[10px] font-bold text-[#313851]/40 uppercase tracking-[0.2em]">Authenticating...</span>
+                  <span className="mt-5 text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-[0.2em]">Authenticating...</span>
                 </motion.div>
               )}
 
@@ -329,15 +329,15 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                     )}
                   </div>
 
-                  <h3 className="text-2xl font-bold text-[#313851] mb-2">
+                  <h3 className="text-2xl font-bold text-[#1C1A17] mb-2">
                     {item.grantType === 'interview_credits' 
                       ? 'Credits Added!' 
                       : isClamReward 
                         ? 'Claim Successful!' 
                         : 'Redemption Successful!'}
                   </h3>
-                  <p className="text-sm text-[#313851]/60 mb-1 font-semibold">{item.name}</p>
-                  <p className="text-xs text-[#313851]/40 mb-8 font-bold uppercase tracking-tight">
+                  <p className="text-sm text-[#1C1A17]/60 mb-1 font-semibold">{item.name}</p>
+                  <p className="text-xs text-[#1C1A17]/40 mb-8 font-bold uppercase tracking-tight">
                     {item.grantType === 'interview_credits'
                       ? `${item.grantAmount} interview credits have been credited to your balance.`
                       : isClamReward
@@ -348,14 +348,14 @@ const RedeemModal = ({ isOpen, onClose, item, coinBalance, onConfirm }) => {
                   <div className="flex gap-4 w-full">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-[#C2CBD3]/40 text-[#313851]/60 hover:bg-[#F6F3ED] transition-all focus:outline-none"
+                      className="flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-[#1C1A17]/15 text-[#1C1A17]/60 hover:bg-[#F4F1EA] transition-all focus:outline-none"
                     >
                       Dismiss
                     </button>
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider text-[#F6F3ED] transition-all focus:outline-none shadow-sm"
-                      style={{ background: '#313851' }}
+                      className="flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider text-[#F4F1EA] transition-all focus:outline-none shadow-sm"
+                      style={{ background: '#D45B34' }}
                     >
                       View Perk
                     </button>

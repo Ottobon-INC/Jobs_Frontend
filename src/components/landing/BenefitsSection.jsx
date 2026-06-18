@@ -44,20 +44,20 @@ export function BenefitsSection() {
             className={cn(
                 "flex gap-5 sm:gap-6 items-center sm:items-start p-5 sm:p-6 rounded-2xl border transition-all duration-300 group cursor-default hover:-translate-y-1",
                 isDark 
-                    ? "border-[#C2CBD3]/[0.14] bg-[#F6F3ED]/[0.06] backdrop-blur-xl hover:border-[#C2CBD3]/[0.3]" 
-                    : "border-[#313851]/[0.14] bg-[#313851]/[0.06] backdrop-blur-xl hover:border-[#313851]/[0.3]"
+                    ? "border-[#D45B34]/[0.14] bg-[#F4F1EA]/[0.06] backdrop-blur-xl hover:border-[#D45B34]/[0.3]" 
+                    : "border-[#1C1A17]/[0.14] bg-[#1C1A17]/[0.06] backdrop-blur-xl hover:border-[#1C1A17]/[0.3]"
             )}
         >
             <div
                 className={cn(
                     "w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300",
-                    isDark ? "bg-[#F6F3ED]/[0.12] group-hover:bg-[#C2CBD3]" : "bg-[#313851]/[0.12] group-hover:bg-[#313851]"
+                    isDark ? "bg-[#F4F1EA]/[0.12] group-hover:bg-[#D45B34]" : "bg-[#1C1A17]/[0.12] group-hover:bg-[#1C1A17]"
                 )}
             >
                 <benefit.icon
                     className={cn(
                         "w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300",
-                        isDark ? "text-[#C2CBD3] group-hover:text-[#313851]" : "text-[#313851] group-hover:text-[#F6F3ED]"
+                        isDark ? "text-[#D45B34] group-hover:text-[#222222]" : "text-[#1C1A17] group-hover:text-[#F4F1EA]"
                     )}
                     strokeWidth={1.5}
                 />
@@ -65,7 +65,7 @@ export function BenefitsSection() {
             <p
                 className={cn(
                     "font-medium leading-relaxed sm:pt-2 max-sm:text-sm",
-                    isDark ? "text-[#F6F3ED]/85" : "text-[#313851]/85"
+                    isDark ? "text-[#F4F1EA]/85" : "text-[#1C1A17]/85"
                 )}
                 style={{ fontSize: '0.94rem' }}
             >
@@ -75,7 +75,7 @@ export function BenefitsSection() {
     );
 
     return (
-        <section className="w-full bg-[#313851]">
+        <section className="w-full bg-[#222222]">
             <div className="min-h-screen py-24 px-8 lg:px-16 xl:px-24 flex justify-center items-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -84,8 +84,8 @@ export function BenefitsSection() {
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="max-w-2xl w-full flex flex-col justify-center"
                 >
-                    <p className="text-[#F6F3ED]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4 text-center">Got talent?</p>
-                    <h2 className="text-3xl md:text-5xl mb-12 text-[#F6F3ED] text-center" style={sectionHeadingStyle}>
+                    <p className="text-[#F4F1EA]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4 text-center">Got talent?</p>
+                    <h2 className="text-3xl md:text-5xl mb-12 text-[#F4F1EA] text-center" style={sectionHeadingStyle}>
                         Why job seekers love us
                     </h2>
 
@@ -98,13 +98,13 @@ export function BenefitsSection() {
                     <div className="mt-16 flex items-center justify-center gap-4">
                         <button
                             onClick={() => scrollToSection('featured-jobs')}
-                            className="px-8 py-3.5 rounded-xl border border-[#C2CBD3] font-bold hover:bg-[#C2CBD3]/10 transition-all text-sm cursor-pointer text-[#C2CBD3]"
+                            className="px-8 py-3.5 rounded-xl border border-[#D45B34] font-bold hover:bg-[#D45B34]/10 transition-all text-sm cursor-pointer text-[#D45B34]"
                         >
                             Learn more
                         </button>
                         <Link
                             to="/register"
-                            className="px-8 py-3.5 rounded-xl font-bold transition-all hover:scale-105 shadow-sm text-sm cursor-pointer inline-block text-center text-[#313851] bg-[#C2CBD3]"
+                            className="px-8 py-3.5 rounded-xl font-bold transition-all hover:scale-105 shadow-sm text-sm cursor-pointer inline-block text-center text-white bg-[#D45B34] hover:bg-[#B84A27]"
                         >
                             Sign up
                         </Link>

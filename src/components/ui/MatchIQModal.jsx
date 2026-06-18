@@ -98,7 +98,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                                             <div className="flex flex-col items-center">
                                                 <span className="text-5xl font-sans font-bold tracking-tighter leading-tight" style={{ color: colors.primary }}>{score}</span>
-                                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] mt-1" style={{ color: '#313851' }}>PERCENT</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] mt-1" style={{ color: '#D45B34' }}>PERCENT</span>
                                             </div>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Skills Align */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Skills Match</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#D45B34' }}>Skills Match</span>
                                             <span className="text-sm font-bold" style={{ color: getScoreColors(skills_score).primary }}>{skills_score}%</span>
                                         </div>
                                         <div className="h-2.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
@@ -125,7 +125,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Experience Align */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Experience Match</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#D45B34' }}>Experience Match</span>
                                             <span className="text-sm font-bold" style={{ color: getScoreColors(experience_score).primary }}>{experience_score}%</span>
                                         </div>
                                         <div className="h-2.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
@@ -142,7 +142,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Interests Align */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Goals Alignment</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#D45B34' }}>Goals Alignment</span>
                                             <span className="text-sm font-bold" style={{ color: getScoreColors(interests_score).primary }}>{interests_score}%</span>
                                         </div>
                                         <div className="h-2.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">
@@ -159,7 +159,7 @@ const MatchIQModal = ({ isOpen, onClose, matchData, job, jobId }) => {
                                     {/* Work Preference Align */}
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-end px-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#313851' }}>Work Preference</span>
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: '#D45B34' }}>Work Preference</span>
                                             <span className="text-sm font-bold" style={{ color: getScoreColors(work_preference_score).primary }}>{work_preference_score}%</span>
                                         </div>
                                         <div className="h-2.5 w-full bg-zinc-50 rounded-full border border-zinc-100/50 overflow-hidden relative shadow-inner">

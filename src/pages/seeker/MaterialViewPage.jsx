@@ -68,15 +68,15 @@ const MaterialViewPage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0F1117] flex flex-col items-center justify-center">
+            <div className="min-h-screen bg-[#222222] flex flex-col items-center justify-center">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-6"
                 >
                     <div className="relative">
-                        <div className="w-20 h-20 border-4 border-indigo-500/20 rounded-full animate-pulse" />
-                        <Loader2 className="absolute top-0 left-0 animate-spin text-indigo-500" size={80} strokeWidth={1} />
+                        <div className="w-20 h-20 border-4 border-[#D45B34]/20 rounded-full animate-pulse" />
+                        <Loader2 className="absolute top-0 left-0 animate-spin text-[#D45B34]" size={80} strokeWidth={1} />
                     </div>
                     <p className="text-zinc-400 font-medium tracking-wide">Retrieving Document...</p>
                 </motion.div>
@@ -86,7 +86,7 @@ const MaterialViewPage = () => {
 
     if (error || !material) {
         return (
-            <div className="min-h-screen bg-[#F8F9FB] flex items-center justify-center p-6">
+            <div className="min-h-screen bg-[#F4F1EA] flex items-center justify-center p-6">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -99,7 +99,7 @@ const MaterialViewPage = () => {
                     <p className="text-zinc-500 mb-8 leading-relaxed">{error || 'The requested document could not be found.'}</p>
                     <button 
                         onClick={() => navigate('/materials')}
-                        className="w-full py-4 bg-[#313851] text-white rounded-2xl font-bold hover:bg-[#313851]/90 transition-colors"
+                        className="w-full py-4 bg-[#D45B34] text-white rounded-2xl font-bold hover:bg-[#B84A27] transition-colors"
                     >
                         Return to Hub
                     </button>
@@ -109,9 +109,9 @@ const MaterialViewPage = () => {
     }
 
     return (
-        <div className="h-screen flex flex-col bg-[#0F1117] overflow-hidden">
+        <div className="h-screen flex flex-col bg-[#222222] overflow-hidden">
             {/* Premium Header */}
-            <header className="h-20 flex items-center justify-between px-6 bg-[#161922] border-b border-white/5 relative z-30">
+            <header className="h-20 flex items-center justify-between px-6 bg-[#1C1A17] border-b border-white/5 relative z-30">
                 <div className="flex items-center gap-6">
                     <button 
                         onClick={() => navigate('/materials')}
@@ -148,7 +148,7 @@ const MaterialViewPage = () => {
                     </button>
                     <button 
                         onClick={handleDownload}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/20 transition-all"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-[#D45B34] hover:bg-[#B84A27] text-white rounded-xl font-bold text-sm shadow-lg shadow-[#D45B34]/20 transition-all"
                     >
                         <Download size={16} /> Download
                     </button>
@@ -156,21 +156,21 @@ const MaterialViewPage = () => {
             </header>
 
             {/* Viewer Section */}
-            <main className="flex-1 relative bg-[#0F1117]">
+            <main className="flex-1 relative bg-[#222222]">
                 <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-20">
                     <FileText size={120} className="text-white/10" />
                 </div>
                 
                 {/* Mobile Fallback UI */}
-                <div className="absolute inset-0 z-20 flex md:hidden flex-col items-center justify-center p-6 text-center bg-[#0F1117]">
+                <div className="absolute inset-0 z-20 flex md:hidden flex-col items-center justify-center p-6 text-center bg-[#222222]">
                     <div className="w-24 h-24 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10">
-                        <FileText size={48} className="text-indigo-400" />
+                        <FileText size={48} className="text-[#D45B34]" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-3">Document Ready</h2>
                     <p className="text-zinc-400 mb-8 max-w-xs leading-relaxed">Mobile browsers have limited support for inline document viewing. Please open the file directly to view it.</p>
                     <button 
                         onClick={handleDownload}
-                        className="w-full max-w-xs py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold shadow-xl shadow-indigo-600/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+                        className="w-full max-w-xs py-4 bg-[#D45B34] hover:bg-[#B84A27] text-white rounded-2xl font-bold shadow-xl shadow-[#D45B34]/20 transition-all flex items-center justify-center gap-3 active:scale-95"
                     >
                         <Download size={20} /> Open Document
                     </button>

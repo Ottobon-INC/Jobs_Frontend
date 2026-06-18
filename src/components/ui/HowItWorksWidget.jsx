@@ -37,17 +37,17 @@ const HowItWorksWidget = ({
     // Theme Config definitions for perfect visual cohesion
     const styles = {
         warm: {
-            cardBg: "bg-white/80 backdrop-blur-xl border-[#C2CBD3]/20 shadow-[0_20px_50px_rgba(49,56,81,0.02)]",
-            headerText: "text-[#313851]",
-            descText: "text-[#313851]/60",
-            iconBg: "bg-[#313851] text-white",
-            stepCardBg: "bg-[#F6F3ED]/40 border-[#C2CBD3]/10 hover:border-[#313851]/30 hover:bg-[#F6F3ED]/70",
-            stepTitleText: "text-[#313851]",
-            stepDescText: "text-[#313851]/60",
-            badgeBg: "bg-[#313851]/10 text-[#313851]",
-            toggleBtn: "text-[#313851]/60 hover:text-[#313851] hover:bg-[#313851]/5",
-            miniBtn: "bg-[#313851] text-white hover:bg-[#313851]/90 shadow-md shadow-[#313851]/10",
-            creditsBg: "bg-[#F6F3ED] border-[#C2CBD3]/20 text-[#313851]/80"
+            cardBg: "bg-white/80 backdrop-blur-xl border-[#1C1A17]/15 shadow-[0_20px_50px_rgba(49,56,81,0.02)]",
+            headerText: "text-[#1C1A17]",
+            descText: "text-[#1C1A17]/60",
+            iconBg: "bg-[#D45B34] text-white",
+            stepCardBg: "bg-[#F4F1EA]/40 border-[#1C1A17]/10 hover:border-[#D45B34]/30 hover:bg-[#F4F1EA]/70",
+            stepTitleText: "text-[#1C1A17]",
+            stepDescText: "text-[#1C1A17]/60",
+            badgeBg: "bg-[#D45B34]/10 text-[#1C1A17]",
+            toggleBtn: "text-[#1C1A17]/60 hover:text-[#1C1A17] hover:bg-[#D45B34]/5",
+            miniBtn: "bg-[#D45B34] text-white hover:bg-[#D45B34]/90 shadow-md shadow-[#D45B34]/10",
+            creditsBg: "bg-[#F4F1EA] border-[#1C1A17]/15 text-[#1C1A17]/80"
         },
         neutral: {
             cardBg: "bg-white border-zinc-100 shadow-xl shadow-zinc-900/5",

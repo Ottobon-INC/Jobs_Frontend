@@ -40,7 +40,7 @@ const CoinBalance = ({ balance, coinDelta }) => {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="relative overflow-hidden rounded-2xl border border-[#C2CBD3]/40 p-4 sm:p-5 flex items-center justify-between shadow-sm"
+      className="relative overflow-hidden rounded-2xl border border-[#1C1A17]/15 p-4 sm:p-5 flex items-center justify-between shadow-sm"
       style={{
         background: '#ffffff',
       }}
@@ -56,11 +56,11 @@ const CoinBalance = ({ balance, coinDelta }) => {
           <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#313851] border-2 border-white shadow-sm" />
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] text-[#313851]/60 font-bold tracking-[0.1em] uppercase">Coin Balance</span>
+          <span className="text-[10px] text-[#1C1A17]/60 font-bold tracking-[0.1em] uppercase">Coin Balance</span>
           <div className="relative flex items-center">
             <motion.span
               key={balance}
-              initial={{ scale: 1.1, color: '#C2CBD3' }}
+              initial={{ scale: 1.1, color: '#1C1A17' }}
               animate={{ scale: 1, color: '#313851' }}
               transition={{ duration: 0.4 }}
               className="text-2xl sm:text-3xl font-bold tracking-tight"
@@ -75,7 +75,7 @@ const CoinBalance = ({ balance, coinDelta }) => {
                   animate={{ opacity: 0, y: -30, x: 8 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 1.5, ease: 'easeOut' }}
-                  className="absolute left-full text-lg font-bold text-[#313851] whitespace-nowrap"
+                  className="absolute left-full text-lg font-bold text-[#1C1A17] whitespace-nowrap"
                 >
                   +{coinDelta}
                 </motion.span>
@@ -86,8 +86,8 @@ const CoinBalance = ({ balance, coinDelta }) => {
       </div>
 
       <div className="hidden sm:flex flex-col items-end relative z-10">
-        <span className="text-[10px] text-[#313851]/40 font-bold tracking-wider uppercase">System Online</span>
-        <span className="text-sm text-[#313851]/80 font-semibold">{timeStr}</span>
+        <span className="text-[10px] text-[#1C1A17]/40 font-bold tracking-wider uppercase">System Online</span>
+        <span className="text-sm text-[#1C1A17]/80 font-semibold">{timeStr}</span>
       </div>
 
       {/* Subtle Shimmer sweep */}

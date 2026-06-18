@@ -5,9 +5,9 @@ import { ShieldCheck, TrendingUp, Layers, CheckCircle2, DollarSign } from 'lucid
 
 export const NewGradSection = () => {
     return (
-        <section className="py-12 bg-[#F8F6F3] relative overflow-hidden flex items-center">
+        <section className="py-12 bg-[#F4F1EA] relative overflow-hidden flex items-center">
             {/* Subtle background decoration */}
-            <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#313851]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#D45B34]/5 rounded-full blur-[120px] pointer-events-none" />
             
             <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 {/* Left Side: Content */}
@@ -18,27 +18,27 @@ export const NewGradSection = () => {
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="text-left relative z-10 flex flex-col items-start"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#313851]/10 text-[#313851] text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#313851] animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#D45B34]/10 text-[#D45B34] text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D45B34] animate-pulse" />
                         New Grad Launchpad
                     </div>
 
                     <h2 
-                        className="text-5xl md:text-6xl font-extrabold text-[#313851] tracking-tighter mb-4 leading-none"
+                        className="text-5xl md:text-6xl font-extrabold text-[#1C1A17] tracking-tighter mb-4 leading-none"
                         style={{ fontFamily: "'Inter', 'Roboto', system-ui, sans-serif" }}
                     >
                         Ready to start your career?
                     </h2>
                     
                     <h3 
-                        className="text-2xl md:text-3xl font-extrabold text-[#313851]/70 tracking-tight mb-6"
+                        className="text-2xl md:text-3xl font-extrabold text-[#1C1A17]/70 tracking-tight mb-6"
                         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
                     >
                         Get the exact guides to ace your interviews.
                     </h3>
 
                     <p 
-                        className="text-base md:text-lg text-[#313851]/60 font-medium mb-10 max-w-xl tracking-tight leading-relaxed"
+                        className="text-base md:text-lg text-[#1C1A17]/60 font-medium mb-10 max-w-xl tracking-tight leading-relaxed"
                         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
                     >
                         Stop sending hundreds of resumes. Access verified interview playbooks, step-by-step preparation roadmaps, and 1-on-1 mentorship to land your dream job.
@@ -46,11 +46,11 @@ export const NewGradSection = () => {
 
                     <Link
                         to="/new-grad"
-                        className="group relative inline-flex items-center justify-center px-10 py-4 bg-[#313851] text-white rounded-full font-bold text-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_35px_-10px_rgba(49,56,81,0.4)] active:scale-98 overflow-hidden gap-2"
+                        className="group relative inline-flex items-center justify-center px-10 py-4 bg-[#D45B34] text-white rounded-full font-bold text-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_35px_-10px_rgba(212,91,52,0.4)] active:scale-98 overflow-hidden gap-2"
                     >
                         <span className="relative z-10 uppercase tracking-[0.15em]">Explore Playbooks</span>
                         <svg
-                            className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300 text-[#C2CBD3] relative z-10"
+                            className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300 text-white relative z-10"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -88,12 +88,12 @@ export const NewGradSection = () => {
                             className="absolute top-0 left-[-10px] z-20 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-lg hover:shadow-2xl border border-white/60 w-56 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 bg-[#313851]/10 rounded-xl flex items-center justify-center text-[#313851]">
+                                <div className="w-8 h-8 bg-[#D45B34]/10 rounded-xl flex items-center justify-center text-[#D45B34]">
                                     <Layers size={16} />
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Process</p>
-                                    <p className="text-xs font-bold text-[#313851]">4 Technical Rounds</p>
+                                    <p className="text-xs font-bold text-[#1C1A17]">4 Technical Rounds</p>
                                 </div>
                             </div>
                             <div className="space-y-2.5">
@@ -102,7 +102,7 @@ export const NewGradSection = () => {
                                     { label: "Technical Interview I", checked: true },
                                     { label: "System Design", checked: false },
                                 ].map((round, idx) => (
-                                    <div key={idx} className="flex items-center justify-between text-[10px] font-semibold text-[#313851]/80">
+                                    <div key={idx} className="flex items-center justify-between text-[10px] font-semibold text-[#1C1A17]/80">
                                         <div className="flex items-center gap-2">
                                             <div className={`w-2 h-2 rounded-full ${round.checked ? 'bg-green-500 animate-pulse' : 'bg-zinc-200'}`} />
                                             <span>{round.label}</span>
@@ -121,14 +121,14 @@ export const NewGradSection = () => {
                             className="absolute bottom-[20px] -left-20 z-20 bg-white/95 backdrop-blur-md p-5 rounded-3xl shadow-xl hover:shadow-2xl border border-white/70 w-60 group hover:-translate-y-1 hover:scale-105 transition-all duration-300"
                         >
                             <div className="flex items-center justify-between mb-3">
-                                <div className="w-10 h-10 bg-[#313851]/5 rounded-2xl flex items-center justify-center border border-zinc-100">
+                                <div className="w-10 h-10 bg-[#D45B34]/5 rounded-2xl flex items-center justify-center border border-zinc-100">
                                     <img src="/logos/google.svg" alt="Google" className="w-6 h-6 object-contain" />
                                 </div>
                                 <div className="flex items-center gap-1 bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider">
                                     <ShieldCheck size={10} /> Verified
                                 </div>
                             </div>
-                            <h4 className="font-extrabold text-[#313851] text-base">Google Playbook</h4>
+                            <h4 className="font-extrabold text-[#1C1A17] text-base">Google Playbook</h4>
                             <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-0.5">Prep Guide & Mocks</p>
                             <div className="mt-4 space-y-1.5">
                                 <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
@@ -155,7 +155,7 @@ export const NewGradSection = () => {
                                 <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">ATS Optimizer</p>
                             </div>
                             <div className="flex items-baseline gap-1 mb-2">
-                                <h4 className="text-3xl font-black text-[#313851] tracking-tighter">94</h4>
+                                <h4 className="text-3xl font-black text-[#1C1A17] tracking-tighter">94</h4>
                                 <span className="text-[10px] font-black text-green-500 uppercase tracking-wider">Perfect</span>
                             </div>
                             <div className="mt-2 flex gap-1.5">
@@ -183,12 +183,12 @@ export const NewGradSection = () => {
                                         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i+25}`} alt="mentor" className="w-full h-full object-cover" />
                                     </motion.div>
                                 ))}
-                                <div className="w-8 h-8 rounded-full border-2 border-white bg-[#313851] flex items-center justify-center text-[9px] text-white font-bold shadow-sm">
+                                <div className="w-8 h-8 rounded-full border-2 border-white bg-[#D45B34] flex items-center justify-center text-[9px] text-white font-bold shadow-sm">
                                     +50
                                 </div>
                             </div>
                             <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Expert Network</p>
-                            <h4 className="text-xs font-bold text-[#313851] mt-0.5">1-on-1 Mentorship</h4>
+                            <h4 className="text-xs font-bold text-[#1C1A17] mt-0.5">1-on-1 Mentorship</h4>
                             <div className="mt-2 py-1 px-2.5 bg-green-50 rounded-full inline-flex items-center gap-1.5">
                                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                 <span className="text-[8px] font-black text-green-600 uppercase tracking-wider">Live Coaching Available</span>
@@ -200,7 +200,7 @@ export const NewGradSection = () => {
                             initial={{ opacity: 0, x: 20 }}
                             whileInView={{ opacity: 1, x: 0, rotate: 3 }}
                             transition={{ duration: 0.8, delay: 0.8 }}
-                            className="absolute bottom-[-30px] right-[24px] z-20 bg-[#313851] p-5 rounded-3xl shadow-xl hover:shadow-2xl text-white w-52 group hover:-translate-y-1 hover:scale-105 transition-all duration-300 border border-[#313851]/10"
+                            className="absolute bottom-[-30px] right-[24px] z-20 bg-[#222222] p-5 rounded-3xl shadow-xl hover:shadow-2xl text-white w-52 group hover:-translate-y-1 hover:scale-105 transition-all duration-300 border border-white/10"
                         >
                             <div className="flex items-center justify-between mb-3">
                                 <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
@@ -208,7 +208,7 @@ export const NewGradSection = () => {
                                 </div>
                                 <span className="text-[8px] font-black text-white/50 bg-white/5 px-2 py-0.5 rounded-full uppercase tracking-wider">Top Decile</span>
                             </div>
-                            <p className="text-[9px] font-black text-[#C2CBD3] uppercase tracking-widest">Avg Starting TC</p>
+                            <p className="text-[9px] font-black text-white/60 uppercase tracking-widest">Avg Starting TC</p>
                             <h4 className="text-xl font-bold mt-0.5 text-white">$180k - $220k</h4>
                             <div className="mt-3.5 flex items-center gap-1.5 text-[9px] font-bold text-green-400">
                                 <CheckCircle2 size={11} />
@@ -217,7 +217,7 @@ export const NewGradSection = () => {
                         </motion.div>
 
                         {/* Background Decorative Blob */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#313851]/5 rounded-full blur-3xl -z-10" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#D45B34]/5 rounded-full blur-3xl -z-10" />
                     </div>
                 </div>
             </div>

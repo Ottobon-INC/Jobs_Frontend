@@ -80,7 +80,7 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemed
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.06 * index }}
       whileHover={{ y: -4 }}
-      className="group relative rounded-2xl border border-[#C2CBD3]/40 overflow-hidden flex flex-col transition-all duration-300 shadow-sm"
+      className="group relative rounded-2xl border border-[#1C1A17]/15 overflow-hidden flex flex-col transition-all duration-300 shadow-sm"
       style={{
         background: '#ffffff',
       }}
@@ -101,15 +101,15 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemed
       {/* Category banner */}
       <div
         className="h-10 flex items-center justify-center gap-2"
-        style={{ background: '#313851' }}
+        style={{ background: '#D45B34' }}
       >
         <IconComp />
-        <span className="text-[10px] font-bold text-[#F6F3ED] uppercase tracking-widest">{item.category}</span>
+        <span className="text-[10px] font-bold text-[#F4F1EA] uppercase tracking-widest">{item.category}</span>
       </div>
 
       {/* Body */}
       <div className="p-4 flex-1 flex flex-col">
-        <h3 className="text-base font-bold text-[#313851] mb-2 leading-tight flex items-center gap-2">
+        <h3 className="text-base font-bold text-[#1C1A17] mb-2 leading-tight flex items-center gap-2">
           {item.name}
           {item.grantType === 'interview_credits' && (
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +118,7 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemed
             </svg>
           )}
         </h3>
-        <p className="text-xs text-[#313851]/60 mb-4 line-clamp-2 leading-relaxed font-medium">{item.description}</p>
+        <p className="text-xs text-[#1C1A17]/60 mb-4 line-clamp-2 leading-relaxed font-medium">{item.description}</p>
 
         {/* Details row */}
         <div className="flex flex-col gap-2 mt-auto">
@@ -127,19 +127,19 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemed
               🎵 Grants {item.grantAmount} {item.grantAmount === 1 ? 'credit' : 'credits'}
             </div>
           )}
-          <div className="flex items-center gap-2 flex-wrap text-[10px] text-[#313851]/40 font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 flex-wrap text-[10px] text-[#1C1A17]/40 font-bold uppercase tracking-wider">
             <span>{item.expiry_days || 30} Days Expiry</span>
-            <span className="text-[#C2CBD3]">·</span>
-            <span className="text-[#313851]/60">{seekerRedeemedCount} redeemed</span>
+            <span className="text-[#1C1A17]/45">·</span>
+            <span className="text-[#1C1A17]/60">{seekerRedeemedCount} redeemed</span>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="border-t border-[#C2CBD3]/20 px-4 py-3 flex items-center justify-between bg-[#F6F3ED]/50">
+      <div className="border-t border-[#1C1A17]/10 px-4 py-3 flex items-center justify-between bg-[#F4F1EA]/50">
         <div className="flex items-center gap-1.5">
           <GoldCoinIcon size={16} />
-          <span className="font-bold text-[#313851]">{item.cost.toLocaleString()}</span>
+          <span className="font-bold text-[#1C1A17]">{item.cost.toLocaleString()}</span>
         </div>
 
         <button
@@ -148,14 +148,14 @@ const RewardCard = ({ item, canAfford, isLocked, onRedeem, index, seekerRedeemed
           className="relative rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 active:scale-95 focus:outline-none"
           style={{
             ...((canAfford && !isLocked) ? {
-              background: '#313851',
-              color: '#F6F3ED',
+              background: '#D45B34',
+              color: '#F4F1EA',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(49,56,81,0.15)',
             } : {
-              background: '#F6F3ED',
+              background: '#F4F1EA',
               color: '#313851/40',
-              border: '1px solid #C2CBD3',
+              border: '1px solid var(--border-main)',
               cursor: 'not-allowed',
             }),
           }}

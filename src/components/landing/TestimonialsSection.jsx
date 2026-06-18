@@ -62,7 +62,7 @@ export function TestimonialsSection() {
             <>
                 "{parts[0]}
                 <span 
-                    className="not-italic font-bold bg-[#eef2ff] text-[#3b4ba4] px-1.5 py-0.5 rounded-md mx-0.5 inline-block"
+                    className="not-italic font-bold bg-[#D45B34]/10 text-[#D45B34] px-1.5 py-0.5 rounded-md mx-0.5 inline-block"
                     style={{ fontSize: '0.925em' }}
                 >
                     {highlight}
@@ -74,11 +74,11 @@ export function TestimonialsSection() {
 
     if (loading || testimonials.length === 0) {
         return (
-            <div className="h-64 flex items-center justify-center bg-[#F6F3ED]">
+            <div className="h-64 flex items-center justify-center bg-[#F4F1EA]">
                 <div className="animate-pulse flex space-x-2">
-                    <div className="w-3 h-3 bg-[#313851] rounded-full"></div>
-                    <div className="w-3 h-3 bg-[#313851] rounded-full"></div>
-                    <div className="w-3 h-3 bg-[#313851] rounded-full"></div>
+                    <div className="w-3 h-3 bg-[#D45B34] rounded-full"></div>
+                    <div className="w-3 h-3 bg-[#D45B34] rounded-full"></div>
+                    <div className="w-3 h-3 bg-[#D45B34] rounded-full"></div>
                 </div>
             </div>
         );
@@ -89,31 +89,31 @@ export function TestimonialsSection() {
     return (
         <section 
             id="testimonials" 
-            className="relative pt-8 pb-28 overflow-hidden bg-gradient-to-b from-[#F6F3ED] to-[#e4e1da]"
+            className="relative pt-8 pb-28 overflow-hidden bg-[#F4F1EA]"
             aria-labelledby="testimonials-title"
         >
             {/* Ambient Background Glow Elements */}
-            <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-[#C2CBD3]/30 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-[#313851]/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-[#D45B34]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-[#1C1A17]/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="container mx-auto px-6 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <p className="text-[#313851]/65 text-[11px] font-extrabold uppercase tracking-[0.25em] mb-4">
+                    <p className="text-[#1C1A17]/65 text-[11px] font-extrabold uppercase tracking-[0.25em] mb-4">
                         Real Outcomes · Verified Seekers
                     </p>
                     <h2 
                         id="testimonials-title"
-                        className="font-extrabold tracking-tight mb-4 text-[#313851] leading-tight"
+                        className="font-extrabold tracking-tight mb-4 text-[#1C1A17] leading-tight"
                         style={{
                             fontFamily: "'Inter', system-ui, sans-serif",
                             fontSize: 'clamp(2.25rem, 5vw, 3.25rem)',
                         }}
                     >
                         Your next offer starts <br className="hidden sm:inline" />
-                        <span className="text-[#3b4ba4]">right here.</span>
+                        <span className="text-[#D45B34]">right here.</span>
                     </h2>
-                    <p className="max-w-2xl mx-auto font-medium text-[#313851]/70 text-sm md:text-base leading-relaxed">
+                    <p className="max-w-2xl mx-auto font-medium text-[#1C1A17]/70 text-sm md:text-base leading-relaxed">
                         Thousands of ambitious professionals used Ottobon's AI matching, semantic fit scores, and mock interviews to land roles faster — these are their stories.
                     </p>
                 </div>
@@ -127,14 +127,14 @@ export function TestimonialsSection() {
                     {/* Navigation Buttons */}
                     <button
                         onClick={handlePrev}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/70 backdrop-blur-md border border-[#313851]/10 text-[#313851] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-[0_4px_12px_-4px_rgba(49,56,81,0.15)] cursor-pointer"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/70 backdrop-blur-md border border-[#1C1A17]/10 text-[#1C1A17] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-[0_4px_12px_-4px_rgba(28,26,23,0.15)] cursor-pointer"
                         aria-label="Previous testimonial"
                     >
                         <ChevronLeft size={20} />
                     </button>
                     <button
                         onClick={handleNext}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/70 backdrop-blur-md border border-[#313851]/10 text-[#313851] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-[0_4px_12px_-4px_rgba(49,56,81,0.15)] cursor-pointer"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/70 backdrop-blur-md border border-[#1C1A17]/10 text-[#1C1A17] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-[0_4px_12px_-4px_rgba(28,26,23,0.15)] cursor-pointer"
                         aria-label="Next testimonial"
                     >
                         <ChevronRight size={20} />
@@ -156,12 +156,12 @@ export function TestimonialsSection() {
                                         damping: 28,
                                         mass: 1
                                     }}
-                                    className="relative backdrop-blur-xl bg-white border border-[#313851]/10 rounded-[20px] p-8 flex flex-col justify-between hover:border-[#313851]/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-[0_12px_24px_-10px_rgba(49,56,81,0.04)]"
+                                    className="relative backdrop-blur-xl bg-white border border-[#1C1A17]/10 rounded-[20px] p-8 flex flex-col justify-between hover:border-[#D45B34]/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-[0_12px_24px_-10px_rgba(28,26,23,0.04)]"
                                 >
                                     <div>
                                         {/* Tags Header */}
                                         <div className="flex flex-wrap items-center gap-2 mb-6">
-                                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#3b4ba4] bg-[#eef2ff] px-3.5 py-1.5 rounded-full">
+                                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#D45B34] bg-[#D45B34]/10 px-3.5 py-1.5 rounded-full">
                                                 {item.tag}
                                             </span>
                                         </div>
@@ -174,7 +174,7 @@ export function TestimonialsSection() {
                                         </div>
 
                                         {/* Feedback text */}
-                                        <p className="text-[#313851]/90 font-medium leading-relaxed text-[15px] italic mb-6">
+                                        <p className="text-[#1C1A17]/90 font-medium leading-relaxed text-[15px] italic mb-6">
                                             {renderHighlightedContent(item.content, item.highlight)}
                                         </p>
                                     </div>
@@ -188,11 +188,11 @@ export function TestimonialsSection() {
                                             <User className="w-5 h-5 stroke-[1.5]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-[#313851] text-sm leading-tight">
+                                            <h4 className="font-bold text-[#1C1A17] text-sm leading-tight">
                                                 {item.name}
                                             </h4>
-                                            <p className="text-xs text-[#313851]/70 mt-1 font-medium">
-                                                {item.role} · <span className="font-bold text-[#313851]">{item.company}</span>
+                                            <p className="text-xs text-[#1C1A17]/70 mt-1 font-medium">
+                                                {item.role} · <span className="font-bold text-[#1C1A17]">{item.company}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -203,62 +203,62 @@ export function TestimonialsSection() {
                 </div>
 
                 {/* Seeker Journey Progress Box */}
-                <div className="w-full max-w-[1120px] mx-auto mt-16 p-8 bg-white border border-[#313851]/10 rounded-[20px] shadow-[0_12px_24px_-10px_rgba(49,56,81,0.04)]">
-                    <p className="text-[#313851]/60 text-[10px] font-extrabold uppercase tracking-[0.2em] mb-10 text-left">
+                <div className="w-full max-w-[1120px] mx-auto mt-16 p-8 bg-white border border-[#1C1A17]/10 rounded-[20px] shadow-[0_12px_24px_-10px_rgba(28,26,23,0.04)]">
+                    <p className="text-[#1C1A17]/60 text-[10px] font-extrabold uppercase tracking-[0.2em] mb-10 text-left">
                         Typical Seeker Journey on Ottobon
                     </p>
                     
                     <div className="flex items-center justify-between relative px-2 md:px-6">
                         {/* Step 1: Upload CV */}
                         <div className="flex flex-col items-center z-10 min-w-[60px] md:min-w-0">
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#313851] transition-transform hover:scale-110 duration-200" />
-                            <span className="text-[9px] md:text-[10px] font-bold text-[#313851] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
+                            <div className="w-3.5 h-3.5 rounded-full bg-[#1C1A17] transition-transform hover:scale-110 duration-200" />
+                            <span className="text-[9px] md:text-[10px] font-bold text-[#1C1A17] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
                                 Upload CV
                             </span>
                         </div>
                         
                         {/* Line 1 -> Completed */}
-                        <div className="h-[2px] flex-grow bg-[#313851] mx-2 md:mx-4" />
+                        <div className="h-[2px] flex-grow bg-[#1C1A17] mx-2 md:mx-4" />
                         
                         {/* Step 2: Semantic Fit Scan */}
                         <div className="flex flex-col items-center z-10 min-w-[60px] md:min-w-0">
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#313851] transition-transform hover:scale-110 duration-200" />
-                            <span className="text-[9px] md:text-[10px] font-bold text-[#313851] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
+                            <div className="w-3.5 h-3.5 rounded-full bg-[#1C1A17] transition-transform hover:scale-110 duration-200" />
+                            <span className="text-[9px] md:text-[10px] font-bold text-[#1C1A17] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
                                 Semantic Fit Scan
                             </span>
                         </div>
                         
                         {/* Line 2 -> Completed */}
-                        <div className="h-[2px] flex-grow bg-[#313851] mx-2 md:mx-4" />
+                        <div className="h-[2px] flex-grow bg-[#1C1A17] mx-2 md:mx-4" />
                         
                         {/* Step 3: Mock Interviews (Active) */}
                         <div className="flex flex-col items-center z-10 min-w-[60px] md:min-w-0">
-                            <div className="w-6 h-6 rounded-full border-2 border-[#3b4ba4]/35 flex items-center justify-center bg-white shadow-sm transition-transform hover:scale-110 duration-200">
-                                <div className="w-2.5 h-2.5 bg-[#3b4ba4] rounded-full" />
+                            <div className="w-6 h-6 rounded-full border-2 border-[#D45B34]/35 flex items-center justify-center bg-white shadow-sm transition-transform hover:scale-110 duration-200">
+                                <div className="w-2.5 h-2.5 bg-[#D45B34] rounded-full" />
                             </div>
-                            <span className="text-[9px] md:text-[10px] font-bold text-[#3b4ba4] mt-2.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
+                            <span className="text-[9px] md:text-[10px] font-bold text-[#D45B34] mt-2.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
                                 Mock Interviews
                             </span>
                         </div>
                         
                         {/* Line 3 -> Upcoming */}
-                        <div className="h-[2px] flex-grow bg-[#C2CBD3] mx-2 md:mx-4" />
+                        <div className="h-[2px] flex-grow bg-[#1C1A17]/20 mx-2 md:mx-4" />
                         
                         {/* Step 4: Apply Smart */}
                         <div className="flex flex-col items-center z-10 min-w-[60px] md:min-w-0">
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#C2CBD3] transition-transform hover:scale-110 duration-200" />
-                            <span className="text-[9px] md:text-[10px] font-bold text-[#C2CBD3] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
+                            <div className="w-3.5 h-3.5 rounded-full bg-[#1C1A17]/20 transition-transform hover:scale-110 duration-200" />
+                            <span className="text-[9px] md:text-[10px] font-bold text-[#1C1A17]/40 mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
                                 Apply Smart
                             </span>
                         </div>
                         
                         {/* Line 4 -> Upcoming */}
-                        <div className="h-[2px] flex-grow bg-[#C2CBD3] mx-2 md:mx-4" />
+                        <div className="h-[2px] flex-grow bg-[#1C1A17]/20 mx-2 md:mx-4" />
                         
                         {/* Step 5: Get the Offer */}
                         <div className="flex flex-col items-center z-10 min-w-[60px] md:min-w-0">
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#C2CBD3] transition-transform hover:scale-110 duration-200" />
-                            <span className="text-[9px] md:text-[10px] font-bold text-[#C2CBD3] mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
+                            <div className="w-3.5 h-3.5 rounded-full bg-[#1C1A17]/20 transition-transform hover:scale-110 duration-200" />
+                            <span className="text-[9px] md:text-[10px] font-bold text-[#1C1A17]/40 mt-3.5 uppercase tracking-wider text-center max-w-[80px] md:max-w-none">
                                 Get the Offer
                             </span>
                         </div>
@@ -273,8 +273,8 @@ export function TestimonialsSection() {
                             onClick={() => setCurrentIndex(index)}
                             className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                                 currentIndex === index 
-                                    ? 'w-8 bg-[#313851]' 
-                                    : 'w-2.5 bg-[#313851]/20 hover:bg-[#313851]/40'
+                                    ? 'w-8 bg-[#D45B34]' 
+                                    : 'w-2.5 bg-[#D45B34]/20 hover:bg-[#D45B34]/40'
                             }`}
                             aria-label={`Go to slide ${index + 1}`}
                         />

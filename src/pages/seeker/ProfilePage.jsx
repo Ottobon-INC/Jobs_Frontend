@@ -564,7 +564,7 @@ const ProfilePage = () => {
                                             : 'bg-white text-zinc-400 border-zinc-100 hover:border-zinc-300'
                                     } ${!editMode ? 'cursor-default opacity-80' : 'hover:text-zinc-900'} ${pref.id === WORK_PREFERENCES.HYBRID && workPreference === pref.id ? 'hybrid-btn' : ''}`}
                                 >
-                                    <div className={`w-2.5 h-2.5 rounded-full ${pref.id === WORK_PREFERENCES.HYBRID && workPreference === pref.id ? 'bg-[#F6F3ED]' : pref.color}`} />
+                                    <div className={`w-2.5 h-2.5 rounded-full ${pref.id === WORK_PREFERENCES.HYBRID && workPreference === pref.id ? 'bg-[#F4F1EA]' : pref.color}`} />
                                     {pref.label}
                                 </button>
                             ))}

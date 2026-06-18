@@ -62,7 +62,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
     ];
 
     return (
-        <section className="relative min-h-[600px] lg:min-h-[900px] flex items-center bg-gradient-to-b from-[#1a1f33] to-[#313851] overflow-hidden py-12 lg:py-20 px-6">
+        <section className="relative min-h-[600px] lg:min-h-[900px] flex items-center bg-gradient-to-b from-[#1C1A17] to-[#222222] overflow-hidden py-12 lg:py-20 px-6">
             {/* 1. Deep Background Ecosystem (Animated Logo Rows) */}
             <div className="absolute inset-0 opacity-[0.08] pointer-events-none select-none flex flex-col justify-around py-20 overflow-hidden">
                 {[0, 1, 2, 3, 4].map((rowIdx) => (
@@ -91,8 +91,8 @@ export const NewGradHero = ({ onSelectCompany }) => {
             </div>
 
             {/* Glowing Gradients (Brand Colors) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#C2CBD3]/10 rounded-full blur-[150px] pointer-events-none" />
-            <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-[#F6F3ED]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#D45B34]/10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-[#F4F1EA]/5 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-20 items-center relative z-10">
                 
@@ -104,13 +104,13 @@ export const NewGradHero = ({ onSelectCompany }) => {
                     className="space-y-10"
                 >
                     <div className="space-y-6">
-                        <h1 className="text-4xl md:text-7xl font-black text-[#F6F3ED] leading-[1.1] tracking-tighter">
+                        <h1 className="text-4xl md:text-7xl font-black text-[#F4F1EA] leading-[1.1] tracking-tighter">
                             The Ultimate <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C2CBD3] via-white to-[#F6F3ED]">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D45B34] via-white to-[#F4F1EA]">
                                 New Grad Placement Hub
                             </span>
                         </h1>
-                        <p className="text-xl text-[#F6F3ED]/60 max-w-lg font-medium leading-relaxed">
+                        <p className="text-xl text-[#F4F1EA]/60 max-w-lg font-medium leading-relaxed">
                             Everything final-year students need to crack assessments, interviews, and placements at top companies.
                         </p>
                     </div>
@@ -118,13 +118,13 @@ export const NewGradHero = ({ onSelectCompany }) => {
                     <div className="flex flex-wrap gap-4 pt-4">
                         <button 
                             onClick={scrollToPlaybooks}
-                            className="px-8 py-4 bg-[#F6F3ED] text-[#313851] rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20 flex items-center gap-3 cursor-pointer"
+                            className="px-8 py-4 bg-[#D45B34] text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:scale-105 hover:bg-[#B84A27] active:scale-95 transition-all shadow-xl shadow-black/20 flex items-center gap-3 cursor-pointer"
                         >
                             Explore Playbooks <ArrowRight size={16} />
                         </button>
                         <button 
                             onClick={() => setShowInfo(true)}
-                            className="px-8 py-4 bg-transparent text-[#F6F3ED] border border-[#F6F3ED]/20 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-[#F6F3ED]/5 transition-all cursor-pointer"
+                            className="px-8 py-4 bg-transparent text-[#F4F1EA] border border-[#F4F1EA]/20 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-[#F4F1EA]/5 transition-all cursor-pointer"
                         >
                             How it Works
                         </button>
@@ -133,11 +133,11 @@ export const NewGradHero = ({ onSelectCompany }) => {
                     {/* Mobile Only: Simple vertical flow */}
                     <div className="lg:hidden grid grid-cols-2 gap-4 mt-12">
                         {journeySteps.map((step, idx) => (
-                            <div key={idx} className="bg-[#F6F3ED]/5 border border-[#F6F3ED]/10 rounded-2xl p-4 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#C2CBD3]/20 flex items-center justify-center">
-                                    <step.icon size={16} className="text-[#C2CBD3]" />
+                            <div key={idx} className="bg-[#F4F1EA]/5 border border-[#F4F1EA]/10 rounded-2xl p-4 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-[#D45B34]/20 flex items-center justify-center">
+                                    <step.icon size={16} className="text-[#D45B34]" />
                                 </div>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-[#F6F3ED]/60">{step.label}</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-[#F4F1EA]/60">{step.label}</span>
                             </div>
                         ))}
                     </div>
@@ -153,7 +153,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
                         <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
                             <circle 
                                 cx="50" cy="50" r="40" 
-                                fill="none" stroke="rgba(246, 243, 237, 0.05)" strokeWidth="0.5" 
+                                fill="none" stroke="rgba(244, 241, 234, 0.05)" strokeWidth="0.5" 
                             />
                             <motion.circle 
                                 cx="50" cy="50" r="40" 
@@ -165,7 +165,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
                             <defs>
                                 <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stopColor="transparent" />
-                                    <stop offset="50%" stopColor="#F6F3ED" />
+                                    <stop offset="50%" stopColor="#F4F1EA" />
                                     <stop offset="100%" stopColor="transparent" />
                                 </linearGradient>
                             </defs>
@@ -175,16 +175,16 @@ export const NewGradHero = ({ onSelectCompany }) => {
                         <motion.div 
                             animate={{ scale: [1, 1.05, 1] }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-[#C2CBD3] to-[#F6F3ED] p-[1px] shadow-[0_0_50px_rgba(194,203,211,0.2)] z-30"
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-[#D45B34] to-[#F4F1EA] p-[1px] shadow-[0_0_50px_rgba(212,91,52,0.2)] z-30"
                         >
-                            <div className="w-full h-full rounded-full bg-[#313851] flex flex-col items-center justify-center text-center p-4">
-                                <div className="w-12 h-12 rounded-full bg-[#F6F3ED]/10 flex items-center justify-center mb-2">
-                                    <Sparkles size={24} className="text-[#C2CBD3]" />
+                            <div className="w-full h-full rounded-full bg-[#222222] flex flex-col items-center justify-center text-center p-4">
+                                <div className="w-12 h-12 rounded-full bg-[#F4F1EA]/10 flex items-center justify-center mb-2">
+                                    <Sparkles size={24} className="text-[#D45B34]" />
                                 </div>
-                                <span className="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-[#F6F3ED] leading-tight">Your AI <br/>Prep Engine</span>
+                                <span className="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-[#F4F1EA] leading-tight">Your AI <br/>Prep Engine</span>
                             </div>
                             {/* Halo Effect */}
-                            <div className="absolute inset-[-10px] rounded-full border border-[#F6F3ED]/10 animate-spin-slow pointer-events-none" />
+                            <div className="absolute inset-[-10px] rounded-full border border-[#F4F1EA]/10 animate-spin-slow pointer-events-none" />
                         </motion.div>
 
                         {/* Journey Nodes */}
@@ -205,11 +205,11 @@ export const NewGradHero = ({ onSelectCompany }) => {
                                     className="absolute z-40 group"
                                 >
                                     <div className="relative flex flex-col items-center">
-                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-[#313851] border border-[#F6F3ED]/10 flex items-center justify-center shadow-2xl group-hover:border-[#F6F3ED] transition-colors">
-                                            <step.icon className="text-[#F6F3ED]/40 group-hover:text-[#F6F3ED] transition-colors" size={24} />
+                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-[#222222] border border-[#F4F1EA]/10 flex items-center justify-center shadow-2xl group-hover:border-[#D45B34] transition-colors">
+                                            <step.icon className="text-[#F4F1EA]/40 group-hover:text-[#D45B34] transition-colors" size={24} />
                                         </div>
                                         <div className="absolute -bottom-10 whitespace-nowrap">
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-[#F6F3ED]/30 group-hover:text-[#F6F3ED] transition-colors">
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-[#F4F1EA]/30 group-hover:text-[#D45B34] transition-colors">
                                                 {step.label}
                                             </span>
                                         </div>
@@ -247,17 +247,17 @@ export const NewGradHero = ({ onSelectCompany }) => {
                             <div className={`relative group w-60 transition-all duration-500`}>
                                 {/* Outer Glow */}
                                 <div className={`absolute -inset-1 rounded-[2.5rem] opacity-20 group-hover:opacity-40 blur-xl transition-opacity duration-500 ${
-                                    card.accent === 'blue' ? 'bg-blue-400' : 
-                                    card.accent === 'amber' ? 'bg-amber-400' : 
-                                    'bg-emerald-400'
+                                    card.accent === 'blue' ? 'bg-[#D45B34]' : 
+                                    card.accent === 'amber' ? 'bg-[#D45B34]' : 
+                                    'bg-[#D45B34]'
                                 }`} />
                                 
-                                <div className="relative bg-[#F6F3ED]/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2.5rem] hover:bg-[#F6F3ED]/20 transition-all shadow-2xl">
+                                <div className="relative bg-[#F4F1EA]/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2.5rem] hover:bg-[#F4F1EA]/20 transition-all shadow-2xl">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                                            card.accent === 'blue' ? 'bg-blue-400/10 text-blue-300 border-blue-400/20' : 
-                                            card.accent === 'amber' ? 'bg-amber-400/10 text-amber-300 border-amber-400/20' : 
-                                            'bg-emerald-400/10 text-emerald-300 border-emerald-400/20'
+                                            card.accent === 'blue' ? 'bg-[#D45B34]/10 text-[#D45B34] border-[#D45B34]/20' : 
+                                            card.accent === 'amber' ? 'bg-[#D45B34]/10 text-[#D45B34] border-[#D45B34]/20' : 
+                                            'bg-[#D45B34]/10 text-[#D45B34] border-[#D45B34]/20'
                                         }`}>
                                             {card.tag}
                                         </div>
@@ -273,7 +273,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
                                     <div className="flex items-center justify-between mt-auto">
                                         <div className="flex -space-x-2">
                                             {[1, 2, 3].map(user => (
-                                                <div key={user} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#313851] flex items-center justify-center backdrop-blur-md">
+                                                <div key={user} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#222222] flex items-center justify-center backdrop-blur-md">
                                                     <User size={12} className="text-white/40" />
                                                 </div>
                                             ))}
@@ -290,7 +290,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
             </div>
 
             {/* Bottom Glow Effect */}
-            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#313851] to-transparent z-20" />
+            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F4F1EA] to-transparent z-20" />
 
             {/* "How it Works" Modal */}
             <AnimatePresence>
@@ -346,7 +346,7 @@ export const NewGradHero = ({ onSelectCompany }) => {
 
                             <button 
                                 onClick={() => { setShowInfo(false); scrollToPlaybooks(); }}
-                                className="w-full mt-10 py-4 bg-white text-[#0a0c14] rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="w-full mt-10 py-4 bg-[#D45B34] text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] hover:bg-[#B84A27] active:scale-[0.98] transition-all"
                             >
                                 Get Started Now
                             </button>

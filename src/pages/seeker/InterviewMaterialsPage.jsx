@@ -56,19 +56,19 @@ const InterviewMaterialsPage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+            <div className="min-h-screen bg-[#F4F1EA] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="animate-spin text-indigo-600" size={40} />
-                    <p className="text-zinc-500 font-medium animate-pulse">Loading Materials Hub...</p>
+                    <Loader2 className="animate-spin text-[#D45B34]" size={40} />
+                    <p className="text-[#1C1A17]/65 font-medium animate-pulse">Loading Materials Hub...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F8F9FB]">
+        <div className="min-h-screen bg-[#F4F1EA]">
             {/* Hero Section */}
-            <header className="relative bg-[#313851] pt-24 pb-32 px-6 overflow-hidden">
+            <header className="relative bg-[#222222] pt-24 pb-32 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto relative z-10 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -92,7 +92,7 @@ const InterviewMaterialsPage = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-indigo-300/60 text-[10px] font-black uppercase tracking-[0.5em] mb-8 block"
+                        className="text-[#D45B34] text-[10px] font-black uppercase tracking-[0.5em] mb-8 block"
                     >
                         Materials you won't find anywhere else
                     </motion.p>
@@ -127,8 +127,8 @@ const InterviewMaterialsPage = () => {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-[120px] -mr-96 -mt-96" />
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[100px] -ml-48 -mb-48" />
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#D45B34]/10 rounded-full blur-[120px] -mr-96 -mt-96" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#D45B34]/5 rounded-full blur-[100px] -ml-48 -mb-48" />
             </header>
 
             {/* Main Content */}
@@ -139,14 +139,14 @@ const InterviewMaterialsPage = () => {
                     {!isSearching && activeFolderId && (
                         <button 
                             onClick={() => setActiveFolderId(null)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl border border-zinc-100 shadow-sm text-[#313851] font-bold text-sm hover:bg-zinc-50 transition-all"
+                            className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl border border-zinc-100 shadow-sm text-[#D45B34] font-bold text-sm hover:bg-[#D45B34]/5 transition-all"
                         >
                             <ArrowLeft size={16} />
                             Back to Hub
                         </button>
                     )}
                     <div className="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/20 shadow-sm">
-                        <Folder size={12} className="text-indigo-400" />
+                        <Folder size={12} className="text-[#D45B34]" />
                         Materials Hub
                         {currentFolder && (
                             <>
@@ -190,19 +190,19 @@ const InterviewMaterialsPage = () => {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: idx * 0.05 }}
                                             onClick={() => setActiveFolderId(folder.id)}
-                                            className="group relative bg-white p-8 rounded-[2rem] border border-zinc-100 shadow-xl shadow-zinc-200/40 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all cursor-pointer overflow-hidden"
+                                            className="group relative bg-white p-8 rounded-[2rem] border border-zinc-100 shadow-xl shadow-zinc-200/40 hover:shadow-2xl hover:shadow-[#D45B34]/10 hover:-translate-y-1 transition-all cursor-pointer overflow-hidden"
                                         >
                                             <div className="relative z-10">
-                                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300 shadow-inner">
+                                                <div className="w-14 h-14 bg-[#D45B34]/10 rounded-2xl flex items-center justify-center text-[#D45B34] mb-6 group-hover:bg-[#D45B34] group-hover:text-white transition-colors duration-300 shadow-inner">
                                                     <Folder size={28} />
                                                 </div>
-                                                <h3 className="text-xl font-bold text-[#313851] mb-2">{folder.name}</h3>
+                                                <h3 className="text-xl font-bold text-[#1C1A17] mb-2">{folder.name}</h3>
                                                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
                                                     {materialCount} Resources available
                                                 </p>
                                             </div>
                                             {/* Decorative Folder Tab */}
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-500/5 rounded-bl-[3rem] -mr-4 -mt-4 transition-all group-hover:bg-indigo-500/10 group-hover:w-20 group-hover:h-20" />
+                                            <div className="absolute top-0 right-0 w-16 h-16 bg-[#D45B34]/5 rounded-bl-[3rem] -mr-4 -mt-4 transition-all group-hover:bg-[#D45B34]/10 group-hover:w-20 group-hover:h-20" />
                                         </motion.div>
                                     );
                                 })
@@ -212,10 +212,10 @@ const InterviewMaterialsPage = () => {
                             {materials.filter(m => !m.folder_id).length > 0 && (
                                 <motion.div 
                                     onClick={() => setActiveFolderId('')}
-                                    className="bg-[#313851]/5 border-2 border-dashed border-[#313851]/10 p-8 rounded-[2rem] flex flex-col items-center justify-center text-center hover:bg-[#313851]/10 transition-all cursor-pointer"
+                                    className="bg-[#D45B34]/5 border-2 border-dashed border-[#D45B34]/10 p-8 rounded-[2rem] flex flex-col items-center justify-center text-center hover:bg-[#D45B34]/10 transition-all cursor-pointer"
                                 >
-                                    <FileText size={32} className="text-[#313851] mb-4 opacity-40" />
-                                    <h3 className="text-lg font-bold text-[#313851]">General Materials</h3>
+                                    <FileText size={32} className="text-[#D45B34] mb-4 opacity-40" />
+                                    <h3 className="text-lg font-bold text-[#1C1A17]">General Materials</h3>
                                     <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">
                                         {materials.filter(m => !m.folder_id).length} Documents
                                     </p>
@@ -239,7 +239,7 @@ const InterviewMaterialsPage = () => {
                                     <p className="text-zinc-500 mt-2 text-lg">We couldn't find any materials in this section.</p>
                                     <button 
                                         onClick={() => { setActiveFolderId(null); setSearchQuery(''); }}
-                                        className="mt-8 text-indigo-600 font-bold hover:underline"
+                                        className="mt-8 text-[#D45B34] font-bold hover:underline"
                                     >
                                         Go back to folders
                                     </button>
@@ -252,7 +252,7 @@ const InterviewMaterialsPage = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="group relative flex flex-col bg-white rounded-[2.5rem] overflow-hidden border border-zinc-100 shadow-xl shadow-zinc-200/50 hover:shadow-2xl hover:shadow-[#313851]/10 hover:-translate-y-2 transition-all duration-300 cursor-pointer"
+                                        className="group relative flex flex-col bg-white rounded-[2.5rem] overflow-hidden border border-zinc-100 shadow-xl shadow-zinc-200/50 hover:shadow-2xl hover:shadow-[#D45B34]/10 hover:-translate-y-2 transition-all duration-300 cursor-pointer"
                                     >
                                         {/* Card Header */}
                                         <div className="p-8 pb-4 flex items-start justify-between">
@@ -270,15 +270,15 @@ const InterviewMaterialsPage = () => {
 
                                         {/* Card Body */}
                                         <div className="p-8 pt-4 flex-1">
-                                            <div className="text-[10px] font-black text-[#313851] uppercase tracking-widest mb-2 opacity-60">
+                                            <div className="text-[10px] font-black text-[#1C1A17] uppercase tracking-widest mb-2 opacity-60">
                                                 {doc.company_name} Preparation
                                             </div>
-                                            <h3 className="text-xl font-bold text-[#313851] leading-tight mb-4 line-clamp-2">
+                                            <h3 className="text-xl font-bold text-[#1C1A17] leading-tight mb-4 line-clamp-2">
                                                 {doc.title}
                                             </h3>
                                             
                                             <div className="flex items-center gap-4 mt-auto">
-                                                <div className="p-3 bg-zinc-50 rounded-2xl text-zinc-400 group-hover:bg-[#313851] group-hover:text-white transition-colors">
+                                                <div className="p-3 bg-zinc-50 rounded-2xl text-zinc-400 group-hover:bg-[#D45B34] group-hover:text-white transition-colors">
                                                     <FileText size={20} />
                                                 </div>
                                                 <div>
@@ -293,7 +293,7 @@ const InterviewMaterialsPage = () => {
                                             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
                                                 {new Date(doc.created_at).toLocaleDateString()}
                                             </span>
-                                            <div className="flex items-center gap-1.5 text-[#313851] font-bold text-xs group-hover:gap-2 transition-all">
+                                            <div className="flex items-center gap-1.5 text-[#D45B34] font-bold text-xs group-hover:gap-2 transition-all">
                                                 View Guide <ChevronRight size={14} />
                                             </div>
                                         </div>

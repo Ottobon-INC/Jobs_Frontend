@@ -13,6 +13,7 @@ import AnalyticsTracker from './components/AnalyticsTracker';
 import CookieConsentBanner from './components/shared/CookieConsentBanner';
 
 import { InterviewCreditsProvider } from './context/InterviewCreditsContext';
+import { Agentation } from 'agentation';
 
 // Auth Pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -100,6 +101,7 @@ function App() {
           <BrowserRouter>
             <AnalyticsTracker />
             <GlobalWidgets />
+            {import.meta.env.DEV && <Agentation />}
             <Suspense fallback={<Loader fullScreen variant="logo" />}>
             <Routes>
               {/* Landing Page — standalone, outside AppShell */}

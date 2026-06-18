@@ -125,22 +125,22 @@ const ManageCoursesPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#313851]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D45B34]"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 sm:p-10 bg-[#F6F3ED] min-h-screen">
+    <div className="p-6 sm:p-10 bg-[#F4F1EA] min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-[#313851]">Manage Courses</h1>
-          <p className="text-[#313851]/60 font-medium">Add and update learning pathways reflected on the seeker portal</p>
+          <h1 className="text-3xl font-bold text-[#1C1A17]">Manage Courses</h1>
+          <p className="text-[#1C1A17]/60 font-medium">Add and update learning pathways reflected on the seeker portal</p>
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#313851] text-white rounded-xl font-bold hover:bg-[#313851]/90 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#D45B34] text-white rounded-xl font-bold hover:bg-[#D45B34]/90 transition-all shadow-sm"
         >
           <PlusIcon />
           Add New Course
@@ -149,13 +149,13 @@ const ManageCoursesPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#C2CBD3]/40">
-          <p className="text-xs font-bold text-[#313851]/40 uppercase tracking-widest mb-1">Total Pathways</p>
-          <p className="text-3xl font-bold text-[#313851]">{courses.length}</p>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#1C1A17]/15">
+          <p className="text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest mb-1">Total Pathways</p>
+          <p className="text-3xl font-bold text-[#1C1A17]">{courses.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#C2CBD3]/40">
-          <p className="text-xs font-bold text-[#313851]/40 uppercase tracking-widest mb-1">Last Updated</p>
-          <p className="text-sm font-bold text-[#313851]">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#1C1A17]/15">
+          <p className="text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest mb-1">Last Updated</p>
+          <p className="text-sm font-bold text-[#1C1A17]">
             {courses.length > 0 && courses[0].created_at 
               ? new Date(courses[0].created_at).toLocaleDateString(undefined, {
                   dateStyle: 'medium'
@@ -166,49 +166,49 @@ const ManageCoursesPage = () => {
       </div>
 
       {/* Courses Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#C2CBD3]/40 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-[#1C1A17]/15 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-[#F6F3ED]/50 border-b border-[#C2CBD3]/40">
-                <th className="px-6 py-4 text-xs font-bold text-[#313851]/40 uppercase tracking-widest">Course Title / Description</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#313851]/40 uppercase tracking-widest">Redirect URL</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#313851]/40 uppercase tracking-widest">Date Added</th>
-                <th className="px-6 py-4 text-xs font-bold text-[#313851]/40 uppercase tracking-widest text-right">Actions</th>
+              <tr className="bg-[#F4F1EA]/50 border-b border-[#1C1A17]/15">
+                <th className="px-6 py-4 text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest">Course Title / Description</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest">Redirect URL</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest">Date Added</th>
+                <th className="px-6 py-4 text-xs font-bold text-[#1C1A17]/40 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#C2CBD3]/20">
+            <tbody className="divide-y divide-[#1C1A17]/10">
               {courses.map((course) => (
-                <tr key={course.id} className="hover:bg-[#F6F3ED]/20 transition-colors">
+                <tr key={course.id} className="hover:bg-[#F4F1EA]/20 transition-colors">
                   <td className="px-6 py-4 max-w-md">
-                    <p className="text-sm font-bold text-[#313851]">{course.name}</p>
-                    <p className="text-[11px] text-[#313851]/60 font-medium mt-1 leading-relaxed line-clamp-2">{course.description}</p>
+                    <p className="text-sm font-bold text-[#1C1A17]">{course.name}</p>
+                    <p className="text-[11px] text-[#1C1A17]/60 font-medium mt-1 leading-relaxed line-clamp-2">{course.description}</p>
                   </td>
                   <td className="px-6 py-4">
                     <a
                       href={course.redirect_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-bold text-[#313851] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-[#1C1A17] hover:underline"
                     >
                       Visit Link
                       <ExternalLinkIcon />
                     </a>
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium text-[#313851]/60">
+                  <td className="px-6 py-4 text-xs font-medium text-[#1C1A17]/60">
                     {course.created_at ? new Date(course.created_at).toLocaleDateString() : 'N/A'}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleOpenModal(course)}
-                        className="p-2 rounded-lg text-[#313851]/60 hover:bg-[#F6F3ED] hover:text-[#313851] transition-all"
+                        className="p-2 rounded-lg text-[#1C1A17]/60 hover:bg-[#F4F1EA] hover:text-[#1C1A17] transition-all"
                       >
                         <EditIcon />
                       </button>
                       <button
                         onClick={() => handleDelete(course.id)}
-                        className="p-2 rounded-lg text-[#313851]/60 hover:bg-rose-50 hover:text-rose-600 transition-all"
+                        className="p-2 rounded-lg text-[#1C1A17]/60 hover:bg-rose-50 hover:text-rose-600 transition-all"
                       >
                         <TrashIcon />
                       </button>
@@ -218,7 +218,7 @@ const ManageCoursesPage = () => {
               ))}
               {courses.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-sm font-medium text-[#313851]/40">
+                  <td colSpan="4" className="px-6 py-10 text-center text-sm font-medium text-[#1C1A17]/40">
                     No courses found. Add a course to get started!
                   </td>
                 </tr>
@@ -231,47 +231,47 @@ const ManageCoursesPage = () => {
       {/* Add / Edit Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#313851]/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#D45B34]/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#C2CBD3]/40"
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-[#1C1A17]/15"
             >
               <div className="p-6 sm:p-8">
-                <h2 className="text-2xl font-bold text-[#313851] mb-6">
+                <h2 className="text-2xl font-bold text-[#1C1A17] mb-6">
                   {editingCourse ? 'Edit Learning Pathway' : 'Add New Course'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-[#313851]/40 uppercase tracking-widest mb-1.5 ml-1">Course Name</label>
+                    <label className="block text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-widest mb-1.5 ml-1">Course Name</label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F6F3ED] border border-[#C2CBD3]/20 rounded-xl text-sm font-bold text-[#313851] focus:outline-none focus:border-[#313851]/40"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40"
                       placeholder="e.g. Next.js Foundations"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#313851]/40 uppercase tracking-widest mb-1.5 ml-1">Small Description</label>
+                    <label className="block text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-widest mb-1.5 ml-1">Small Description</label>
                     <textarea
                       required
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F6F3ED] border border-[#C2CBD3]/20 rounded-xl text-sm font-medium text-[#313851] focus:outline-none focus:border-[#313851]/40 min-h-[100px]"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-medium text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40 min-h-[100px]"
                       placeholder="e.g. Master routing, rendering, data fetching, and layouts in App Router."
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#313851]/40 uppercase tracking-widest mb-1.5 ml-1">Redirect Link (URL)</label>
+                    <label className="block text-[10px] font-bold text-[#1C1A17]/40 uppercase tracking-widest mb-1.5 ml-1">Redirect Link (URL)</label>
                     <input
                       type="url"
                       required
                       value={formData.redirect_url}
                       onChange={(e) => setFormData({ ...formData, redirect_url: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F6F3ED] border border-[#C2CBD3]/20 rounded-xl text-sm font-bold text-[#313851] focus:outline-none focus:border-[#313851]/40"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40"
                       placeholder="e.g. https://nextjs.org/learn"
                     />
                   </div>
@@ -280,13 +280,13 @@ const ManageCoursesPage = () => {
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="flex-1 py-4 rounded-2xl bg-[#F6F3ED] text-[#313851]/60 font-bold text-sm hover:text-[#313851] transition-all"
+                      className="flex-1 py-4 rounded-2xl bg-[#F4F1EA] text-[#1C1A17]/60 font-bold text-sm hover:text-[#1C1A17] transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="flex-[2] py-4 rounded-2xl bg-[#313851] text-white font-bold text-sm hover:bg-[#313851]/90 transition-all shadow-sm"
+                      className="flex-[2] py-4 rounded-2xl bg-[#D45B34] text-white font-bold text-sm hover:bg-[#D45B34]/90 transition-all shadow-sm"
                     >
                       {editingCourse ? 'Save Changes' : 'Create Course'}
                     </button>

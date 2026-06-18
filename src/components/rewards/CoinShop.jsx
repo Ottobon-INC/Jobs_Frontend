@@ -35,7 +35,7 @@ const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       {/* Section header */}
-      <div className="flex items-center gap-2.5 mb-5 text-[#313851]">
+      <div className="flex items-center gap-2.5 mb-5 text-[#1C1A17]">
         <ShoppingBagIcon />
         <h2 className="text-lg sm:text-xl font-bold">Reward Shop</h2>
       </div>
@@ -53,12 +53,12 @@ const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
               style={{
                 ...(isActive ? {
                   background: '#313851',
-                  color: '#F6F3ED',
+                  color: '#F4F1EA',
                   boxShadow: '0 4px 12px rgba(49,56,81,0.2)',
                 } : {
-                  background: '#F6F3ED',
+                  background: '#F4F1EA',
                   color: '#313851',
-                  border: '1px solid #C2CBD3',
+                  border: '1px solid var(--border-main)',
                 }),
               }}
             >
@@ -107,15 +107,15 @@ const CoinShop = ({ items = [], coinBalance, onRedeem, history = [] }) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="rounded-2xl border border-[#C2CBD3]/40 p-10 text-center shadow-sm"
+          className="rounded-2xl border border-[#1C1A17]/15 p-10 text-center shadow-sm"
           style={{ background: '#ffffff' }}
         >
-          <div className="flex justify-center mb-3 text-[#313851]/20">
+          <div className="flex justify-center mb-3 text-[#1C1A17]/20">
             <ShoppingBagIcon />
           </div>
-          <p className="text-[#313851]/60 text-sm font-semibold">
+          <p className="text-[#1C1A17]/60 text-sm font-semibold">
             {items.length === 0 ? "The shop is currently empty." : `No items found in "${activeFilter}".`}<br />
-            <span className="text-[#313851]/40 text-xs font-bold uppercase tracking-widest">Check back soon for new rewards!</span>
+            <span className="text-[#1C1A17]/40 text-xs font-bold uppercase tracking-widest">Check back soon for new rewards!</span>
           </p>
         </motion.div>
       )}

@@ -36,16 +36,16 @@ const PrivacyLockOverlay = () => {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full max-w-xl bg-[#F6F3ED] card border border-[#313851]/15 p-6 md:p-8 flex flex-col shadow-2xl overflow-hidden my-8"
+                className="relative w-full max-w-xl bg-[#F4F1EA] card border border-[#1C1A17]/15 p-6 md:p-8 flex flex-col shadow-2xl overflow-hidden my-8"
             >
                 {/* Header */}
                 <div className="text-center mb-6">
-                    <div className="w-14 h-14 mx-auto bg-[#313851]/10 rounded-2xl flex items-center justify-center text-[#313851] border border-[#313851]/15 mb-4 shadow-lg shadow-[#313851]/5">
+                    <div className="w-14 h-14 mx-auto bg-[#313851]/10 rounded-2xl flex items-center justify-center text-[#1C1A17] border border-[#1C1A17]/15 mb-4 shadow-lg shadow-[#313851]/5">
                         <ShieldCheck size={28} />
                     </div>
-                    <span className="text-[9px] font-black text-[#313851]/40 uppercase tracking-[0.25em]">Action required</span>
-                    <h2 className="text-2xl font-black text-[#313851] tracking-tight mt-1">Review Privacy Policy</h2>
-                    <p className="text-xs font-semibold text-[#313851]/60 mt-2 leading-relaxed max-w-sm mx-auto">
+                    <span className="text-[9px] font-black text-[#1C1A17]/40 uppercase tracking-[0.25em]">Action required</span>
+                    <h2 className="text-2xl font-black text-[#1C1A17] tracking-tight mt-1">Review Privacy Policy</h2>
+                    <p className="text-xs font-semibold text-[#1C1A17]/60 mt-2 leading-relaxed max-w-sm mx-auto">
                         To continue accessing the Ottobon Jobs platform, please review and accept our updated Privacy Policy terms.
                     </p>
                 </div>
@@ -64,9 +64,9 @@ const PrivacyLockOverlay = () => {
                         type="checkbox"
                         checked={accepted}
                         onChange={(e) => setAccepted(e.target.checked)}
-                        className="mt-1 w-4 h-4 rounded border-[#313851]/20 text-[#313851] focus:ring-[#313851]/30 accent-[#313851] cursor-pointer"
+                        className="mt-1 w-4 h-4 rounded border-[#313851]/20 text-[#1C1A17] focus:ring-[#313851]/30 accent-[#313851] cursor-pointer"
                     />
-                    <span className="text-[11px] font-semibold text-[#313851] leading-relaxed group-hover:text-black transition-colors">
+                    <span className="text-[11px] font-semibold text-[#1C1A17] leading-relaxed group-hover:text-black transition-colors">
                         I have read, understood, and explicitly agree to the Privacy Policy rules for Ottobon Jobs.
                     </span>
                 </label>

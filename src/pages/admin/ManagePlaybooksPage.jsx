@@ -58,17 +58,17 @@ const ManagePlaybooksPage = () => {
     }, [playbooks]);
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED] p-8">
+        <div className="min-h-screen bg-[#F4F1EA] p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl font-black text-[#313851] tracking-tight">Manage Playbooks</h1>
-                        <p className="text-[#313851]/60 mt-1">Create and edit New Grad recruitment guides</p>
+                        <h1 className="text-3xl font-black text-[#1C1A17] tracking-tight">Manage Playbooks</h1>
+                        <p className="text-[#1C1A17]/60 mt-1">Create and edit New Grad recruitment guides</p>
                     </div>
                     
                     <button 
                         onClick={() => navigate('/admin/playbooks/create')}
-                        className="flex items-center gap-2 bg-[#313851] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95"
+                        className="flex items-center gap-2 bg-[#D45B34] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95"
                     >
                         <Plus size={20} />
                         Add New Playbook
@@ -78,20 +78,20 @@ const ManagePlaybooksPage = () => {
                 {/* Analytics summary */}
                 {!loading && playbooks.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
-                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Total Playbooks</p>
-                            <p className="text-3xl font-black text-[#313851]">{stats.totalPlaybooks}</p>
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#1C1A17]/10 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#1C1A17]/40 uppercase tracking-widest mb-2">Total Playbooks</p>
+                            <p className="text-3xl font-black text-[#1C1A17]">{stats.totalPlaybooks}</p>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
-                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Total Views</p>
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#1C1A17]/10 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#1C1A17]/40 uppercase tracking-widest mb-2">Total Views</p>
                             <p className="text-3xl font-black text-green-600 flex items-center gap-2">
                                 <Eye size={20} className="text-green-600 animate-pulse" />
                                 {stats.totalViews.toLocaleString()}
                             </p>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#313851]/5 flex flex-col justify-center">
-                            <p className="text-[9px] font-black text-[#313851]/40 uppercase tracking-widest mb-2">Top Performing Playbook</p>
-                            <p className="text-base font-black text-[#313851] truncate">{stats.topPerforming}</p>
+                        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#1C1A17]/10 flex flex-col justify-center">
+                            <p className="text-[9px] font-black text-[#1C1A17]/40 uppercase tracking-widest mb-2">Top Performing Playbook</p>
+                            <p className="text-base font-black text-[#1C1A17] truncate">{stats.topPerforming}</p>
                             <p className="text-[10px] text-zinc-400 font-bold mt-1 uppercase tracking-wider">{stats.topViews} views</p>
                         </div>
                     </div>
@@ -99,13 +99,13 @@ const ManagePlaybooksPage = () => {
 
                 {/* Search Bar */}
                 <div className="relative mb-8">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#313851]/40" size={20} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1C1A17]/40" size={20} />
                     <input 
                         type="text"
                         placeholder="Search by company name, industry, or category..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white border-none rounded-2xl py-4 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-[#313851]/10 text-[#313851] font-medium"
+                        className="w-full bg-white border-none rounded-2xl py-4 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-medium"
                     />
                 </div>
 
@@ -117,9 +117,9 @@ const ManagePlaybooksPage = () => {
                     </div>
                 ) : filteredPlaybooks.length === 0 ? (
                     <div className="bg-white rounded-3xl p-12 text-center shadow-sm">
-                        <Building2 size={48} className="mx-auto text-[#313851]/20 mb-4" />
-                        <h3 className="text-xl font-bold text-[#313851]">No playbooks found</h3>
-                        <p className="text-[#313851]/60 mt-2">Try adjusting your search or create a new one.</p>
+                        <Building2 size={48} className="mx-auto text-[#1C1A17]/20 mb-4" />
+                        <h3 className="text-xl font-bold text-[#1C1A17]">No playbooks found</h3>
+                        <p className="text-[#1C1A17]/60 mt-2">Try adjusting your search or create a new one.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -132,7 +132,7 @@ const ManagePlaybooksPage = () => {
                                 className="group bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden"
                             >
                                 {/* Background Accent */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#313851]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500" />
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D45B34]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500" />
 
                                 <div className="flex items-start justify-between relative z-10">
                                     <div className="flex-shrink-0 mr-4">
@@ -141,7 +141,7 @@ const ManagePlaybooksPage = () => {
                                     <div className="flex gap-2">
                                         <button 
                                             onClick={() => navigate(`/admin/playbooks/edit/${pb.id}`)}
-                                            className="p-2.5 bg-[#313851]/5 text-[#313851] rounded-xl hover:bg-[#313851] hover:text-white transition-all shadow-sm"
+                                            className="p-2.5 bg-[#D45B34]/5 text-[#1C1A17] rounded-xl hover:bg-[#D45B34] hover:text-white transition-all shadow-sm"
                                             title="Edit Playbook"
                                         >
                                             <Edit2 size={18} />
@@ -158,30 +158,30 @@ const ManagePlaybooksPage = () => {
 
                                 <div className="mt-6 relative z-10">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="text-xl font-black text-[#313851] leading-tight">{pb.name}</h3>
+                                        <h3 className="text-xl font-black text-[#1C1A17] leading-tight">{pb.name}</h3>
                                         <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${pb.hiring_zone === 'on-campus' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
                                             {pb.hiring_zone}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-4 text-[#313851]/50 text-xs font-bold uppercase tracking-widest mb-4">
+                                    <div className="flex items-center gap-4 text-[#1C1A17]/50 text-xs font-bold uppercase tracking-widest mb-4">
                                         <span className="flex items-center gap-1.5">
                                             <Briefcase size={12} />
                                             {pb.industry || 'General'}
                                         </span>
-                                        <span className="flex items-center gap-1.5 border-l border-[#313851]/10 pl-4">
-                                            <Eye size={12} className="text-[#313851]/40" />
+                                        <span className="flex items-center gap-1.5 border-l border-[#1C1A17]/10 pl-4">
+                                            <Eye size={12} className="text-[#1C1A17]/40" />
                                             {pb.views_count || 0} Views
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-[#313851]/5">
-                                        <div className="flex items-center gap-2 text-[#313851]/60 text-xs font-medium">
+                                    <div className="flex items-center justify-between pt-4 border-t border-[#1C1A17]/10">
+                                        <div className="flex items-center gap-2 text-[#1C1A17]/60 text-xs font-medium">
                                             <MapPin size={12} />
                                             {pb.hq || 'Global'}
                                         </div>
                                         <button 
                                             onClick={() => navigate(`/new-grad/${pb.slug}`)}
-                                            className="flex items-center gap-1.5 text-[#313851] text-xs font-bold hover:underline"
+                                            className="flex items-center gap-1.5 text-[#1C1A17] text-xs font-bold hover:underline"
                                         >
                                             View Public <ExternalLink size={12} />
                                         </button>

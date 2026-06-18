@@ -262,7 +262,7 @@ export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 })
                     onError={() => setImgIdx(prev => prev + 1)}
                 />
             ) : (
-                <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-[#313851] to-[#404a6b]">
+                <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-[#1C1A17] to-[#222222]">
                     <span className="text-white font-black text-lg tracking-tight">{initials}</span>
                 </div>
             )}

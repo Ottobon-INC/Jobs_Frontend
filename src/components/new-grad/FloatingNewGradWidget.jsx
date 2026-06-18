@@ -27,7 +27,7 @@ export const FloatingNewGradWidget = ({ isAuthenticated }) => {
                 {/* 4. Hover Interaction: Revealed Text Label */}
                 <div className="absolute right-full mr-4 pointer-events-none">
                     <div className="
-                        bg-[#313851] text-white px-5 py-3 rounded-2xl shadow-2xl border border-white/10
+                        bg-[#222222] text-[#F4F1EA] px-5 py-3 rounded-2xl shadow-2xl border border-[#D45B34]/20
                         flex items-center gap-2.5 whitespace-nowrap
                         opacity-0 scale-90 translate-x-4
                         group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0
@@ -49,15 +49,15 @@ export const FloatingNewGradWidget = ({ isAuthenticated }) => {
                     aria-label="Open New Grad Insider Playbook"
                     className="
                         relative w-14 h-14 md:w-16 md:h-16 
-                        bg-gradient-to-br from-indigo-500 to-purple-600 
+                        bg-gradient-to-br from-[#D45B34] to-[#B84A27] 
                         rounded-full flex items-center justify-center 
-                        text-white shadow-[0_12px_24px_-8px_rgba(79,70,229,0.6)]
+                        text-white shadow-[0_12px_24px_-8px_rgba(212,91,52,0.6)]
                         border border-white/20
                         z-10
                     "
                 >
                     {/* Pulsing Outer Glow */}
-                    <div className="absolute inset-0 rounded-full bg-indigo-400 blur-md opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
+                    <div className="absolute inset-0 rounded-full bg-[#D45B34] blur-md opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
                     
                     <GraduationCap className="w-7 h-7 md:w-8 md:h-8 relative z-20" />
                 </motion.button>

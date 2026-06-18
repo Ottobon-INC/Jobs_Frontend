@@ -229,21 +229,21 @@ const InterviewReviewsPage = () => {
     }, [reviews]);
 
     return (
-        <div className="max-w-7xl mx-auto py-12 px-6 lg:px-8 font-sans text-[#313851]">
+        <div className="max-w-7xl mx-auto py-12 px-6 lg:px-8 font-sans text-[#1C1A17]">
             {/* Header section with modern pill and sleek typography */}
-            <div className="mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-[#C2CBD3]/40 pb-8">
+            <div className="mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-[#1C1A17]/15 pb-8">
                 <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#313851]/5 border border-[#313851]/10 text-[#313851] text-[9px] font-black uppercase tracking-[0.2em] mb-4">
-                        <Sparkles size={10} className="animate-spin-slow text-[#313851]" />
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D45B34]/5 border border-[#1C1A17]/10 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-4">
+                        <Sparkles size={10} className="animate-spin-slow text-[#1C1A17]" />
                         Admin Workspace
                     </div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-[#313851] flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[#313851] flex items-center justify-center shadow-lg shadow-[#313851]/10 shrink-0">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-[#1C1A17] flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-[#D45B34] flex items-center justify-center shadow-lg shadow-[#D45B34]/20 shrink-0">
                             <ClipboardList size={22} className="text-white" />
                         </div>
                         Interview Reviews
                     </h1>
-                    <p className="text-xs text-[#313851]/60 font-medium mt-2 leading-relaxed">
+                    <p className="text-xs text-[#1C1A17]/60 font-medium mt-2 leading-relaxed">
                         Evaluate seeker responses, review AI insights, and issue expert reviews for mock interviews.
                     </p>
                 </div>
@@ -251,19 +251,19 @@ const InterviewReviewsPage = () => {
                 {/* Filter and search with premium styled inputs */}
                 <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                     <div className="relative flex-1 sm:flex-initial">
-                        <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#313851]/50" />
+                        <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1C1A17]/50" />
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search user, email, or role..."
-                            className="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-[#C2CBD3] bg-[#ffffff] text-sm font-medium text-[#313851] placeholder:text-[#313851]/40 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                            className="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-medium text-[#1C1A17] placeholder:text-[#1C1A17]/40 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                         />
                     </div>
 
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-3 rounded-2xl border border-[#C2CBD3] bg-[#ffffff] text-sm font-semibold text-[#313851] focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                        className="px-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-semibold text-[#1C1A17] focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                     >
                         <option value="all">All Reviews</option>
                         <option value="pending_review">Pending Review</option>
@@ -298,7 +298,7 @@ const InterviewReviewsPage = () => {
                         <button
                             type="button"
                             onClick={selectNextPending}
-                            className="shrink-0 self-start md:self-auto rounded-full bg-[#313851] hover:bg-[#434c6d] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-[#313851]/10 cursor-pointer"
+                            className="shrink-0 self-start md:self-auto rounded-full bg-[#D45B34] hover:bg-[#B84A27] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-[#D45B34]/20 cursor-pointer"
                         >
                             Review Next Ticket →
                         </button>
@@ -309,30 +309,30 @@ const InterviewReviewsPage = () => {
             {/* Queue & Details Layout Grid */}
             <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-8 items-start">
                 {/* Left Queue Panel */}
-                <div className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-5 shadow-lg shadow-[#313851]/5 lg:sticky lg:top-24">
-                    <div className="px-3 pb-4 mb-4 border-b border-[#C2CBD3]/40 flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/60">
+                <div className="bg-[#ffffff] border border-[#1C1A17]/25 rounded-[32px] p-5 shadow-lg shadow-[#1C1A17]/5 lg:sticky lg:top-24">
+                    <div className="px-3 pb-4 mb-4 border-b border-[#1C1A17]/15 flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1C1A17]/60">
                             Interview Queue
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-[#F6F3ED] border border-[#C2CBD3]/40 text-[9px] font-bold text-[#313851]">
+                        <span className="px-2 py-0.5 rounded bg-[#F4F1EA] border border-[#1C1A17]/15 text-[9px] font-bold text-[#1C1A17]">
                             {displayedReviews.length} item{displayedReviews.length !== 1 && 's'}
                         </span>
                     </div>
 
                     <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar">
                         {loading && (
-                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#313851]/60">
-                                <Activity size={22} className="animate-spin text-[#313851]/40" />
+                            <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#1C1A17]/60">
+                                <Activity size={22} className="animate-spin text-[#1C1A17]/40" />
                                 <p className="text-xs font-semibold">Loading reviews...</p>
                             </div>
                         )}
                         {!loading && displayedReviews.length === 0 && (
-                            <div className="flex flex-col items-center justify-center py-20 text-center gap-4 text-[#313851]/40">
-                                <div className="w-12 h-12 rounded-full bg-[#F6F3ED] border border-[#C2CBD3]/40 flex items-center justify-center">
-                                    <ClipboardList size={18} className="text-[#313851]/30" />
+                            <div className="flex flex-col items-center justify-center py-20 text-center gap-4 text-[#1C1A17]/40">
+                                <div className="w-12 h-12 rounded-full bg-[#F4F1EA] border border-[#1C1A17]/15 flex items-center justify-center">
+                                    <ClipboardList size={18} className="text-[#1C1A17]/30" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-[#313851]">Queue is empty</p>
+                                    <p className="text-sm font-bold text-[#1C1A17]">Queue is empty</p>
                                     <p className="text-xs mt-1">No reviews match the current filters.</p>
                                 </div>
                             </div>
@@ -347,8 +347,8 @@ const InterviewReviewsPage = () => {
                                     onClick={() => setSelectedReviewId(review.id)}
                                     className={`group relative w-full text-left rounded-2xl border p-4.5 transition-all duration-300 ${
                                         isSelected 
-                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl shadow-[#313851]/20' 
-                                        : 'bg-[#ffffff] border-[#C2CBD3]/60 hover:border-[#313851]/60 hover:shadow-[0_8px_20px_rgba(49,56,81,0.04)]'
+                                        ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-xl shadow-[#D45B34]/20' 
+                                        : 'bg-[#ffffff] border-[#1C1A17]/20 hover:border-[#D45B34]/60 hover:shadow-[0_8px_20px_rgba(49,56,81,0.04)]'
                                     }`}
                                 >
                                     <div className="flex items-start gap-3.5">
@@ -358,7 +358,7 @@ const InterviewReviewsPage = () => {
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between gap-2">
                                                 <p className={`text-sm font-extrabold tracking-tight truncate transition-colors duration-200 ${
-                                                    isSelected ? 'text-white' : 'text-[#313851] group-hover:text-[#313851]'
+                                                    isSelected ? 'text-white' : 'text-[#1C1A17] group-hover:text-[#1C1A17]'
                                                 }`}>
                                                     {name}
                                                 </p>
@@ -366,19 +366,19 @@ const InterviewReviewsPage = () => {
                                                     review.status === 'reviewed' ? 'bg-emerald-500' : 'bg-indigo-500 animate-pulse'
                                                 }`} />
                                             </div>
-                                            <p className={`text-[10px] font-medium truncate mt-0.5 ${isSelected ? 'text-white/60' : 'text-[#313851]/60'}`}>
+                                            <p className={`text-[10px] font-medium truncate mt-0.5 ${isSelected ? 'text-white/60' : 'text-[#1C1A17]/60'}`}>
                                                 {review.user?.email || review.user_email || 'No email associated'}
                                             </p>
                                             
-                                            <div className={`flex flex-wrap gap-2 mt-3 pt-3 border-t ${isSelected ? 'border-white/10' : 'border-[#C2CBD3]/40'}`}>
+                                            <div className={`flex flex-wrap gap-2 mt-3 pt-3 border-t ${isSelected ? 'border-white/10' : 'border-[#1C1A17]/15'}`}>
                                                 <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider ${
-                                                    isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F6F3ED] text-[#313851] border border-[#C2CBD3]/50'
+                                                    isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F4F1EA] text-[#1C1A17] border border-[#1C1A17]/15'
                                                 }`}>
                                                     {review.job?.company_name || 'General'}
                                                 </span>
                                                 {review.job?.title && (
                                                     <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider truncate max-w-[150px] ${
-                                                        isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F6F3ED] text-[#313851] border border-[#C2CBD3]/50'
+                                                        isSelected ? 'bg-white/10 text-white/80' : 'bg-[#F4F1EA] text-[#1C1A17] border border-[#1C1A17]/15'
                                                     }`}>
                                                         {review.job.title}
                                                     </span>
@@ -395,21 +395,21 @@ const InterviewReviewsPage = () => {
                 {/* Right Details & Review Panel */}
                 <div className="space-y-8">
                     {/* Selected Interview Details */}
-                    <div className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#313851]/5 min-h-[40vh] flex flex-col justify-between">
+                    <div className="bg-[#ffffff] border border-[#1C1A17]/25 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#1C1A17]/5 min-h-[40vh] flex flex-col justify-between">
                         {detailLoading && (
-                            <div className="flex flex-col items-center justify-center py-32 gap-3 text-[#313851]/60">
-                                <Activity size={24} className="animate-spin text-[#313851]/40" />
+                            <div className="flex flex-col items-center justify-center py-32 gap-3 text-[#1C1A17]/60">
+                                <Activity size={24} className="animate-spin text-[#1C1A17]/40" />
                                 <p className="text-xs font-semibold">Loading session details...</p>
                             </div>
                         )}
                         {!detailLoading && !selectedReview && (
-                            <div className="flex flex-col items-center justify-center py-36 text-center gap-4 text-[#313851]/60">
-                                <div className="w-16 h-16 rounded-[24px] bg-[#F6F3ED] border border-[#C2CBD3]/40 flex items-center justify-center">
-                                    <Sparkles size={24} className="text-[#313851]/40" />
+                            <div className="flex flex-col items-center justify-center py-36 text-center gap-4 text-[#1C1A17]/60">
+                                <div className="w-16 h-16 rounded-[24px] bg-[#F4F1EA] border border-[#1C1A17]/15 flex items-center justify-center">
+                                    <Sparkles size={24} className="text-[#1C1A17]/40" />
                                 </div>
                                 <div>
-                                    <p className="text-base font-bold text-[#313851]">Select an Interview</p>
-                                    <p className="text-xs mt-1.5 max-w-sm text-[#313851]/60 leading-relaxed">
+                                    <p className="text-base font-bold text-[#1C1A17]">Select an Interview</p>
+                                    <p className="text-xs mt-1.5 max-w-sm text-[#1C1A17]/60 leading-relaxed">
                                         Choose an applicant profile from the queue to start assessing their transcript, viewing AI scorecards, and submitting final reviews.
                                     </p>
                                 </div>
@@ -419,16 +419,16 @@ const InterviewReviewsPage = () => {
                         {selectedReview && !detailLoading && (
                             <div className="space-y-8">
                                 {/* Details Header */}
-                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-[#C2CBD3]/40">
+                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-[#1C1A17]/15">
                                     <div className="flex items-start gap-4">
                                         <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center text-lg font-black shrink-0 ${getAvatarStyle(selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email).bg}`}>
                                             {getAvatarStyle(selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email).initials}
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-black text-[#313851] tracking-tight">
+                                            <h2 className="text-2xl font-black text-[#1C1A17] tracking-tight">
                                                 {selectedReview.user?.full_name || selectedReview.user_name || selectedReview.user?.email || selectedReview.user_email || 'Unnamed Candidate'}
                                             </h2>
-                                            <p className="text-sm font-semibold text-[#313851]/60 mt-1 flex items-center gap-1.5">
+                                            <p className="text-sm font-semibold text-[#1C1A17]/60 mt-1 flex items-center gap-1.5">
                                                 {selectedReview.user?.email || selectedReview.user_email || 'No email registered'}
                                             </p>
                                         </div>
@@ -440,33 +440,33 @@ const InterviewReviewsPage = () => {
 
                                 {/* Performance Grid Dashboard */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                    <div className="p-5 rounded-2xl bg-[#F4F1EA]/40 border border-[#1C1A17]/20 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#1C1A17]/15 flex items-center justify-center text-[#1C1A17]/80 shadow-sm shrink-0">
                                             <Clock size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Duration</p>
-                                            <p className="text-base font-extrabold text-[#313851]">{selectedReview.ai_scorecard?.duration_minutes || '0'} Mins</p>
+                                            <p className="text-[9px] font-black text-[#1C1A17]/55 uppercase tracking-widest leading-none mb-1">Duration</p>
+                                            <p className="text-base font-extrabold text-[#1C1A17]">{selectedReview.ai_scorecard?.duration_minutes || '0'} Mins</p>
                                         </div>
                                     </div>
 
-                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                    <div className="p-5 rounded-2xl bg-[#F4F1EA]/40 border border-[#1C1A17]/20 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#1C1A17]/15 flex items-center justify-center text-[#1C1A17]/80 shadow-sm shrink-0">
                                             <Award size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Round Type</p>
-                                            <p className="text-base font-extrabold text-[#313851] capitalize">{selectedReview.ai_scorecard?.interview_type || 'General'}</p>
+                                            <p className="text-[9px] font-black text-[#1C1A17]/55 uppercase tracking-widest leading-none mb-1">Round Type</p>
+                                            <p className="text-base font-extrabold text-[#1C1A17] capitalize">{selectedReview.ai_scorecard?.interview_type || 'General'}</p>
                                         </div>
                                     </div>
 
-                                    <div className="p-5 rounded-2xl bg-[#F6F3ED]/40 border border-[#C2CBD3]/60 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#C2CBD3]/40 flex items-center justify-center text-[#313851]/80 shadow-sm shrink-0">
+                                    <div className="p-5 rounded-2xl bg-[#F4F1EA]/40 border border-[#1C1A17]/20 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#1C1A17]/15 flex items-center justify-center text-[#1C1A17]/80 shadow-sm shrink-0">
                                             <MessageSquare size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-[9px] font-black text-[#313851]/55 uppercase tracking-widest leading-none mb-1">Depth</p>
-                                            <p className="text-base font-extrabold text-[#313851]">
+                                            <p className="text-[9px] font-black text-[#1C1A17]/55 uppercase tracking-widest leading-none mb-1">Depth</p>
+                                            <p className="text-base font-extrabold text-[#1C1A17]">
                                                 {selectedReview.ai_scorecard?.combined_transcript?.length || (userTranscript.length + aiTranscript.length) || '0'} Turns
                                             </p>
                                         </div>
@@ -474,11 +474,11 @@ const InterviewReviewsPage = () => {
                                 </div>
 
                                 {/* System Insights Context */}
-                                <div className="p-5 rounded-2xl bg-[#313851]/5 border border-[#313851]/15 flex items-start gap-3.5">
-                                    <Bot size={18} className="text-[#313851] mt-0.5 shrink-0" />
+                                <div className="p-5 rounded-2xl bg-[#D45B34]/5 border border-[#1C1A17]/15 flex items-start gap-3.5">
+                                    <Bot size={18} className="text-[#1C1A17] mt-0.5 shrink-0" />
                                     <div>
-                                        <p className="text-[10px] font-black text-[#313851] uppercase tracking-widest mb-1.5 leading-none">System Context</p>
-                                        <p className="text-xs text-[#313851]/90 font-medium leading-relaxed">
+                                        <p className="text-[10px] font-black text-[#1C1A17] uppercase tracking-widest mb-1.5 leading-none">System Context</p>
+                                        <p className="text-xs text-[#1C1A17]/90 font-medium leading-relaxed">
                                             {selectedReview.ai_scorecard?.combined_transcript?.length > 10
                                                 ? "Active conversation session. Review the unified timeline below to evaluate the candidate's communication and technical skills."
                                                 : "Limited engagement session. The user may have abandoned the interview mid-way or exited shortly after starting."}
@@ -488,19 +488,19 @@ const InterviewReviewsPage = () => {
 
                                 {/* Transcripts View Mode Selector */}
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between border-b border-[#C2CBD3]/40 pb-3">
-                                        <h3 className="text-sm font-extrabold text-[#313851] flex items-center gap-2">
-                                            <MessageSquareQuote size={16} className="text-[#313851]/50" />
+                                    <div className="flex items-center justify-between border-b border-[#1C1A17]/15 pb-3">
+                                        <h3 className="text-sm font-extrabold text-[#1C1A17] flex items-center gap-2">
+                                            <MessageSquareQuote size={16} className="text-[#1C1A17]/50" />
                                             Interview Conversation Transcript
                                         </h3>
                                         
                                         {/* Toggle button */}
-                                        <div className="flex rounded-xl bg-[#F6F3ED]/80 border border-[#C2CBD3]/40 p-0.5">
+                                        <div className="flex rounded-xl bg-[#F4F1EA]/80 border border-[#1C1A17]/15 p-0.5">
                                             <button
                                                 type="button"
                                                 onClick={() => setViewMode('chat')}
                                                 className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                                                    viewMode === 'chat' ? 'bg-[#313851] text-[#F6F3ED] shadow-sm' : 'text-[#313851]/60 hover:text-[#313851]'
+                                                    viewMode === 'chat' ? 'bg-[#D45B34] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
                                                 }`}
                                             >
                                                 <LayoutGrid size={11} /> Unified
@@ -509,7 +509,7 @@ const InterviewReviewsPage = () => {
                                                 type="button"
                                                 onClick={() => setViewMode('split')}
                                                 className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                                                    viewMode === 'split' ? 'bg-[#313851] text-[#F6F3ED] shadow-sm' : 'text-[#313851]/60 hover:text-[#313851]'
+                                                    viewMode === 'split' ? 'bg-[#D45B34] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
                                                 }`}
                                             >
                                                 <Clock size={11} /> Split View
@@ -520,30 +520,30 @@ const InterviewReviewsPage = () => {
                                     {/* Transcript container */}
                                     {viewMode === 'chat' && selectedReview.ai_scorecard?.combined_transcript?.length > 0 ? (
                                         /* Chronological Unified Chat Feed */
-                                        <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2 bg-[#F6F3ED]/30 border border-[#C2CBD3]/60 rounded-2xl p-5 custom-scrollbar">
+                                        <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2 bg-[#F4F1EA]/30 border border-[#1C1A17]/20 rounded-2xl p-5 custom-scrollbar">
                                             {selectedReview.ai_scorecard.combined_transcript.map((msg, index) => {
                                                 const isAI = msg.role === 'assistant' || msg.role === 'system';
                                                 return (
                                                     <div key={index} className={`flex items-start gap-3.5 ${isAI ? 'justify-start' : 'justify-end'}`}>
                                                         {isAI && (
-                                                            <div className="w-8 h-8 rounded-lg bg-[#313851] border border-[#313851] flex items-center justify-center text-white shrink-0">
+                                                            <div className="w-8 h-8 rounded-lg bg-[#D45B34] border border-[#D45B34] flex items-center justify-center text-white shrink-0">
                                                                 <Bot size={13} />
                                                             </div>
                                                         )}
                                                         <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed border shadow-[0_2px_4px_rgba(0,0,0,0.01)] ${
                                                             isAI 
-                                                            ? 'bg-[#313851]/5 border-[#313851]/15 text-[#313851]' 
-                                                            : 'bg-[#ffffff] border-[#C2CBD3] text-[#313851]'
+                                                            ? 'bg-[#D45B34]/5 border-[#1C1A17]/15 text-[#1C1A17]' 
+                                                            : 'bg-[#ffffff] border-[#1C1A17]/15 text-[#1C1A17]'
                                                         }`}>
                                                             <div className="flex items-center gap-2 mb-1">
-                                                                 <span className={`text-[9px] font-black uppercase tracking-wider ${isAI ? 'text-[#313851]/60' : 'text-[#313851]/60'}`}>
+                                                                 <span className={`text-[9px] font-black uppercase tracking-wider ${isAI ? 'text-[#1C1A17]/60' : 'text-[#1C1A17]/60'}`}>
                                                                     {isAI ? 'AI Interviewer' : 'Candidate'}
                                                                 </span>
                                                             </div>
                                                             <p className="font-semibold">{msg.content}</p>
                                                         </div>
                                                         {!isAI && (
-                                                            <div className="w-8 h-8 rounded-lg bg-[#C2CBD3] border border-[#C2CBD3] flex items-center justify-center text-[#313851] shrink-0">
+                                                            <div className="w-8 h-8 rounded-lg bg-[#1C1A17]/15 border border-[#1C1A17]/15 flex items-center justify-center text-[#1C1A17] shrink-0">
                                                                 <User size={13} />
                                                             </div>
                                                         )}
@@ -554,32 +554,32 @@ const InterviewReviewsPage = () => {
                                     ) : (
                                         /* Columns Split View Fallback */
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                            <div className="rounded-2xl border border-[#C2CBD3]/60 bg-[#F6F3ED]/30 p-5">
-                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#313851]/60 flex items-center gap-2 mb-4">
+                                            <div className="rounded-2xl border border-[#1C1A17]/20 bg-[#F4F1EA]/30 p-5">
+                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1C1A17]/60 flex items-center gap-2 mb-4">
                                                     <User size={14} /> Candidate Responses
                                                 </h4>
                                                 <div className="space-y-3 max-h-72 overflow-y-auto pr-1.5 custom-scrollbar">
                                                     {userTranscript.length === 0 && (
-                                                        <p className="text-xs text-[#313851]/50 italic">No candidate responses captured.</p>
+                                                        <p className="text-xs text-[#1C1A17]/50 italic">No candidate responses captured.</p>
                                                     )}
                                                     {userTranscript.map((entry, index) => (
-                                                        <div key={index} className="p-3.5 rounded-xl bg-[#ffffff] border border-[#C2CBD3] text-xs font-semibold leading-relaxed text-[#313851] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                                                        <div key={index} className="p-3.5 rounded-xl bg-[#ffffff] border border-[#1C1A17]/15 text-xs font-semibold leading-relaxed text-[#1C1A17] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
                                                             {entry}
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-2xl border border-[#C2CBD3]/60 bg-[#F6F3ED]/30 p-5">
-                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#313851]/60 flex items-center gap-2 mb-4">
+                                            <div className="rounded-2xl border border-[#1C1A17]/20 bg-[#F4F1EA]/30 p-5">
+                                                <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1C1A17]/60 flex items-center gap-2 mb-4">
                                                     <Bot size={14} /> AI Questions
                                                 </h4>
                                                 <div className="space-y-3 max-h-72 overflow-y-auto pr-1.5 custom-scrollbar">
                                                     {aiTranscript.length === 0 && (
-                                                        <p className="text-xs text-[#313851]/50 italic">No AI questions captured.</p>
+                                                        <p className="text-xs text-[#1C1A17]/50 italic">No AI questions captured.</p>
                                                     )}
                                                     {aiTranscript.map((entry, index) => (
-                                                        <div key={index} className="p-3.5 rounded-xl bg-[#313851]/5 border border-[#313851]/15 text-xs font-semibold leading-relaxed text-[#313851] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                                                        <div key={index} className="p-3.5 rounded-xl bg-[#D45B34]/5 border border-[#1C1A17]/15 text-xs font-semibold leading-relaxed text-[#1C1A17] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
                                                             {entry}
                                                         </div>
                                                     ))}
@@ -594,20 +594,20 @@ const InterviewReviewsPage = () => {
 
                     {/* Feedback Form Card */}
                     {selectedReview && (
-                        <form onSubmit={handleSubmit} className="bg-[#ffffff] border border-[#C2CBD3]/80 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#313851]/5 space-y-6">
+                        <form onSubmit={handleSubmit} className="bg-[#ffffff] border border-[#1C1A17]/25 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#1C1A17]/5 space-y-6">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#313851]/5 text-[#313851] text-[9px] font-black uppercase tracking-[0.2em] mb-3 border border-[#313851]/10">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D45B34]/5 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-3 border border-[#1C1A17]/10">
                                     <BookOpen size={10} />
                                     Review Form
                                 </div>
-                                <h3 className="text-2xl font-black tracking-tight text-[#313851]">Send Expert Feedback</h3>
-                                <p className="text-xs text-[#313851]/60 font-medium mt-1">Provide helpful feedback, recommendations, and next steps to the candidate.</p>
+                                <h3 className="text-2xl font-black tracking-tight text-[#1C1A17]">Send Expert Feedback</h3>
+                                <p className="text-xs text-[#1C1A17]/60 font-medium mt-1">Provide helpful feedback, recommendations, and next steps to the candidate.</p>
                             </div>
 
                             <div className="space-y-5">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
-                                        <BookOpen size={12} className="text-[#313851]/40" />
+                                    <label className="text-[10px] font-black text-[#1C1A17]/60 uppercase tracking-widest flex items-center gap-2">
+                                        <BookOpen size={12} className="text-[#1C1A17]/40" />
                                         Overall Summary
                                     </label>
                                     <textarea
@@ -615,12 +615,12 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, overallSummary: e.target.value }))}
                                         placeholder="Summarize their general performance and communication..."
                                         rows={4}
-                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-black text-[#1C1A17]/60 uppercase tracking-widest flex items-center gap-2">
                                         <CheckSquare size={12} className="text-emerald-600" />
                                         Key Strengths (One per line)
                                     </label>
@@ -629,12 +629,12 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, strengths: e.target.value }))}
                                         placeholder={"Excellent database querying knowledge\nSolid architectural understanding"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-black text-[#1C1A17]/60 uppercase tracking-widest flex items-center gap-2">
                                         <AlertTriangle size={12} className="text-rose-600" />
                                         Areas for Improvement (One per line)
                                     </label>
@@ -643,12 +643,12 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, improvements: e.target.value }))}
                                         placeholder={"Explain time complexity before writing code\nFalter under pressure"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-black text-[#1C1A17]/60 uppercase tracking-widest flex items-center gap-2">
                                         <Target size={12} className="text-amber-600" />
                                         Topics to Practice (One per line)
                                     </label>
@@ -657,12 +657,12 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, topics: e.target.value }))}
                                         placeholder={"Big-O Notation\nSystem Design Scaling Patterns"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-[#313851]/60 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-black text-[#1C1A17]/60 uppercase tracking-widest flex items-center gap-2">
                                         <ListTodo size={12} className="text-indigo-600" />
                                         Suggested Next Steps
                                     </label>
@@ -671,7 +671,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, nextSteps: e.target.value }))}
                                         placeholder="Review playbooks on system architecture, and schedule a mock session next week..."
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#C2CBD3] bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#313851] placeholder:text-[#313851]/30 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 focus:border-[#313851] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
                             </div>
@@ -679,7 +679,7 @@ const InterviewReviewsPage = () => {
                             <button
                                 type="submit"
                                 disabled={!selectedReviewId || saving}
-                                className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-[#313851] hover:bg-[#434c6d] py-4.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40 active:scale-[0.99] transition-all shadow-lg shadow-[#313851]/10 cursor-pointer"
+                                className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-[#D45B34] hover:bg-[#B84A27] py-4.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40 active:scale-[0.99] transition-all shadow-lg shadow-[#D45B34]/20 cursor-pointer"
                             >
                                 {saving ? <Activity size={16} className="animate-spin" /> : <Send size={15} />}
                                 {saving ? 'Submitting Analysis...' : 'Send Review Analysis'}

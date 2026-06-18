@@ -57,10 +57,10 @@ export const HiringTimeline = () => {
     }, []);
 
     return (
-        <section className="py-20 bg-[#313851] text-white overflow-hidden relative border-y border-white/10">
+        <section className="py-20 bg-[#222222] text-white overflow-hidden relative border-y border-white/10">
             {/* Background elements */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D45B34]/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#D45B34]/10 rounded-full blur-[120px] pointer-events-none" />
 
             {/* Back Button */}
             <div className="max-w-7xl mx-auto px-6 mb-6 relative z-10">
@@ -82,7 +82,7 @@ export const HiringTimeline = () => {
                         {role === ROLES.ADMIN && (
                             <Link 
                                 to="/admin/timeline"
-                                className="inline-flex items-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-[#313851] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-lg transition-all hover:scale-105 active:scale-95 duration-200"
+                                className="inline-flex items-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-[#222222] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-lg transition-all hover:scale-105 active:scale-95 duration-200"
                             >
                                 <Edit2 size={12} strokeWidth={2.5} /> Edit Timeline
                             </Link>
@@ -96,13 +96,13 @@ export const HiringTimeline = () => {
                 <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1.5 rounded-[20px] w-fit backdrop-blur-md shadow-2xl">
                     <button 
                         onClick={() => setHiringZone('on-campus')}
-                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-white text-[#313851] shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
+                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'on-campus' ? 'bg-[#D45B34] text-white shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
                     >
                         On-Campus
                     </button>
                     <button 
                         onClick={() => setHiringZone('off-campus')}
-                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-white text-[#313851] shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
+                        className={`px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${hiringZone === 'off-campus' ? 'bg-[#D45B34] text-white shadow-lg' : 'text-white/40 hover:text-white/60 hover:bg-white/5'}`}
                     >
                         Off-Campus
                     </button>
@@ -155,7 +155,7 @@ export const HiringTimeline = () => {
                                             className="relative flex items-center bg-white rounded-xl p-4 shadow-xl border border-zinc-100 group cursor-default"
                                         >
                                             {/* Timeline dot connecting to the background line */}
-                                            <div className="absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border-2 border-[#313851] shadow-sm z-20" />
+                                            <div className="absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border-2 border-[#D45B34] shadow-sm z-20" />
                                             
                                             <div className="flex-shrink-0 mr-4 drop-shadow-sm">
                                                 <CompanyLogo 
@@ -166,7 +166,7 @@ export const HiringTimeline = () => {
                                             </div>
                                             <div className="flex-grow min-w-0">
                                                 <div className="text-xs font-bold text-[#71717a] uppercase tracking-wider mb-1 truncate">{event.company}</div>
-                                                <div className="text-sm font-bold text-[#313851] leading-tight pr-2">{event.title}</div>
+                                                <div className="text-sm font-bold text-[#1C1A17] leading-tight pr-2">{event.title}</div>
                                             </div>
                                             <div className={`absolute -top-3 -right-2 border px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm ${getEventColor(event.type)}`}>
                                                 {getEventIcon(event.type)}

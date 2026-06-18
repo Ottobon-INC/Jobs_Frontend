@@ -3,8 +3,8 @@
 
 @layer base {
   :root {
-    --color-background: #F6F3ED;
-    --color-foreground: #313851;
+    --color-background: #F4F1EA;
+    --color-foreground: #1C1A17;
 
     --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -20,38 +20,38 @@
     --animate-spin-slow: spin 8s linear infinite;
 
     /* Brand Palette */
-    --color-primary: #313851;
-    --color-accent: #C2CBD3;
-    --color-background-soft: #F6F3ED;
+    --color-primary: #1C1A17;
+    --color-accent: #D45B34;
+    --color-background-soft: #F4F1EA;
     --color-job-card: #ffffff;
-    --color-on-primary: #F6F3ED;
+    --color-on-primary: #ffffff;
 
-    --bg-primary: #F6F3ED;
-    --bg-surface: rgba(49, 56, 81, 0.12);
-    --bg-surface-solid: #F6F3ED;
-    --bg-surface-hover: rgba(49, 56, 81, 0.22);
-    --bg-dark: #313851;
+    --bg-primary: #F4F1EA;
+    --bg-surface: rgba(28, 26, 23, 0.08);
+    --bg-surface-solid: #ffffff;
+    --bg-surface-hover: rgba(28, 26, 23, 0.15);
+    --bg-dark: #222222;
 
-    --accent: #C2CBD3;
-    --accent-hover: #313851;
-    --accent-primary: #C2CBD3;
-    --accent-secondary: rgba(194, 203, 211, 0.65);
-    --accent-tertiary: rgba(194, 203, 211, 0.14);
+    --accent: #D45B34;
+    --accent-hover: #B84A27;
+    --accent-primary: #D45B34;
+    --accent-secondary: rgba(212, 91, 52, 0.65);
+    --accent-tertiary: rgba(212, 91, 52, 0.14);
 
     --danger: #ef4444;
     --warning: #f59e0b;
     --success: #10b981;
 
-    --text-main: #313851;
-    --text-primary: #313851;
-    --text-muted: rgba(49, 56, 81, 0.85);
-    --text-subtle: rgba(49, 56, 81, 0.65);
-    --text-on-dark: #F6F3ED;
-    --text-muted-on-dark: rgba(246, 243, 237, 0.85);
+    --text-main: #1C1A17;
+    --text-primary: #1C1A17;
+    --text-muted: rgba(28, 26, 23, 0.85);
+    --text-subtle: rgba(28, 26, 23, 0.65);
+    --text-on-dark: #F4F1EA;
+    --text-muted-on-dark: rgba(244, 241, 234, 0.85);
     
-    --border-main: rgba(49, 56, 81, 0.15);
-    --border-color: rgba(49, 56, 81, 0.25);
-    --border-subtle: rgba(49, 56, 81, 0.1);
+    --border-main: rgba(28, 26, 23, 0.15);
+    --border-color: rgba(28, 26, 23, 0.25);
+    --border-subtle: rgba(28, 26, 23, 0.1);
 
     --background: var(--bg-primary);
     --foreground: var(--text-main);
@@ -614,12 +614,15 @@ canvas~div>a {
 [class~="bg-emerald-500"],
 [class~="bg-green-500"],
 [class~="bg-rose-500"],
-[class~="bg-black/5"],
 [class~="hover:bg-black"]:hover,
 [class~="hover:bg-black/90"]:hover,
 [class~="hover:bg-zinc-800"]:hover {
-  background-color: #C2CBD3 !important;
-  color: #050505 !important;
+  background-color: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+[class~="bg-black/5"] {
+  background-color: rgba(28, 26, 23, 0.05) !important;
 }
 
 [class~="text-black"],
@@ -705,7 +708,7 @@ canvas~div>a {
 
 .sidebar:hover {
   scrollbar-width: thin !important;
-  scrollbar-color: #C2CBD3 transparent !important;
+  scrollbar-color: var(--accent) transparent !important;
 }
 
 .sidebar:hover::-webkit-scrollbar {
@@ -714,7 +717,7 @@ canvas~div>a {
 }
 
 .sidebar:hover::-webkit-scrollbar-thumb {
-  background: #C2CBD3 !important;
+  background: var(--accent) !important;
   border-radius: 20px !important;
 }
 

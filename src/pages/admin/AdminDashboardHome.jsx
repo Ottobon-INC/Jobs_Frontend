@@ -51,7 +51,7 @@ const AdminDashboardHome = () => {
     if (loading) return <Loader fullScreen variant="logo" />;
 
     return (
-        <div className="max-w-[1600px] mx-auto pt-6 pb-12 px-4 sm:px-6 md:px-10 bg-[#FBFBFB] min-h-screen">
+        <div className="max-w-[1600px] mx-auto pt-6 pb-12 px-4 sm:px-6 md:px-10 bg-transparent min-h-screen">
             {/* Header */}
             <header className="mb-10 border-b border-zinc-100 pb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
                 <div>

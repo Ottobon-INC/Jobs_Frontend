@@ -17,7 +17,7 @@ const LoadingLogo = ({ className = "" }) => {
                 {/* Main Logo Square - Neu-Minimalist */}
                 <div className="relative w-20 h-20 flex items-center justify-center">
                     <img 
-                        src="/favicon.png" 
+                        src="/favicon.png?v=2" 
                         alt="Logo" 
                         className="w-full h-full rounded-[20px] shadow-2xl shadow-zinc-900/10"
                     />

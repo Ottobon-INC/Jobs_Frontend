@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink } from 'lucide-react';
+import { MapPin, IndianRupee, ArrowRight, Building2, Bookmark, GraduationCap, Clock, ExternalLink, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { saveJob, unsaveJob } from '../../api/jobsApi';
 import { useAuth } from '../../context/AuthContext';
 import { CompanyLogo } from '../new-grad/CompanyLogo';
 import { getKeySkills, getOverviewPreview } from '../../utils/jobOverview';
+import { toast } from 'react-hot-toast';
 
 const JobCard = ({ job, isAuthenticated = true }) => {
     const { savedJobIds, toggleJobSavedLocal } = useAuth();
@@ -76,16 +77,20 @@ const JobCard = ({ job, isAuthenticated = true }) => {
         if (!isAuthenticated) return;
         
         setLoading(true);
+        const toastId = toast.loading(saved ? 'Unsaving job...' : 'Saving job...');
         try {
             if (saved) {
                 await unsaveJob(job.id);
                 toggleJobSavedLocal(job.id, false);
+                toast.success('Job removed from saved roles', { id: toastId });
             } else {
                 await saveJob(job.id);
                 toggleJobSavedLocal(job.id, true);
+                toast.success('Job saved successfully!', { id: toastId });
             }
         } catch (err) {
             console.error('Failed to toggle save status', err);
+            toast.error(saved ? 'Failed to unsave job.' : 'Failed to save job.', { id: toastId });
         } finally {
             setLoading(false);
         }
@@ -99,7 +104,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             className="group/job relative w-full min-w-0 h-full"
         >
-            <div className="relative bg-white border border-zinc-100 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#313851]/10 flex flex-col overflow-hidden w-full min-w-0 h-full">
+            <div className="relative bg-white border border-zinc-100 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 shadow-xl shadow-zinc-900/5 transition-all hover:shadow-2xl hover:shadow-[#D45B34]/10 flex flex-col overflow-hidden w-full min-w-0 h-full">
                 
                 {/* 1. Top Row: Logo & Badges */}
                 <div className="flex items-start justify-between mb-5 sm:mb-8">
@@ -127,7 +132,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
 
                 {/* 2. Job Title & Company */}
                 <div className="mb-5 sm:mb-8">
-                    <h3 className="text-lg sm:text-2xl font-bold text-[#313851] leading-tight mb-1.5 sm:mb-2 line-clamp-2">
+                    <h3 className="text-lg sm:text-2xl font-bold text-[#1C1A17] leading-tight mb-1.5 sm:mb-2 line-clamp-2">
                         {cleanTitle}
                     </h3>
                     <p className="text-[10px] sm:text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">
@@ -142,14 +147,14 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                         <div className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-zinc-100 shadow-sm min-w-0">
                             <p className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Experience</p>
                             <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[11px] sm:text-xs min-w-0">
-                                <Clock size={12} className="text-[#313851] shrink-0" />
+                                <Clock size={12} className="text-[#1C1A17] shrink-0" />
                                 <span className="truncate">{displayExperience}</span>
                             </div>
                         </div>
                         <div className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-zinc-100 shadow-sm min-w-0">
                             <p className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Location</p>
                             <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[11px] sm:text-xs min-w-0">
-                                <MapPin size={12} className="text-[#313851] shrink-0" />
+                                <MapPin size={12} className="text-[#1C1A17] shrink-0" />
                                 <span className="truncate">{displayLocation}</span>
                             </div>
                         </div>
@@ -157,7 +162,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
 
                     {/* Expandable Section: Skills required */}
                     <div className="overflow-hidden transition-all duration-500 max-h-0 group-hover/job:max-h-[180px] opacity-0 group-hover/job:opacity-100 group-hover/job:mt-6">
-                        <p className="text-[9px] font-black text-[#313851] uppercase tracking-widest mb-3">Required Skills</p>
+                        <p className="text-[9px] font-black text-[#1C1A17] uppercase tracking-widest mb-3">Required Skills</p>
                         <div className="flex flex-wrap gap-2 overflow-y-auto max-h-[130px] custom-scrollbar pr-2">
                             {keySkills.map((skill, idx) => (
                                 <span
@@ -174,7 +179,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 {/* 4. Action Bar */}
                 <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
                     <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1 min-w-0">
-                        <button className="w-full py-3.5 sm:py-4 bg-[#313851] text-white rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] flex items-center justify-center transition-all hover:bg-black group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10 truncate">
+                        <button className="w-full py-3.5 sm:py-4 bg-[#D45B34] text-white rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] flex items-center justify-center transition-all hover:bg-[#B84A27] group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10 truncate">
                             View details
                         </button>
                     </Link>
@@ -183,11 +188,15 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                         disabled={loading || !isAuthenticated}
                         className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 border shrink-0 ${
                             saved
-                                ? 'bg-amber-50 border-amber-200 text-amber-600'
+                                ? 'bg-zinc-100 border-zinc-300 text-zinc-900'
                                 : 'bg-zinc-50 border-zinc-100 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100'
                         } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                        <Bookmark size={20} className={saved ? 'fill-amber-600' : ''} />
+                        {loading ? (
+                            <Loader2 size={20} className="animate-spin text-zinc-500" />
+                        ) : (
+                            <Bookmark size={20} fill={saved ? "black" : "none"} className={saved ? "text-black" : ""} />
+                        )}
                     </button>
                 </div>
             </div>

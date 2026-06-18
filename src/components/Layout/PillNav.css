@@ -128,7 +128,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  color: var(--hover-text, #F6F3ED);
+  color: var(--hover-text, #F4F1EA);
   z-index: 3;
   display: inline-block;
   will-change: transform, opacity;
@@ -137,11 +137,11 @@
 /* Custom Active Pill State to match the screenshot */
 .pill.is-active {
   background: var(--base, #313851) !important;
-  color: var(--hover-text, #F6F3ED) !important;
+  color: var(--hover-text, #F4F1EA) !important;
 }
 
 .pill.is-active .pill-label {
-  color: var(--hover-text, #F6F3ED) !important;
+  color: var(--hover-text, #F4F1EA) !important;
 }
 
 .desktop-only {

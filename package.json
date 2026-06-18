@@ -46,6 +46,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "agentation": "^3.0.2",
+    "agentation-mcp": "^1.2.0",
     "autoprefixer": "^10.4.24",
     "dotenv": "^17.4.2",
     "eslint": "^9.39.1",

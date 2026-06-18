@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { initiateGoogleLogin } from '../../api/authApi';
 import { ROLES } from '../../utils/constants';
-import { Briefcase, Eye, EyeOff, Sparkles, ChevronRight } from 'lucide-react';
+import { Briefcase, Eye, EyeOff, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../api/client';
 import { useAuth } from '../../hooks/useAuth';
@@ -60,15 +60,12 @@ const LoginPage = () => {
                 <div className="text-center mb-6">
                     <div className="w-16 h-16 mx-auto mb-4">
                         <img 
-                            src="/favicon.png" 
+                            src="/favicon.png?v=2" 
                             alt="Logo" 
                             className="w-full h-full rounded-2xl shadow-lg shadow-black/5"
                         />
                     </div>
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-zinc-50 text-zinc-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 border border-zinc-100">
-                        <Sparkles size={12} className="text-zinc-400" />
-                        Network Access
-                    </div>
+
                     <h1 className="text-3xl font-sans font-bold text-zinc-900 tracking-tight">Sign In</h1>
                     <p className="text-sm font-medium text-zinc-400 mt-2 tracking-wide leading-relaxed">Continue to Ottobon Market</p>
                 </div>

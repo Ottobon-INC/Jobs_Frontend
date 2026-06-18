@@ -40,9 +40,9 @@ export default function LandingPage() {
     };
 
     return (
-        <main className="bg-[#F6F3ED]">
+        <main className="bg-[#F4F1EA]">
             {/* ── Hero Section ─────────────────────────── */}
-            <header className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-[#313851]">
+            <header className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-[#222222]">
                 <div className="pointer-events-none absolute inset-0">
                     <BackgroundPaths />
                 </div>
@@ -57,7 +57,7 @@ export default function LandingPage() {
                     </Link>
                     <Link
                         to="/register"
-                        className="px-6 py-2.5 bg-white text-[#313851] rounded-full font-bold transition-all hover:scale-105 active:scale-95 text-sm shadow-[0_10px_20px_-10px_rgba(255,255,255,0.3)]"
+                        className="px-6 py-2.5 bg-white text-[#1C1A17] rounded-full font-bold transition-all hover:scale-105 active:scale-95 text-sm shadow-[0_10px_20px_-10px_rgba(255,255,255,0.3)]"
                     >
                         Sign Up
                     </Link>
@@ -66,7 +66,7 @@ export default function LandingPage() {
                 {/* ── Hero Content ───────────────────── */}
                 <div className="absolute z-30 top-0 left-0 right-0 flex flex-col items-center pt-16 px-6">
                     {/* Eyebrow label */}
-                    <p className="text-[#F6F3ED]/65 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">
+                    <p className="text-[#F4F1EA]/65 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">
                         The best companies are looking for proven talent.
                     </p>
 
@@ -79,8 +79,8 @@ export default function LandingPage() {
                             marginBottom: '1rem',
                         }}
                     >
-                        <span className="text-[#F6F3ED]">Unlock your ultimate </span>
-                        <span className="bg-gradient-to-r from-[#F6F3ED] to-[#C2CBD3] bg-clip-text text-transparent">
+                        <span className="text-[#F4F1EA]">Unlock your ultimate </span>
+                        <span className="bg-gradient-to-r from-[#F4F1EA] to-[#D45B34] bg-clip-text text-transparent">
                             career potential.
                         </span>
                     </h1>
@@ -91,7 +91,7 @@ export default function LandingPage() {
                         style={{
                             fontFamily: "'Inter', system-ui, sans-serif",
                             fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
-                            color: 'rgba(246, 243, 237, 0.85)',
+                            color: 'rgba(244, 241, 234, 0.85)',
                             marginBottom: '1.75rem',
                             letterSpacing: '-0.01em',
                         }}
@@ -103,13 +103,13 @@ export default function LandingPage() {
                     <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             to="/jobs"
-                            className="px-6 py-3 bg-[#C2CBD3] text-[#313851] rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_20px_40px_-15px_rgba(194,203,211,0.3)] text-sm"
+                            className="px-6 py-3 bg-[#D45B34] text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_20px_40px_-15px_rgba(212,91,52,0.4)] text-sm hover:bg-[#B84A27]"
                         >
                             Browse Open Roles
                         </Link>
                         <button
                             onClick={scrollToCategories}
-                            className="px-6 py-3 border border-[#C2CBD3] text-[#C2CBD3] rounded-xl font-bold transition-all hover:bg-[#C2CBD3]/10 text-sm"
+                            className="px-6 py-3 border border-[#D45B34] text-[#D45B34] rounded-xl font-bold transition-all hover:bg-[#D45B34]/10 text-sm"
                         >
                             Explore Categories
                         </button>

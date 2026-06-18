@@ -77,9 +77,9 @@ const NewGradDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED]">
+        <div className="min-h-screen bg-[#F4F1EA]">
             {/* Header Navigation */}
-            <div className="bg-[#313851] py-4 px-6 flex items-center justify-between border-b border-white/5 sticky top-0 z-50">
+            <div className="bg-[#222222] py-4 px-6 flex items-center justify-between border-b border-white/5 sticky top-0 z-50">
                 <Link 
                     to="/new-grad" 
                     className="inline-flex items-center gap-2 text-[#ffffff]/60 hover:text-[#ffffff] transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
@@ -93,7 +93,7 @@ const NewGradDetailPage = () => {
             </div>
 
             {/* Hero Section */}
-            <header className="bg-[#313851] pt-20 pb-28 px-6 relative overflow-hidden">
+            <header className="bg-[#222222] pt-20 pb-28 px-6 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 relative z-10">
                     <CompanyLogo company={company} className="w-32 h-32" iconSize={48} />
                     <div className="flex-1 text-center md:text-left">
@@ -108,7 +108,7 @@ const NewGradDetailPage = () => {
                             </div>
                         </div>
                         <p className="text-sm md:text-base text-white/80 mb-3 font-semibold tracking-wide uppercase flex items-center gap-2 justify-center md:justify-start">
-                            Candidate Insights • {new Date().getFullYear()} Playbook • <Eye size={16} className="inline text-white/60 animate-pulse shrink-0" /> {company.views_count || 0} Views
+                            Candidate Insights • {new Date().getFullYear()} Playbook • <Eye size={16} className="inline text-[#F4F1EA]/65 animate-pulse shrink-0" /> {company.views_count || 0} Views
                         </p>
                         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">{company.name}</h1>
                         <p className="text-xl text-white/90 font-medium max-w-3xl leading-relaxed">
@@ -143,7 +143,7 @@ const NewGradDetailPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Target Roles</p>
-                                    <p className="text-xs font-bold text-[#313851]">{company?.roles?.slice(0, 3)?.join(' • ')}</p>
+                                    <p className="text-xs font-bold text-[#1C1A17]">{company?.roles?.slice(0, 3)?.join(' • ')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 border-l border-zinc-50 pl-6">
@@ -152,7 +152,7 @@ const NewGradDetailPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Hiring Cycle</p>
-                                    <p className="text-xs font-bold text-[#313851]">{company.hiring_seasons || company.hiringSeasons}</p>
+                                    <p className="text-xs font-bold text-[#1C1A17]">{company.hiring_seasons || company.hiringSeasons}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 border-l border-zinc-50 pl-6">
@@ -161,12 +161,12 @@ const NewGradDetailPage = () => {
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Offices</p>
-                                    <p className="text-xs font-bold text-[#313851]">{company?.locations?.[0]} & {(company?.locations?.length || 1) - 1} more</p>
+                                    <p className="text-xs font-bold text-[#1C1A17]">{company?.locations?.[0]} & {(company?.locations?.length || 1) - 1} more</p>
                                 </div>
                             </div>
                             <Link 
                                 to={company.jobs_link || company.jobsLink || '#'}
-                                className="px-6 py-3 bg-[#313851] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-[#313851]/20"
+                                className="px-6 py-3 bg-[#D45B34] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 hover:bg-[#B84A27] transition-all shadow-lg shadow-[#D45B34]/20"
                             >
                                 View Jobs
                             </Link>

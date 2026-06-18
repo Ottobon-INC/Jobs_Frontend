@@ -18,6 +18,7 @@ import {
     Trash2 
 } from 'lucide-react';
 import { analyzeResumeATS } from '../../api/resumeAnalyzerApi';
+import { getMyProfile } from '../../api/usersApi';
 import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 // Refined Neu-Minimalist Card styling
@@ -57,6 +58,32 @@ const ATSAnalyzerPage = () => {
     const [resumeText, setResumeText] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [showTextPaste, setShowTextPaste] = useState(false);
+
+    // Profile resume states
+    const [profileResumeText, setProfileResumeText] = useState('');
+    const [profileResumeFileName, setProfileResumeFileName] = useState('');
+    const [useProfileResume, setUseProfileResume] = useState(false);
+    const [fetchingProfile, setFetchingProfile] = useState(false);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                setFetchingProfile(true);
+                const data = await getMyProfile();
+                if (data?.resume_text) {
+                    setProfileResumeText(data.resume_text);
+                    setProfileResumeFileName(data.resume_file_name || 'profile_resume.pdf');
+                    setUseProfileResume(true);
+                }
+            } catch (err) {
+                console.error("Failed to fetch user profile for ATS scanner", err);
+            } finally {
+                setFetchingProfile(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
     useEffect(() => {
         if (location.state?.jobDescription) {
@@ -129,9 +156,16 @@ const ATSAnalyzerPage = () => {
         setError(null);
 
         // Validation
-        if (!file && !resumeText.trim()) {
-            setError("Please upload a resume file or paste your resume text first.");
-            return;
+        if (useProfileResume) {
+            if (!profileResumeText.trim()) {
+                setError("Profile resume is empty or invalid. Please upload a file instead.");
+                return;
+            }
+        } else {
+            if (!file && !resumeText.trim()) {
+                setError("Please upload a resume file or paste your resume text first.");
+                return;
+            }
         }
         if (!jobDescription.trim()) {
             setError("Please enter the job description manually to perform matching.");
@@ -143,7 +177,9 @@ const ATSAnalyzerPage = () => {
 
         try {
             const formData = new FormData();
-            if (file) {
+            if (useProfileResume) {
+                formData.append('resume_text', profileResumeText);
+            } else if (file) {
                 formData.append('file', file);
             } else {
                 formData.append('resume_text', resumeText);
@@ -187,6 +223,11 @@ const ATSAnalyzerPage = () => {
         setJobDescription('');
         setCompletedTips({});
         setError(null);
+        if (profileResumeText) {
+            setUseProfileResume(true);
+        } else {
+            setUseProfileResume(false);
+        }
     };
 
     // Score evaluation graphics variables
@@ -322,12 +363,64 @@ const ATSAnalyzerPage = () => {
                                         <FileText size={16} />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold tracking-tight text-zinc-900">Upload Resume</h2>
+                                        <h2 className="text-lg font-bold tracking-tight text-zinc-900 font-sans">Upload Resume</h2>
                                         <p className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest">Document upload or text pasting</p>
                                     </div>
                                 </div>
 
-                                {!showTextPaste ? (
+                                {/* Modern Selector Tabs */}
+                                <div className="flex gap-2 mb-6 p-1 bg-zinc-50 rounded-xl border border-zinc-100">
+                                    {profileResumeText && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setUseProfileResume(true);
+                                                setShowTextPaste(false);
+                                            }}
+                                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${useProfileResume ? 'bg-white text-zinc-900 shadow-sm border border-zinc-200/50' : 'text-zinc-400 hover:text-zinc-600'}`}
+                                        >
+                                            Profile Resume
+                                        </button>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setUseProfileResume(false);
+                                            setShowTextPaste(false);
+                                        }}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${(!useProfileResume && !showTextPaste) ? 'bg-white text-zinc-900 shadow-sm border border-zinc-200/50' : 'text-zinc-400 hover:text-zinc-600'}`}
+                                    >
+                                        Upload File
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setUseProfileResume(false);
+                                            setShowTextPaste(true);
+                                        }}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${(!useProfileResume && showTextPaste) ? 'bg-white text-zinc-900 shadow-sm border border-zinc-200/50' : 'text-zinc-400 hover:text-zinc-600'}`}
+                                    >
+                                        Paste Text
+                                    </button>
+                                </div>
+
+                                {useProfileResume ? (
+                                    /* Profile Resume Info Card */
+                                    <div className="flex-1 flex flex-col items-center justify-center p-8 border border-dashed border-zinc-200 bg-zinc-50/20 rounded-2xl gap-4 text-center">
+                                        <div className="p-4 bg-zinc-900 text-white rounded-2xl shadow-xl shadow-zinc-900/10">
+                                            <FileText size={32} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-sm text-zinc-800 font-sans">Using Profile Resume</h3>
+                                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">
+                                                {profileResumeFileName}
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg text-[9px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                            <CheckCircle size={12} /> Ready to Scan
+                                        </div>
+                                    </div>
+                                ) : !showTextPaste ? (
                                     /* Modern Minimalist Dropzone */
                                     <div className="flex-1 flex flex-col">
                                         <div
@@ -364,7 +457,7 @@ const ATSAnalyzerPage = () => {
                                             ) : (
                                                 <div className="flex flex-col items-center gap-2">
                                                     <Upload size={32} className="text-zinc-400 group-hover:-translate-y-0.5 transition-transform" />
-                                                    <span className="font-bold text-sm text-zinc-800">Drag & drop your resume file</span>
+                                                    <span className="font-bold text-sm text-zinc-800 font-sans">Drag & drop your resume file</span>
                                                     <span className="text-[9px] font-bold text-zinc-400 tracking-widest uppercase">or click to browse local folders</span>
                                                     <div className="mt-4 px-2.5 py-1 bg-zinc-100/50 text-[8px] font-bold uppercase text-zinc-400 tracking-widest rounded-md border border-zinc-200/20">
                                                         PDF / TXT (MAX 5MB)
@@ -372,16 +465,6 @@ const ATSAnalyzerPage = () => {
                                                 </div>
                                             )}
                                         </div>
-
-                                        {!file && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowTextPaste(true)}
-                                                className="mt-4 text-center text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors"
-                                            >
-                                                — Switch to Paste Text —
-                                            </button>
-                                        )}
                                     </div>
                                 ) : (
                                     /* Modern Minimalist Textarea */
@@ -397,16 +480,6 @@ const ATSAnalyzerPage = () => {
                                             <span className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest font-mono">
                                                 Words: {resumeText.split(/\s+/).filter(Boolean).length}
                                             </span>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setShowTextPaste(false);
-                                                    setResumeText('');
-                                                }}
-                                                className="text-[10px] font-bold uppercase tracking-widest text-rose-500 hover:text-rose-600 transition-colors"
-                                            >
-                                                ← Switch to File Uploader
-                                            </button>
                                         </div>
                                     </div>
                                 )}

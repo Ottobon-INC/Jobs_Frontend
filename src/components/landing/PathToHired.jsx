@@ -6,7 +6,7 @@ import { ShaderAnimation } from "../ui/ShaderAnimation";
 
 export function PathToHired() {
     return (
-        <section className="relative py-24 overflow-hidden bg-[#F6F3ED]">
+        <section className="relative py-24 overflow-hidden bg-[#F4F1EA]">
             {/* Shader Background */}
             <div className="absolute inset-0 z-0 opacity-10">
                 <ShaderAnimation />
@@ -15,7 +15,7 @@ export function PathToHired() {
             <div className="container mx-auto px-4 max-w-6xl relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-20 gap-6">
                     <h2
-                        className="font-medium tracking-tight leading-[0.95] text-[#313851]"
+                        className="font-medium tracking-tight leading-[0.95] text-[#1C1A17]"
                         style={{
                             fontFamily: "'Inter', system-ui, sans-serif",
                             fontSize: 'clamp(3rem, 7vw, 5.5rem)',
@@ -27,7 +27,7 @@ export function PathToHired() {
                     </h2>
                     <Link
                         to="/register"
-                        className="font-bold px-8 py-3 rounded-xl transition-all hover:scale-105 cursor-pointer inline-block bg-[#313851] text-[#F6F3ED]"
+                        className="font-bold px-8 py-3 rounded-xl transition-all hover:scale-105 cursor-pointer inline-block bg-[#D45B34] text-white hover:bg-[#B84A27]"
                     >
                         Get started free
                     </Link>
@@ -56,11 +56,11 @@ export function PathToHired() {
                             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
                             className="space-y-6"
                         >
-                            <div className="w-12 h-12 rounded-full flex items-center justify-center border bg-[#313851]/[0.06] border-[#313851]/[0.14]">
-                                <Icon className="w-5 h-5 text-[#313851]" />
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center border bg-[#D45B34]/[0.06] border-[#D45B34]/[0.14]">
+                                <Icon className="w-5 h-5 text-[#D45B34]" />
                             </div>
                             <h3
-                                className="font-medium text-[#313851] tracking-tight"
+                                className="font-medium text-[#1C1A17] tracking-tight"
                                 style={{
                                     fontFamily: "'Inter', system-ui, sans-serif",
                                     fontSize: '1.1rem',
@@ -68,7 +68,7 @@ export function PathToHired() {
                             >
                                 {title}
                             </h3>
-                            <p className="text-sm leading-relaxed font-medium text-[#313851]/85">
+                            <p className="text-sm leading-relaxed font-medium text-[#1C1A17]/85">
                                 {body}
                             </p>
                         </motion.div>

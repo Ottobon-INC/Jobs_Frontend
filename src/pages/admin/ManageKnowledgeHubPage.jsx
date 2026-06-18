@@ -221,12 +221,12 @@ const ManageKnowledgeHubPage = () => {
     const isGlobalModified = globalPrompt !== originalGlobalPrompt;
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED] p-8 text-[#313851]">
+        <div className="min-h-screen bg-[#F4F1EA] p-8 text-[#1C1A17]">
             <div className="max-w-6xl mx-auto">
                 {/* Back Button */}
                 <button
                     onClick={() => navigate('/admin/dashboard')}
-                    className="inline-flex items-center gap-2 text-[#313851]/60 hover:text-[#313851] transition-all text-xs font-black uppercase tracking-wider mb-6 bg-white border border-[#313851]/10 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 cursor-pointer"
+                    className="inline-flex items-center gap-2 text-[#1C1A17]/60 hover:text-[#1C1A17] transition-all text-xs font-black uppercase tracking-wider mb-6 bg-white border border-[#1C1A17]/10 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 cursor-pointer"
                 >
                     <ArrowLeft size={14} strokeWidth={3} /> Dashboard
                 </button>
@@ -235,20 +235,20 @@ const ManageKnowledgeHubPage = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-                            <Brain className="w-8 h-8 text-[#313851]" strokeWidth={2.5} />
+                            <Brain className="w-8 h-8 text-[#1C1A17]" strokeWidth={2.5} />
                             Brain
                         </h1>
-                        <p className="text-[#313851]/60 mt-1">Configure simulator-wide prompts and target company guidebooks</p>
+                        <p className="text-[#1C1A17]/60 mt-1">Configure simulator-wide prompts and target company guidebooks</p>
                     </div>
 
                     {/* Tab Switcher */}
-                    <div className="bg-[#313851]/5 p-1 rounded-xl flex gap-1 self-start">
+                    <div className="bg-[#D45B34]/5 p-1 rounded-xl flex gap-1 self-start">
                         <button
                             onClick={() => setActiveTab('global')}
                             className={`px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                 activeTab === 'global' 
-                                    ? 'bg-[#313851] text-[#F6F3ED] shadow-md' 
-                                    : 'text-[#313851]/75 hover:bg-[#313851]/5'
+                                    ? 'bg-[#D45B34] text-white shadow-md' 
+                                    : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
                             }`}
                         >
                             <span className="flex items-center gap-1.5">
@@ -259,8 +259,8 @@ const ManageKnowledgeHubPage = () => {
                             onClick={() => setActiveTab('company')}
                             className={`px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                 activeTab === 'company' 
-                                    ? 'bg-[#313851] text-[#F6F3ED] shadow-md' 
-                                    : 'text-[#313851]/75 hover:bg-[#313851]/5'
+                                    ? 'bg-[#D45B34] text-white shadow-md' 
+                                    : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
                             }`}
                         >
                             <span className="flex items-center gap-1.5">
@@ -279,12 +279,12 @@ const ManageKnowledgeHubPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white rounded-3xl p-8 shadow-sm border border-[#313851]/5"
+                            className="bg-white rounded-3xl p-8 shadow-sm border border-[#1C1A17]/10"
                         >
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#313851]/10 pb-4 mb-6">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#1C1A17]/10 pb-4 mb-6">
                                 <div>
                                     <h2 className="text-xl font-black">Global Simulator Behavior Prompt</h2>
-                                    <p className="text-sm text-[#313851]/60 mt-1">Configure the core AI interviewer instructions, turn discipline rules, and standard protocols.</p>
+                                    <p className="text-sm text-[#1C1A17]/60 mt-1">Configure the core AI interviewer instructions, turn discipline rules, and standard protocols.</p>
                                 </div>
                                 
                                 {/* Status Indicator */}
@@ -305,11 +305,11 @@ const ManageKnowledgeHubPage = () => {
 
                             {/* Prompt Editing Area */}
                             <div className="space-y-6">
-                                <div className="bg-[#313851]/5 rounded-2xl p-5 border border-[#313851]/10">
-                                    <h3 className="text-xs font-black uppercase tracking-wider text-[#313851]/60 mb-2 flex items-center gap-1.5">
+                                <div className="bg-[#D45B34]/5 rounded-2xl p-5 border border-[#1C1A17]/10">
+                                    <h3 className="text-xs font-black uppercase tracking-wider text-[#1C1A17]/60 mb-2 flex items-center gap-1.5">
                                         <AlertCircle size={14} /> Quick Guide
                                     </h3>
-                                    <ul className="text-xs text-[#313851]/75 space-y-1.5 list-disc list-inside">
+                                    <ul className="text-xs text-[#1C1A17]/75 space-y-1.5 list-disc list-inside">
                                         <li>Define the phases, response style, evaluations, and deflection rules.</li>
                                         <li>You must instruct the AI to use classification tags `[MAIN_QUESTION]` and `[FOLLOW_UP]` at the start of responses so the UI parses rounds correctly.</li>
                                         <li>To fallback to the hardcoded default prompt, click the "Reset to Default" button.</li>
@@ -317,7 +317,7 @@ const ManageKnowledgeHubPage = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-2.5">
+                                    <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-2.5">
                                         Prompt Instructions Content
                                     </label>
                                     <textarea
@@ -325,11 +325,11 @@ const ManageKnowledgeHubPage = () => {
                                         onChange={(e) => setGlobalPrompt(e.target.value)}
                                         placeholder="Paste your system prompt instructions here..."
                                         rows={16}
-                                        className="w-full bg-[#F6F3ED]/30 border border-[#313851]/15 rounded-2xl p-5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#313851]/10 text-[#313851] placeholder-[#313851]/30 leading-relaxed shadow-inner"
+                                        className="w-full bg-[#F4F1EA]/30 border border-[#1C1A17]/15 rounded-2xl p-5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed shadow-inner"
                                     />
                                 </div>
 
-                                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#313851]/10 pt-6 mt-6">
+                                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#1C1A17]/10 pt-6 mt-6">
                                     <button
                                         onClick={handleResetGlobalPrompt}
                                         disabled={loading || globalEntries.length === 0}
@@ -344,7 +344,7 @@ const ManageKnowledgeHubPage = () => {
                                         disabled={loading || !isGlobalModified}
                                         className={`flex items-center gap-2 px-7 py-3 rounded-xl font-bold transition-all shadow-md text-sm cursor-pointer ${
                                             isGlobalModified 
-                                                ? 'bg-[#313851] text-white hover:scale-105 active:scale-95' 
+                                                ? 'bg-[#D45B34] text-white hover:scale-105 active:scale-95' 
                                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
                                         }`}
                                     >
@@ -364,14 +364,14 @@ const ManageKnowledgeHubPage = () => {
                         >
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
                             {/* Left Column: Form to Add Guide */}
-                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#313851]/5 self-start">
-                                <h2 className="text-lg font-black border-b border-[#313851]/10 pb-3 mb-5">
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#1C1A17]/10 self-start">
+                                <h2 className="text-lg font-black border-b border-[#1C1A17]/10 pb-3 mb-5">
                                     Add Company Guidelines
                                 </h2>
                                 
                                 <form onSubmit={handleCreateGuideline} className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-1.5">
+                                        <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-1.5">
                                             Guidelines Title
                                         </label>
                                         <input
@@ -379,14 +379,14 @@ const ManageKnowledgeHubPage = () => {
                                             placeholder="e.g. Google Android Engineer Specs"
                                             value={newTitle}
                                             onChange={(e) => setNewTitle(e.target.value)}
-                                            className="w-full bg-[#F6F3ED]/40 border border-[#313851]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 text-sm text-[#313851] font-bold placeholder-[#313851]/30"
+                                            className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                             required
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-1.5">
+                                            <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-1.5">
                                                 Company Name
                                             </label>
                                             <input
@@ -394,12 +394,12 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="e.g. Google"
                                                 value={newCompany}
                                                 onChange={(e) => setNewCompany(e.target.value)}
-                                                className="w-full bg-[#F6F3ED]/40 border border-[#313851]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 text-sm text-[#313851] font-bold placeholder-[#313851]/30"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                                 required
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-1.5">
+                                            <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-1.5">
                                                 Target Role (Optional)
                                             </label>
                                             <input
@@ -407,24 +407,24 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="e.g. Android Engineer"
                                                 value={newRole}
                                                 onChange={(e) => setNewRole(e.target.value)}
-                                                className="w-full bg-[#F6F3ED]/40 border border-[#313851]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 text-sm text-[#313851] font-bold placeholder-[#313851]/30"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Source Type Selector */}
-                                    <div className="border-t border-[#313851]/10 pt-4 mt-2">
-                                        <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-2">
+                                    <div className="border-t border-[#1C1A17]/10 pt-4 mt-2">
+                                        <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-2">
                                             Content Source Type
                                         </label>
-                                        <div className="bg-[#313851]/5 p-1 rounded-xl flex gap-1 w-full">
+                                        <div className="bg-[#D45B34]/5 p-1 rounded-xl flex gap-1 w-full">
                                             <button
                                                 type="button"
                                                 onClick={() => setSourceType('text')}
                                                 className={`flex-1 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                                     sourceType === 'text' 
-                                                        ? 'bg-[#313851] text-[#F6F3ED] shadow' 
-                                                        : 'text-[#313851]/75 hover:bg-[#313851]/5'
+                                                        ? 'bg-[#D45B34] text-white shadow' 
+                                                        : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
                                                 }`}
                                             >
                                                 Write Note
@@ -434,8 +434,8 @@ const ManageKnowledgeHubPage = () => {
                                                 onClick={() => setSourceType('file')}
                                                 className={`flex-1 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                                     sourceType === 'file' 
-                                                        ? 'bg-[#313851] text-[#F6F3ED] shadow' 
-                                                        : 'text-[#313851]/75 hover:bg-[#313851]/5'
+                                                        ? 'bg-[#D45B34] text-white shadow' 
+                                                        : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
                                                 }`}
                                             >
                                                 Upload Doc (PDF/TXT)
@@ -449,7 +449,7 @@ const ManageKnowledgeHubPage = () => {
                                             initial={{ opacity: 0, height: 0 }}
                                             animate={{ opacity: 1, height: 'auto' }}
                                         >
-                                            <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-1.5">
+                                            <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-1.5">
                                                 Guideline Text Note
                                             </label>
                                             <textarea
@@ -457,7 +457,7 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="Write specific guidelines, topics to target, or culture questions to ask..."
                                                 value={textContent}
                                                 onChange={(e) => setTextContent(e.target.value)}
-                                                className="w-full bg-[#F6F3ED]/40 border border-[#313851]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#313851]/10 text-xs text-[#313851] placeholder-[#313851]/30 leading-relaxed"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed"
                                                 required={sourceType === 'text'}
                                             />
                                         </motion.div>
@@ -467,13 +467,13 @@ const ManageKnowledgeHubPage = () => {
                                             animate={{ opacity: 1, height: 'auto' }}
                                             className="space-y-2"
                                         >
-                                            <label className="block text-xs font-black uppercase tracking-wider text-[#313851]/55 mb-1">
+                                            <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-1">
                                                 Upload Guide File
                                             </label>
                                             <div className={`border border-dashed transition-colors rounded-2xl p-6 text-center cursor-pointer relative ${
                                                  selectedFile 
                                                      ? 'border-green-500 bg-green-50/20' 
-                                                     : 'border-[#313851]/20 hover:border-[#313851]/40 bg-[#F6F3ED]/20'
+                                                     : 'border-[#1C1A17]/20 hover:border-[#D45B34]/50 bg-[#F4F1EA]/20'
                                              }`}>
                                                 <input
                                                     type="file"
@@ -484,12 +484,12 @@ const ManageKnowledgeHubPage = () => {
                                                 {selectedFile ? (
                                                      <CheckCircle className="mx-auto text-green-500 mb-2 w-8 h-8" />
                                                  ) : (
-                                                     <FileUp className="mx-auto text-[#313851]/45 mb-2 w-8 h-8" />
+                                                     <FileUp className="mx-auto text-[#1C1A17]/45 mb-2 w-8 h-8" />
                                                  )}
-                                                 <span className={`block text-xs font-bold ${selectedFile ? 'text-green-700' : 'text-[#313851]/80'}`}>
+                                                 <span className={`block text-xs font-bold ${selectedFile ? 'text-green-700' : 'text-[#1C1A17]/80'}`}>
                                                      {selectedFile ? `File Selected: ${selectedFile.name}` : 'Select PDF or TXT Document'}
                                                  </span>
-                                                 <span className={`block text-[10px] mt-1 ${selectedFile ? 'text-green-600/70' : 'text-[#313851]/45'}`}>
+                                                 <span className={`block text-[10px] mt-1 ${selectedFile ? 'text-green-600/70' : 'text-[#1C1A17]/45'}`}>
                                                      {selectedFile ? 'Ready to upload guidelines' : 'PDF / TXT up to 10MB'}
                                                  </span>
                                             </div>
@@ -499,7 +499,7 @@ const ManageKnowledgeHubPage = () => {
                                     <button
                                         type="submit"
                                         disabled={formSubmitting}
-                                        className="w-full flex items-center justify-center gap-2 bg-[#313851] text-white py-3.5 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md mt-4 text-xs uppercase tracking-wider cursor-pointer"
+                                        className="w-full flex items-center justify-center gap-2 bg-[#D45B34] text-white py-3.5 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md mt-4 text-xs uppercase tracking-wider cursor-pointer"
                                     >
                                         {formSubmitting ? (
                                             <>
@@ -517,21 +517,21 @@ const ManageKnowledgeHubPage = () => {
                             </div>
 
                             {/* Right Column: Existing Guidelines List */}
-                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#313851]/5 flex flex-col min-h-[500px]">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#313851]/10 pb-3 mb-5">
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#1C1A17]/10 flex flex-col min-h-[500px]">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1C1A17]/10 pb-3 mb-5">
                                     <h2 className="text-lg font-black">
                                         Company Guidelines Directory
                                     </h2>
                                     
                                     {/* Search Filter */}
                                     <div className="relative max-w-xs w-full">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#313851]/40 w-4 h-4" />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1C1A17]/40 w-4 h-4" />
                                         <input
                                             type="text"
                                             placeholder="Search company or title..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full bg-[#F6F3ED]/50 border border-[#313851]/10 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-[#313851]/10 text-xs text-[#313851] placeholder-[#313851]/30 font-medium"
+                                            className="w-full bg-[#F4F1EA]/50 border border-[#1C1A17]/10 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-[#D45B34]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -539,14 +539,14 @@ const ManageKnowledgeHubPage = () => {
                                 {/* List grid */}
                                 {loading ? (
                                     <div className="space-y-3 flex-1 flex flex-col justify-center py-12">
-                                        <RefreshCw size={32} className="animate-spin text-[#313851]/20 mx-auto" />
-                                        <span className="text-xs font-bold text-[#313851]/40 text-center block mt-2">Loading Directory...</span>
+                                        <RefreshCw size={32} className="animate-spin text-[#1C1A17]/20 mx-auto" />
+                                        <span className="text-xs font-bold text-[#1C1A17]/40 text-center block mt-2">Loading Directory...</span>
                                     </div>
                                 ) : filteredCompanyEntries.length === 0 ? (
-                                    <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-[#313851]/10 rounded-2xl p-12 bg-[#F6F3ED]/10 text-center">
-                                        <FileText size={42} className="text-[#313851]/20 mb-3" />
+                                    <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-[#1C1A17]/10 rounded-2xl p-12 bg-[#F4F1EA]/10 text-center">
+                                        <FileText size={42} className="text-[#1C1A17]/20 mb-3" />
                                         <h3 className="text-sm font-black">No Guidelines Found</h3>
-                                        <p className="text-xs text-[#313851]/55 mt-1 max-w-xs">
+                                        <p className="text-xs text-[#1C1A17]/55 mt-1 max-w-xs">
                                             {searchQuery ? 'No guidelines match your search query.' : 'Add your first company guidelines using the left panel form.'}
                                         </p>
                                     </div>
@@ -555,15 +555,15 @@ const ManageKnowledgeHubPage = () => {
                                         {filteredCompanyEntries.map((entry) => (
                                             <div 
                                                 key={entry.id}
-                                                className="bg-[#F6F3ED]/30 hover:bg-[#F6F3ED]/60 border border-[#313851]/5 hover:border-[#313851]/15 rounded-2xl p-4 flex items-center justify-between gap-4 transition-all duration-200"
+                                                className="bg-[#F4F1EA]/30 hover:bg-[#F4F1EA]/60 border border-[#1C1A17]/10 hover:border-[#1C1A17]/15 rounded-2xl p-4 flex items-center justify-between gap-4 transition-all duration-200"
                                             >
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="bg-[#313851] text-[#F6F3ED] px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
+                                                        <span className="bg-[#D45B34] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
                                                             {entry.company_name}
                                                         </span>
                                                         {entry.role_name && (
-                                                            <span className="bg-[#313851]/5 text-[#313851] border border-[#313851]/15 px-2 py-0.5 rounded text-[10px] font-bold">
+                                                            <span className="bg-[#D45B34]/5 text-[#1C1A17] border border-[#1C1A17]/15 px-2 py-0.5 rounded text-[10px] font-bold">
                                                                 {entry.role_name}
                                                             </span>
                                                         )}
@@ -573,10 +573,10 @@ const ManageKnowledgeHubPage = () => {
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <h3 className="text-sm font-black text-[#313851] mt-2 truncate leading-tight">
+                                                    <h3 className="text-sm font-black text-[#1C1A17] mt-2 truncate leading-tight">
                                                         {entry.title}
                                                     </h3>
-                                                    <p className="text-[10px] text-[#313851]/45 mt-1 font-medium">
+                                                    <p className="text-[10px] text-[#1C1A17]/45 mt-1 font-medium">
                                                         Added: {new Date(entry.created_at).toLocaleDateString()}
                                                     </p>
                                                 </div>
@@ -584,7 +584,7 @@ const ManageKnowledgeHubPage = () => {
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     <button
                                                         onClick={() => setPreviewEntry(entry)}
-                                                        className="flex items-center gap-1 bg-[#313851]/5 hover:bg-[#313851]/10 text-[#313851] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
+                                                        className="flex items-center gap-1 bg-[#D45B34]/5 hover:bg-[#D45B34]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
                                                         title="Preview Content"
                                                     >
                                                         <Eye size={14} />
@@ -595,7 +595,7 @@ const ManageKnowledgeHubPage = () => {
                                                             href={entry.file_url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center gap-1 bg-[#313851]/5 hover:bg-[#313851]/10 text-[#313851] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
+                                                            className="flex items-center gap-1 bg-[#D45B34]/5 hover:bg-[#D45B34]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
                                                             title="Download File"
                                                         >
                                                             <FileUp size={14} className="rotate-180" />
@@ -635,40 +635,40 @@ const ManageKnowledgeHubPage = () => {
                                 animate={{ scale: 1, y: 0 }}
                                 exit={{ scale: 0.95, y: 15 }}
                                 transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                                className="bg-white rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl overflow-hidden border border-[#313851]/10"
+                                className="bg-white rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl overflow-hidden border border-[#1C1A17]/10"
                                 style={{ maxHeight: '80vh' }}
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 {/* Modal Header */}
-                                <div className="p-6 border-b border-[#313851]/10 bg-[#313851]/5">
+                                <div className="p-6 border-b border-[#1C1A17]/10 bg-[#D45B34]/5">
                                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                                        <span className="bg-[#313851] text-[#F6F3ED] px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
+                                        <span className="bg-[#D45B34] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
                                             {previewEntry.company_name}
                                         </span>
                                         {previewEntry.role_name && (
-                                            <span className="bg-[#313851]/10 text-[#313851] px-2 py-0.5 rounded text-[10px] font-bold">
+                                            <span className="bg-[#D45B34]/10 text-[#1C1A17] px-2 py-0.5 rounded text-[10px] font-bold">
                                                 {previewEntry.role_name}
                                             </span>
                                         )}
                                     </div>
-                                    <h3 className="text-lg font-black text-[#313851]">
+                                    <h3 className="text-lg font-black text-[#1C1A17]">
                                         {previewEntry.title}
                                     </h3>
                                 </div>
 
                                 {/* Modal Body (Parsed Content View) */}
                                 <div 
-                                    className="p-6 flex-1 font-sans text-sm text-[#313851]/85 leading-relaxed bg-[#F6F3ED]/20 whitespace-pre-wrap"
+                                    className="p-6 flex-1 font-sans text-sm text-[#1C1A17]/85 leading-relaxed bg-[#F4F1EA]/20 whitespace-pre-wrap"
                                     style={{ maxHeight: 'calc(80vh - 180px)', overflowY: 'auto' }}
                                 >
                                     {previewEntry.content || 'No text content available.'}
                                 </div>
 
                                 {/* Modal Footer */}
-                                <div className="p-4 border-t border-[#313851]/10 flex justify-end bg-white">
+                                <div className="p-4 border-t border-[#1C1A17]/10 flex justify-end bg-white">
                                     <button
                                         onClick={() => setPreviewEntry(null)}
-                                        className="bg-[#313851] text-white px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider cursor-pointer"
+                                        className="bg-[#D45B34] text-white px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider cursor-pointer"
                                     >
                                         Close Preview
                                     </button>

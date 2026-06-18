@@ -34,7 +34,7 @@ const MyHumanMockInterviewsPage = () => {
             case 'REJECTED':
                 return { bg: 'bg-red-500/10', text: 'text-red-500', icon: <XCircle size={14} />, label: 'Declined' };
             case 'COMPLETED':
-                return { bg: 'bg-[#313851]/10', text: 'text-[#313851]', icon: <CheckCircle size={14} />, label: 'Completed' };
+                return { bg: 'bg-[#1C1A17]/10', text: 'text-[#1C1A17]', icon: <CheckCircle size={14} />, label: 'Completed' };
             default:
                 return { bg: 'bg-gray-100', text: 'text-gray-500', icon: <Clock4 size={14} />, label: status };
         }
@@ -42,36 +42,36 @@ const MyHumanMockInterviewsPage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 flex items-center justify-center">
-                <div className="animate-pulse text-[#C2CBD3]">Loading your requests...</div>
+            <div className="min-h-screen bg-[#F4F1EA] text-[#1C1A17] p-6 lg:p-10 flex items-center justify-center">
+                <div className="animate-pulse text-[#D45B34]">Loading your requests...</div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 font-sans">
+        <div className="min-h-screen bg-[#F4F1EA] text-[#1C1A17] p-6 lg:p-10 font-sans">
             <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-end mb-10">
                     <div>
                         <h1 className="text-3xl lg:text-4xl font-black tracking-tight uppercase">My Interview Requests</h1>
-                        <p className="text-[10px] font-bold text-[#C2CBD3] uppercase tracking-widest mt-2">Manage your 1-on-1 sessions</p>
+                        <p className="text-[10px] font-bold text-[#1C1A17]/50 uppercase tracking-widest mt-2">Manage your 1-on-1 sessions</p>
                     </div>
                     <Link 
                         to="/human-mock-interview"
-                        className="px-6 py-3 bg-[#313851] text-[#F6F3ED] rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] transition-all shadow-xl shadow-[#313851]/20 flex items-center gap-2"
+                        className="px-6 py-3 bg-[#D45B34] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] transition-all shadow-xl shadow-[#D45B34]/20 flex items-center gap-2"
                     >
                         <Plus size={16} /> New Request
                     </Link>
                 </div>
 
                 {requests.length === 0 ? (
-                    <div className="bg-white rounded-[2rem] p-12 text-center shadow-[0_8px_30px_rgb(49,56,81,0.04)] border border-[#C2CBD3]/20">
-                        <UserPlus size={48} className="mx-auto text-[#C2CBD3] mb-4" />
+                    <div className="bg-white rounded-[2rem] p-12 text-center shadow-[0_8px_30px_rgba(28,26,23,0.04)] border border-[#1C1A17]/10">
+                        <UserPlus size={48} className="mx-auto text-[#D45B34] mb-4" />
                         <h3 className="text-xl font-bold mb-2">No Requests Yet</h3>
-                        <p className="text-[#313851]/70 mb-8 max-w-sm mx-auto">You haven't scheduled any human mock interviews yet. Start your preparation with an industry expert.</p>
+                        <p className="text-[#1C1A17]/70 mb-8 max-w-sm mx-auto">You haven't scheduled any human mock interviews yet. Start your preparation with an industry expert.</p>
                         <Link 
                             to="/human-mock-interview"
-                            className="inline-flex items-center gap-2 px-8 py-3 border border-[#313851] text-[#313851] rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-[#313851] hover:text-white transition-all"
+                            className="inline-flex items-center gap-2 px-8 py-3 border border-[#D45B34] text-[#D45B34] rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-[#D45B34] hover:text-white transition-all"
                         >
                             Schedule Now <ArrowRight size={14} />
                         </Link>
@@ -87,7 +87,7 @@ const MyHumanMockInterviewsPage = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                     key={request.id}
-                                    className="bg-[#FAF9F6] text-[#313851] rounded-2xl p-6 md:p-8 shadow-sm border border-[#C2CBD3]/30 hover:shadow-md transition-shadow relative overflow-hidden group"
+                                    className="bg-white text-[#1C1A17] rounded-2xl p-6 md:p-8 shadow-sm border border-[#1C1A17]/10 hover:shadow-md transition-shadow relative overflow-hidden group"
                                 >
                                     <div className={`absolute top-0 left-0 w-1.5 h-full transition-opacity ${statusStyle.bg.replace('/10', '')}`}></div>
                                     
@@ -100,11 +100,11 @@ const MyHumanMockInterviewsPage = () => {
                                                 </span>
                                             </div>
                                             
-                                            <p className="text-[10px] font-bold text-[#C2CBD3] uppercase tracking-[0.2em]">
+                                            <p className="text-[10px] font-bold text-[#1C1A17]/50 uppercase tracking-[0.2em]">
                                                 {request.interview_type} • {request.difficulty_level} • {request.duration} Mins
                                             </p>
                                             
-                                            <div className="flex items-center gap-4 text-sm font-medium text-[#313851]/70">
+                                            <div className="flex items-center gap-4 text-sm font-medium text-[#1C1A17]/70">
                                                 {request.scheduled_at ? (
                                                     <div className="flex items-center gap-2 text-[#22C55E]">
                                                         <Calendar size={16} />
@@ -125,16 +125,16 @@ const MyHumanMockInterviewsPage = () => {
                                                     href={request.meeting_link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#313851] text-[#F6F3ED] rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#313851]/90 transition-all shadow-md"
+                                                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#D45B34] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#B84A27] transition-all shadow-md"
                                                 >
                                                     <ExternalLink size={14} /> Join Meeting
                                                 </a>
                                             )}
                                             
                                             {request.admin_notes && (
-                                                <div className="p-4 bg-[#F6F3ED]/50 rounded-xl border border-[#C2CBD3]/20">
-                                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#313851] mb-1">Feedback / Notes</p>
-                                                    <p className="text-xs text-[#313851]/80">{request.admin_notes}</p>
+                                                <div className="p-4 bg-[#F4F1EA] rounded-xl border border-[#1C1A17]/10">
+                                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#1C1A17] mb-1">Feedback / Notes</p>
+                                                    <p className="text-xs text-[#1C1A17]/80">{request.admin_notes}</p>
                                                 </div>
                                             )}
                                         </div>

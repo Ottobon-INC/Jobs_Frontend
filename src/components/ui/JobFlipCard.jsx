@@ -28,20 +28,20 @@ export function JobFlipCard({ job }) {
                 {/* Front Side: Clean job details */}
                 <div className={cn(
                     "absolute inset-0 [backface-visibility:hidden]",
-                    "bg-[#F6F3ED] rounded-2xl border border-[#313851]/14 p-8",
-                    "group-hover:border-[#313851]/30 transition-colors duration-500",
+                    "bg-[#F4F1EA] rounded-2xl border border-[#1C1A17]/15 p-8",
+                    "group-hover:border-[#D45B34]/30 transition-colors duration-500",
                     "flex flex-col shadow-sm"
                 )}>
                     <div className="flex justify-between items-start mb-6">
                         <div className={cn(
-                            "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl bg-[#313851]/[0.06] text-[#313851]",
+                            "w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl bg-[#D45B34]/10 text-[#1C1A17]",
                         )}>
                             {job.logo}
                         </div>
                         {job.global && (
-                            <div className="flex items-center gap-1.5 bg-[#313851]/[0.06] px-3 py-1.5 rounded-full border border-[#313851]/14">
+                            <div className="flex items-center gap-1.5 bg-[#D45B34]/10 px-3 py-1.5 rounded-full border border-[#1C1A17]/15">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#313851] animate-pulse" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-[#313851]">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-[#1C1A17]">
                                     Global
                                 </span>
                             </div>
@@ -49,18 +49,18 @@ export function JobFlipCard({ job }) {
                     </div>
 
                     <div className="space-y-1.5 mb-8">
-                        <h3 className="text-xl font-medium text-[#313851] tracking-tight">
+                        <h3 className="text-xl font-medium text-[#1C1A17] tracking-tight">
                             {job.role}
                         </h3>
-                        <p className="text-sm font-medium text-[#313851]/85 tracking-wide">{job.company}</p>
+                        <p className="text-sm font-medium text-[#1C1A17]/85 tracking-wide">{job.company}</p>
                     </div>
 
-                    <div className="mt-auto grid grid-cols-2 gap-4 border-t border-[#313851]/14 pt-6">
-                        <div className="flex items-center gap-2.5 text-[11px] font-bold text-[#313851]/65 uppercase tracking-widest">
+                    <div className="mt-auto grid grid-cols-2 gap-4 border-t border-[#1C1A17]/15 pt-6">
+                        <div className="flex items-center gap-2.5 text-[11px] font-bold text-[#1C1A17]/65 uppercase tracking-widest">
                             <MapPin className="w-3.5 h-3.5" />
                             {job.location}
                         </div>
-                        <div className="flex items-center gap-2.5 text-[11px] font-bold text-[#313851]/65 uppercase tracking-widest">
+                        <div className="flex items-center gap-2.5 text-[11px] font-bold text-[#1C1A17]/65 uppercase tracking-widest">
                             <Briefcase className="w-3.5 h-3.5" />
                             {job.type}
                         </div>
@@ -70,12 +70,12 @@ export function JobFlipCard({ job }) {
                 {/* Back Side: Focused CTA */}
                 <div className={cn(
                     "absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]",
-                    "bg-[#313851] border border-[#C2CBD3]/[0.14] rounded-2xl p-8",
+                    "bg-[#222222] border border-[#1C1A17]/10 rounded-2xl p-8",
                     "flex flex-col items-center justify-center text-center space-y-6 shadow-xl"
                 )}>
                     <div className="space-y-2">
-                        <h4 className="text-[#F6F3ED] text-lg font-medium tracking-tight">Ready to apply?</h4>
-                        <p className="text-[#F6F3ED]/85 text-xs font-medium max-w-[180px]">
+                        <h4 className="text-[#F4F1EA] text-lg font-medium tracking-tight">Ready to apply?</h4>
+                        <p className="text-[#F4F1EA]/85 text-xs font-medium max-w-[180px]">
                             Join the team at {job.company} and start your next career chapter.
                         </p>
                     </div>
@@ -86,7 +86,7 @@ export function JobFlipCard({ job }) {
                             navigate('/register');
                         }}
                         className={cn(
-                            "w-full py-4 bg-[#C2CBD3] text-[#313851] text-xs font-black uppercase tracking-widest",
+                            "w-full py-4 bg-[#C2CBD3] text-[#1C1A17] text-xs font-black uppercase tracking-widest",
                             "rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300",
                             "shadow-[0_15px_35px_rgba(194,203,211,0.15)] flex items-center justify-center gap-2"
                         )}
@@ -96,8 +96,8 @@ export function JobFlipCard({ job }) {
                     </button>
                     
                     <div className="pt-2">
-                        <p className="text-[10px] text-[#F6F3ED]/65 font-medium">
-                            Missing skills? <a href="https://learn.ottobon.in/our-courses/cohort" target="_blank" rel="noopener noreferrer" className="text-[#C2CBD3] hover:underline">Learn on our Course Platform</a>
+                        <p className="text-[10px] text-[#F4F1EA]/65 font-medium">
+                            Missing skills? <a href="https://learn.ottobon.in/our-courses/cohort" target="_blank" rel="noopener noreferrer" className="text-[#D45B34] hover:underline">Learn on our Course Platform</a>
                         </p>
                     </div>
                 </div>

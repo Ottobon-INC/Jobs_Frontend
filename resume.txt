@@ -1,0 +1,19 @@
+Sai Sampath Potnuru
+Email: sai.sampath@example.com
+Phone: +91 9999999999
+Location: Bangalore, India
+
+Professional Summary:
+Software Engineer with 3+ years of experience specializing in React, Node.js, Python, and SQL database management. Experienced in building cloud native applications and implementing AI features.
+
+Skills:
+- Frontend: JavaScript, React.js, TailwindCSS, HTML5, CSS3
+- Backend: Python, FastAPI, Node.js, Express, PostgreSQL
+- Tools & DevOps: Git, Docker, AWS (S3, EC2), Supabase
+
+Experience:
+Software Developer at Ottobon Tech (2023 - Present)
+- Developed responsive web applications using React.js and Tailwind CSS.
+- Built backend REST APIs in Python using FastAPI, improving request throughput by 15%.
+- Implemented state management using Redux Toolkit and context APIs.
+- Integrated OpenAI services to build smart document search tools.

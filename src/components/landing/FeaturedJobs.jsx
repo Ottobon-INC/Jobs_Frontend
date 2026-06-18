@@ -70,13 +70,13 @@ export function FeaturedJobs() {
     const navigate = useNavigate();
 
     return (
-        <section className="py-24 bg-[#F6F3ED]">
+        <section className="py-24 bg-[#F4F1EA]">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-14 gap-4">
                     <div>
-                        <p className="text-[#313851]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4">Curated Picks</p>
+                        <p className="text-[#1C1A17]/65 text-xs font-bold uppercase tracking-[0.2em] mb-4">Curated Picks</p>
                         <h2
-                            className="font-medium tracking-tight mb-3 text-[#313851]"
+                            className="font-medium tracking-tight mb-3 text-[#1C1A17]"
                             style={{
                                 fontFamily: "'Inter', system-ui, sans-serif",
                                 fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
@@ -85,7 +85,7 @@ export function FeaturedJobs() {
                             Featured Opportunities
                         </h2>
                         <p
-                            className="max-w-xl font-medium text-[#313851]/85"
+                            className="max-w-xl font-medium text-[#1C1A17]/85"
                             style={{ fontSize: '0.975rem' }}
                         >
                             Discover roles at leading startups and global tech giants.
@@ -95,13 +95,13 @@ export function FeaturedJobs() {
                     <div className="flex items-center gap-6">
                         <Link
                             to="/register"
-                            className="font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm transition-all hover:scale-105 cursor-pointer inline-block bg-[#313851] text-[#F6F3ED]"
+                            className="font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm transition-all hover:scale-105 hover:bg-[#B84A27] cursor-pointer inline-block bg-[#D45B34] text-white"
                         >
                             Get started
                         </Link>
                         <Link
                             to="/jobs"
-                            className="inline-flex items-center gap-2 font-semibold text-sm transition-colors cursor-pointer text-[#313851] border-b-2 border-[#313851]/20 hover:border-[#313851] pb-1"
+                            className="inline-flex items-center gap-2 font-semibold text-sm transition-colors cursor-pointer text-[#1C1A17] border-b-2 border-[#1C1A17]/20 hover:border-[#D45B34] hover:text-[#D45B34] pb-1"
                         >
                             View All Jobs <ArrowRight size={14} />
                         </Link>

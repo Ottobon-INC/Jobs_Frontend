@@ -61,7 +61,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                             </div>
                             
                             <div className="flex-1 space-y-4">
-                                <h3 className="text-3xl font-bold text-[#313851]">About {company.name} {new Date().getFullYear()}</h3>
+                                <h3 className="text-3xl font-bold text-[#1C1A17]">About {company.name} {new Date().getFullYear()}</h3>
                                 <p className="text-lg text-zinc-500 leading-relaxed font-medium">
                                     Generally, {company.name} conducts the {company.roles?.[0] || 'recruitment'} process once a year. 
                                     {company.name} is a global leader in {company.industry}. Headquartered in {company.hq}, they have a significant presence in {company?.locations?.slice(0, 3)?.join(', ')} and other major hubs.
@@ -81,21 +81,21 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                         {/* Quick Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                             <div className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100 flex items-center gap-6 group hover:bg-white transition-all shadow-sm">
-                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm group-hover:bg-[#313851] group-hover:text-white transition-colors">
+                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#D45B34] shadow-sm group-hover:bg-[#D45B34] group-hover:text-white transition-colors">
                                     <MapPin size={24} />
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">HQ & Locations</p>
-                                    <p className="text-sm font-bold text-[#313851]">{company.hq} • {company?.locations?.length} Cities</p>
+                                    <p className="text-sm font-bold text-[#1C1A17]">{company.hq} • {company?.locations?.length} Cities</p>
                                 </div>
                             </div>
                             <div className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100 flex items-center gap-6 group hover:bg-white transition-all shadow-sm">
-                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm group-hover:bg-[#313851] group-hover:text-white transition-colors">
+                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#D45B34] shadow-sm group-hover:bg-[#D45B34] group-hover:text-white transition-colors">
                                     <Calendar size={24} />
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Hiring Frequency</p>
-                                    <p className="text-sm font-bold text-[#313851]">{company.hiring_seasons || company.hiringSeasons}</p>
+                                    <p className="text-sm font-bold text-[#1C1A17]">{company.hiring_seasons || company.hiringSeasons}</p>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +111,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                     <p className="text-sm font-semibold text-zinc-500 leading-relaxed">
                                         Here is a structured overview of the <strong>{company.name}</strong> campus placement playbook, optimized for quick AI extraction and candidate summary.
                                     </p>
-                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold text-[#313851]">
+                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold text-[#1C1A17]">
                                         <li className="flex items-center gap-2 p-4 bg-white border border-zinc-100/50 rounded-2xl">
                                             <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-black">Industry:</span> {company.industry || 'Technology'}
                                         </li>
@@ -151,7 +151,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                         }
                                     ].map((faq, i) => (
                                         <details key={i} className="group bg-white border border-zinc-100 rounded-2xl p-5 [&_summary::-webkit-details-marker]:hidden cursor-pointer select-none">
-                                            <summary className="flex items-center justify-between font-bold text-sm text-[#313851] gap-4">
+                                            <summary className="flex items-center justify-between font-bold text-sm text-[#1C1A17] gap-4">
                                                 <span>{faq.q}</span>
                                                 <span className="text-zinc-400 group-open:rotate-180 transition-transform">
                                                     <ChevronRight size={16} />
@@ -172,7 +172,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             case 'eligibility': {
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-                        <h3 className="text-3xl font-bold text-[#313851] mb-6">Eligibility Criteria</h3>
+                        <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Eligibility Criteria</h3>
                         {company.eligibility ? (
                             <div className="grid grid-cols-1 gap-6">
                                 <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
@@ -186,7 +186,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                         <tbody className="divide-y divide-zinc-50">
                                             {Object.entries(company.eligibility).map(([key, value]) => (
                                                 <tr key={key} className="hover:bg-zinc-50/50 transition-colors">
-                                                    <td className="px-8 py-6 text-sm font-bold text-[#313851] capitalize">{key.replace(/([A-Z])/g, ' $1')}</td>
+                                                    <td className="px-8 py-6 text-sm font-bold text-[#1C1A17] capitalize">{key.replace(/([A-Z])/g, ' $1')}</td>
                                                     <td className="px-8 py-6 text-sm text-zinc-500 font-medium">{value}</td>
                                                 </tr>
                                             ))}
@@ -210,12 +210,12 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                            <h3 className="text-3xl font-bold text-[#313851]">Selection Process</h3>
+                            <h3 className="text-3xl font-bold text-[#1C1A17]">Selection Process</h3>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleMockInterviewClick}
-                                className="flex items-center gap-2 px-8 py-4 bg-[#313851] text-white rounded-2xl font-bold text-sm shadow-xl shadow-zinc-200 hover:bg-[#404a6b] transition-all group"
+                                className="flex items-center gap-2 px-8 py-4 bg-[#D45B34] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#D45B34]/20 hover:bg-[#B84A27] transition-all group"
                             >
                                 <Play size={18} fill="currentColor" className="group-hover:translate-x-0.5 transition-transform" />
                                 Try Mock Interview
@@ -224,11 +224,11 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                         <div className="relative space-y-12 before:absolute before:left-6 before:top-2 before:bottom-2 before:w-px before:bg-zinc-100">
                             {processSteps.map((step, idx) => (
                                 <div key={idx} className="relative pl-16">
-                                    <div className="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-[#313851] rounded-2xl flex items-center justify-center text-sm font-black text-[#313851] z-10 shadow-md">
+                                    <div className="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-[#D45B34] rounded-2xl flex items-center justify-center text-sm font-black text-[#D45B34] z-10 shadow-md">
                                         {idx + 1}
                                     </div>
                                     <div className="bg-white p-6 rounded-[2rem] border border-zinc-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <h4 className="text-lg font-bold text-[#313851] mb-2">{step.name}</h4>
+                                        <h4 className="text-lg font-bold text-[#1C1A17] mb-2">{step.name}</h4>
                                         <p className="text-zinc-500 font-medium leading-relaxed">{step.details}</p>
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                 const testPatternData = company.test_pattern || company.testPattern;
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-                        <h3 className="text-3xl font-bold text-[#313851] mb-6">Test Pattern</h3>
+                        <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Test Pattern</h3>
                         {testPatternData ? (
                             <div className="grid grid-cols-1 gap-6">
                                 <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
@@ -257,7 +257,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                         <tbody className="divide-y divide-zinc-50">
                                             {testPatternData.map((item, idx) => (
                                                 <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
-                                                    <td className="px-8 py-6 text-sm font-bold text-[#313851]">{item.section}</td>
+                                                    <td className="px-8 py-6 text-sm font-bold text-[#1C1A17]">{item.section}</td>
                                                     <td className="px-8 py-6 text-sm text-zinc-500 font-medium">{item.questions}</td>
                                                     <td className="px-8 py-6 text-sm font-bold text-emerald-600">{item.duration}</td>
                                                 </tr>
@@ -277,16 +277,16 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                 const syllabusData = company.syllabus || [];
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-                        <h3 className="text-3xl font-bold text-[#313851] mb-6">Syllabus Details</h3>
+                        <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Syllabus Details</h3>
                         {syllabusData.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {syllabusData.map((round, idx) => (
                                     <div key={idx} className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100">
                                         <div className="flex items-center gap-3 mb-6">
-                                            <div className="w-8 h-8 bg-[#313851] rounded-xl flex items-center justify-center text-white text-[10px] font-black">
+                                            <div className="w-8 h-8 bg-[#D45B34] rounded-xl flex items-center justify-center text-white text-[10px] font-black">
                                                 {idx + 1}
                                             </div>
-                                            <h4 className="text-lg font-bold text-[#313851]">{round.round || round.category || round.name || `Round ${idx + 1}`}</h4>
+                                            <h4 className="text-lg font-bold text-[#1C1A17]">{round.round || round.category || round.name || `Round ${idx + 1}`}</h4>
                                         </div>
                                         <ul className="space-y-3">
                                             {round.topics && round.topics.map((topic, tIdx) => (
@@ -310,7 +310,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                 const regProcessData = company.registration_process || company.registrationProcess;
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
-                        <h3 className="text-3xl font-bold text-[#313851] mb-6">Registration Process</h3>
+                        <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Registration Process</h3>
                         {regProcessData ? (
                             <div className="space-y-6">
                                 {regProcessData.map((step, idx) => (
@@ -318,7 +318,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black text-sm shrink-0">
                                             {idx + 1}
                                         </div>
-                                        <p className="text-sm font-bold text-[#313851] pt-2">{step}</p>
+                                        <p className="text-sm font-bold text-[#1C1A17] pt-2">{step}</p>
                                     </div>
                                 ))}
                             </div>
@@ -332,7 +332,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
             case 'money': {
                 return (
                     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-10">
-                        <h3 className="text-3xl font-bold text-[#313851] mb-6">Compensation Details</h3>
+                        <h3 className="text-3xl font-bold text-[#1C1A17] mb-6">Compensation Details</h3>
                         {company.compensation ? (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -347,11 +347,11 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                                 {item.icon}
                                                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{item.label}</span>
                                             </div>
-                                            <p className="text-xl font-bold text-[#313851]">{item.value}</p>
+                                            <p className="text-xl font-bold text-[#1C1A17]">{item.value}</p>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="p-10 bg-[#313851] rounded-[2.5rem] text-center text-white relative overflow-hidden">
+                                <div className="p-10 bg-[#222222] rounded-[2.5rem] text-center text-white relative overflow-hidden">
                                     <div className="relative z-10">
                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Total Year 1 Package</p>
                                         <p className="text-5xl font-bold tracking-tight">{company.compensation.totalYear1 || company.compensation.total_year_1}</p>
@@ -374,7 +374,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                 <Sparkles size={32} />
                             </div>
                             <div>
-                                <h3 className="text-3xl font-bold text-[#313851]">The Insider Scoop</h3>
+                                <h3 className="text-3xl font-bold text-[#1C1A17]">The Insider Scoop</h3>
                                 <p className="text-sm text-zinc-400 font-medium">Tips from recent hires and mentors.</p>
                             </div>
                         </div>

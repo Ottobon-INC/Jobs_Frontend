@@ -2073,7 +2073,7 @@ const MockInterviewPage = () => {
     // ── SELECTION SCREEN ──────────────────────────────────────
     if (step === 'selection') {
         return (
-            <div className="min-h-screen bg-[#F6F3ED] text-[#313851] p-6 lg:p-10 font-sans flex items-center justify-center">
+            <div className="min-h-screen bg-[#F4F1EA] text-[#1C1A17] p-6 lg:p-10 font-sans flex items-center justify-center">
                 <div className="max-w-5xl mx-auto w-full">
                     {/* Header */}
                     <header className="mb-8 text-center">
@@ -2081,11 +2081,11 @@ const MockInterviewPage = () => {
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
                             className="text-4xl lg:text-5xl font-black tracking-tight mb-4 uppercase"
                         >
-                            Mock <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#313851] to-[#C2CBD3]">Interviews</span>
+                            Mock <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1C1A17] to-[#D45B34]">Interviews</span>
                         </motion.h1>
                         <motion.p 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-                            className="text-lg text-[#313851]/70 max-w-2xl mx-auto font-bold uppercase tracking-widest text-[10px]"
+                            className="text-lg text-[#1C1A17]/70 max-w-2xl mx-auto font-bold uppercase tracking-widest text-[10px]"
                         >
                             Choose your preferred interview preparation method.
                         </motion.p>
@@ -2097,7 +2097,7 @@ const MockInterviewPage = () => {
                             initial={{ opacity: 0, x: -30 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="group relative rounded-[2rem] overflow-hidden bg-[#313851] text-white p-10 flex flex-col h-[450px] shadow-2xl shadow-[#313851]/20 hover:scale-[1.02] transition-transform duration-500"
+                            className="group relative rounded-[2rem] overflow-hidden bg-[#222222] text-white p-10 flex flex-col h-[450px] shadow-2xl shadow-[#222222]/20 hover:scale-[1.02] transition-transform duration-500"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="absolute top-0 right-0 p-8">
@@ -2113,7 +2113,7 @@ const MockInterviewPage = () => {
                                 </p>
                                 <button 
                                     onClick={() => setStep('entry')}
-                                    className="inline-flex items-center gap-3 px-8 py-4 bg-white text-[#313851] rounded-full font-black text-[11px] uppercase tracking-widest hover:bg-[#F6F3ED] transition-colors"
+                                    className="inline-flex items-center gap-3 px-8 py-4 bg-white text-[#D45B34] rounded-full font-black text-[11px] uppercase tracking-widest hover:bg-[#F4F1EA] transition-colors"
                                 >
                                     Launch Simulator <ChevronRight size={16} />
                                 </button>
@@ -2214,14 +2214,14 @@ const MockInterviewPage = () => {
         const allChecked = checklistItems.every(item => checkedItems[item.key]);
 
         return (
-            <div className="min-h-screen bg-[#F6F3ED] text-[#313851] py-10 px-6 font-sans flex items-center justify-center">
-                <div className="w-full max-w-4xl bg-white border border-[#313851]/10 rounded-[2.5rem] shadow-2xl p-8 lg:p-12 relative overflow-hidden">
+            <div className="min-h-screen bg-[#F4F1EA] text-[#1C1A17] py-10 px-6 font-sans flex items-center justify-center">
+                <div className="w-full max-w-4xl bg-white border border-[#1C1A17]/10 rounded-[2.5rem] shadow-2xl p-8 lg:p-12 relative overflow-hidden">
                     
                     {/* Header: Steps progress indicator */}
                     <div className="mb-10">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#313851]/40">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1C1A17]/40">
                                     Step {setupStep} of 4
                                 </span>
                                 <CreditBalance mode="ai_interview_only" />
@@ -2231,7 +2231,7 @@ const MockInterviewPage = () => {
                                     <div 
                                         key={s} 
                                         className={`h-1.5 rounded-full transition-all duration-300 ${
-                                            setupStep === s ? 'w-8 bg-[#313851]' : 'w-2 bg-[#313851]/10'
+                                            setupStep === s ? 'w-8 bg-[#D45B34]' : 'w-2 bg-[#D45B34]/10'
                                         }`} 
                                     />
                                 ))}
@@ -2239,13 +2239,13 @@ const MockInterviewPage = () => {
                         </div>
 
                         {/* Title dynamic to step */}
-                        <h1 className="text-3xl font-black uppercase tracking-tight text-[#313851]">
+                        <h1 className="text-3xl font-black uppercase tracking-tight text-[#1C1A17]">
                             {setupStep === 1 && "Role & Resume Setup"}
                             {setupStep === 2 && "Choose Format & Duration"}
                             {setupStep === 3 && "Interviewer Profile"}
                             {setupStep === 4 && "Pre-Flight Checklist"}
                         </h1>
-                        <p className="text-[#313851]/60 text-xs font-semibold uppercase tracking-wider mt-1">
+                        <p className="text-[#1C1A17]/60 text-xs font-semibold uppercase tracking-wider mt-1">
                             {setupStep === 1 && "Specify your target position and load your resume logic."}
                             {setupStep === 2 && "Configure the interview format, type, and practice duration."}
                             {setupStep === 3 && "Meet your custom AI evaluator and fine-tune system rules."}
@@ -2259,19 +2259,19 @@ const MockInterviewPage = () => {
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                                 {/* Job Title */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-2">Target Job Title</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-2">Target Job Title</label>
                                     <input 
                                         type="text" 
                                         value={jobTitle} 
                                         readOnly
                                         disabled
-                                        className="w-full px-5 py-4 rounded-2xl border border-[#313851]/10 bg-zinc-50 text-sm font-semibold text-[#313851]/60 cursor-not-allowed"
+                                        className="w-full px-5 py-4 rounded-2xl border border-[#1C1A17]/10 bg-zinc-50 text-sm font-semibold text-[#1C1A17]/60 cursor-not-allowed"
                                     />
                                 </div>
 
                                 {/* Company Selector */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-2">Target Company</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-2">Target Company</label>
                                     <div className="relative">
                                         <input
                                             type="text"
@@ -2287,14 +2287,14 @@ const MockInterviewPage = () => {
                                             }}
                                             onBlur={() => setTimeout(() => setShowCompanyDropdown(false), 200)}
                                             placeholder="Search or select a company…"
-                                            className="w-full px-5 py-4 pr-12 rounded-2xl border border-[#313851]/10 bg-[#FAFAFA] text-xs font-bold uppercase tracking-wider text-[#313851] placeholder:text-[#313851]/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-[#313851] focus:ring-1 focus:ring-[#313851]/5 transition-all"
+                                            className="w-full px-5 py-4 pr-12 rounded-2xl border border-[#1C1A17]/10 bg-[#FAFAFA] text-xs font-bold uppercase tracking-wider text-[#1C1A17] placeholder:text-[#1C1A17]/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-[#D45B34] focus:ring-1 focus:ring-[#D45B34]/5 transition-all"
                                         />
                                         <ChevronRight
                                             size={16}
                                             className={`absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 transition-transform duration-200 ${showCompanyDropdown ? 'rotate-90' : ''}`}
                                         />
                                         {showCompanyDropdown && (
-                                            <div className="absolute z-30 w-full mt-2 bg-white border border-[#313851]/10 rounded-2xl shadow-2xl overflow-hidden max-h-[180px] overflow-y-auto">
+                                            <div className="absolute z-30 w-full mt-2 bg-white border border-[#1C1A17]/10 rounded-2xl shadow-2xl overflow-hidden max-h-[180px] overflow-y-auto">
                                                 {KNOWN_COMPANIES.filter(c =>
                                                     c.toLowerCase().includes(companySearch.toLowerCase())
                                                 ).length === 0 ? (
@@ -2317,8 +2317,8 @@ const MockInterviewPage = () => {
                                                             }}
                                                             className={`w-full text-left px-5 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-150 flex items-center justify-between ${
                                                                 companyName === c
-                                                                    ? 'bg-[#313851] text-white'
-                                                                    : 'text-[#313851]/70 hover:bg-zinc-50 hover:text-[#313851]'
+                                                                    ? 'bg-[#D45B34] text-white'
+                                                                    : 'text-[#1C1A17]/70 hover:bg-zinc-50 hover:text-[#1C1A17]'
                                                             }`}
                                                         >
                                                             {c}
@@ -2333,7 +2333,7 @@ const MockInterviewPage = () => {
 
                                 {/* Choose Interview Type */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">Choose Interview Type</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-3">Choose Interview Type</label>
                                     <div className="grid grid-cols-2 gap-4">
                                         {[
                                             { id: 'technical', label: 'Technical Assessment', desc: 'Focus on coding, design, and CS algorithms.' },
@@ -2349,8 +2349,8 @@ const MockInterviewPage = () => {
                                                 }}
                                                 className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col gap-1 relative ${
                                                     interviewType === typeId
-                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl'
-                                                        : 'bg-[#FAFAFA] text-[#313851]/50 border-zinc-100 hover:bg-zinc-50'
+                                                        ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-xl'
+                                                        : 'bg-[#FAFAFA] text-[#1C1A17]/50 border-zinc-100 hover:bg-zinc-50'
                                                 }`}
                                             >
                                                 <span className="font-bold text-[11px] uppercase tracking-widest block">{label}</span>
@@ -2367,11 +2367,11 @@ const MockInterviewPage = () => {
                                         : (interviewType === 'hr' ? 'border-zinc-200 bg-zinc-50/10' : 'border-red-200 bg-red-50/30')
                                 }`}>
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${
-                                        hasResume ? 'bg-[#313851] text-white' : (interviewType === 'hr' ? 'bg-zinc-400 text-white' : 'bg-red-500 text-white')
+                                        hasResume ? 'bg-[#D45B34] text-white' : (interviewType === 'hr' ? 'bg-zinc-400 text-white' : 'bg-red-500 text-white')
                                     }`}>
                                         <FileText size={20} />
                                     </div>
-                                    <h3 className="font-bold text-xs uppercase tracking-widest text-[#313851] mb-1">
+                                    <h3 className="font-bold text-xs uppercase tracking-widest text-[#1C1A17] mb-1">
                                         {sessionResumeName
                                             ? 'Custom Session Resume Loaded'
                                             : profile?.resume_text
@@ -2395,7 +2395,7 @@ const MockInterviewPage = () => {
                                             accept=".pdf,.txt"
                                             disabled={uploadingResume}
                                         />
-                                        <div className="flex items-center gap-2 px-6 py-3 border border-[#313851]/10 bg-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] text-[#313851] transition-all">
+                                        <div className="flex items-center gap-2 px-6 py-3 border border-[#1C1A17]/10 bg-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:border-[#D45B34] text-[#1C1A17] transition-all">
                                             {uploadingResume ? <Activity size={12} className="animate-pulse" /> : <Upload size={12} />}
                                             {hasResume ? 'Change Resume File' : 'Upload Resume'}
                                         </div>
@@ -2408,7 +2408,7 @@ const MockInterviewPage = () => {
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                                 {/* Format cards */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">01 / Choose Format</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-3">01 / Choose Format</label>
                                     <div className="grid grid-cols-3 gap-4">
                                         {[
                                             { id: 'voice', label: 'Voice Mode', Icon: Mic, desc: 'Real-time conversational voice' },
@@ -2420,11 +2420,11 @@ const MockInterviewPage = () => {
                                                 onClick={() => setInterviewInputMode(modeId)}
                                                 className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col gap-2 relative ${
                                                     interviewInputMode === modeId
-                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl shadow-[#313851]/10'
-                                                        : 'bg-[#FAFAFA] text-[#313851]/50 border-zinc-100 hover:bg-zinc-50'
+                                                        ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-xl shadow-[#D45B34]/10'
+                                                        : 'bg-[#FAFAFA] text-[#1C1A17]/50 border-zinc-100 hover:bg-zinc-50'
                                                 }`}
                                             >
-                                                <Icon size={20} className={interviewInputMode === modeId ? 'text-white' : 'text-[#313851]/50'} />
+                                                <Icon size={20} className={interviewInputMode === modeId ? 'text-white' : 'text-[#1C1A17]/50'} />
                                                 <span className="font-bold text-[11px] uppercase tracking-widest block mt-2">{label}</span>
                                                 <span className={`text-[8.5px] font-medium leading-relaxed block ${interviewInputMode === modeId ? 'text-zinc-300' : 'text-zinc-400'}`}>{desc}</span>
                                                 {interviewInputMode === modeId && (
@@ -2437,7 +2437,7 @@ const MockInterviewPage = () => {
 
                                 {/* Duration Selector */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">02 / Select Duration</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-3">02 / Select Duration</label>
                                     <div className="grid grid-cols-2 gap-4">
                                         {[15, 30].map((d) => (
                                             <button
@@ -2445,8 +2445,8 @@ const MockInterviewPage = () => {
                                                 onClick={() => setDuration(d)}
                                                 className={`py-4 rounded-xl border transition-all duration-300 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 ${
                                                     duration === d
-                                                        ? 'bg-[#313851] text-white border-[#313851]'
-                                                        : 'bg-[#FAFAFA] text-[#313851]/40 border-zinc-100 hover:bg-zinc-50'
+                                                        ? 'bg-[#D45B34] text-white border-[#D45B34]'
+                                                        : 'bg-[#FAFAFA] text-[#1C1A17]/40 border-zinc-100 hover:bg-zinc-50'
                                                 }`}
                                             >
                                                 <Clock size={14} /> {d} Minutes Practice
@@ -2461,7 +2461,7 @@ const MockInterviewPage = () => {
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                                 {/* Interviewer Persona Selector */}
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#313851]/50 mb-3">01 / Select Interviewer Persona</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-[#1C1A17]/50 mb-3">01 / Select Interviewer Persona</label>
                                     <div className="grid grid-cols-2 gap-4">
                                         {Object.entries(PERSONA_PROFILES).map(([key, val]) => (
                                             <button
@@ -2469,12 +2469,12 @@ const MockInterviewPage = () => {
                                                 onClick={() => setInterviewerPersona(key)}
                                                 className={`p-4 rounded-2xl border text-left transition-all duration-300 flex items-start gap-4 ${
                                                     interviewerPersona === key
-                                                        ? 'bg-[#313851] text-white border-[#313851] shadow-xl'
-                                                        : 'bg-[#FAFAFA] text-[#313851]/60 border-zinc-100 hover:bg-zinc-50'
+                                                        ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-xl'
+                                                        : 'bg-[#FAFAFA] text-[#1C1A17]/60 border-zinc-100 hover:bg-zinc-50'
                                                 }`}
                                             >
                                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 border ${
-                                                    interviewerPersona === key ? 'bg-white/10 border-white/20 text-white' : 'bg-white border-zinc-100 text-[#313851]'
+                                                    interviewerPersona === key ? 'bg-white/10 border-white/20 text-white' : 'bg-white border-zinc-100 text-[#1C1A17]'
                                                 }`}>
                                                     {val.name[0]}
                                                 </div>
@@ -2493,7 +2493,7 @@ const MockInterviewPage = () => {
                                     {/* Whiteboard mode */}
                                     <div className="p-4 bg-[#FAFAFA] rounded-2xl border border-zinc-100 flex items-center justify-between">
                                         <div>
-                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#313851]">Whiteboard Mode</p>
+                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#1C1A17]">Whiteboard Mode</p>
                                             <p className="text-[8.5px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5 leading-relaxed">
                                                 Verbally solve algorithm/design logic
                                             </p>
@@ -2501,7 +2501,7 @@ const MockInterviewPage = () => {
                                         <button
                                             onClick={() => setWhiteboardMode(prev => !prev)}
                                             className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center shrink-0 ${
-                                                whiteboardMode ? 'bg-[#313851] border-[#313851]' : 'bg-zinc-200 border-zinc-200'
+                                                whiteboardMode ? 'bg-[#D45B34] border-[#D45B34]' : 'bg-zinc-200 border-zinc-200'
                                             }`}
                                         >
                                             <div className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-300 ${whiteboardMode ? 'translate-x-[14px]' : ''}`} />
@@ -2511,7 +2511,7 @@ const MockInterviewPage = () => {
                                     {/* Proctoring */}
                                     <div className="p-4 bg-[#FAFAFA] rounded-2xl border border-zinc-100 flex items-center justify-between">
                                         <div>
-                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#313851]">Enable Proctoring</p>
+                                            <p className="font-bold text-[10px] uppercase tracking-widest text-[#1C1A17]">Enable Proctoring</p>
                                             <p className="text-[8.5px] font-medium text-zinc-400 uppercase tracking-wide mt-0.5 leading-relaxed">
                                                 Monitor browser focus issues
                                             </p>
@@ -2519,7 +2519,7 @@ const MockInterviewPage = () => {
                                         <button
                                             onClick={() => setProctorMode(prev => !prev)}
                                             className={`w-9 h-5 rounded-full border transition-all duration-500 flex items-center shrink-0 ${
-                                                proctorMode ? 'bg-[#313851] border-[#313851]' : 'bg-zinc-200 border-zinc-200'
+                                                proctorMode ? 'bg-[#D45B34] border-[#D45B34]' : 'bg-zinc-200 border-zinc-200'
                                             }`}
                                         >
                                             <div className={`w-3.5 h-3.5 bg-white rounded-full mx-0.5 transition-transform duration-300 ${proctorMode ? 'translate-x-[14px]' : ''}`} />
@@ -2533,8 +2533,8 @@ const MockInterviewPage = () => {
                                         <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-400 mb-3">Target Round Structure</p>
                                         <div className="flex gap-2 flex-wrap">
                                             {roundsConfig.map((r, i) => (
-                                                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-100 rounded-xl text-[9px] font-bold uppercase tracking-wider text-[#313851]">
-                                                    <span className="w-4.5 h-4.5 rounded-full bg-[#313851] text-white flex items-center justify-center text-[8px]">{i + 1}</span>
+                                                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-100 rounded-xl text-[9px] font-bold uppercase tracking-wider text-[#1C1A17]">
+                                                    <span className="w-4.5 h-4.5 rounded-full bg-[#D45B34] text-white flex items-center justify-center text-[8px]">{i + 1}</span>
                                                     {r.round_name} ({r.question_limit}Q)
                                                 </div>
                                             ))}
@@ -2552,13 +2552,13 @@ const MockInterviewPage = () => {
                                     <div className="bg-[#FAFAFA] border border-zinc-100 rounded-2xl p-5 shadow-sm">
                                         <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-4">Assigned Interviewer</p>
                                         <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-[#313851] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                                            <div className="w-10 h-10 rounded-xl bg-[#D45B34] text-white flex items-center justify-center font-bold text-sm shrink-0">
                                                 {persona.name[0]}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-[#313851] font-bold text-sm leading-none">{persona.name}</p>
-                                                <p className="text-[#313851]/70 text-[10px] mt-1 font-semibold">{persona.title}</p>
-                                                <p className="text-[#313851]/60 text-[9px] mt-2 font-medium">Style: <span className="font-bold text-[#313851]">{persona.style}</span></p>
+                                                <p className="text-[#1C1A17] font-bold text-sm leading-none">{persona.name}</p>
+                                                <p className="text-[#1C1A17]/70 text-[10px] mt-1 font-semibold">{persona.title}</p>
+                                                <p className="text-[#1C1A17]/60 text-[9px] mt-2 font-medium">Style: <span className="font-bold text-[#1C1A17]">{persona.style}</span></p>
                                                 <p className="text-zinc-400 text-[9px] mt-1 font-medium">{persona.years} years experience · Glassdoor ★ {persona.rating}</p>
                                             </div>
                                         </div>
@@ -2571,8 +2571,8 @@ const MockInterviewPage = () => {
                                             <div className="space-y-2">
                                                 {roundsConfig.map((r, idx) => (
                                                     <div key={idx} className="flex items-center gap-2.5">
-                                                        <span className="w-4 h-4 rounded-full bg-white border border-[#313851]/20 text-[#313851] flex items-center justify-center text-[8px] font-black shrink-0">{idx + 1}</span>
-                                                        <span className="text-[9px] font-bold text-[#313851]/80 uppercase tracking-widest truncate">{r.round_name}</span>
+                                                        <span className="w-4 h-4 rounded-full bg-white border border-[#D45B34]/20 text-[#1C1A17] flex items-center justify-center text-[8px] font-black shrink-0">{idx + 1}</span>
+                                                        <span className="text-[9px] font-bold text-[#1C1A17]/80 uppercase tracking-widest truncate">{r.round_name}</span>
                                                         <span className="text-zinc-300 text-[9.5px] font-medium ml-auto">{roundTimes[idx]}m</span>
                                                     </div>
                                                 ))}
@@ -2591,8 +2591,8 @@ const MockInterviewPage = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                         {tips.slice(0, 3).map((tip, i) => (
                                             <div key={i} className="p-4 bg-zinc-50 border border-zinc-100/50 rounded-xl flex items-start gap-2.5">
-                                                <Zap size={12} className="text-[#313851]/40 shrink-0 mt-0.5" />
-                                                <p className="text-[#313851]/75 text-[10px] font-semibold leading-relaxed">{tip}</p>
+                                                <Zap size={12} className="text-[#1C1A17]/40 shrink-0 mt-0.5" />
+                                                <p className="text-[#1C1A17]/75 text-[10px] font-semibold leading-relaxed">{tip}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -2609,12 +2609,12 @@ const MockInterviewPage = () => {
                                                 className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAFAFA] border border-zinc-100 hover:border-zinc-300 text-left transition-all shadow-sm shrink-0"
                                             >
                                                 <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                                                    checkedItems[item.key] ? 'bg-[#313851] border-[#313851]' : 'border-zinc-300 bg-white'
+                                                    checkedItems[item.key] ? 'bg-[#D45B34] border-[#D45B34]' : 'border-zinc-300 bg-white'
                                                 }`}>
                                                     {checkedItems[item.key] && <CheckCircle size={10} className="text-white" />}
                                                 </div>
                                                 <span className={`text-[10px] font-bold uppercase tracking-wider truncate transition-colors ${
-                                                    checkedItems[item.key] ? 'text-[#313851]' : 'text-[#313851]/60'
+                                                    checkedItems[item.key] ? 'text-[#1C1A17]' : 'text-[#1C1A17]/60'
                                                 }`}>
                                                     {item.label}
                                                 </span>
@@ -2631,14 +2631,14 @@ const MockInterviewPage = () => {
                         {setupStep > 1 ? (
                             <button
                                 onClick={() => setSetupStep((s) => s - 1)}
-                                className="px-6 py-3.5 border border-[#313851]/10 text-[#313851]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] hover:text-[#313851] rounded-xl transition-all"
+                                className="px-6 py-3.5 border border-[#1C1A17]/10 text-[#1C1A17]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#D45B34] hover:text-[#1C1A17] rounded-xl transition-all"
                             >
                                 Back
                             </button>
                         ) : (
                             <button
                                 onClick={() => setStep('selection')}
-                                className="px-6 py-3.5 border border-[#313851]/10 text-[#313851]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#313851] hover:text-[#313851] rounded-xl transition-all"
+                                className="px-6 py-3.5 border border-[#1C1A17]/10 text-[#1C1A17]/60 font-bold text-[10px] uppercase tracking-widest hover:border-[#D45B34] hover:text-[#1C1A17] rounded-xl transition-all"
                             >
                                 Back to Selection
                             </button>
@@ -2654,7 +2654,7 @@ const MockInterviewPage = () => {
                                     }
                                     setSetupStep((s) => s + 1);
                                 }}
-                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5"
+                                className="px-8 py-3.5 bg-[#D45B34] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#D45B34]/95 rounded-xl transition-all flex items-center gap-1.5"
                             >
                                 Next
                             </button>
@@ -2664,7 +2664,7 @@ const MockInterviewPage = () => {
                             <button
                                 onClick={handleStartClick}
                                 disabled={isStarting || (interviewType !== 'hr' && !hasResume) || uploadingResume || showCreditPanel}
-                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-[#313851]/10 disabled:opacity-30"
+                                className="px-8 py-3.5 bg-[#D45B34] text-white font-bold text-[10px] uppercase tracking-widest hover:bg-[#D45B34]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-[#D45B34]/20 disabled:opacity-30"
                             >
                                 {isStarting ? 'Loading...' : 'Pre-Flight Briefing'}
                             </button>
@@ -2674,7 +2674,7 @@ const MockInterviewPage = () => {
                             <button
                                 onClick={handleConfirmStart}
                                 disabled={!allChecked}
-                                className="px-8 py-3.5 bg-[#313851] text-white font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#313851]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-xl shadow-[#313851]/10 disabled:opacity-20 disabled:cursor-not-allowed"
+                                className="px-8 py-3.5 bg-[#D45B34] text-white font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#D45B34]/95 rounded-xl transition-all flex items-center gap-1.5 shadow-xl shadow-[#D45B34]/20 disabled:opacity-20 disabled:cursor-not-allowed"
                             >
                                 Launch Simulator →
                             </button>

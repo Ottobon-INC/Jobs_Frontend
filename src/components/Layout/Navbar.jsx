@@ -111,7 +111,7 @@ const Navbar = () => {
                 {/* Logo - Refined Branding */}
                 <Link to="/" className="flex items-center gap-3 group">
                     <img 
-                        src="/favicon.png" 
+                        src="/favicon.png?v=2" 
                         alt="Ottobon Jobs" 
                         className="w-8 h-8 rounded-xl group-hover:rotate-[10deg] transition-all duration-700 shadow-2xl shadow-black/10" 
                     />
@@ -126,10 +126,10 @@ const Navbar = () => {
                         <PillNav
                             items={getPillItems()}
                             ease="power3.easeOut"
-                            baseColor="#313851"
+                            baseColor="#D45B34"
                             pillColor="transparent"
-                            pillTextColor="#313851"
-                            hoveredPillTextColor="#F6F3ED"
+                            pillTextColor="#1C1A17"
+                            hoveredPillTextColor="#ffffff"
                             initialLoadAnimation={false}
                         />
                         
@@ -141,9 +141,9 @@ const Navbar = () => {
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
-                                    className="absolute top-12 left-1/2 -translate-x-1/2 w-64 bg-[#313851] text-[#F6F3ED] rounded-2xl p-2.5 shadow-2xl border border-[#C2CBD3]/20 flex flex-col gap-1 z-50 text-left animate-in fade-in duration-200"
+                                    className="absolute top-12 left-1/2 -translate-x-1/2 w-64 bg-[#222222] text-[#F4F1EA] rounded-2xl p-2.5 shadow-2xl border border-[#D45B34]/20 flex flex-col gap-1 z-50 text-left animate-in fade-in duration-200"
                                 >
-                                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#F6F3ED]/40 px-3 py-1.5 mb-1 select-none border-b border-[#C2CBD3]/10">
+                                    <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#F4F1EA]/40 px-3 py-1.5 mb-1 select-none border-b border-[#D45B34]/10">
                                         {activeCategory} Portal
                                     </div>
                                     <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto no-scrollbar">
@@ -160,12 +160,12 @@ const Navbar = () => {
                                                         className={`
                                                             flex items-center gap-3 p-2 rounded-lg border-none transition-all duration-200 text-decoration-none group
                                                             ${isCurrentPage 
-                                                                ? 'bg-[#C2CBD3] text-[#313851] font-bold shadow-sm' 
-                                                                : 'text-[#F6F3ED]/80 hover:text-white hover:bg-white/10'
+                                                                ? 'bg-[#D45B34] text-white font-bold shadow-sm' 
+                                                                : 'text-[#F4F1EA]/80 hover:text-white hover:bg-white/10'
                                                             }
                                                         `}
                                                     >
-                                                        <div className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${isCurrentPage ? 'bg-[#313851]/10 text-[#313851]' : 'bg-[#F6F3ED]/5 text-[#F6F3ED]/80 group-hover:scale-105 group-hover:bg-[#C2CBD3]/10'}`}>
+                                                        <div className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${isCurrentPage ? 'bg-white/10 text-white' : 'bg-[#F4F1EA]/5 text-[#F4F1EA]/80 group-hover:scale-105 group-hover:bg-[#D45B34]/10'}`}>
                                                             <Icon size={16} strokeWidth={2.5} />
                                                         </div>
                                                         <span className="text-[11px] font-bold tracking-wide">{link.label}</span>
@@ -268,7 +268,7 @@ const Navbar = () => {
                                 to="/profile"
                                 className="flex items-center gap-3 bg-white/50 pl-1.5 pr-4 py-1.5 rounded-full hover:bg-white transition-all duration-700 shadow-sm hover:shadow-xl hover:shadow-black/5 border border-white/50"
                             >
-                                <div className="w-7 h-7 bg-black rounded-full overflow-hidden flex items-center justify-center text-white ring-2 ring-white/50">
+                                <div className="w-7 h-7 bg-[#D45B34] rounded-full overflow-hidden flex items-center justify-center text-white ring-2 ring-white/50">
                                     {(isValidAvatarUrl(profile?.avatar_url) || isValidAvatarUrl(user?.user_metadata?.avatar_url)) && !avatarError ? (
                                         <img
                                             src={profile?.avatar_url || user?.user_metadata?.avatar_url}

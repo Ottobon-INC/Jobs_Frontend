@@ -73,9 +73,9 @@ const MobileDrawer = ({ isOpen, onClose }) => {
             />
             
             {/* Drawer */}
-            <div className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-[#313851] text-[#F6F3ED] shadow-2xl flex flex-col pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] rounded-l-2xl animate-in slide-in-from-right duration-300">
-                <div className="flex items-center justify-between p-4 border-b border-[#C2CBD3]/20">
-                    <span className="font-bold text-lg tracking-tight flex items-center text-[#F6F3ED]">
+            <div className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-[#222222] text-[#F4F1EA] shadow-2xl flex flex-col pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] rounded-l-2xl animate-in slide-in-from-right duration-300">
+                <div className="flex items-center justify-between p-4 border-b border-[#1C1A17]/10">
+                    <span className="font-bold text-lg tracking-tight flex items-center text-[#F4F1EA]">
                         Ottobon<span className="text-zinc-500 font-light mx-1">|</span>Menu
                     </span>
                     <button onClick={onClose} className="p-2 bg-zinc-800 rounded-full text-zinc-300 hover:text-white">
@@ -86,7 +86,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
                 <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
                     {Object.entries(groupedLinks).map(([category, items]) => (
                         <div key={category}>
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F6F3ED]/40 mb-3 ml-1">{category}</h3>
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA]/40 mb-3 ml-1">{category}</h3>
                             <div className="space-y-1">
                                 {items.map((link) => (
                                     <NavLink
@@ -95,7 +95,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
                                         onClick={onClose}
                                         className={({ isActive }) => `
                                             flex items-center gap-3 p-3 rounded-xl transition-all
-                                            ${isActive ? 'bg-[#C2CBD3] text-[#313851] font-bold' : 'text-[#F6F3ED] hover:bg-[#C2CBD3]/10 hover:text-white'}
+                                            ${isActive ? 'bg-[#D45B34] text-white font-bold' : 'text-[#1C1A17]/70 hover:bg-[#D45B34]/10 hover:text-white'}
                                         `}
                                     >
                                         <link.icon size={20} />
