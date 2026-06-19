@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -17,9 +17,12 @@ import {
     ListTodo, 
     Trash2 
 } from 'lucide-react';
-import { analyzeResumeATS } from '../../api/resumeAnalyzerApi';
+import { toast } from 'react-hot-toast';
+import { analyzeResumeATS, parseResumeStructured } from '../../api/resumeAnalyzerApi';
 import { getMyProfile } from '../../api/usersApi';
 import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
+import ResumeDesignerWorkspace from '../../components/resume/ResumeDesignerWorkspace';
+
 
 // Refined Neu-Minimalist Card styling
 const Card = ({ children, className = "", delay = 0 }) => (
@@ -56,8 +59,12 @@ const ATSAnalyzerPage = () => {
     // Input state
     const [file, setFile] = useState(null);
     const [resumeText, setResumeText] = useState('');
-    const [jobDescription, setJobDescription] = useState('');
-    const [showTextPaste, setShowTextPaste] = useState(false);
+    const [jobDescription, setJobDescription] = useState(() => {
+        return sessionStorage.getItem('ats_jobDescription') || '';
+    });
+    const [showTextPaste, setShowTextPaste] = useState(() => {
+        return sessionStorage.getItem('ats_showTextPaste') === 'true';
+    });
 
     // Profile resume states
     const [profileResumeText, setProfileResumeText] = useState('');
@@ -95,12 +102,109 @@ const ATSAnalyzerPage = () => {
     const [loading, setLoading] = useState(false);
     const [loadingStage, setLoadingStage] = useState(0);
     const [error, setError] = useState(null);
-    const [analysisResult, setAnalysisResult] = useState(null);
+    const [analysisResult, setAnalysisResult] = useState(() => {
+        const stored = sessionStorage.getItem('ats_analysisResult');
+        return stored ? JSON.parse(stored) : null;
+    });
 
     // Interactivity
     const [activePromptTab, setActivePromptTab] = useState('chatgpt');
     const [copied, setCopied] = useState(false);
-    const [completedTips, setCompletedTips] = useState({});
+    const [completedTips, setCompletedTips] = useState(() => {
+        const stored = sessionStorage.getItem('ats_completedTips');
+        return stored ? JSON.parse(stored) : {};
+    });
+
+    // Structured Resume Designer States
+    const [showDesigner, setShowDesigner] = useState(() => {
+        return sessionStorage.getItem('ats_showDesigner') === 'true';
+    });
+    const [parsingStructured, setParsingStructured] = useState(false);
+    const [structuredResume, setStructuredResume] = useState(() => {
+        const stored = sessionStorage.getItem('ats_structuredResume');
+        return stored ? JSON.parse(stored) : null;
+    });
+    const parsingPromiseRef = useRef(null);
+
+    // Sync state changes to sessionStorage to handle page refreshes seamlessly
+    useEffect(() => {
+        if (analysisResult) {
+            sessionStorage.setItem('ats_analysisResult', JSON.stringify(analysisResult));
+        } else {
+            sessionStorage.removeItem('ats_analysisResult');
+        }
+    }, [analysisResult]);
+
+    useEffect(() => {
+        if (structuredResume) {
+            sessionStorage.setItem('ats_structuredResume', JSON.stringify(structuredResume));
+        } else {
+            sessionStorage.removeItem('ats_structuredResume');
+        }
+    }, [structuredResume]);
+
+    useEffect(() => {
+        sessionStorage.setItem('ats_showDesigner', showDesigner.toString());
+    }, [showDesigner]);
+
+    useEffect(() => {
+        sessionStorage.setItem('ats_jobDescription', jobDescription);
+    }, [jobDescription]);
+
+    useEffect(() => {
+        sessionStorage.setItem('ats_showTextPaste', showTextPaste.toString());
+    }, [showTextPaste]);
+
+    useEffect(() => {
+        sessionStorage.setItem('ats_completedTips', JSON.stringify(completedTips));
+    }, [completedTips]);
+
+    const handleOpenDesigner = async () => {
+        if (structuredResume) {
+            setShowDesigner(true);
+            return;
+        }
+
+        setParsingStructured(true);
+        const toastId = toast.loading("Structuring resume details...");
+
+        try {
+            let data;
+            if (parsingPromiseRef.current) {
+                // Reuse the background parsing request that was initiated when the ATS scan finished
+                data = await parsingPromiseRef.current;
+            } else {
+                const payload = {
+                    resume_text: analysisResult?.extracted_resume_text || resumeText || profileResumeText || ""
+                };
+                data = await parseResumeStructured(payload);
+            }
+            if (data) {
+                setStructuredResume(data);
+                setShowDesigner(true);
+                toast.success("Structured layout ready!", { id: toastId });
+            } else {
+                throw new Error("No structured data returned.");
+            }
+        } catch (err) {
+            console.error("Structured parse failed", err);
+            toast.error(err.response?.data?.detail || "Failed to extract structured sections. Please try again.", { id: toastId });
+        } finally {
+            setParsingStructured(false);
+        }
+    };
+
+    if (showDesigner && structuredResume) {
+        return (
+            <ResumeDesignerWorkspace 
+                resumeData={structuredResume}
+                setResumeData={setStructuredResume}
+                analysisResult={analysisResult}
+                onClose={() => setShowDesigner(false)}
+            />
+        );
+    }
+
 
     // Stages messaging for clean visual transition
     const stages = [
@@ -172,6 +276,8 @@ const ATSAnalyzerPage = () => {
             return;
         }
 
+        setStructuredResume(null);
+        parsingPromiseRef.current = null;
         setLoading(true);
         const stageInterval = triggerLoadingStages();
 
@@ -187,6 +293,21 @@ const ATSAnalyzerPage = () => {
             formData.append('job_description', jobDescription);
 
             const result = await analyzeResumeATS(formData);
+
+            // Initiate background pre-fetch immediately after scan finishes to eliminate Format & Customize latency
+            const payload = {
+                resume_text: result?.extracted_resume_text || resumeText || profileResumeText || ""
+            };
+            const promise = parseResumeStructured(payload)
+                .then(data => {
+                    setStructuredResume(data);
+                    return data;
+                })
+                .catch(err => {
+                    console.error("Background structured parse failed", err);
+                    return null;
+                });
+            parsingPromiseRef.current = promise;
             
             setTimeout(() => {
                 setAnalysisResult(result);
@@ -228,6 +349,8 @@ const ATSAnalyzerPage = () => {
         } else {
             setUseProfileResume(false);
         }
+        setStructuredResume(null);
+        parsingPromiseRef.current = null;
     };
 
     // Score evaluation graphics variables
@@ -281,12 +404,26 @@ const ATSAnalyzerPage = () => {
                 </div>
 
                 {analysisResult && (
-                    <button
-                        onClick={handleReset}
-                        className="px-6 py-3 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-sm"
-                    >
-                        Scan New Resume
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleOpenDesigner}
+                            disabled={parsingStructured}
+                            className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-md flex items-center gap-2"
+                        >
+                            {parsingStructured ? (
+                                <RefreshCw size={14} className="animate-spin" />
+                            ) : (
+                                <Sparkles size={14} className="text-zinc-200 animate-pulse" />
+                            )}
+                            {parsingStructured ? "Structuring..." : "Format & Customize"}
+                        </button>
+                        <button
+                            onClick={handleReset}
+                            className="px-6 py-3 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                            Scan New Resume
+                        </button>
+                    </div>
                 )}
             </motion.div>
 
