@@ -25,8 +25,9 @@ import {
     Layout
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { saveUserResume, updateUserResume, listUserResumes, deleteUserResume } from '../../api/resumeAnalyzerApi';
 import api from '../../api/client';
+import { jsPDF } from 'jspdf';
+import { toPng } from 'html-to-image';
 
 // Load Google Fonts dynamically when entering workspace
 const useGoogleFonts = () => {
@@ -1663,6 +1664,13 @@ const RhyhornTemplate = ({ data, styling }) => {
                     {basics.email && <div>{basics.email}</div>}
                     {basics.phone && <div>{basics.phone}</div>}
                     {basics.location && <div>{basics.location}</div>}
+                    {basics.website?.url && (
+                        <div>
+                            <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer">
+                                {basics.website.label || basics.website.url}
+                            </a>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -1748,6 +1756,11 @@ const ChikoritaTemplate = ({ data, styling }) => {
                     {basics.email && <span>{basics.email}</span>}
                     {basics.phone && <span>{basics.phone}</span>}
                     {basics.location && <span>{basics.location}</span>}
+                    {basics.website?.url && (
+                        <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                            • {basics.website.label || 'Website'}
+                        </a>
+                    )}
                 </div>
             </div>
 
@@ -1839,6 +1852,13 @@ const KakunaTemplate = ({ data, styling }) => {
                     {basics.email && <div>{basics.email}</div>}
                     {basics.phone && <div>{basics.phone}</div>}
                     {basics.location && <div>{basics.location}</div>}
+                    {basics.website?.url && (
+                        <div>
+                            <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                                {basics.website.label || 'Website'}
+                            </a>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -2257,6 +2277,8 @@ export default function ResumeDesignerWorkspace({ resumeData, setResumeData, ini
                     lineSpacing: 1.4,
                     marginSize: 'normal',
                     marginPadding: 'p-10',
+                    fitToSinglePage: true,
+                    fitScale: 1.0,
                     ...JSON.parse(stored),
                     ...initialStyling
                 };
@@ -2275,6 +2297,8 @@ export default function ResumeDesignerWorkspace({ resumeData, setResumeData, ini
             lineSpacing: 1.4,
             marginSize: 'normal', // compact, normal, spacious
             marginPadding: 'p-10',
+            fitToSinglePage: true,
+            fitScale: 1.0,
             ...initialStyling
         };
     });
@@ -2312,6 +2336,70 @@ export default function ResumeDesignerWorkspace({ resumeData, setResumeData, ini
     useEffect(() => {
         sessionStorage.setItem('designer_activeTab', activeTab);
     }, [activeTab]);
+
+    const [fitScale, setFitScale] = useState(1.0);
+    const [previewPageCount, setPreviewPageCount] = useState(1);
+
+    useEffect(() => {
+        const autoFit = () => {
+            const element = document.getElementById('resume-a4-canvas');
+            if (!element) return;
+
+            // Find the template child element
+            const templateElement = Array.from(element.children).find(
+                child => !child.classList.contains('print:hidden') && !child.classList.contains('print-hidden') && child.tagName !== 'STYLE'
+            ) || element.firstElementChild;
+            if (!templateElement) return;
+
+            let paddingVal = 40;
+            if (styling.marginPadding === 'p-6') paddingVal = 24;
+            else if (styling.marginPadding === 'p-14') paddingVal = 56;
+
+            const maxPageHeight = 1122;
+            const availableHeight = maxPageHeight - (paddingVal * 2);
+
+            if (!styling.fitToSinglePage) {
+                setFitScale(1.0);
+                element.style.setProperty('--fit-scale', '1.0');
+                const contentHeight = templateElement.offsetHeight;
+                const actualHeight = contentHeight + (paddingVal * 2);
+                const pageCount = Math.max(1, Math.ceil(actualHeight / maxPageHeight));
+                setPreviewPageCount(pageCount);
+                return;
+            }
+
+            // Temporarily set fit-scale to 1.0 to measure unscaled height
+            element.style.setProperty('--fit-scale', '1.0');
+            const unscaledContentHeight = templateElement.offsetHeight;
+
+            if (unscaledContentHeight > availableHeight) {
+                const ratio = availableHeight / unscaledContentHeight;
+                // Clamp scale between 0.4 and 1.0 to guarantee readability
+                const newScale = Math.max(0.4, Math.min(1.0, ratio));
+                setFitScale(newScale);
+                element.style.setProperty('--fit-scale', newScale.toString());
+            } else {
+                setFitScale(1.0);
+                element.style.setProperty('--fit-scale', '1.0');
+            }
+            setPreviewPageCount(1);
+        };
+
+        autoFit();
+        const timer = setTimeout(autoFit, 150);
+        return () => clearTimeout(timer);
+    }, [
+        resumeData,
+        styling.template,
+        styling.fontFamily,
+        styling.marginPadding,
+        styling.fitToSinglePage,
+        styling.fontSizeValue,
+        styling.sectionSpacing,
+        styling.paragraphSpacing,
+        styling.lineSpacing
+    ]);
+
     const [openSection, setOpenSection] = useState('basics'); // basics, summary, experience, etc.
     const [savedResumes, setSavedResumes] = useState([]);
     const [loadingSaved, setLoadingSaved] = useState(false);
@@ -2328,7 +2416,7 @@ const BronzorTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor || '#1f2937';
     return (
-        <div className="w-full h-full flex bg-white text-zinc-800 leading-relaxed font-sans" style={{ fontSize: styling.fontSizeValue }}>
+        <div className="w-full flex bg-white text-zinc-800 leading-relaxed font-sans min-h-full" style={{ fontSize: styling.fontSizeValue }}>
             <div className="w-3/5 flex flex-col">
                 <div className="bg-[#f3f0e7] px-8 py-10 flex flex-col justify-end" style={{ backgroundColor: `${accent}15` }}>
                     <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900 uppercase leading-none mb-2">{basics.name}</h1>
@@ -2337,6 +2425,14 @@ const BronzorTemplate = ({ data, styling }) => {
                         {basics.email && <div className="flex items-center gap-2"><span>✉</span> {basics.email}</div>}
                         {basics.phone && <div className="flex items-center gap-2"><span>☎</span> {basics.phone}</div>}
                         {basics.location && <div className="flex items-center gap-2"><span>📍</span> {basics.location}</div>}
+                        {basics.website?.url && (
+                            <div className="flex items-center gap-2">
+                                <span>🔗</span>
+                                <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer">
+                                    {basics.website.label || 'Website'}
+                                </a>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="bg-white px-8 py-6 flex-1">
@@ -2418,6 +2514,13 @@ const GlalieTemplate = ({ data, styling }) => {
                         {basics.phone && <span>📞 {basics.phone}</span>}
                         {basics.email && <span>✉ {basics.email}</span>}
                         {basics.location && <span>📍 {basics.location}</span>}
+                        {basics.website?.url && (
+                            <span>
+                                🔗 <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                                    {basics.website.label || 'Website'}
+                                </a>
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -2488,6 +2591,13 @@ const DittoTemplate = ({ data, styling }) => {
                     {basics.phone && <span>{basics.phone}</span>}
                     {basics.email && <span>{basics.email}</span>}
                     {basics.location && <span>{basics.location}</span>}
+                    {basics.website?.url && (
+                        <span>
+                            • <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                                {basics.website.label || 'Website'}
+                            </a>
+                        </span>
+                    )}
                 </div>
                 <div className="w-full border-b mt-3" style={{ borderColor: `${accent}40` }} />
             </div>
@@ -2566,6 +2676,14 @@ const JigglypuffTemplate = ({ data, styling }) => {
                             {basics.phone && <div><span className="font-black text-zinc-900 block text-[9px] mb-0.5">Phone</span>{basics.phone}</div>}
                             {basics.email && <div><span className="font-black text-zinc-900 block text-[9px] mb-0.5">Email</span>{basics.email}</div>}
                             {basics.location && <div><span className="font-black text-zinc-900 block text-[9px] mb-0.5">Address</span>{basics.location}</div>}
+                            {basics.website?.url && (
+                                <div>
+                                    <span className="font-black text-zinc-900 block text-[9px] mb-0.5">Website</span>
+                                    <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                                        {basics.website.label || basics.website.url}
+                                    </a>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {sections.skills && !sections.skills.hidden && sections.skills.items?.length > 0 && (
@@ -2634,8 +2752,8 @@ const CelebiTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor || '#6366f1';
     return (
-        <div className="w-full h-full p-2 bg-white">
-            <div className="w-full h-full border-[3px] rounded-2xl px-10 py-8 flex flex-col font-sans" style={{ borderColor: accent, fontSize: styling.fontSizeValue }}>
+        <div className="w-full min-h-full p-2 bg-white flex flex-col">
+            <div className="w-full min-h-full border-[3px] rounded-2xl px-10 py-8 flex flex-col font-sans" style={{ borderColor: accent, fontSize: styling.fontSizeValue }}>
                 <div className="mb-6">
                     <h1 className="text-3xl font-black text-zinc-900 uppercase tracking-tight mb-1" style={{ color: accent }}>{basics.name}</h1>
                     <h2 className="text-sm font-bold text-zinc-600 mb-1.5">{basics.headline}</h2>
@@ -2643,6 +2761,13 @@ const CelebiTemplate = ({ data, styling }) => {
                         {basics.phone && <span>{basics.phone}</span>}
                         {basics.email && <span>| {basics.email}</span>}
                         {basics.location && <span>| {basics.location}</span>}
+                        {basics.website?.url && (
+                            <span>
+                                | <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                                    {basics.website.label || 'Website'}
+                                </a>
+                            </span>
+                        )}
                     </div>
                 </div>
                 {!summary.hidden && summary.content && (
@@ -2711,6 +2836,11 @@ const LucarioTemplate = ({ data, styling }) => {
                     {basics.phone && <span>{basics.phone}</span>}
                     {basics.email && <span>{basics.email}</span>}
                     {basics.location && <span>{basics.location}</span>}
+                    {basics.website?.url && (
+                        <a href={basics.website.url} className="hover:underline" target="_blank" rel="noreferrer" style={{ color: accent }}>
+                            {basics.website.label || 'Website'}
+                        </a>
+                    )}
                 </div>
             </div>
             {!summary.hidden && summary.content && (
@@ -3241,71 +3371,126 @@ const allTemplates = [
         }
     };
 
-    // Trigger Print layout PDF dialog
-    const handlePrintResume = () => {
-        // Append print styling dynamically to body
-        const printStyle = document.createElement('style');
-        printStyle.id = 'resume-print-rules';
+    // Trigger high-resolution client-side PDF export
+    const handlePrintResume = async () => {
+        const element = document.getElementById('resume-a4-canvas');
+        if (!element) {
+            toast.error("Resume element not found.");
+            return;
+        }
+
+        const toastId = toast.loading("Generating pixel-perfect PDF...");
         
-        // Calculate page margin dynamically based on selected spacing
-        const marginValue = styling.marginPadding === 'p-6' ? '8mm' : styling.marginPadding === 'p-14' ? '18mm' : '12mm';
-        
-        printStyle.innerHTML = `
-            @media print {
-                @page {
-                    size: A4;
-                    margin: ${marginValue} !important;
+        try {
+            // Wait a brief moment to ensure layouts are stable
+            await new Promise(resolve => setTimeout(resolve, 150));
+
+            // Calculate padding based on styling config
+            let paddingVal = 40; // default for p-10 (which is the default when not p-6 or p-14)
+            if (styling.marginPadding === 'p-6') paddingVal = 24;
+            else if (styling.marginPadding === 'p-14') paddingVal = 56;
+
+            // Find the child element that is the template container (not a print:hidden/absolute indicator)
+            const templateElement = Array.from(element.children).find(
+                child => !child.classList.contains('print:hidden') && !child.classList.contains('print-hidden') && child.tagName !== 'STYLE'
+            ) || element.firstElementChild;
+
+            const contentHeight = templateElement ? templateElement.offsetHeight : 0;
+            
+            // Total height of the resume content, including top and bottom padding
+            const actualHeight = contentHeight + (paddingVal * 2);
+
+            const elementWidth = element.offsetWidth || 793;
+            const canvasPageHeight = 1122;
+            
+            // If fitToSinglePage is active, force the height to exactly 1 page (1122px) and pageCount to 1
+            const elementHeight = styling.fitToSinglePage ? canvasPageHeight : Math.max(canvasPageHeight, actualHeight);
+            const pageCount = styling.fitToSinglePage ? 1 : Math.max(1, Math.ceil(elementHeight / canvasPageHeight));
+
+            // Capture the entire canvas as a high-resolution PNG using 2x scale for printing
+            const dataUrl = await toPng(element, {
+                cacheBust: true,
+                pixelRatio: 2, // 2x high-resolution scaling
+                backgroundColor: '#ffffff',
+                filter: (node) => {
+                    if (node.getAttribute && typeof node.getAttribute === 'function') {
+                        const className = node.getAttribute('class');
+                        if (className && typeof className === 'string') {
+                            if (className.includes('print:hidden') || className.includes('print-hidden')) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                },
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left',
+                    width: `${elementWidth}px`,
+                    height: `${elementHeight}px`
                 }
-                body * {
-                    visibility: hidden !important;
-                }
-                #resume-a4-canvas, #resume-a4-canvas * {
-                    visibility: visible !important;
-                }
-                #resume-a4-canvas {
-                    position: absolute !important;
-                    left: 0 !important;
-                    top: 0 !important;
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    border: none !important;
-                    box-shadow: none !important;
-                    background: transparent !important;
-                }
+            });
+
+            // Load captured image
+            const img = new Image();
+            img.src = dataUrl;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            // Create A4 PDF using jsPDF
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pdfPageWidth = 210; // mm
+            const pdfPageHeight = 297; // mm
+
+            // Slice the image into A4 page increments using canvas
+            for (let i = 0; i < pageCount; i++) {
+                const sourceX = 0;
+                const sourceY = i * canvasPageHeight * 2;
+                const sourceWidth = elementWidth * 2;
+                const sourceHeight = canvasPageHeight * 2;
+
+                const sliceCanvas = document.createElement('canvas');
+                sliceCanvas.width = sourceWidth;
+                sliceCanvas.height = sourceHeight;
+                const ctx = sliceCanvas.getContext('2d');
                 
-                /* Avoid item break across pages */
-                .resume-designer-container .resume-item,
-                .resume-designer-container .space-y-3 > *,
-                .resume-designer-container .space-y-4 > *,
-                .resume-designer-container .space-y-2\\.5 > *,
-                .resume-designer-container .space-y-2 > *,
-                .resume-designer-container .grid > *,
-                .resume-designer-container .space-y-1\\.5 > *,
-                .resume-designer-container .space-y-1 > * {
-                    break-inside: avoid !important;
-                    page-break-inside: avoid !important;
+                // Draw slice on temporary canvas
+                ctx.drawImage(
+                    img,
+                    sourceX,
+                    sourceY,
+                    sourceWidth,
+                    sourceHeight,
+                    0,
+                    0,
+                    sourceWidth,
+                    sourceHeight
+                );
+
+                const sliceDataUrl = sliceCanvas.toDataURL('image/jpeg', 0.95);
+
+                if (i > 0) {
+                    pdf.addPage();
                 }
-                
-                /* Keep section headers with content */
-                .resume-designer-container h2,
-                .resume-designer-container h3 {
-                    break-after: avoid !important;
-                    page-break-after: avoid !important;
-                }
+                pdf.addImage(sliceDataUrl, 'JPEG', 0, 0, pdfPageWidth, pdfPageHeight);
             }
-        `;
-        document.head.appendChild(printStyle);
-        window.print();
-        
-        // Clean up print styling afterward
-        setTimeout(() => {
-            try {
-                const existing = document.getElementById('resume-print-rules');
-                if (existing) document.head.removeChild(existing);
-            } catch (e) {}
-        }, 1000);
+
+            // Save the generated PDF file
+            const safeTitle = resumeTitle.replace(/[^a-z0-9]/gi, '_');
+            pdf.save(`Tailored_Resume_${safeTitle}.pdf`);
+
+            toast.success("PDF exported successfully!", { id: toastId });
+        } catch (error) {
+            console.error("PDF Export error:", error);
+            toast.error("Failed to generate PDF.", { id: toastId });
+        }
     };
 
     // Trigger print/PDF layout for multiple selected resumes
@@ -3324,14 +3509,33 @@ const allTemplates = [
                     size: A4;
                     margin: 12mm !important;
                 }
-                body * {
-                    visibility: hidden !important;
+                /* Hide sidebar, navbar, and print-hidden elements */
+                aside, nav, header, .print\:hidden, [class*="print:hidden"] {
+                    display: none !important;
                 }
-                #resume-print-batch-container, #resume-print-batch-container * {
-                    visibility: visible !important;
+                /* Hide everything inside the workspace except the batch container */
+                .workspace-container > :not(#resume-print-batch-container) {
+                    display: none !important;
+                }
+                /* Reset SPA fixed layout and screen height limits on all parent containers */
+                html, body, #root, 
+                div:has(#resume-print-batch-container), 
+                main:has(#resume-print-batch-container), 
+                .workspace-container {
+                    height: auto !important;
+                    min-height: auto !important;
+                    overflow: visible !important;
+                    position: static !important;
+                    display: block !important;
+                    background: transparent !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    border: none !important;
                 }
                 #resume-print-batch-container {
-                    position: absolute !important;
+                    display: block !important;
+                    position: relative !important;
                     left: 0 !important;
                     top: 0 !important;
                     width: 100% !important;
@@ -3770,7 +3974,13 @@ const allTemplates = [
             <div className="bg-white border-b border-zinc-200 px-6 py-4 flex justify-between items-center h-[72px] shrink-0 print:hidden relative z-20">
                 <div className="flex items-center gap-3">
                     <button 
-                        onClick={() => navigate('/jobs')}
+                        onClick={() => {
+                            if (onClose) {
+                                onClose();
+                            } else {
+                                navigate('/jobs');
+                            }
+                        }}
                         className="p-2 hover:bg-zinc-100 rounded-xl transition-all"
                     >
                         <X size={18} className="text-zinc-500" />
@@ -3898,6 +4108,42 @@ const allTemplates = [
                         {/* Tab 2: Custom Spacing & Fonts Formatting */}
                         {activeTab === 'formatting' && (
                             <div className="space-y-6">
+                                {/* Fit to Single Page Toggle */}
+                                <div className="bg-[#f5f5f0] p-4.5 rounded-2xl border-2 border-transparent transition-all hover:border-zinc-200">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="p-2 bg-zinc-900 text-white rounded-xl">
+                                                <Sparkles size={16} className="animate-pulse" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wide">Fit to Single Page</h3>
+                                                <p className="text-[10px] text-zinc-400 font-bold uppercase mt-0.5">Auto-scale content & spacing</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setStyling(prev => ({ ...prev, fitToSinglePage: !prev.fitToSinglePage }))}
+                                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
+                                                ${styling.fitToSinglePage ? 'bg-zinc-900' : 'bg-zinc-300'}
+                                            `}
+                                        >
+                                            <span
+                                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out
+                                                    ${styling.fitToSinglePage ? 'translate-x-5' : 'translate-x-0'}
+                                                `}
+                                            />
+                                        </button>
+                                    </div>
+                                    {styling.fitToSinglePage && fitScale < 1.0 && (
+                                        <div className="mt-3 pt-3 border-t border-dashed border-zinc-350 text-[10px] text-zinc-500 font-semibold flex items-center justify-between">
+                                            <span>Scale Factor applied:</span>
+                                            <span className="bg-zinc-250 px-1.5 py-0.5 rounded font-mono text-zinc-700">
+                                                {Math.round(fitScale * 100)}%
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
                                 {/* Font Size Section */}
                                 <div>
                                     <h3 className="text-xs font-extrabold uppercase tracking-widest text-zinc-400 mb-3">Font size</h3>
@@ -4741,12 +4987,19 @@ const allTemplates = [
                 </div>
 
                 {/* Right Side: Live A4 Preview Pane (60% width) */}
-                <div className="flex-1 bg-zinc-100 flex justify-center overflow-y-auto p-8 select-text print:bg-white print:p-0 print:overflow-visible relative z-10">
-                    <style>{`
-                        .resume-designer-container {
+                <div className="flex-1 bg-zinc-100 flex justify-center items-start overflow-y-auto p-8 select-text print:bg-white print:p-0 print:overflow-visible relative z-10">
+                    <style key={`${styling.template}-${styling.fontFamily}-${styling.accentColor}-${styling.fontSizeValue}-${styling.sectionSpacing}-${styling.paragraphSpacing}-${styling.lineSpacing}-${styling.marginPadding}-${fitScale}`}>{`
+                        .resume-designer-container,
+                        .resume-designer-container .font-sans,
+                        .resume-designer-container .font-serif,
+                        .resume-designer-container * {
                             font-family: ${resolveFontFamily(styling.fontFamily)} !important;
-                            font-size: ${styling.fontSizeValue} !important;
-                            line-height: ${styling.lineSpacing || 1.4} !important;
+                        }
+                        
+                        .resume-designer-container {
+                            --base-font-size: ${styling.fontSizeValue || '12px'};
+                            font-size: calc(var(--base-font-size) * var(--fit-scale)) !important;
+                            line-height: calc(${styling.lineSpacing || 1.4} * var(--fit-scale)) !important;
                         }
                         
                         /* Section Spacing Overrides */
@@ -4755,7 +5008,7 @@ const allTemplates = [
                         .resume-designer-container .mb-4,
                         .resume-designer-container .mb-6,
                         .resume-designer-container .mb-8 {
-                            margin-bottom: ${styling.sectionSpacing || 16}px !important;
+                            margin-bottom: calc(${styling.sectionSpacing || 16}px * var(--fit-scale)) !important;
                         }
                         
                         /* Paragraph/Item Spacing Overrides */
@@ -4764,42 +5017,71 @@ const allTemplates = [
                         .resume-designer-container .space-y-4 > * + *,
                         .resume-designer-container .space-y-2\\.5 > * + *,
                         .resume-designer-container .space-y-2 > * + * {
-                            margin-top: ${styling.paragraphSpacing || 12}px !important;
+                            margin-top: calc(${styling.paragraphSpacing || 12}px * var(--fit-scale)) !important;
                         }
                         
                         .resume-designer-container .gap-3 {
-                            gap: ${styling.paragraphSpacing || 12}px !important;
+                            gap: calc(${styling.paragraphSpacing || 12}px * var(--fit-scale)) !important;
                         }
                         .resume-designer-container .gap-4 {
-                            gap: ${styling.paragraphSpacing || 12}px !important;
+                            gap: calc(${styling.paragraphSpacing || 12}px * var(--fit-scale)) !important;
                         }
-                        /* Avoid item page splits during PDF export */
-                        .resume-designer-container .resume-item,
-                        .resume-designer-container .space-y-3 > *,
-                        .resume-designer-container .space-y-4 > *,
-                        .resume-designer-container .space-y-2\\.5 > *,
-                        .resume-designer-container .space-y-2 > *,
-                        .resume-designer-container .grid > *,
-                        .resume-designer-container .space-y-1\\.5 > *,
-                        .resume-designer-container .space-y-1 > * {
-                            break-inside: avoid !important;
-                            page-break-inside: avoid !important;
+
+                        @media print {
+                            /* Avoid item page splits during PDF export */
+                            .resume-designer-container .resume-item,
+                            .resume-designer-container .space-y-3 > *,
+                            .resume-designer-container .space-y-4 > *,
+                            .resume-designer-container .space-y-2\\.5 > *,
+                            .resume-designer-container .space-y-2 > *,
+                            .resume-designer-container .grid > *,
+                            .resume-designer-container .space-y-1\\.5 > *,
+                            .resume-designer-container .space-y-1 > * {
+                                break-inside: avoid !important;
+                                page-break-inside: avoid !important;
+                            }
+                            
+                            /* Keep section headings with content */
+                            .resume-designer-container h2,
+                            .resume-designer-container h3 {
+                                break-after: avoid !important;
+                                page-break-after: avoid !important;
+                            }
                         }
-                        
-                        /* Keep section headings with content */
-                        .resume-designer-container h2,
-                        .resume-designer-container h3 {
-                            break-after: avoid !important;
-                            page-break-after: avoid !important;
-                        }
+
+                        /* Font scaling overrides inside printed/live canvas using CSS attribute selectors */
+                        .resume-designer-container [class~="text-[8px]"] { font-size: calc(var(--base-font-size) * 8 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[8.5px]"] { font-size: calc(var(--base-font-size) * 8.5 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[9px]"] { font-size: calc(var(--base-font-size) * 9 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[9.5px]"] { font-size: calc(var(--base-font-size) * 9.5 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[10px]"] { font-size: calc(var(--base-font-size) * 10 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[10.5px]"] { font-size: calc(var(--base-font-size) * 10.5 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[11px]"] { font-size: calc(var(--base-font-size) * 11 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[11.5px]"] { font-size: calc(var(--base-font-size) * 11.5 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[12px]"] { font-size: calc(var(--base-font-size) * 12 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[13px]"] { font-size: calc(var(--base-font-size) * 13 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container [class~="text-[14px]"] { font-size: calc(var(--base-font-size) * 14 / 12 * var(--fit-scale)) !important; }
+
+                        .resume-designer-container .text-xs { font-size: calc(var(--base-font-size) * 12 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-sm { font-size: calc(var(--base-font-size) * 14 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-base { font-size: calc(var(--base-font-size) * 16 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-lg { font-size: calc(var(--base-font-size) * 18 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-xl { font-size: calc(var(--base-font-size) * 20 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-2xl { font-size: calc(var(--base-font-size) * 24 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-3xl { font-size: calc(var(--base-font-size) * 30 / 12 * var(--fit-scale)) !important; }
+                        .resume-designer-container .text-4xl { font-size: calc(var(--base-font-size) * 36 / 12 * var(--fit-scale)) !important; }
                     `}</style>
                     <div 
                         id="resume-a4-canvas"
                         ref={printAreaRef}
-                        className="bg-white shadow-xl shadow-zinc-900/5 border border-zinc-200/50 rounded-2xl w-[793px] min-h-[1122px] print:shadow-none print:border-none print:rounded-none relative resume-designer-container"
+                        className="bg-white shadow-xl shadow-zinc-900/5 border border-zinc-200/50 rounded-2xl w-[793px] min-h-[1122px] print:shadow-none print:border-none print:rounded-none relative resume-designer-container flex flex-col items-stretch"
                         style={{
                             boxSizing: 'border-box',
-                            padding: styling.marginPadding === 'p-6' ? '24px' : styling.marginPadding === 'p-14' ? '56px' : '40px'
+                            padding: styling.fitToSinglePage
+                                ? `calc(${styling.marginPadding === 'p-6' ? '24px' : styling.marginPadding === 'p-14' ? '56px' : '40px'} * var(--fit-scale))`
+                                : (styling.marginPadding === 'p-6' ? '24px' : styling.marginPadding === 'p-14' ? '56px' : '40px'),
+                            '--fit-scale': styling.fitToSinglePage ? fitScale : 1.0,
+                            height: styling.fitToSinglePage ? '1122px' : `${previewPageCount * 1122}px`
                         }}
                     >
                         {styling.template === 'onyx' && <OnyxTemplate data={resumeData} styling={styling} analysisResult={analysisResult} />}
@@ -4823,9 +5105,9 @@ const allTemplates = [
                         {styling.template === 'jigglypuff' && <JigglypuffTemplate data={resumeData} styling={styling} />}
                         {styling.template === 'celebi' && <CelebiTemplate data={resumeData} styling={styling} />}
                         {styling.template === 'lucario' && <LucarioTemplate data={resumeData} styling={styling} />}
-
+ 
                         {/* Visual Page Break Indicators */}
-                        {[1, 2, 3].map(pageNum => (
+                        {Array.from({ length: Math.max(0, previewPageCount - 1) }, (_, i) => i + 1).map(pageNum => (
                             <div 
                                 key={pageNum}
                                 className="absolute inset-x-0 pointer-events-none z-30 print:hidden flex items-center justify-between"
@@ -4860,9 +5142,15 @@ const allTemplates = [
                             }}
                         >
                             <style>{`
-                                .batch-resume-container-${id} {
+                                .batch-resume-container-${id},
+                                .batch-resume-container-${id} .font-sans,
+                                .batch-resume-container-${id} .font-serif,
+                                .batch-resume-container-${id} * {
                                     font-family: ${resolveFontFamily(rStyling.fontFamily)} !important;
-                                    font-size: ${rStyling.fontSizeValue || '12px'} !important;
+                                }
+                                .batch-resume-container-${id} {
+                                    --base-font-size: ${rStyling.fontSizeValue || '12px'};
+                                    font-size: var(--base-font-size) !important;
                                     line-height: ${rStyling.lineSpacing || 1.4} !important;
                                 }
                                 .batch-resume-container-${id} .resume-section,
@@ -4879,6 +5167,28 @@ const allTemplates = [
                                 .batch-resume-container-${id} .space-y-2 > * + * {
                                     margin-top: ${rStyling.paragraphSpacing || 12}px !important;
                                 }
+
+                                /* Font scaling overrides inside printed batch containers using CSS attribute selectors */
+                                .batch-resume-container-${id} [class~="text-[8px]"] { font-size: calc(var(--base-font-size) * 8 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[8.5px]"] { font-size: calc(var(--base-font-size) * 8.5 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[9px]"] { font-size: calc(var(--base-font-size) * 9 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[9.5px]"] { font-size: calc(var(--base-font-size) * 9.5 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[10px]"] { font-size: calc(var(--base-font-size) * 10 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[10.5px]"] { font-size: calc(var(--base-font-size) * 10.5 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[11px]"] { font-size: calc(var(--base-font-size) * 11 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[11.5px]"] { font-size: calc(var(--base-font-size) * 11.5 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[12px]"] { font-size: calc(var(--base-font-size) * 12 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[13px]"] { font-size: calc(var(--base-font-size) * 13 / 12) !important; }
+                                .batch-resume-container-${id} [class~="text-[14px]"] { font-size: calc(var(--base-font-size) * 14 / 12) !important; }
+
+                                .batch-resume-container-${id} .text-xs { font-size: calc(var(--base-font-size) * 12 / 12) !important; }
+                                .batch-resume-container-${id} .text-sm { font-size: calc(var(--base-font-size) * 14 / 12) !important; }
+                                .batch-resume-container-${id} .text-base { font-size: calc(var(--base-font-size) * 16 / 12) !important; }
+                                .batch-resume-container-${id} .text-lg { font-size: calc(var(--base-font-size) * 18 / 12) !important; }
+                                .batch-resume-container-${id} .text-xl { font-size: calc(var(--base-font-size) * 20 / 12) !important; }
+                                .batch-resume-container-${id} .text-2xl { font-size: calc(var(--base-font-size) * 24 / 12) !important; }
+                                .batch-resume-container-${id} .text-3xl { font-size: calc(var(--base-font-size) * 30 / 12) !important; }
+                                .batch-resume-container-${id} .text-4xl { font-size: calc(var(--base-font-size) * 36 / 12) !important; }
                             `}</style>
                             {rStyling.template === 'onyx' && <OnyxTemplate data={rData} styling={rStyling} analysisResult={analysisResult} />}
                             {rStyling.template === 'pikachu' && <PikachuTemplate data={rData} styling={rStyling} analysisResult={analysisResult} />}

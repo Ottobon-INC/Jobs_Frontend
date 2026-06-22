@@ -25,6 +25,7 @@
     "framer-motion": "^12.34.0",
     "gsap": "^3.14.2",
     "html-to-image": "^1.11.13",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.564.0",
     "motion": "^12.38.0",
     "pg": "^8.20.0",
