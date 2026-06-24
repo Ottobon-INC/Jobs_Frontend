@@ -18,6 +18,10 @@ const CreateJobPage = () => {
     const [experienceInput, setExperienceInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [screeningThreshold, setScreeningThreshold] = useState(60);
+    const [isFeatured, setIsFeatured] = useState(false);
+    const [mockInterviewInputMode, setMockInterviewInputMode] = useState('text');
+    const [mockInterviewQuestionCount, setMockInterviewQuestionCount] = useState(4);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +39,13 @@ const CreateJobPage = () => {
                 external_apply_url: applyLink,
                 work_mode: workMode,
                 location: locationInput,
-                experience: experienceInput
+                experience: experienceInput,
+                screening_threshold: screeningThreshold,
+                is_featured: isFeatured,
+                mock_interview_config: {
+                    input_mode: mockInterviewInputMode,
+                    question_count: mockInterviewQuestionCount
+                }
             });
             navigate('/provider/listings');
         } catch (err) {
@@ -222,8 +232,112 @@ const CreateJobPage = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                        {/* Automation Rules */}
+                        <div className="md:col-span-2 border-t pt-8 mt-4" style={{ borderColor: 'rgba(49, 56, 81, 0.2)' }}>
+                            <h3 className="text-sm font-bold uppercase tracking-[0.2em] mb-6 flex items-center gap-2" style={{ color: 'var(--color-primary)' }}>
+                                <Sparkles className="w-4 h-4 text-[#D45B34]" />
+                                Automation & Workflow Controls
+                            </h3>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-zinc-50 p-6 sm:p-8 rounded-3xl border" style={{ borderColor: 'rgba(49, 56, 81, 0.15)' }}>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--color-primary)' }}>
+                                        Screening Match Threshold: {screeningThreshold}%
+                                    </label>
+                                    <p className="text-[10px] text-zinc-400 font-medium mb-4">
+                                        Candidates with an AI profile-to-job match score below this percentage will be automatically rejected.
+                                    </p>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={screeningThreshold}
+                                        onChange={(e) => setScreeningThreshold(parseInt(e.target.value))}
+                                        className="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#D45B34]"
+                                    />
+                                    <div className="flex justify-between text-[10px] font-bold text-zinc-400 mt-2">
+                                        <span>0% (No Screen)</span>
+                                        <span>60% (Default)</span>
+                                        <span>100% (Strict Match)</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-col justify-center">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--color-primary)' }}>
+                                                Featured Job Listing
+                                            </label>
+                                            <p className="text-[10px] text-zinc-400 font-medium mt-1">
+                                                Promote this job to the "Featured Opportunities" slider at the top of the seeker feed.
+                                            </p>
+                                        </div>
+                                        
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsFeatured(!isFeatured)}
+                                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isFeatured ? 'bg-[#D45B34]' : 'bg-zinc-200'}`}
+                                        >
+                                            <span
+                                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isFeatured ? 'translate-x-5' : 'translate-x-0'}`}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div className="md:col-span-2 border-t pt-8 mt-4" style={{ borderColor: 'rgba(49, 56, 81, 0.2)' }}>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--color-primary)' }}>
+                                                Mock Interview Input Mode
+                                            </label>
+                                            <p className="text-[10px] text-zinc-400 font-medium mb-4">
+                                                Select how candidates will respond to the automated mock interview.
+                                            </p>
+                                            <div className="flex gap-4">
+                                                {['text', 'voice', 'hybrid'].map((mode) => (
+                                                    <button
+                                                        key={mode}
+                                                        type="button"
+                                                        onClick={() => setMockInterviewInputMode(mode)}
+                                                        className={`px-4 py-2 text-xs font-bold rounded-lg border uppercase tracking-wider transition-all ${
+                                                            mockInterviewInputMode === mode 
+                                                                ? 'bg-[#D45B34] text-white border-transparent' 
+                                                                : 'bg-transparent text-zinc-500 border-zinc-200 hover:border-zinc-400'
+                                                        }`}
+                                                    >
+                                                        {mode}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
 
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--color-primary)' }}>
+                                                Mock Interview Questions
+                                            </label>
+                                            <p className="text-[10px] text-zinc-400 font-medium mb-4">
+                                                Choose the number of screening questions (1 to 6).
+                                            </p>
+                                            <select
+                                                value={mockInterviewQuestionCount}
+                                                onChange={(e) => setMockInterviewQuestionCount(parseInt(e.target.value))}
+                                                className="bg-transparent border rounded-xl px-4 py-3 font-bold text-xs focus:outline-none transition-all cursor-pointer"
+                                                style={{ borderColor: 'rgba(49, 56, 81, 0.45)', color: 'var(--color-primary)' }}
+                                            >
+                                                {[1, 2, 3, 4, 5, 6].map(num => (
+                                                    <option key={num} value={num} className="bg-white text-zinc-800">
+                                                        {num} Question{num > 1 ? 's' : ''}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
                     <div className="pt-8 flex justify-center">
                         <motion.button
                             type="submit"

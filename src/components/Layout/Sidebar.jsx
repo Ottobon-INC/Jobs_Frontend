@@ -52,6 +52,7 @@ const Sidebar = () => {
         { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile-score', label: 'Profile Rating', icon: Award, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/saved', label: 'Saved Jobs', icon: Bookmark, roles: [ROLES.SEEKER], category: 'Jobs' },
+        { to: '/my-applications', label: 'My Applications', icon: ClipboardText, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/profile', label: 'My Profile', icon: User, roles: [ROLES.SEEKER], category: 'Jobs' },
         { to: '/courses', label: 'Skills & Courses', icon: BookOpen, roles: [ROLES.SEEKER], category: 'Resources' },
         { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, roles: [ROLES.SEEKER], category: 'Resources' },

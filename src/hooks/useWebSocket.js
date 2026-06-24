@@ -22,6 +22,7 @@ export function useWebSocket(url, onOpen, onMessage, onError, onClose) {
     intentionalCloseRef.current = false;
 
     try {
+      console.log("[useWebSocket] Connecting to:", url);
       wsRef.current = new WebSocket(url);
       
       // Enforce raw binary parsing for streaming chunks from backend

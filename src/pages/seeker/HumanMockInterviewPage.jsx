@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, MapPin, Briefcase, FileText, Upload, Calendar, Clock, Globe, Target, ChevronRight, CheckCircle2, User, UserPlus, Users, ArrowLeft } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../hooks/useAuth';
 // We will assume an api client exists or we just create a mock one. Let's create an api client file next.
@@ -12,6 +12,9 @@ import { CreditCheckPanel, CreditCheckModal } from '../../components/rewards/Cre
 import HowItWorksWidget from '../../components/ui/HowItWorksWidget';
 
 const HumanMockInterviewPage = () => {
+    const location = useLocation();
+    const queryJobId = new URLSearchParams(location.search).get('job_id') || location.state?.job_id || null;
+
     const howItWorksSteps = [
         {
             title: "Share Your Goals",
@@ -67,6 +70,7 @@ const HumanMockInterviewPage = () => {
         preparing_company: '',
         interview_urgency: '',
         resume_filename: '',
+        job_id: queryJobId,
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -138,6 +142,12 @@ const HumanMockInterviewPage = () => {
     };
 
     const handleStartClick = () => {
+        if (formData.job_id) {
+            // Bypass credit panel entirely for job applications
+            performSubmit();
+            return;
+        }
+
         if (!purchasedHumanCreditsRemaining || purchasedHumanCreditsRemaining === 0) {
             setModalType('paywall');
             setShowCreditModal(true);

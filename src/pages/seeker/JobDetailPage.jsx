@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
-import { getJobDetails, getJobMatchScore, matchAllJobs } from '../../api/jobsApi';
+import { getJobDetails, getJobMatchScore, matchAllJobs, applyToJob, getMyApplications } from '../../api/jobsApi';
+import { submitContactInfo, createHumanMockInterviewRequest } from '../../api/humanMockInterviewApi';
 import { MOCK_JOBS } from '../../data/mockJobs';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
@@ -10,9 +11,10 @@ import MatchIQModal from '../../components/ui/MatchIQModal';
 import MatchedJobsSection from '../../components/ui/MatchedJobsSection';
 import JobOverviewCard from '../../components/ui/JobOverviewCard';
 import { getKeySkills, getRoleOverview } from '../../utils/jobOverview';
-import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
+import { MapPin, ExternalLink, CheckCircle, FileText, ArrowLeft, Building2, RefreshCw, Lock, ChevronUp, ChevronDown, Sparkles, AlertCircle, CalendarRange } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useDocumentMetadata from '../../hooks/useDocumentMetadata';
+import toast from 'react-hot-toast';
 
 const BentoCard = ({ children, className = "", delay = 0 }) => (
     <motion.div
@@ -31,7 +33,7 @@ const JobDetailPage = () => {
     const locationState = useLocation();
     const navigate = useNavigate();
     const passedLocation = locationState.state?.displayLocation;
-    const { user, role } = useAuth();
+    const { user, role, profile } = useAuth();
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -42,6 +44,11 @@ const JobDetailPage = () => {
     const [isSummarizing, setIsSummarizing] = useState(false);
     const [genZSummary, setGenZSummary] = useState(null);
     const [isSpecExpanded, setIsSpecExpanded] = useState(false);
+    const [application, setApplication] = useState(null);
+    const [applying, setApplying] = useState(false);
+    const [contactSubmitted, setContactSubmitted] = useState(false);
+    const [submittingContact, setSubmittingContact] = useState(false);
+    const [contactForm, setContactForm] = useState({ full_name: '', email: '', phone: '', additional_notes: '' });
 
     useDocumentMetadata(job ? {
         title: `${job.cleanTitle} at ${job.company_name || 'Company'} | Ottobon Jobs`,
@@ -125,7 +132,90 @@ const JobDetailPage = () => {
         }
     };
 
-    useEffect(() => { fetchJob(); }, [id]);
+    const fetchApplication = async () => {
+        if (!user || role !== ROLES.SEEKER) return;
+        try {
+            const apps = await getMyApplications();
+            const found = apps.find(a => String(a.job_id) === String(id));
+            setApplication(found || null);
+        } catch (err) {
+            console.error("Failed to fetch applications", err);
+        }
+    };
+
+    const handleApply = async () => {
+        setApplying(true);
+        try {
+            const result = await applyToJob(id);
+            setApplication(result);
+            if (result.status === 'screening_rejected') {
+                toast.error("AI Match Screening score fell below threshold.");
+            } else {
+                toast.success("AI Screening Passed! Proceed to Technical Mock Interview.");
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error(err.response?.data?.detail || "Application failed. Make sure you have a resume uploaded.");
+        } finally {
+            setApplying(false);
+        }
+    };
+
+    useEffect(() => { 
+        fetchJob(); 
+        fetchApplication();
+    }, [id, user]);
+
+    // Pre-fill contact form when profile loads
+    useEffect(() => {
+        if (profile) {
+            setContactForm(prev => ({
+                ...prev,
+                full_name: prev.full_name || profile.full_name || '',
+                email: prev.email || profile.email || '',
+            }));
+        }
+    }, [profile]);
+
+    // Check if contact info was already submitted (phone is a reliable signal)
+    useEffect(() => {
+        if (application?.status === 'human_interview_pending') {
+            // We'll treat a previously submitted phone as "already submitted"
+            // The user can always resubmit to update
+            setContactSubmitted(false);
+        }
+    }, [application?.status]);
+
+    const handleContactSubmit = async (e) => {
+        e.preventDefault();
+        if (!contactForm.full_name || !contactForm.email) {
+            toast.error('Name and email are required.');
+            return;
+        }
+        setSubmittingContact(true);
+        try {
+            if (application?.human_interview_id) {
+                // Record already exists — just patch contact fields
+                await submitContactInfo(application.human_interview_id, contactForm);
+            } else {
+                // No record yet (provider just approved, seeker hasn't submitted before)
+                // Create a new human_mock_interviews record linked to this job.
+                // The service will auto-link it to the application via job_id.
+                await createHumanMockInterviewRequest({
+                    ...contactForm,
+                    job_id: id,
+                    status: 'PENDING_APPROVAL',
+                });
+            }
+            setContactSubmitted(true);
+            toast.success('Contact details submitted! The provider will be in touch shortly.');
+        } catch (err) {
+            console.error(err);
+            toast.error(err?.response?.data?.detail || 'Submission failed. Please try again.');
+        } finally {
+            setSubmittingContact(false);
+        }
+    };
 
     const handleRunMatchIQ = async () => {
         setIsMatching(true);
@@ -254,7 +344,7 @@ const JobDetailPage = () => {
                                         </button>
                                     </Link>
                                 )}
-                                {(job.external_apply_url || job.external_url) && (
+                                {(!user || role !== ROLES.SEEKER) && (job.external_apply_url || job.external_url) && (
                                     <a
                                         href={job.external_apply_url || job.external_url}
                                         target="_blank"
@@ -269,6 +359,302 @@ const JobDetailPage = () => {
                         </div>
                     </BentoCard>
                 </div>
+
+                {user && role === ROLES.SEEKER && (
+                    <div className="lg:col-span-12">
+                        <BentoCard className="border border-zinc-100 shadow-xl">
+                            <div className="flex items-center gap-2 mb-6">
+                                <Sparkles className="w-5 h-5 text-[#D45B34]" />
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400">
+                                    Hiring Progress & Application Control Panel
+                                </h2>
+                            </div>
+
+                            {/* Stepper Timeline UI */}
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 border-b border-zinc-100 pb-10">
+                                {[
+                                    {
+                                        round: 1,
+                                        label: "Round 1: Profile Screening",
+                                        status: !application ? "pending" : (application.status === "screening_rejected" ? "failed" : "passed"),
+                                        desc: !application ? "Awaiting Submission" : (application.status === "screening_rejected" ? "Failed AI Screen" : `Score: ${application.screening_score}%`)
+                                    },
+                                    {
+                                        round: 2,
+                                        label: "Round 2: AI Mock Interview",
+                                        status: !application || application.status === "screening_rejected" ? "locked" :
+                                                application.status === "mock_interview_pending" ? "current" :
+                                                application.status === "mock_interview_completed" ? "review" : "passed",
+                                        desc: !application || application.status === "screening_rejected" ? "Locked" :
+                                                application.status === "mock_interview_pending" ? "In Progress" :
+                                                application.status === "mock_interview_completed" ? "Awaiting Provider Review" :
+                                                `Score: ${application.mock_interview_score || 0}%`
+                                    },
+                                    {
+                                        round: 3,
+                                        label: "Round 3: Human Panel Interview",
+                                        status: !application || ["screening_rejected", "mock_interview_pending", "mock_interview_completed"].includes(application.status) ? "locked" :
+                                                application.status === "human_interview_pending" ? "current" : "passed",
+                                        desc: !application || ["screening_rejected", "mock_interview_pending", "mock_interview_completed"].includes(application.status) ? "Locked" :
+                                                application.status === "human_interview_pending" ? "Awaiting Schedule" : "Scheduled"
+                                    }
+                                ].map((step, idx) => (
+                                    <div key={idx} className="flex-1 flex flex-col items-start text-left relative w-full border border-zinc-100 p-4 bg-zinc-50/50 rounded-2xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-sm transition-all duration-300 ${
+                                                step.status === "passed" ? "bg-emerald-500 text-white" :
+                                                step.status === "current" ? "bg-[#D45B34] text-white animate-pulse" :
+                                                step.status === "review" ? "bg-amber-400 text-white animate-pulse" :
+                                                step.status === "failed" ? "bg-red-500 text-white" :
+                                                step.status === "locked" ? "bg-zinc-100 text-zinc-400 border border-zinc-200" :
+                                                "bg-zinc-100 text-zinc-600 border"
+                                            }`}>
+                                                {step.round}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-xs font-bold text-zinc-800">{step.label}</h4>
+                                                <p className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mt-0.5">{step.desc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Stepper Details / Controls */}
+                            <div className="w-full">
+                                {!application && (
+                                    <div className="flex flex-col items-center justify-center p-8 bg-zinc-50 rounded-2xl border border-zinc-200/50 text-center">
+                                        <h3 className="text-base font-bold text-zinc-800 mb-2">Apply to this position</h3>
+                                        <p className="text-xs text-zinc-400 max-w-md mb-6 leading-relaxed">
+                                            Apply today. The network will automatically perform a semantic profile screening using OpenAI. Ensure your resume is uploaded in profile page.
+                                        </p>
+                                        <button
+                                            onClick={handleApply}
+                                            disabled={applying}
+                                            className="px-10 py-3.5 bg-[#D45B34] hover:bg-[#B84A27] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50"
+                                        >
+                                            {applying ? "Screening Profile..." : "Submit Profile & Apply"}
+                                        </button>
+                                    </div>
+                                )}
+
+                                {application && application.status === "screening_rejected" && (
+                                    <div className="p-6 bg-red-50/50 border border-red-200 rounded-2xl">
+                                        <div className="flex items-start gap-4">
+                                            <AlertCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
+                                            <div>
+                                                <h3 className="text-sm font-bold text-red-800">Application Screen Rejected</h3>
+                                                <p className="text-xs text-red-600 font-semibold mt-1">
+                                                    Match Score: {application.screening_score}% (Threshold: {job.screening_threshold || 60}%)
+                                                </p>
+                                                <div className="mt-4 p-4 bg-white rounded-xl border border-red-100 text-xs text-zinc-600 leading-relaxed font-medium">
+                                                    <span className="font-bold text-zinc-800 uppercase tracking-widest text-[9px] block mb-2">AI Gap Analysis Feedback</span>
+                                                    {application.screening_feedback || "No feedback generated."}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {application && application.status !== "screening_rejected" && (
+                                    <div className="space-y-6">
+                                        {/* Display screening pass scorecard */}
+                                        <div className="p-5 bg-emerald-50/50 border border-emerald-200 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                            <div>
+                                                <h3 className="text-sm font-bold text-emerald-800 flex items-center gap-2">
+                                                    <CheckCircle className="w-5 h-5 text-emerald-600" />
+                                                    Round 1 Passed! Match Screening Score: {application.screening_score}%
+                                                </h3>
+                                                <p className="text-xs text-zinc-500 mt-1">
+                                                    Your resume and skills were evaluated and passed the provider's threshold.
+                                                </p>
+                                            </div>
+                                            <button 
+                                                onClick={() => {
+                                                    setMatchDetails({
+                                                        score: application.screening_score,
+                                                        gap_analysis: application.screening_feedback
+                                                    });
+                                                    setIsMatchModalOpen(true);
+                                                }}
+                                                className="px-4 py-2 bg-white border border-emerald-200 hover:bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors"
+                                            >
+                                                View Gap Analysis
+                                            </button>
+                                        </div>
+
+                                        {/* Round 2 control panel */}
+                                        {application.status === "mock_interview_pending" && (
+                                            <div className="p-6 bg-amber-50/50 border border-amber-200 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                                <div className="space-y-2">
+                                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-[9px] font-black uppercase tracking-widest">
+                                                        Round 2 Active
+                                                    </div>
+                                                    <h3 className="text-base font-bold text-zinc-800">AI Technical Mock Interview</h3>
+                                                    <p className="text-xs text-zinc-500 max-w-xl leading-relaxed">
+                                                        Practice your technical knowledge and code structure. The AI coach evaluates accuracy, confidence, and communication clarity to automatically grade your performance.
+                                                    </p>
+                                                </div>
+                                                <Link 
+                                                    to={`/jobs/${id}/mock-interview`}
+                                                    className="w-full md:w-auto px-8 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 text-center"
+                                                >
+                                                    Start AI Mock Interview
+                                                </Link>
+                                            </div>
+                                        )}
+
+                                        {["human_interview_pending", "human_interview_scheduled"].includes(application.status) && (
+                                            <div className="p-5 bg-emerald-50/50 border border-emerald-200 rounded-2xl">
+                                                <h3 className="text-sm font-bold text-zinc-800 flex items-center gap-2 mb-2">
+                                                    <CheckCircle className="w-5 h-5 text-emerald-600" />
+                                                    Round 2 Passed! AI Mock Interview Score: {application.mock_interview_score || 0}%
+                                                </h3>
+                                                <p className="text-xs text-zinc-500 leading-relaxed">
+                                                    Your performance was reviewed and approved by the provider. You've been advanced to Round 3.
+                                                </p>
+                                            </div>
+                                        )}
+
+
+                                        {/* Round 2 completed – awaiting provider decision */}
+                                        {application.status === "mock_interview_completed" && (
+                                            <div className="p-6 bg-amber-50/60 border border-amber-200 rounded-2xl flex flex-col md:flex-row items-start md:items-center gap-4">
+                                                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                                                    <span className="text-xl">⏳</span>
+                                                </div>
+                                                <div>
+                                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-[9px] font-black uppercase tracking-widest mb-2">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                        Awaiting Provider Review
+                                                    </div>
+                                                    <h3 className="text-sm font-bold text-zinc-800">Your AI Interview is Under Review</h3>
+                                                    <p className="text-xs text-zinc-500 mt-1 leading-relaxed max-w-lg">
+                                                        Great work! Your AI mock interview transcript and score have been sent to the provider. Once they review and approve your performance, Round 3 will unlock automatically.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {application.status === "human_interview_pending" && (
+                                            <div className="p-6 bg-[#D45B34]/5 border border-[#D45B34]/20 rounded-2xl flex flex-col gap-6">
+                                                <div className="space-y-2">
+                                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#D45B34]/10 text-[#D45B34] rounded-full text-[9px] font-black uppercase tracking-widest">
+                                                        🎉 Round 3 Unlocked
+                                                    </div>
+                                                    <h3 className="text-base font-bold text-zinc-800">Provider Approved You for the Human Panel Interview</h3>
+                                                    <p className="text-xs text-zinc-500 max-w-xl leading-relaxed">
+                                                        Congratulations! Please confirm your contact details so the provider can reach you to schedule the live panel session.
+                                                    </p>
+                                                </div>
+
+                                                {contactSubmitted ? (
+                                                    <div className="flex items-start gap-4 p-5 bg-emerald-50 border border-emerald-200 rounded-2xl">
+                                                        <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                                            <CheckCircle className="w-5 h-5 text-emerald-600" />
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest block mb-0.5">Contact Details Submitted</span>
+                                                            <p className="text-xs text-zinc-600 font-medium">Your details have been sent to the provider. You'll receive a meeting invite once they schedule the panel interview.</p>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <form onSubmit={handleContactSubmit} className="space-y-4 bg-white border border-zinc-100 rounded-2xl p-5 shadow-sm">
+                                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Your Contact Information</p>
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Full Name *</label>
+                                                                <input
+                                                                    type="text"
+                                                                    required
+                                                                    value={contactForm.full_name}
+                                                                    onChange={e => setContactForm(p => ({ ...p, full_name: e.target.value }))}
+                                                                    placeholder="Jane Smith"
+                                                                    className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/30 focus:border-[#D45B34] transition-all"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Email Address *</label>
+                                                                <input
+                                                                    type="email"
+                                                                    required
+                                                                    value={contactForm.email}
+                                                                    onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
+                                                                    placeholder="jane@example.com"
+                                                                    className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/30 focus:border-[#D45B34] transition-all"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                                                                <input
+                                                                    type="tel"
+                                                                    value={contactForm.phone}
+                                                                    onChange={e => setContactForm(p => ({ ...p, phone: e.target.value }))}
+                                                                    placeholder="+91 98765 43210"
+                                                                    className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/30 focus:border-[#D45B34] transition-all"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Additional Notes</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={contactForm.additional_notes}
+                                                                    onChange={e => setContactForm(p => ({ ...p, additional_notes: e.target.value }))}
+                                                                    placeholder="Any scheduling preferences..."
+                                                                    className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/30 focus:border-[#D45B34] transition-all"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            type="submit"
+                                                            disabled={submittingContact}
+                                                            className="w-full md:w-auto px-10 py-3.5 bg-[#D45B34] hover:bg-[#B84A27] disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2"
+                                                        >
+                                                            {submittingContact ? (
+                                                                <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Submitting...</>
+                                                            ) : (
+                                                                <>Confirm My Details</>
+                                                            )}
+                                                        </button>
+                                                    </form>
+                                                )}
+                                            </div>
+                                        )}
+
+
+                                        {application.status === "human_interview_scheduled" && (
+                                            <div className="p-6 bg-zinc-900 text-white rounded-2xl relative overflow-hidden border border-zinc-800 shadow-xl">
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D45B34]/10 rounded-full blur-2xl" />
+                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                                                    <div className="space-y-3">
+                                                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#D45B34] text-white rounded-full text-[9px] font-black uppercase tracking-widest">
+                                                            Human panel Interview Scheduled
+                                                        </div>
+                                                        <h3 className="text-base font-bold">Your Live Round is Confirmed!</h3>
+                                                        
+                                                        {/* Details */}
+                                                        <div className="flex flex-col gap-2 text-xs text-zinc-300">
+                                                            <div className="flex items-center gap-2">
+                                                                <CalendarRange className="w-4 h-4 text-[#D45B34]" />
+                                                                <span>Preparation & Live Meeting Details will be sent to email.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <Link 
+                                                        to="/my-human-mock-interviews"
+                                                        className="px-6 py-3 bg-white text-zinc-950 hover:bg-[#D45B34] hover:text-white text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all text-center"
+                                                    >
+                                                        Manage Bookings
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </BentoCard>
+                    </div>
+                )}
 
                 {/* Left Column */}
                 <div className="lg:col-span-8 flex flex-col gap-8 min-w-0">

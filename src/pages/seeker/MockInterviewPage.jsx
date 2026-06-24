@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { setMockJobContext, setMockMode, uploadMockResume, createMockInterviewReview, startMockInterview, setMockInterviewStructure, uploadProfileResumeToSession, updateIntermediateTranscript } from '../../api/mockInterviewApi';
 import { getCompanyRounds } from '../../shared/companyRounds';
 import { useAuth } from '../../hooks/useAuth';
@@ -47,7 +47,7 @@ import {
 // ── Config ────────────────────────────────────────────────────
 // URLs come from .env — never hardcoded in source
 const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `${wsProto}//${window.location.hostname}:8200/mock/ws`;
+const MOCK_WS_BASE = import.meta.env.VITE_MOCK_WS_URL || `${wsProto}//${window.location.hostname}:8001/mock/ws`;
 
 // ── Helpers ───────────────────────────────────────────────────
 const HIDDEN_TYPES = new Set(["main_question", "follow_up"]);
@@ -687,6 +687,7 @@ const MockInterviewPage = () => {
 
     const { id } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const { addNotification } = useNotifications();
     const jobTitle = location.state?.jobTitle || '';
     // Promoted to state so the entry-screen company selector can override it
@@ -696,6 +697,7 @@ const MockInterviewPage = () => {
 
     // Session step: 'selection' | 'entry' | 'briefing' | 'interview'
     const [step, setStep] = useState('selection');
+    const [isAutoStarting, setIsAutoStarting] = useState(!!id);
     const [setupStep, setSetupStep] = useState(1);
 
     // Credit System Gating State
@@ -1458,6 +1460,76 @@ const MockInterviewPage = () => {
         () => handleStop()
     );
 
+    // Auto-launch flow when job ID is present and auth/profile context is loaded
+    useEffect(() => {
+        if (id && profile && !isActive && !isStarting && isAutoStarting) {
+            const autoTrigger = async () => {
+                try {
+                    setIsStarting(true);
+                    setIsInitializing(true);
+                    updateStatus('Connecting', 'connecting');
+
+                    // 1. Register session with FastAPI backend
+                    const startedSession = await startMockInterview(id);
+                    interviewRecordIdRef.current = startedSession.id;
+
+                    const currentSessionId = currentSessionIdRef.current;
+
+                    // 2. Set job context
+                    await setMockJobContext(companyName || '', jobTitle || '', currentSessionId);
+
+                    // 3. Set mock mode: technical, voice, 15m duration
+                    await setMockMode('technical', currentSessionId, { 
+                        interviewerPersona: 'Neutral', 
+                        whiteboardMode: false, 
+                        durationMinutes: 15, 
+                        interviewInputMode: 'voice' 
+                    });
+
+                    // 4. Push profile resume if available
+                    if (profile?.resume_text) {
+                        await uploadProfileResumeToSession(profile.resume_text, currentSessionId);
+                    }
+
+                    // 5. General Round configuration (single round, 3 questions)
+                    const generalRound = {
+                        round_name: 'General Round',
+                        focus_description: 'General round covering key requirements and candidate experience.',
+                        question_limit: 3
+                    };
+                    await setMockInterviewStructure([generalRound], currentSessionId);
+
+                    // Sync React states
+                    setInterviewType('technical');
+                    setInterviewInputMode('voice');
+                    setDuration(15);
+                    setRoundsConfig([generalRound]);
+                    setInterviewerPersona('Neutral');
+                    setWhiteboardMode(false);
+
+                    // 6. Connect and launch!
+                    setTimeLeft(15 * 60);
+                    setIsTimerActive(true);
+                    setIsActive(true);
+                    initStreamer();
+                    connect();
+                    
+                    setStep('interview');
+                    setIsAutoStarting(false);
+                } catch (err) {
+                    console.error('Failed to auto-start interview:', err);
+                    setErrorMsg('Failed to initialize session automatically. Please try manually.');
+                    setStep('selection');
+                    setIsAutoStarting(false);
+                } finally {
+                    setIsStarting(false);
+                    setIsInitializing(false);
+                }
+            };
+            autoTrigger();
+        }
+    }, [id, profile, isAutoStarting, aiCreditsRemaining, jobTitle, companyName, useCredit, syncCreditsWithBackend, initStreamer, connect]);
+
     const handleSendText = useCallback(() => {
         if (!textInput.trim() || !isActive) return;
 
@@ -1742,12 +1814,14 @@ const MockInterviewPage = () => {
             const startedSession = await startMockInterview(id || null);
             interviewRecordIdRef.current = startedSession.id;
 
-            // Deduct credit only after backend session is successfully registered
-            useCredit(jobTitle || 'General Practice');
+            // Deduct credit only after backend session is successfully registered (skipped for job applications)
+            if (!id) {
+                useCredit(jobTitle || 'General Practice');
 
-            // Sync credits with backend here!
-            if (syncCreditsWithBackend) {
-                await syncCreditsWithBackend();
+                // Sync credits with backend here!
+                if (syncCreditsWithBackend) {
+                    await syncCreditsWithBackend();
+                }
             }
         } catch (err) {
             console.error('Failed to start interview on backend:', err);
@@ -1781,12 +1855,14 @@ const MockInterviewPage = () => {
                     const startedSession = await startMockInterview(id || null);
                     interviewRecordIdRef.current = startedSession.id;
 
-                    // Deduct credit only after backend session is successfully registered
-                    useCredit(jobTitle || 'General Practice');
+                    // Deduct credit only after backend session is successfully registered (skipped for job applications)
+                    if (!id) {
+                        useCredit(jobTitle || 'General Practice');
 
-                    // Sync credits with backend here!
-                    if (syncCreditsWithBackend) {
-                        await syncCreditsWithBackend();
+                        // Sync credits with backend here!
+                        if (syncCreditsWithBackend) {
+                            await syncCreditsWithBackend();
+                        }
                     }
                 } catch (err) {
                     console.error('Failed to start interview on backend during confirm start:', err);
@@ -1921,6 +1997,11 @@ const MockInterviewPage = () => {
         setSessionSuffix(newSuffix);
         currentSessionIdRef.current = id ? `${id}_${newSuffix}` : `default_${newSuffix}`;
         setSessionResumeName(null);
+
+        // Auto-redirect seeker back to job details page to show completed status
+        if (id) {
+            navigate(`/jobs/${id}`);
+        }
     };
 
     const handleFinalCancel = () => {
@@ -2100,6 +2181,59 @@ const MockInterviewPage = () => {
     const statusPill = isActive 
         ? (isSpeaking ? statusColors.speaking : (isRoundTransitioning ? statusColors.transition : statusColors.listening))
         : (statusColors[statusClass] || statusColors.disconnected);
+    // ── AUTO START LOADING SCREEN ────────────────────────────────
+    if (isAutoStarting) {
+        return (
+            <div className="min-h-screen bg-[#F4F1EA] text-[#1C1A17] font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                {/* Visual decorations for premium feel */}
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-[#D45B34]/5 via-transparent to-transparent rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-zinc-400/5 via-transparent to-transparent rounded-full blur-3xl" />
+
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-md w-full bg-white rounded-3xl border border-zinc-100 shadow-2xl p-8 flex flex-col items-center text-center relative z-10"
+                >
+                    {/* Pulsing bot avatar */}
+                    <div className="relative mb-6">
+                        <motion.div 
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            className="w-20 h-20 rounded-2xl bg-zinc-900 flex items-center justify-center shadow-lg shadow-zinc-900/10"
+                        >
+                            <Bot size={36} className="text-white animate-pulse" />
+                        </motion.div>
+                        <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D45B34] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-[#D45B34]"></span>
+                        </span>
+                    </div>
+
+                    <h2 className="text-xl font-bold uppercase tracking-wider text-zinc-900 mb-2">Preparing Simulator</h2>
+                    <p className="text-xs text-zinc-500 font-medium max-w-xs leading-relaxed mb-6">
+                        Setting up a General Technical Mock Interview for {jobTitle || 'selected role'}...
+                    </p>
+
+                    <div className="w-full bg-zinc-100 rounded-full h-1 overflow-hidden relative">
+                        <motion.div 
+                            initial={{ left: "-100%" }}
+                            animate={{ left: "100%" }}
+                            transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                            className="absolute bg-[#D45B34] h-full w-1/2 rounded-full"
+                        />
+                    </div>
+
+                    {errorMsg && (
+                        <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3">
+                            <AlertTriangle size={16} className="text-red-500 shrink-0" />
+                            <p className="text-[10px] text-red-600 font-bold uppercase tracking-wider text-left">{errorMsg}</p>
+                        </div>
+                    )}
+                </motion.div>
+            </div>
+        );
+    }
+
     // ── SELECTION SCREEN ──────────────────────────────────────
     if (step === 'selection') {
         return (

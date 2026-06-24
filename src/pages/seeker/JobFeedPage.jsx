@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { getJobFeed } from '../../api/jobsApi';
 import { MOCK_JOBS } from '../../data/mockJobs';
 import JobCard from '../../components/ui/JobCard';
@@ -6,7 +7,7 @@ import Loader from '../../components/ui/Loader';
 import JobMatchButton from '../../components/ui/JobMatchButton';
 import MatchedJobsSection from '../../components/ui/MatchedJobsSection';
 import { matchAllJobs } from '../../api/jobsApi';
-import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter, ArrowDown } from 'lucide-react';
+import { Search, Sparkles, MapPin, Tag, X, ChevronDown, Filter, ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { ROLES } from '../../utils/constants';
@@ -25,6 +26,7 @@ const JobFeedPage = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(20);
+    const [currentFeaturedIdx, setCurrentFeaturedIdx] = useState(0);
 
     // Matching State — persist matches across navigations
     const [matchedJobs, setMatchedJobs] = useState(() => {
@@ -206,6 +208,20 @@ const JobFeedPage = () => {
     
     const visibleJobs = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
     const hasMore = visibleCount < filtered.length;
+
+    const featuredJobs = useMemo(() => {
+        return jobs.filter(j => j.is_featured === true);
+    }, [jobs]);
+
+    const nextFeatured = () => {
+        if (featuredJobs.length === 0) return;
+        setCurrentFeaturedIdx(prev => (prev + 1) % featuredJobs.length);
+    };
+
+    const prevFeatured = () => {
+        if (featuredJobs.length === 0) return;
+        setCurrentFeaturedIdx(prev => (prev - 1 + featuredJobs.length) % featuredJobs.length);
+    };
 
     const toggleSkill = (skill) => {
         setSelectedSkills(prev =>
@@ -502,6 +518,142 @@ const JobFeedPage = () => {
 
             {/* Content Container */}
             <main className="max-w-[1400px] mx-auto pt-8 pb-20 px-4 sm:px-6 md:px-12">
+                
+                {featuredJobs.length > 0 && (
+                    <div className="mb-16">
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="w-5 h-5 text-[#D45B34] animate-pulse" />
+                                    <span className="text-[10px] font-black text-[#D45B34] uppercase tracking-widest bg-[#D45B34]/5 px-2.5 py-1 rounded-md border border-[#D45B34]/20">
+                                        Premium Opportunities
+                                    </span>
+                                </div>
+                                <h2 className="text-2xl md:text-3xl font-sans font-bold text-zinc-900 tracking-tight mt-2">
+                                    Featured Roles
+                                </h2>
+                            </div>
+                            {featuredJobs.length > 1 && (
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); prevFeatured(); }} 
+                                        className="p-2.5 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 active:scale-95 transition-all shadow-sm"
+                                    >
+                                        <ChevronLeft className="w-5 h-5 text-zinc-600" />
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); nextFeatured(); }} 
+                                        className="p-2.5 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 active:scale-95 transition-all shadow-sm"
+                                    >
+                                        <ChevronRight className="w-5 h-5 text-zinc-600" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-950 p-6 md:p-12 text-white shadow-2xl border border-zinc-800">
+                            {/* Accent Glow */}
+                            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#D45B34]/10 rounded-full blur-[100px] pointer-events-none" />
+                            
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentFeaturedIdx}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                    className="grid md:grid-cols-2 gap-8 items-center relative z-10"
+                                >
+                                    <div className="space-y-6">
+                                        <div className="flex items-center gap-4">
+                                            <CompanyLogo 
+                                                company={{ 
+                                                    name: featuredJobs[currentFeaturedIdx].company_name,
+                                                    logo: featuredJobs[currentFeaturedIdx].company_logo 
+                                                }} 
+                                                className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-2" 
+                                            />
+                                            <div>
+                                                <h3 className="text-xl md:text-3xl font-bold tracking-tight text-white leading-tight">
+                                                    {featuredJobs[currentFeaturedIdx].title}
+                                                </h3>
+                                                <p className="font-bold uppercase tracking-[0.2em] text-[10px] mt-1" style={{ color: 'var(--text-muted-on-dark)' }}>
+                                                    {featuredJobs[currentFeaturedIdx].company_name}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex flex-wrap gap-3 text-xs font-bold" style={{ color: 'var(--text-on-dark)' }}>
+                                            <div className="flex items-center gap-1.5 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                                                <MapPin className="w-4 h-4 text-[#D45B34]" />
+                                                <span>{featuredJobs[currentFeaturedIdx].cleanLocation}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                                                <span className="text-[#D45B34] font-black text-[9px] uppercase tracking-tighter">EXP</span>
+                                                <span>{featuredJobs[currentFeaturedIdx].experience_level}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                                                <span className="text-[#D45B34] font-black text-[9px] uppercase tracking-tighter">MODE</span>
+                                                <span>{featuredJobs[currentFeaturedIdx].work_mode}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--text-muted-on-dark)' }}>Key Requirements</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {(featuredJobs[currentFeaturedIdx].key_skills || []).slice(0, 5).map(skill => (
+                                                    <span key={skill} className="px-3 py-1.5 bg-white/10 text-white rounded-lg text-xs font-semibold border border-white/5">
+                                                        {skill}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex flex-col md:items-end justify-between h-full space-y-6 md:space-y-0">
+                                        <div className="bg-white/5 p-6 rounded-2xl border border-white/10 w-full md:max-w-xs shadow-inner backdrop-blur-md">
+                                            <h4 className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted-on-dark)' }}>Hiring Process</h4>
+                                            <div className="space-y-3 text-xs font-medium" style={{ color: 'var(--text-on-dark)' }}>
+                                                <div className="flex justify-between items-center">
+                                                    <span>Round 1: Match Screen</span>
+                                                    <span className="text-[#D45B34] font-bold">Min {featuredJobs[currentFeaturedIdx].screening_threshold || 60}%</span>
+                                                </div>
+                                                <div className="flex justify-between items-center" style={{ color: 'var(--text-muted-on-dark)' }}>
+                                                    <span>Round 2: AI Tech Mock</span>
+                                                    <span className="bg-white/5 px-2 py-0.5 rounded text-[9px] uppercase tracking-widest" style={{ color: 'var(--text-on-dark)' }}>Automated</span>
+                                                </div>
+                                                <div className="flex justify-between items-center" style={{ color: 'var(--text-muted-on-dark)' }}>
+                                                    <span>Round 3: Human Panel</span>
+                                                    <span className="bg-white/5 px-2 py-0.5 rounded text-[9px] uppercase tracking-widest" style={{ color: 'var(--text-on-dark)' }}>Live Slots</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <Link 
+                                            to={`/jobs/${featuredJobs[currentFeaturedIdx].id}`}
+                                            className="inline-flex items-center justify-center px-8 py-4 bg-white text-zinc-950 hover:bg-[#D45B34] hover:text-white transition-all duration-300 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg active:scale-95"
+                                        >
+                                            Apply & Start Interview
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
+                            
+                            {featuredJobs.length > 1 && (
+                                <div className="flex justify-center gap-2 mt-8">
+                                    {featuredJobs.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setCurrentFeaturedIdx(idx)}
+                                            className={`h-2 rounded-full transition-all duration-300 ${currentFeaturedIdx === idx ? 'w-8 bg-[#D45B34]' : 'w-2 bg-white/35 hover:bg-white/50'}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 
                 {/* 3. Matched Roles Section ABOVE Available Roles */}
                 {isAuthenticated && role === ROLES.SEEKER && matchedJobs !== null && (

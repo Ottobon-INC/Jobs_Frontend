@@ -30,6 +30,7 @@ const ProfilePage = lazy(() => import('./pages/seeker/ProfilePage'));
 const SavedJobsPage = lazy(() => import('./pages/seeker/SavedJobsPage'));
 const CoursesPage = lazy(() => import('./pages/seeker/CoursesPage'));
 const MockInterviewPage = lazy(() => import('./pages/seeker/MockInterviewPage'));
+const JobMockInterviewPage = lazy(() => import('./pages/seeker/JobMockInterviewPage'));
 const InterviewReviewsPage = lazy(() => import('./pages/seeker/InterviewReviewsPage'));
 const FeedbackPage = lazy(() => import('./pages/seeker/FeedbackPage'));
 const InterviewMaterialsPage = lazy(() => import('./pages/seeker/InterviewMaterialsPage'));
@@ -41,6 +42,7 @@ const RewardsPage = lazy(() => import('./pages/seeker/RewardsPage'));
 const HumanMockInterviewPage = lazy(() => import('./pages/seeker/HumanMockInterviewPage'));
 const MyHumanMockInterviewsPage = lazy(() => import('./pages/seeker/MyHumanMockInterviewsPage'));
 const ProfileScoreDashboardPage = lazy(() => import('./pages/seeker/ProfileScoreDashboardPage'));
+const AppliedJobsPage = lazy(() => import('./pages/seeker/AppliedJobsPage'));
 
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
@@ -138,7 +140,7 @@ function App() {
                 <Route element={<ProtectedRoute allowedRoles={[ROLES.SEEKER]} />}>
                   <Route path="/jobs/:id/match" element={<MatchPage />} />
                   <Route path="/jobs/:id/tailor" element={<TailorResumePage />} />
-                  <Route path="/jobs/:id/mock-interview" element={<MockInterviewPage />} />
+                  <Route path="/jobs/:id/mock-interview" element={<JobMockInterviewPage />} />
                   <Route path="/mock-interview" element={<MockInterviewPage />} />
                   <Route path="/interview-reviews" element={<InterviewReviewsPage />} />
                   <Route path="/saved" element={<SavedJobsPage />} />
@@ -154,6 +156,7 @@ function App() {
                   <Route path="/rewards" element={<RewardsPage />} />
                   <Route path="/human-mock-interview" element={<HumanMockInterviewPage />} />
                   <Route path="/my-human-mock-interviews" element={<MyHumanMockInterviewsPage />} />
+                  <Route path="/my-applications" element={<AppliedJobsPage />} />
                 </Route>
 
                 {/* Protected: Provider Only */}

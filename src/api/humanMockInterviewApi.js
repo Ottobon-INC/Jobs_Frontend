@@ -39,3 +39,14 @@ export const completeHumanMockInterview = async (id) => {
     const response = await api.patch(`/human-mock-interviews/admin/${id}/complete`);
     return response.data;
 };
+
+// Round 3 — contact info endpoints
+export const getHumanMockInterviewById = async (id) => {
+    const response = await api.get(`/human-mock-interviews/${id}`);
+    return response.data;
+};
+
+export const submitContactInfo = async (id, data) => {
+    const response = await api.patch(`/human-mock-interviews/${id}/contact`, data);
+    return response.data;
+};

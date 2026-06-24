@@ -74,7 +74,7 @@ export const NotificationProvider = ({ children }) => {
                 const currentPollTime = new Date().toISOString();
                 let maxTimestamp = lastChecked;
 
-                // 1. Seeker: Your review is completed
+                // 1a. Seeker: AI mock interview analysis ready
                 if (activeRole === ROLES.SEEKER) {
                     const { data, error } = await supabase
                         .from('mock_interviews_jobs')
@@ -100,6 +100,64 @@ export const NotificationProvider = ({ children }) => {
                         });
                     }
                 }
+
+                // 1b. Seeker: pipeline stage promotions (R2, R3, scheduled, rejected)
+                if (activeRole === ROLES.SEEKER) {
+                    const PIPELINE_NOTIF_STATUSES = [
+                        'mock_interview_pending',
+                        'human_interview_pending',
+                        'human_interview_scheduled',
+                        'rejected',
+                    ];
+                    const { data: appData, error: appError } = await supabase
+                        .from('job_applications_jobs')
+                        .select('id, status, updated_at, job_id, jobs_jobs(title, company_name)')
+                        .eq('seeker_id', user.id)
+                        .in('status', PIPELINE_NOTIF_STATUSES)
+                        .gt('updated_at', lastChecked);
+
+                    if (appError) {
+                        console.error('📡 Error polling job_applications_jobs for pipeline changes:', appError);
+                    } else if (appData && appData.length > 0) {
+                        appData.forEach(item => {
+                            const jobTitle   = item.jobs_jobs?.title       || 'a role';
+                            const company    = item.jobs_jobs?.company_name || '';
+                            const byCompany  = company ? ` at ${company}` : '';
+
+                            const notifMap = {
+                                mock_interview_pending: {
+                                    title: '🎯 Round 2 Unlocked',
+                                    message: `Your application for ${jobTitle}${byCompany} passed screening! The AI Mock Interview is now open.`,
+                                    link: '/my-applications',
+                                },
+                                human_interview_pending: {
+                                    title: '🎉 Round 3 Unlocked',
+                                    message: `Congratulations! You've been advanced to the Human Panel Interview for ${jobTitle}${byCompany}. Confirm your details now.`,
+                                    link: '/my-applications',
+                                },
+                                human_interview_scheduled: {
+                                    title: '📅 Interview Scheduled',
+                                    message: `Your Human Panel Interview for ${jobTitle}${byCompany} has been confirmed. Check your booking details.`,
+                                    link: '/my-applications',
+                                },
+                                rejected: {
+                                    title: 'Application Update',
+                                    message: `Your application for ${jobTitle}${byCompany} was not taken forward. Keep going — the right role is out there!`,
+                                    link: '/my-applications',
+                                },
+                            };
+
+                            const notif = notifMap[item.status];
+                            if (notif) {
+                                addNotification({ type: 'info', ...notif });
+                            }
+
+                            if (item.updated_at > maxTimestamp) {
+                                maxTimestamp = item.updated_at;
+                            }
+                        });
+                    }
+                } // end seeker pipeline block
 
                 // 2. Admin: New submission received
                 if (activeRole === ROLES.ADMIN) {
