@@ -292,6 +292,52 @@ const JobDetailPage = () => {
             </motion.div>
 
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* External job notice — shown to seekers when external_apply_url is set */}
+                {user && role === ROLES.SEEKER && job.external_apply_url && (() => {
+                    const src = (() => {
+                        const u = job.external_apply_url;
+                        if (u.includes('linkedin'))    return 'LinkedIn';
+                        if (u.includes('naukri'))      return 'Naukri';
+                        if (u.includes('shine'))       return 'Shine';
+                        if (u.includes('internshala')) return 'Internshala';
+                        if (u.includes('indeed'))      return 'Indeed';
+                        if (u.includes('timesjobs'))   return 'TimesJobs';
+                        if (u.includes('apna'))        return 'Apna';
+                        if (u.includes('freshers'))    return 'FreshersWorld';
+                        try { return new URL(u).hostname.replace('www.', ''); } catch { return 'External Site'; }
+                    })();
+                    return (
+                        <div className="lg:col-span-12">
+                            <BentoCard className="border border-zinc-100 shadow-xl">
+                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center shrink-0">
+                                            <ExternalLink className="w-5 h-5 text-zinc-500" />
+                                        </div>
+                                        <div>
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-500 text-[9px] font-black uppercase tracking-widest rounded-full mb-2">
+                                                External Opportunity
+                                            </span>
+                                            <h3 className="text-sm font-bold text-zinc-900 mb-1">This job is hosted on {src}</h3>
+                                            <p className="text-xs text-zinc-500 font-medium leading-relaxed max-w-xl">
+                                                This listing was sourced from an external job board. To apply, you'll be redirected to {src}. Our AI screening and multi-round hiring pipeline are not available for external jobs.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={job.external_apply_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-2 px-8 py-3.5 bg-[#D45B34] hover:bg-[#B84A27] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 whitespace-nowrap shrink-0"
+                                    >
+                                        <ExternalLink size={14} /> Apply on {src}
+                                    </a>
+                                </div>
+                            </BentoCard>
+                        </div>
+                    );
+                })()}
+
                 {/* Header Card - Elite Minimalist */}
                 <div className="lg:col-span-12">
                     <BentoCard className="relative overflow-hidden !py-8 !px-8 border border-zinc-100 shadow-2xl shadow-zinc-900/5">
@@ -337,30 +383,46 @@ const JobDetailPage = () => {
                                         </button>
                                     </>
                                 )}
-                                {!user && (
+                                {!user && !job.external_apply_url && (
                                     <Link to="/login" className="w-full sm:w-auto">
-                                        <button className="w-full bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
-                                            Analyze Job Fit <Lock size={12} className="opacity-40" />
+                                        <button className="w-full bg-[#D45B34] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#B84A27] transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95">
+                                            Apply Now
                                         </button>
                                     </Link>
                                 )}
-                                {(!user || role !== ROLES.SEEKER) && (job.external_apply_url || job.external_url) && (
-                                    <a
-                                        href={job.external_apply_url || job.external_url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-full sm:w-auto bg-[#D45B34] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#B84A27] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#D45B34]/20 active:scale-95 border border-white/10"
-                                    >
-                                        <ExternalLink size={18} className="text-white" />
-                                        Apply Now
-                                    </a>
-                                )}
+
+                                {/* External job — show redirect button for everyone */}
+                                {job.external_apply_url && (() => {
+                                    const src = (() => {
+                                        const u = job.external_apply_url;
+                                        if (u.includes('linkedin'))    return 'LinkedIn';
+                                        if (u.includes('naukri'))      return 'Naukri';
+                                        if (u.includes('shine'))       return 'Shine';
+                                        if (u.includes('internshala')) return 'Internshala';
+                                        if (u.includes('indeed'))      return 'Indeed';
+                                        if (u.includes('timesjobs'))   return 'TimesJobs';
+                                        if (u.includes('apna'))        return 'Apna';
+                                        if (u.includes('freshers'))    return 'FreshersWorld';
+                                        try { return new URL(u).hostname.replace('www.', ''); } catch { return 'External Site'; }
+                                    })();
+                                    return (
+                                        <a
+                                            href={job.external_apply_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-full sm:w-auto bg-[#D45B34] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#B84A27] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#D45B34]/20 active:scale-95 border border-white/10"
+                                        >
+                                            <ExternalLink size={16} className="text-white" />
+                                            Apply on {src}
+                                        </a>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </BentoCard>
                 </div>
 
-                {user && role === ROLES.SEEKER && (
+                {user && role === ROLES.SEEKER && !job.external_apply_url && (
                     <div className="lg:col-span-12">
                         <BentoCard className="border border-zinc-100 shadow-xl">
                             <div className="flex items-center gap-2 mb-6">

@@ -8,6 +8,37 @@ import { generateUUID } from '../utils/uuid';
 
 const NotificationContext = createContext();
 
+const playNotificationSound = () => {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        if (ctx.state !== 'running') {
+            ctx.resume();
+        }
+
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.2);
+    } catch (e) {
+        console.warn("Could not play notification sound:", e);
+    }
+};
+
 export const NotificationProvider = ({ children }) => {
     const { user, role } = useAuth();
     const [notifications, setNotifications] = useState(() => {
@@ -27,6 +58,9 @@ export const NotificationProvider = ({ children }) => {
             localStorage.setItem(`notifications_${user?.id}`, JSON.stringify(updated));
             return updated;
         });
+
+        // Play sound
+        playNotificationSound();
 
         // Show toast
         toast.custom((t) => (

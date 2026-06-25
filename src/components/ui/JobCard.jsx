@@ -117,12 +117,19 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                     />
                     
                     <div className="flex flex-col items-end gap-1.5 sm:gap-2">
-                        <div className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${
-                            workMode === 'Remote' ? 'bg-sky-100 text-sky-700' :
-                            workMode === 'Hybrid' ? 'bg-purple-100 text-purple-700' :
-                            'bg-emerald-100 text-emerald-700'
-                        }`}>
-                            {workMode}
+                        <div className="flex items-center gap-1.5">
+                            {job.external_apply_url && (
+                                <div className="px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-500 flex items-center gap-1">
+                                    <ExternalLink size={10} /> External
+                                </div>
+                            )}
+                            <div className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${
+                                workMode === 'Remote' ? 'bg-sky-100 text-sky-700' :
+                                workMode === 'Hybrid' ? 'bg-purple-100 text-purple-700' :
+                                'bg-emerald-100 text-emerald-700'
+                            }`}>
+                                {workMode}
+                            </div>
                         </div>
                         <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 bg-zinc-50 text-zinc-400 rounded-full text-[8px] sm:text-[9px] font-bold uppercase tracking-widest border border-zinc-100">
                             {formattedDate}
