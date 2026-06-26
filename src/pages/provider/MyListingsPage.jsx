@@ -444,12 +444,12 @@ const MyListingsPage = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="relative w-full max-w-2xl bg-white border-l h-full shadow-2xl flex flex-col z-10"
+                            className="relative w-full w-[95vw] xl:w-[90vw] bg-white border-l h-full shadow-2xl flex flex-col z-10"
                         >
                             {/* Drawer Header */}
                             <div className="p-6 sm:p-8 border-b flex justify-between items-start">
                                 <div>
-                                    <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest block mb-1">Applicant Tracking</span>
+                                    <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest block mb-1">Kanban Board</span>
                                     <h2 className="text-xl font-bold text-zinc-900 leading-tight">{selectedJob.title}</h2>
                                     <p className="text-xs text-zinc-500 mt-1">Total {applicants.length} Candidates</p>
                                 </div>
@@ -461,135 +461,147 @@ const MyListingsPage = () => {
                                 </button>
                             </div>
 
-                            {/* Drawer Content */}
-                            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-4">
+                            <div className="flex-1 overflow-x-auto overflow-y-hidden p-6 sm:p-8 bg-zinc-50/50">
                                 {loadingApplicants ? (
                                     <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
                                         <div className="w-8 h-8 border-2 border-[#D45B34] border-t-transparent rounded-full animate-spin mb-4" />
-                                        <p className="text-xs font-bold uppercase tracking-wider">Loading Applicants...</p>
+                                        <p className="text-xs font-bold uppercase tracking-wider">Loading Kanban Board...</p>
                                     </div>
                                 ) : applicants.length === 0 ? (
-                                    <div className="text-center py-20 bg-zinc-50 rounded-2xl border border-dashed p-8">
+                                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed p-8 max-w-lg mx-auto mt-10 shadow-sm">
                                         <User className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
                                         <h4 className="font-bold text-zinc-700">No applicants yet</h4>
                                         <p className="text-xs text-zinc-400 mt-1 max-w-xs mx-auto">This job listing hasn't received any signals. Ensure the match threshold isn't set too high!</p>
                                     </div>
                                 ) : (
-                                    <div className="space-y-4">
-                                        {applicants.map((app) => {
-                                            const meta = STATUS_META[app.status] || STATUS_META['applied'];
-                                            const needsReview = app.status === 'mock_interview_completed';
-                                            return (
-                                                <motion.div
-                                                    key={app.id}
-                                                    layout
-                                                    className={`p-5 bg-white border rounded-2xl transition-all cursor-pointer flex flex-col gap-3 relative ${
-                                                        needsReview
-                                                            ? 'border-orange-300 shadow-md shadow-orange-50 hover:shadow-orange-100'
-                                                            : 'border-zinc-200/80 hover:border-[#D45B34] hover:shadow-md'
-                                                    }`}
-                                                    onClick={() => handleOpenDetails(app)}
-                                                >
-                                                    {/* Needs Review Banner */}
-                                                    {needsReview && (
-                                                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-amber-400 rounded-t-2xl" />
-                                                    )}
-
-                                                    <div className="flex justify-between items-start pt-1">
-                                                        <div>
-                                                            <h4 className="font-bold text-zinc-900">{app.seeker_name || "Anonymous Seeker"}</h4>
-                                                            <p className="text-xs text-zinc-400">{app.seeker_email}</p>
-                                                        </div>
-                                                        <StatusBadge status={app.status} />
+                                    <div className="flex gap-6 h-full pb-4">
+                                        {[
+                                            { key: 'applied', label: 'Applied', icon: <User className="w-3.5 h-3.5" />, bg: 'bg-zinc-100', text: 'text-zinc-600', border: 'border-zinc-200', count: applicants.filter(a => a.status === 'applied').length },
+                                            { key: 'mock_interview_pending', label: 'AI Mock Pending', icon: <Clock className="w-3.5 h-3.5" />, bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200', count: applicants.filter(a => a.status === 'mock_interview_pending').length },
+                                            { key: 'mock_interview_completed', label: 'Awaiting Review', icon: <AlertTriangle className="w-3.5 h-3.5" />, bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200', count: applicants.filter(a => a.status === 'mock_interview_completed').length },
+                                            { key: 'human_interview_pending', label: 'Human Interview', icon: <MessageSquare className="w-3.5 h-3.5" />, bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200', count: applicants.filter(a => a.status === 'human_interview_pending').length },
+                                            { key: 'human_interview_scheduled', label: 'Scheduled', icon: <Calendar className="w-3.5 h-3.5" />, bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-200', count: applicants.filter(a => a.status === 'human_interview_scheduled').length },
+                                            { key: 'rejected', label: 'Rejected', icon: <XCircle className="w-3.5 h-3.5" />, bg: 'bg-rose-100', text: 'text-rose-700', border: 'border-rose-200', count: applicants.filter(a => a.status === 'rejected' || a.status === 'screening_rejected').length }
+                                        ].map((column) => (
+                                            <div key={column.key} className="flex-shrink-0 w-[340px] flex flex-col h-full bg-zinc-100/50 rounded-2xl border border-zinc-200 overflow-hidden">
+                                                <div className={`px-4 py-3 border-b flex justify-between items-center bg-white shadow-sm`}>
+                                                    <div className={`flex items-center gap-2 ${column.text}`}>
+                                                        {column.icon}
+                                                        <h3 className="text-xs font-black uppercase tracking-widest">{column.label}</h3>
                                                     </div>
-
-                                                    {/* Scores */}
-                                                    <div className="flex gap-4 text-xs font-semibold text-zinc-500">
-                                                        <span>Screening: <strong className="text-zinc-800">{app.screening_score}%</strong></span>
-                                                        {app.mock_interview_score != null && (
-                                                            <span>Mock: <strong className="text-[#D45B34]">{app.mock_interview_score}%</strong></span>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Pipeline Stepper */}
-                                                    <PipelineStepper status={app.status} />
-
-                                                    {/* CTA hint */}
-                                                    <div className="flex items-center justify-between border-t pt-3 mt-1">
-                                                        {needsReview ? (
-                                                            <span className="text-[10px] font-black text-orange-600 uppercase tracking-wider flex items-center gap-1">
-                                                                <AlertTriangle className="w-3 h-3" /> Action Required
-                                                            </span>
-                                                        ) : (
-                                                            <span className="text-[10px] text-zinc-400 font-semibold">{NEXT_ACTION_DESC[app.status] || ''}</span>
-                                                        )}
-                                                        <div className="flex items-center gap-1 text-[#D45B34] text-xs font-semibold">
-                                                            <span>View Details</span>
-                                                            <ChevronRight className="w-3.5 h-3.5" />
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Inline schedule form for human_interview_pending */}
-                                                    {app.status === 'human_interview_pending' && app.human_interview_id && (
-                                                        <div className="mt-1 pt-3 border-t border-dashed" onClick={(e) => e.stopPropagation()}>
-                                                            {schedulingApplicant?.id === app.id ? (
-                                                                <form onSubmit={handleScheduleConfirm} className="space-y-4 bg-zinc-50 p-4 rounded-xl border">
-                                                                    <h5 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Schedule Panel Interview</h5>
-                                                                    <div className="grid grid-cols-2 gap-4">
-                                                                        <div>
-                                                                            <label className="block text-[8px] font-bold text-zinc-400 uppercase mb-1">Date & Time</label>
-                                                                            <input
-                                                                                type="datetime-local"
-                                                                                required
-                                                                                value={scheduledAt}
-                                                                                onChange={(e) => setScheduledAt(e.target.value)}
-                                                                                className="w-full p-2 bg-white border rounded text-xs"
-                                                                            />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label className="block text-[8px] font-bold text-zinc-400 uppercase mb-1">Meeting Link</label>
-                                                                            <input
-                                                                                type="url"
-                                                                                required
-                                                                                value={meetingLink}
-                                                                                placeholder="https://zoom.us/j/..."
-                                                                                onChange={(e) => setMeetingLink(e.target.value)}
-                                                                                className="w-full p-2 bg-white border rounded text-xs"
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-[8px] font-bold text-zinc-400 uppercase mb-1">Interviewer Notes</label>
-                                                                        <textarea
-                                                                            value={adminNotes}
-                                                                            rows={2}
-                                                                            placeholder="Panel details, notes, etc."
-                                                                            onChange={(e) => setAdminNotes(e.target.value)}
-                                                                            className="w-full p-2 bg-white border rounded text-xs resize-none"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="flex gap-2">
-                                                                        <button type="submit" className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-black uppercase tracking-wider">
-                                                                            Confirm Schedule
-                                                                        </button>
-                                                                        <button type="button" onClick={() => setSchedulingApplicant(null)} className="px-4 py-2 border rounded text-[10px] font-black uppercase tracking-wider">
-                                                                            Cancel
-                                                                        </button>
-                                                                    </div>
-                                                                </form>
-                                                            ) : (
-                                                                <button
-                                                                    onClick={() => handleScheduleInit(app)}
-                                                                    className="w-full py-2 bg-[#D45B34] text-white rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-[#B84A27] transition-colors"
+                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${column.bg} ${column.text} border ${column.border}`}>
+                                                        {column.count}
+                                                    </span>
+                                                </div>
+                                                <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                                                    {applicants
+                                                        .filter(app => column.key === 'rejected' ? (app.status === 'rejected' || app.status === 'screening_rejected') : app.status === column.key)
+                                                        .map((app) => {
+                                                            const needsReview = app.status === 'mock_interview_completed';
+                                                            return (
+                                                                <motion.div
+                                                                    key={app.id}
+                                                                    layout
+                                                                    className={`p-4 bg-white border rounded-xl transition-all cursor-pointer flex flex-col gap-3 relative shadow-sm hover:shadow-md ${
+                                                                        needsReview
+                                                                            ? 'border-orange-300 ring-2 ring-orange-100'
+                                                                            : 'border-zinc-200/80 hover:border-[#D45B34]'
+                                                                    }`}
+                                                                    onClick={() => handleOpenDetails(app)}
                                                                 >
-                                                                    Confirm & Schedule Interview
-                                                                </button>
-                                                            )}
+                                                                    {needsReview && (
+                                                                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-amber-400 rounded-t-xl" />
+                                                                    )}
+
+                                                                    <div className="flex justify-between items-start pt-1">
+                                                                        <div className="truncate pr-2">
+                                                                            <h4 className="font-bold text-zinc-900 truncate">{app.seeker_name || "Anonymous Seeker"}</h4>
+                                                                            <p className="text-[10px] text-zinc-400 truncate">{app.seeker_email}</p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex gap-2 flex-wrap text-[10px] font-semibold text-zinc-500">
+                                                                        <span className="px-2 py-1 bg-zinc-100 rounded-md">Screening: <strong className="text-zinc-800">{app.screening_score}%</strong></span>
+                                                                        {app.mock_interview_score != null && (
+                                                                            <span className="px-2 py-1 bg-amber-50 text-amber-800 rounded-md border border-amber-100">Mock: <strong className="text-[#D45B34]">{app.mock_interview_score}%</strong></span>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div className="flex items-center justify-between border-t pt-2 mt-1">
+                                                                        {needsReview ? (
+                                                                            <span className="text-[9px] font-black text-orange-600 uppercase tracking-wider flex items-center gap-1">
+                                                                                <AlertTriangle className="w-2.5 h-2.5" /> Action Required
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="text-[9px] text-zinc-400 font-semibold truncate pr-2" title={NEXT_ACTION_DESC[app.status]}>{NEXT_ACTION_DESC[app.status] || 'View Details'}</span>
+                                                                        )}
+                                                                        <div className="flex items-center gap-1 text-[#D45B34] text-[10px] font-black uppercase tracking-wider flex-shrink-0">
+                                                                            <span>Open</span>
+                                                                            <ChevronRight className="w-3 h-3" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {app.status === 'human_interview_pending' && app.human_interview_id && (
+                                                                        <div className="mt-1 pt-2 border-t border-dashed" onClick={(e) => e.stopPropagation()}>
+                                                                            {schedulingApplicant?.id === app.id ? (
+                                                                                <form onSubmit={handleScheduleConfirm} className="space-y-3 bg-zinc-50 p-3 rounded-lg border">
+                                                                                    <h5 className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Schedule Panel Interview</h5>
+                                                                                    <div className="space-y-2">
+                                                                                        <div>
+                                                                                            <label className="block text-[8px] font-bold text-zinc-400 uppercase mb-0.5">Date & Time</label>
+                                                                                            <input
+                                                                                                type="datetime-local"
+                                                                                                required
+                                                                                                value={scheduledAt}
+                                                                                                onChange={(e) => setScheduledAt(e.target.value)}
+                                                                                                className="w-full p-1.5 bg-white border rounded text-[10px]"
+                                                                                            />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label className="block text-[8px] font-bold text-zinc-400 uppercase mb-0.5">Meeting Link</label>
+                                                                                            <input
+                                                                                                type="url"
+                                                                                                required
+                                                                                                value={meetingLink}
+                                                                                                placeholder="https://zoom.us/j/..."
+                                                                                                onChange={(e) => setMeetingLink(e.target.value)}
+                                                                                                className="w-full p-1.5 bg-white border rounded text-[10px]"
+                                                                                            />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="flex gap-1.5 pt-1">
+                                                                                        <button type="submit" className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[9px] font-black uppercase tracking-wider">
+                                                                                            Confirm
+                                                                                        </button>
+                                                                                        <button type="button" onClick={() => setSchedulingApplicant(null)} className="px-3 py-1.5 border rounded text-[9px] font-black uppercase tracking-wider bg-white">
+                                                                                            Cancel
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </form>
+                                                                            ) : (
+                                                                                <button
+                                                                                    onClick={() => handleScheduleInit(app)}
+                                                                                    className="w-full py-1.5 bg-[#D45B34] text-white rounded-md text-[9px] font-black uppercase tracking-wider hover:bg-[#B84A27] transition-colors shadow-sm"
+                                                                                >
+                                                                                    Schedule Interview
+                                                                                </button>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                </motion.div>
+                                                            );
+                                                        })}
+                                                    {column.count === 0 && (
+                                                        <div className="flex flex-col items-center justify-center py-10 text-center opacity-50">
+                                                            <div className={`p-3 rounded-full ${column.bg} mb-2`}>
+                                                                <div className={column.text}>{column.icon}</div>
+                                                            </div>
+                                                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">No Candidates</span>
                                                         </div>
                                                     )}
-                                                </motion.div>
-                                            );
-                                        })}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>
@@ -696,9 +708,9 @@ const MyListingsPage = () => {
                                                 Loading AI Analysis...
                                             </div>
                                         ) : applicantMockDetails ? (
-                                            <div className="space-y-5">
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
                                                 {/* Overall Summary */}
-                                                {(applicantMockDetails.admin_review || applicantMockDetails.expert_feedback) && (
+                                                {(applicantMockDetails.admin_review || applicantMockDetails.expert_feedback) ? (
                                                     <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-4">
                                                         <div>
                                                             <span className="text-[9px] font-black text-amber-800 uppercase tracking-widest block mb-2">AI Evaluator — Overall Summary</span>
@@ -707,7 +719,7 @@ const MyListingsPage = () => {
                                                             </p>
                                                         </div>
                                                         {applicantMockDetails.admin_review && (
-                                                            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-amber-200">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-amber-200">
                                                                 <div>
                                                                     <span className="text-[8px] font-black text-emerald-700 uppercase tracking-widest block mb-2 flex items-center gap-1">
                                                                         <Star className="w-3 h-3" /> Candidate Strengths
@@ -727,15 +739,23 @@ const MyListingsPage = () => {
                                                             </div>
                                                         )}
                                                     </div>
+                                                ) : (
+                                                    <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-5 flex flex-col items-center justify-center text-center h-full min-h-[200px]">
+                                                        <AlertTriangle className="w-8 h-8 text-zinc-300 mb-3" />
+                                                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-1">Summary Unavailable</span>
+                                                        <p className="text-xs text-zinc-400 max-w-[200px]">
+                                                            The AI evaluation failed to generate for this session. Please review the transcript manually.
+                                                        </p>
+                                                    </div>
                                                 )}
 
                                                 {/* Transcript */}
                                                 {applicantMockDetails.transcript?.length > 0 && (
-                                                    <div>
+                                                    <div className="flex flex-col h-full">
                                                         <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block mb-3 flex items-center gap-2">
                                                             <MessageSquare className="w-3.5 h-3.5" /> Interview Transcript
                                                         </span>
-                                                        <div className="max-h-64 overflow-y-auto border rounded-2xl bg-zinc-50 p-4 space-y-3">
+                                                        <div className="max-h-96 overflow-y-auto border rounded-2xl bg-zinc-50 p-4 space-y-3 flex-1">
                                                             {applicantMockDetails.transcript.map((t, idx) => (
                                                                 <div key={idx} className={`p-3 rounded-xl max-w-[85%] text-xs ${
                                                                     t.role === 'user'

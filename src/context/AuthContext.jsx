@@ -167,7 +167,10 @@ export const AuthProvider = ({ children }) => {
 
         // Listen for auth changes (login/logout after initial load)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            setLoading(true);
+            // Prevent unmounting the app on background token refreshes (which happen on tab focus)
+            if (event === 'SIGNED_OUT' || (event === 'SIGNED_IN' && !userRef.current)) {
+                setLoading(true);
+            }
 
             // Prioritize custom standalone token first
             const customToken = localStorage.getItem('ottobon_custom_token');

@@ -850,11 +850,11 @@ const JobDetailPage = () => {
                                 {job.resume_guide_generated?.length > 0 ? (
                                     <ul className="space-y-4 w-full">
                                         {job.resume_guide_generated.map((point, idx) => (
-                                            <li key={idx} className="flex gap-3 items-start justify-start p-3.5 bg-zinc-50 rounded-xl border border-zinc-100/50 hover:bg-zinc-100 transition-colors">
-                                                <div className="w-5 h-5 rounded-full bg-zinc-900 flex items-center justify-center shrink-0 mt-0.5">
-                                                    <CheckCircle size={10} className="text-white" />
+                                            <li key={idx} className="flex gap-4 items-start justify-start p-5 bg-white rounded-2xl border border-zinc-200/80 shadow-sm hover:shadow-md hover:border-zinc-300 transition-all">
+                                                <div className="w-6 h-6 rounded-full bg-[#D45B34] flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-[#D45B34]/20">
+                                                    <CheckCircle size={14} className="text-white" />
                                                 </div>
-                                                <span className="text-zinc-600 text-[11px] font-medium leading-relaxed">{point}</span>
+                                                <span className="text-zinc-800 text-sm font-semibold leading-relaxed">{point}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -892,7 +892,7 @@ const JobDetailPage = () => {
                         {user && (
                             <button
                                 onClick={() => navigate('/ats-analyzer', { state: { jobDescription: job.description_raw } })}
-                                className="mt-6 w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md"
+                                className="mt-6 w-full py-3 bg-[#D45B34] hover:bg-[#B84A27] text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md"
                             >
                                 Compare with ATS Scanner
                             </button>

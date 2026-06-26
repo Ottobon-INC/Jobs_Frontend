@@ -1,4 +1,4 @@
-import { MapPin, Clock3, Sparkles, GraduationCap, IndianRupee } from 'lucide-react';
+import { MapPin, Clock3, GraduationCap, IndianRupee } from 'lucide-react';
 
 const JobOverviewCard = ({
   overviewSentences = [],
@@ -10,13 +10,8 @@ const JobOverviewCard = ({
   workMode = 'Onsite',
 }) => (
   <div className="w-full mb-12 p-6 md:p-10 rounded-2xl md:rounded-[32px] border border-zinc-100 bg-[#FAFAFA] relative overflow-hidden group hover:bg-white transition-all shadow-sm">
-    <div className="absolute -top-6 -right-6 p-6 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
-      <Sparkles size={160} className="text-zinc-900" />
-    </div>
-
-    <div className="flex items-center gap-2 text-zinc-400 mb-8 border-b border-zinc-100 pb-4 inline-flex w-full">
-      <Sparkles size={14} className="text-zinc-900" />
-      <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Smart Summary Analysis</span>
+    <div className="flex items-center gap-2 mb-8 border-b border-zinc-200 pb-4 inline-flex w-full">
+      <span className="text-sm font-bold uppercase tracking-widest text-zinc-900">Job description</span>
     </div>
 
     <div className="relative z-10 flex flex-col gap-8">
