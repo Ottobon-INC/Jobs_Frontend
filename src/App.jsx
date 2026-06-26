@@ -44,6 +44,15 @@ const MyHumanMockInterviewsPage = lazy(() => import('./pages/seeker/MyHumanMockI
 const ProfileScoreDashboardPage = lazy(() => import('./pages/seeker/ProfileScoreDashboardPage'));
 const AppliedJobsPage = lazy(() => import('./pages/seeker/AppliedJobsPage'));
 
+// Engagement Pages
+const EngagementHubPage = lazy(() => import('./pages/engagement/EngagementHubPage'));
+const TypingTestPage = lazy(() => import('./pages/engagement/TypingTestPage'));
+const DailyQuizPage = lazy(() => import('./pages/engagement/DailyQuizPage'));
+const IOTDPage = lazy(() => import('./pages/engagement/IOTDPage'));
+const TriviaGamePage = lazy(() => import('./pages/engagement/TriviaGamePage'));
+const JargonBusterPage = lazy(() => import('./pages/engagement/JargonBusterPage'));
+const SkillConnectPage = lazy(() => import('./pages/engagement/SkillConnectPage'));
+
 // Provider Pages
 const CreateJobPage = lazy(() => import('./pages/provider/CreateJobPage'));
 const MyListingsPage = lazy(() => import('./pages/provider/MyListingsPage'));
@@ -154,6 +163,13 @@ function App() {
                   <Route path="/ats-analyzer" element={<ATSAnalyzerPage />} />
                   <Route path="/community-jobs" element={<CommunityJobsPage />} />
                   <Route path="/rewards" element={<RewardsPage />} />
+                  <Route path="/engagement/hub" element={<EngagementHubPage />} />
+                  <Route path="/engagement/daily-quiz" element={<DailyQuizPage />} />
+                  <Route path="/engagement/iotd" element={<IOTDPage />} />
+                  <Route path="/engagement/games/typing" element={<TypingTestPage />} />
+                  <Route path="/engagement/games/trivia" element={<TriviaGamePage />} />
+                  <Route path="/engagement/games/jargon" element={<JargonBusterPage />} />
+                  <Route path="/engagement/games/skill-connect" element={<SkillConnectPage />} />
                   <Route path="/human-mock-interview" element={<HumanMockInterviewPage />} />
                   <Route path="/my-human-mock-interviews" element={<MyHumanMockInterviewsPage />} />
                   <Route path="/my-applications" element={<AppliedJobsPage />} />

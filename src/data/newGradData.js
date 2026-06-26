@@ -1085,7 +1085,7 @@ export const COMPANIES = [
         slug: 'google',
         name: 'Google',
         industry: 'Tech',
-        logo: 'https://unavatar.io/google.com',
+        logo: 'https://logos.hunter.io/google.com',
         hq: 'Mountain View, CA',
         locations: ['Bangalore', 'Hyderabad', 'Pune', 'Gurgaon'],
         category: 'Global Big Tech & AI Labs',
@@ -1139,7 +1139,7 @@ export const COMPANIES = [
         slug: 'meta',
         name: 'Meta',
         industry: 'Tech',
-        logo: 'https://unavatar.io/meta.com',
+        logo: 'https://logos.hunter.io/meta.com',
         hq: 'Menlo Park, CA',
         locations: ['London', 'New York', 'Singapore', 'Bangalore'],
         category: 'Global Big Tech & AI Labs',
@@ -1191,7 +1191,7 @@ export const COMPANIES = [
         slug: 'nvidia',
         name: 'NVIDIA',
         industry: 'Semiconductors',
-        logo: 'https://unavatar.io/nvidia.com',
+        logo: 'https://logos.hunter.io/nvidia.com',
         hq: 'Santa Clara, CA',
         locations: ['Bangalore', 'Pune', 'Hyderabad'],
         category: 'Global Big Tech & AI Labs',
@@ -1243,7 +1243,7 @@ export const COMPANIES = [
         slug: 'openai',
         name: 'OpenAI',
         industry: 'AI',
-        logo: 'https://unavatar.io/openai.com',
+        logo: 'https://logos.hunter.io/openai.com',
         hq: 'San Francisco, CA',
         locations: ['Remote', 'San Francisco'],
         category: 'Global Big Tech & AI Labs',
@@ -1260,7 +1260,42 @@ export const COMPANIES = [
             { name: 'Collaborative Coding', details: 'Pair programming with an OpenAI engineer.' },
             { name: 'Values Alignment', details: 'Long-term AI safety and mission focus.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹40L - ₹60L',
             bonus: 'N/A',
             stock: 'PPU (Profit Participation Units) - Significant upside',
@@ -1276,7 +1311,7 @@ export const COMPANIES = [
         slug: 'swiggy',
         name: 'Swiggy',
         industry: 'E-commerce',
-        logo: 'https://unavatar.io/swiggy.com',
+        logo: 'https://logos.hunter.io/swiggy.com',
         hq: 'Bangalore, India',
         locations: ['Bangalore', 'Hyderabad', 'Chennai'],
         category: 'Top Product & Fintech (India)',
@@ -1292,6 +1327,41 @@ export const COMPANIES = [
             { name: 'Technical 1', details: 'Problem solving and DSA (Medium/Hard).' },
             { name: 'Technical 2', details: 'Machine Coding / LLD round.' },
             { name: 'Hiring Manager', details: 'Behavioral and project-deep dive.' }
+        ],
+        testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & CS Fundamentals',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit Swiggy Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive HackerRank test link'
         ],
         compensation: {
             base: '₹18L - ₹24L',
@@ -1309,7 +1379,7 @@ export const COMPANIES = [
         slug: 'sarvam-ai',
         name: 'Sarvam AI',
         industry: 'AI',
-        logo: 'https://unavatar.io/sarvam.ai',
+        logo: 'https://logos.hunter.io/sarvam.ai',
         hq: 'Bangalore, India',
         locations: ['Bangalore'],
         category: 'High-Growth AI & Deep-Tech Startups',
@@ -1325,7 +1395,42 @@ export const COMPANIES = [
             { name: 'Coding / Math', details: 'Linear Algebra and Probability for AI.' },
             { name: 'Systems Round', details: 'Optimizing inference and training.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹25L - ₹40L',
             bonus: 'Variable',
             stock: 'Equity - High Growth Potential',
@@ -1341,7 +1446,7 @@ export const COMPANIES = [
         slug: 'microsoft',
         name: 'Microsoft',
         industry: 'Tech',
-        logo: 'https://unavatar.io/microsoft.com',
+        logo: 'https://logos.hunter.io/microsoft.com',
         hq: 'Redmond, WA',
         locations: ['Hyderabad', 'Bangalore', 'Noida'],
         category: 'Global Big Tech & AI Labs',
@@ -1530,7 +1635,7 @@ export const COMPANIES = [
         slug: 'amazon',
         name: 'Amazon',
         industry: 'E-commerce',
-        logo: 'https://unavatar.io/amazon.com',
+        logo: 'https://logos.hunter.io/amazon.com',
         hq: 'Seattle, WA',
         locations: ['Bangalore', 'Chennai', 'Hyderabad'],
         category: 'Global Big Tech & AI Labs',
@@ -1579,7 +1684,7 @@ export const COMPANIES = [
         slug: 'apple',
         name: 'Apple',
         industry: 'Tech',
-        logo: 'https://unavatar.io/apple.com',
+        logo: 'https://logos.hunter.io/apple.com',
         hq: 'Cupertino, CA',
         locations: ['Hyderabad', 'Bangalore'],
         category: 'Global Big Tech & AI Labs',
@@ -1630,7 +1735,7 @@ export const COMPANIES = [
         slug: 'accenture',
         name: 'Accenture',
         industry: 'Consulting',
-        logo: 'https://unavatar.io/accenture.com',
+        logo: 'https://logos.hunter.io/accenture.com',
         hq: 'Dublin, Ireland',
         locations: ['Across India'],
         category: 'Major IT Services & Consulting',
@@ -1910,7 +2015,7 @@ export const COMPANIES = [
         slug: 'ibm',
         name: 'IBM',
         industry: 'Tech',
-        logo: 'https://unavatar.io/ibm.com',
+        logo: 'https://logos.hunter.io/ibm.com',
         hq: 'Armonk, NY',
         locations: ['Bangalore', 'Pune', 'Kochi', 'Hyderabad', 'Chennai'],
         category: 'Major IT Services & Consulting',
@@ -2010,7 +2115,7 @@ export const COMPANIES = [
         slug: 'hcl',
         name: 'HCL Technologies',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/hcltech.com',
+        logo: 'https://logos.hunter.io/hcltech.com',
         hq: 'Noida, India',
         locations: ['Noida', 'Bangalore', 'Chennai', 'Hyderabad'],
         category: 'Major IT Services & Consulting',
@@ -2291,7 +2396,7 @@ export const COMPANIES = [
         slug: 'lti-mindtree',
         name: 'LTI Mindtree',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/ltimindtree.com',
+        logo: 'https://logos.hunter.io/ltimindtree.com',
         hq: 'Mumbai, India',
         locations: ['Mumbai', 'Bangalore', 'Pune', 'Hyderabad'],
         category: 'Major IT Services & Consulting',
@@ -2707,7 +2812,7 @@ export const COMPANIES = [
         slug: 'hexaware',
         name: 'Hexaware',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/hexaware.com',
+        logo: 'https://logos.hunter.io/hexaware.com',
         hq: 'Navi Mumbai, India',
         locations: ['Navi Mumbai', 'Bangalore', 'Chennai', 'Pune'],
         category: 'Major IT Services & Consulting',
@@ -3117,7 +3222,7 @@ export const COMPANIES = [
         slug: 'razorpay',
         name: 'Razorpay',
         industry: 'Fintech',
-        logo: 'https://unavatar.io/razorpay.com',
+        logo: 'https://logos.hunter.io/razorpay.com',
         hq: 'Bangalore, India',
         locations: ['Bangalore'],
         category: 'Top Product & Fintech (India)',
@@ -3133,7 +3238,42 @@ export const COMPANIES = [
             { name: 'Technical 1', details: 'Problem Solving (Medium/Hard).' },
             { name: 'Technical 2', details: 'Product Design / Architecture.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹20L - ₹24L',
             bonus: '₹2L - ₹4L',
             stock: 'ESOPs',
@@ -3149,7 +3289,7 @@ export const COMPANIES = [
         slug: 'phonepe',
         name: 'PhonePe',
         industry: 'Fintech',
-        logo: 'https://unavatar.io/phonepe.com',
+        logo: 'https://logos.hunter.io/phonepe.com',
         hq: 'Bangalore, India',
         locations: ['Bangalore', 'Pune'],
         category: 'Top Product & Fintech (India)',
@@ -3165,7 +3305,42 @@ export const COMPANIES = [
             { name: 'Technical 1', details: 'DSA (Hard).' },
             { name: 'Technical 2', details: 'System Design / High-level design.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹20L - ₹26L',
             bonus: '₹3L - ₹5L',
             stock: 'ESOPs',
@@ -3181,7 +3356,7 @@ export const COMPANIES = [
         slug: 'flipkart',
         name: 'Flipkart',
         industry: 'E-commerce',
-        logo: 'https://unavatar.io/flipkart.com',
+        logo: 'https://logos.hunter.io/flipkart.com',
         hq: 'Bangalore, India',
         locations: ['Bangalore'],
         category: 'Top Product & Fintech (India)',
@@ -3196,6 +3371,41 @@ export const COMPANIES = [
             { name: 'Online Test', details: 'DSA + MCQs.' },
             { name: 'Technical 1', details: 'DSA (Medium/Hard).' },
             { name: 'Technical 2', details: 'Machine Coding (LLD).' }
+        ],
+        testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit Flipkart Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive HackerRank test link'
         ],
         compensation: {
             base: '₹18L - ₹22L',
@@ -3213,7 +3423,7 @@ export const COMPANIES = [
         slug: 'oracle',
         name: 'Oracle',
         industry: 'Cloud/Database',
-        logo: 'https://unavatar.io/oracle.com',
+        logo: 'https://logos.hunter.io/oracle.com',
         hq: 'Austin, TX',
         locations: ['Bangalore', 'Hyderabad', 'Pune', 'Noida'],
         category: 'Global Big Tech & AI Labs',
@@ -3267,7 +3477,7 @@ export const COMPANIES = [
         slug: 'adobe',
         name: 'Adobe',
         industry: 'Software',
-        logo: 'https://unavatar.io/adobe.com',
+        logo: 'https://logos.hunter.io/adobe.com',
         hq: 'San Jose, CA',
         locations: ['Noida', 'Bangalore'],
         category: 'Global Big Tech & AI Labs',
@@ -3317,7 +3527,7 @@ export const COMPANIES = [
         slug: 'krutrim-ai',
         name: 'Krutrim AI',
         industry: 'AI',
-        logo: 'https://unavatar.io/krutrim.ai',
+        logo: 'https://logos.hunter.io/krutrim.ai',
         hq: 'Bangalore, India',
         locations: ['Bangalore'],
         category: 'High-Growth AI & Deep-Tech Startups',
@@ -3332,7 +3542,42 @@ export const COMPANIES = [
             { name: 'Technical Screen', details: 'Math and ML fundamentals.' },
             { name: 'Onsite', details: 'Deep dive into LLM architectures.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹20L - ₹35L',
             bonus: 'Variable',
             stock: 'Equity',
@@ -3348,7 +3593,7 @@ export const COMPANIES = [
         slug: 'zepto',
         name: 'Zepto',
         industry: 'Quick Commerce',
-        logo: 'https://unavatar.io/zepto.com',
+        logo: 'https://logos.hunter.io/zepto.com',
         hq: 'Mumbai, India',
         locations: ['Bangalore', 'Mumbai'],
         category: 'High-Growth AI & Deep-Tech Startups',
@@ -3363,7 +3608,42 @@ export const COMPANIES = [
             { name: 'Technical 1', details: 'DSA (Medium).' },
             { name: 'Technical 2', details: 'Backend/Mobile specific coding.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹15L - ₹20L',
             bonus: '₹2L',
             stock: 'ESOPs',
@@ -3379,7 +3659,7 @@ export const COMPANIES = [
         slug: 'skyroot-aerospace',
         name: 'Skyroot Aerospace',
         industry: 'Aerospace',
-        logo: 'https://unavatar.io/skyroot.in',
+        logo: 'https://logos.hunter.io/skyroot.in',
         hq: 'Hyderabad, India',
         locations: ['Hyderabad'],
         category: 'High-Growth AI & Deep-Tech Startups',
@@ -3394,7 +3674,42 @@ export const COMPANIES = [
             { name: 'Domain Screen', details: 'Aerodynamics and Rocketry basics.' },
             { name: 'Technical 1', details: 'Systems design and simulation.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '₹12L - ₹20L',
             bonus: 'Variable',
             stock: 'ESOPs',
@@ -3410,7 +3725,7 @@ export const COMPANIES = [
         slug: 'samsung-research',
         name: 'Samsung (R&D India)',
         industry: 'Tech',
-        logo: 'https://unavatar.io/samsung.com',
+        logo: 'https://logos.hunter.io/samsung.com',
         hq: 'Seoul, South Korea',
         locations: ['Bangalore', 'Noida', 'Delhi'],
         category: 'Specialized Engineering & Industry Leaders',
@@ -3463,7 +3778,7 @@ export const COMPANIES = [
         slug: 'salesforce',
         name: 'Salesforce',
         industry: 'SaaS',
-        logo: 'https://unavatar.io/salesforce.com',
+        logo: 'https://logos.hunter.io/salesforce.com',
         hq: 'San Francisco, CA',
         locations: ['Hyderabad', 'Bangalore'],
         category: 'Specialized Engineering & Industry Leaders',
@@ -3516,7 +3831,7 @@ export const COMPANIES = [
         slug: 'micron',
         name: 'Micron Technology',
         industry: 'Semiconductors',
-        logo: 'https://unavatar.io/micron.com',
+        logo: 'https://logos.hunter.io/micron.com',
         hq: 'Boise, ID',
         locations: ['Hyderabad'],
         category: 'Specialized Engineering & Industry Leaders',
@@ -3567,7 +3882,7 @@ export const COMPANIES = [
         slug: 'cognizant',
         name: 'Cognizant',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/cognizant.com',
+        logo: 'https://logos.hunter.io/cognizant.com',
         hq: 'Teaneck, NJ',
         locations: ['Across India'],
         category: 'Major IT Services & Consulting',
@@ -3723,7 +4038,7 @@ export const COMPANIES = [
         slug: 'capgemini',
         name: 'Capgemini',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/capgemini.com',
+        logo: 'https://logos.hunter.io/capgemini.com',
         hq: 'Paris, France',
         locations: ['Across India'],
         category: 'Major IT Services & Consulting',
@@ -4007,7 +4322,7 @@ export const COMPANIES = [
         slug: 'epam',
         name: 'EPAM Systems',
         industry: 'IT Services',
-        logo: 'https://unavatar.io/epam.com',
+        logo: 'https://logos.hunter.io/epam.com',
         hq: 'Newtown, PA',
         locations: ['Hyderabad', 'Pune', 'Bangalore'],
         category: 'Major IT Services & Consulting',
@@ -4024,7 +4339,42 @@ export const COMPANIES = [
             { name: 'Technical Interview 2', details: 'Problem solving and system design basics.' },
             { name: 'HR Interview', details: 'Cultural fit and English proficiency.' }
         ],
-        compensation: {
+                testPattern: [
+            {
+                section: 'Coding',
+                questions: '3 Qs',
+                duration: '90 mins'
+            },
+            {
+                section: 'Aptitude & MCQs',
+                questions: '20 Qs',
+                duration: '30 mins'
+            }
+        ],
+        syllabus: [
+            {
+                round: 'Coding',
+                topics: [
+                    { name: 'Dynamic Programming', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Graphs', questions: '1', duration: '30 mins', difficulty: 'Hard' },
+                    { name: 'Trees & Arrays', questions: '1', duration: '30 mins', difficulty: 'Medium' }
+                ]
+            },
+            {
+                round: 'CS Fundamentals & MCQs',
+                topics: [
+                    { name: 'OS & DBMS', questions: '10', duration: '15 mins', difficulty: 'Medium' },
+                    { name: 'Computer Networks', questions: '5', duration: '10 mins', difficulty: 'Medium' },
+                    { name: 'Aptitude', questions: '5', duration: '5 mins', difficulty: 'Easy' }
+                ]
+            }
+        ],
+        registrationProcess: [
+            'Visit the company Careers page',
+            'Apply through the Campus drive or referral link',
+            'Shortlisted candidates receive test link'
+        ],
+compensation: {
             base: '6 LPA - 8 LPA',
             bonus: 'N/A',
             stock: 'N/A',
@@ -4056,13 +4406,13 @@ export const HIRING_TIMELINE = [
         title: 'The Warm-Up',
         description: 'Mass hiring begins for service-based giants. Early birds start their prep.',
         events: [
-            { company: 'TCS', title: 'Mass Recruitment Opens', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/tcs.com' },
-            { company: 'Infosys', title: 'HackWithInfy / Infytq', type: 'Assessment', zone: 'on-campus', logo: 'https://unavatar.io/infosys.com' },
-            { company: 'Wipro', title: 'Elite National Talent Hunt', type: 'Assessment', zone: 'on-campus', logo: 'https://unavatar.io/wipro.com' },
-            { company: 'Cognizant', title: 'GenC Off-Campus', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/cognizant.com' },
-            { company: 'Accenture', title: 'Cognitive Assessments', type: 'Assessment', zone: 'on-campus', logo: 'https://unavatar.io/accenture.com' },
-            { company: 'Capgemini', title: 'Exceller Drive Begins', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/capgemini.com' },
-            { company: 'EPAM', title: 'Junior SWE Drive', type: 'Assessment', zone: 'off-campus', logo: 'https://unavatar.io/epam.com' }
+            { company: 'TCS', title: 'Mass Recruitment Opens', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/tcs.com' },
+            { company: 'Infosys', title: 'HackWithInfy / Infytq', type: 'Assessment', zone: 'on-campus', logo: 'https://logos.hunter.io/infosys.com' },
+            { company: 'Wipro', title: 'Elite National Talent Hunt', type: 'Assessment', zone: 'on-campus', logo: 'https://logos.hunter.io/wipro.com' },
+            { company: 'Cognizant', title: 'GenC Off-Campus', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/cognizant.com' },
+            { company: 'Accenture', title: 'Cognitive Assessments', type: 'Assessment', zone: 'on-campus', logo: 'https://logos.hunter.io/accenture.com' },
+            { company: 'Capgemini', title: 'Exceller Drive Begins', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/capgemini.com' },
+            { company: 'EPAM', title: 'Junior SWE Drive', type: 'Assessment', zone: 'off-campus', logo: 'https://logos.hunter.io/epam.com' }
         ]
     },
     {
@@ -4071,11 +4421,11 @@ export const HIRING_TIMELINE = [
         title: 'The OA Avalanche',
         description: 'Big Tech and top product companies drop their Online Assessments.',
         events: [
-            { company: 'Amazon', title: 'OA Drops (SDE-1)', type: 'Assessment', zone: 'off-campus', logo: 'https://unavatar.io/amazon.com' },
-            { company: 'Oracle', title: 'OA Drops', type: 'Assessment', zone: 'off-campus', logo: 'https://unavatar.io/oracle.com' },
-            { company: 'Microsoft', title: 'University Hiring Opens', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/microsoft.com' },
-            { company: 'Swiggy', title: 'Campus Drives Begin', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/swiggy.com' },
-            { company: 'Flipkart', title: 'APM & SDE Hiring', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/flipkart.com' }
+            { company: 'Amazon', title: 'OA Drops (SDE-1)', type: 'Assessment', zone: 'off-campus', logo: 'https://logos.hunter.io/amazon.com' },
+            { company: 'Oracle', title: 'OA Drops', type: 'Assessment', zone: 'off-campus', logo: 'https://logos.hunter.io/oracle.com' },
+            { company: 'Microsoft', title: 'University Hiring Opens', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/microsoft.com' },
+            { company: 'Swiggy', title: 'Campus Drives Begin', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/swiggy.com' },
+            { company: 'Flipkart', title: 'APM & SDE Hiring', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/flipkart.com' }
         ]
     },
     {
@@ -4084,10 +4434,10 @@ export const HIRING_TIMELINE = [
         title: 'The Resume Screen',
         description: 'Global tech giants review resumes and send out interview invites.',
         events: [
-            { company: 'Google', title: 'Resume Screens', type: 'Screening', zone: 'off-campus', logo: 'https://unavatar.io/google.com' },
-            { company: 'Meta', title: 'Resume Screens', type: 'Screening', zone: 'off-campus', logo: 'https://unavatar.io/meta.com' },
-            { company: 'PhonePe', title: 'University Hiring', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/phonepe.com' },
-            { company: 'Salesforce', title: 'AMTS Roles Open', type: 'Application', zone: 'on-campus', logo: 'https://unavatar.io/salesforce.com' }
+            { company: 'Google', title: 'Resume Screens', type: 'Screening', zone: 'off-campus', logo: 'https://logos.hunter.io/google.com' },
+            { company: 'Meta', title: 'Resume Screens', type: 'Screening', zone: 'off-campus', logo: 'https://logos.hunter.io/meta.com' },
+            { company: 'PhonePe', title: 'University Hiring', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/phonepe.com' },
+            { company: 'Salesforce', title: 'AMTS Roles Open', type: 'Application', zone: 'on-campus', logo: 'https://logos.hunter.io/salesforce.com' }
         ]
     },
     {
@@ -4096,9 +4446,9 @@ export const HIRING_TIMELINE = [
         title: 'The Interview Grind',
         description: 'Peak season for technical deep-dives and virtual onsites.',
         events: [
-            { company: 'Google', title: 'Technical Interviews', type: 'Interview', zone: 'off-campus', logo: 'https://unavatar.io/google.com' },
-            { company: 'Meta', title: 'Virtual Onsites', type: 'Interview', zone: 'off-campus', logo: 'https://unavatar.io/meta.com' },
-            { company: 'Apple', title: 'Deep Dives', type: 'Interview', zone: 'off-campus', logo: 'https://unavatar.io/apple.com' }
+            { company: 'Google', title: 'Technical Interviews', type: 'Interview', zone: 'off-campus', logo: 'https://logos.hunter.io/google.com' },
+            { company: 'Meta', title: 'Virtual Onsites', type: 'Interview', zone: 'off-campus', logo: 'https://logos.hunter.io/meta.com' },
+            { company: 'Apple', title: 'Deep Dives', type: 'Interview', zone: 'off-campus', logo: 'https://logos.hunter.io/apple.com' }
         ]
     },
     {

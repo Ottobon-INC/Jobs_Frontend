@@ -230,7 +230,7 @@ const ManageTimelinePage = () => {
                 {/* Back Button */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 text-[#1C1A17]/60 hover:text-[#D45B34] transition-colors text-xs font-black uppercase tracking-wider mb-6 bg-white border border-[#1C1A17]/15 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 cursor-pointer"
+                    className="inline-flex items-center gap-2 text-[#1C1A17]/60 hover:text-[#1C1A17] transition-colors text-xs font-black uppercase tracking-wider mb-6 bg-white border border-[#1C1A17]/15 px-4 py-2 rounded-xl shadow-sm hover:scale-105 active:scale-95 duration-200 cursor-pointer"
                 >
                     <ArrowLeft size={14} strokeWidth={3} /> Back
                 </button>
@@ -248,7 +248,7 @@ const ManageTimelinePage = () => {
                     {!editingMonth && (
                         <button
                             onClick={handleStartAdd}
-                            className="flex items-center justify-center gap-2 bg-[#D45B34] text-white px-6 py-3.5 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95 text-sm"
+                            className="flex items-center justify-center gap-2 bg-[#1C1A17] text-white px-6 py-3.5 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95 text-sm"
                         >
                             <Plus size={18} strokeWidth={3} />
                             Add Timeline Month
@@ -276,7 +276,7 @@ const ManageTimelinePage = () => {
                             </h2>
                             <button
                                 onClick={handleCancel}
-                                className="p-2 hover:bg-[#D45B34]/5 text-[#1C1A17]/60 hover:text-[#1C1A17] rounded-lg transition-colors"
+                                className="p-2 hover:bg-[#1C1A17]/5 text-[#1C1A17]/60 hover:text-[#1C1A17] rounded-lg transition-colors"
                             >
                                 <X size={20} strokeWidth={2.5} />
                             </button>
@@ -295,7 +295,7 @@ const ManageTimelinePage = () => {
                                         placeholder="e.g. jul, aug, dec"
                                         value={editingMonth.id || ''}
                                         onChange={(e) => setEditingMonth({ ...editingMonth, id: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
-                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-bold placeholder-[#1C1A17]/40 disabled:opacity-50"
+                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-bold placeholder-[#1C1A17]/40 disabled:opacity-50"
                                     />
                                 </div>
 
@@ -306,7 +306,7 @@ const ManageTimelinePage = () => {
                                     <select
                                         value={editingMonth.month || 'January'}
                                         onChange={(e) => setEditingMonth({ ...editingMonth, month: e.target.value })}
-                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-bold cursor-pointer"
+                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-bold cursor-pointer"
                                     >
                                         {MONTHS_LIST.map(m => (
                                             <option key={m} value={m}>{m}</option>
@@ -323,7 +323,7 @@ const ManageTimelinePage = () => {
                                         min="1"
                                         value={editingMonth.order_index || 0}
                                         onChange={(e) => setEditingMonth({ ...editingMonth, order_index: parseInt(e.target.value) || 0 })}
-                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-bold text-center"
+                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-bold text-center"
                                     />
                                 </div>
                             </div>
@@ -338,7 +338,7 @@ const ManageTimelinePage = () => {
                                         placeholder="e.g. The Warm-Up, The OA Avalanche"
                                         value={editingMonth.title || ''}
                                         onChange={(e) => setEditingMonth({ ...editingMonth, title: e.target.value })}
-                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-bold placeholder-[#1C1A17]/40"
+                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-bold placeholder-[#1C1A17]/40"
                                     />
                                 </div>
 
@@ -351,7 +351,7 @@ const ManageTimelinePage = () => {
                                         placeholder="e.g. Peak season for technical deep-dives..."
                                         value={editingMonth.description || ''}
                                         onChange={(e) => setEditingMonth({ ...editingMonth, description: e.target.value })}
-                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-medium placeholder-[#1C1A17]/40"
+                                        className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/15 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-medium placeholder-[#1C1A17]/40"
                                     />
                                 </div>
                             </div>
@@ -366,7 +366,7 @@ const ManageTimelinePage = () => {
                                     <button
                                         type="button"
                                         onClick={handleAddEvent}
-                                        className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-[#D45B34]/5 hover:bg-[#D45B34]/15 text-[#1C1A17] py-2 px-3 rounded-lg transition-colors"
+                                        className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-[#1C1A17]/5 hover:bg-[#1C1A17]/15 text-[#1C1A17] py-2 px-3 rounded-lg transition-colors"
                                     >
                                         <PlusCircle size={14} /> Add Event Row
                                     </button>
@@ -381,7 +381,7 @@ const ManageTimelinePage = () => {
                                         editingMonth.events.map((ev, index) => (
                                             <div 
                                                 key={index}
-                                                className="bg-[#F4F1EA]/20 border border-[#1C1A17]/10 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-end relative group hover:border-[#D45B34]/20 transition-colors"
+                                                className="bg-[#F4F1EA]/20 border border-[#1C1A17]/10 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-end relative group hover:border-[#1C1A17]/20 transition-colors"
                                             >
                                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 w-full">
                                                     <div>
@@ -391,7 +391,7 @@ const ManageTimelinePage = () => {
                                                             placeholder="e.g. Google"
                                                             value={ev.company || ''}
                                                             onChange={(e) => handleEventChange(index, 'company', e.target.value)}
-                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17] font-bold focus:outline-none focus:ring-1 focus:ring-[#D45B34]/10"
+                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17] font-bold focus:outline-none focus:ring-1 focus:ring-[#1C1A17]/10"
                                                         />
                                                     </div>
 
@@ -402,7 +402,7 @@ const ManageTimelinePage = () => {
                                                             placeholder="e.g. Virtual Onsites"
                                                             value={ev.title || ''}
                                                             onChange={(e) => handleEventChange(index, 'title', e.target.value)}
-                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17] focus:outline-none focus:ring-1 focus:ring-[#D45B34]/10"
+                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17] focus:outline-none focus:ring-1 focus:ring-[#1C1A17]/10"
                                                         />
                                                     </div>
 
@@ -438,7 +438,7 @@ const ManageTimelinePage = () => {
                                                             placeholder="https://..."
                                                             value={ev.logo || ''}
                                                             onChange={(e) => handleEventChange(index, 'logo', e.target.value)}
-                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17]/60 focus:outline-none focus:ring-1 focus:ring-[#D45B34]/10"
+                                                            className="w-full bg-white border border-[#1C1A17]/15 rounded-lg py-2 px-3 text-xs text-[#1C1A17]/60 focus:outline-none focus:ring-1 focus:ring-[#1C1A17]/10"
                                                         />
                                                     </div>
                                                 </div>
@@ -462,13 +462,13 @@ const ManageTimelinePage = () => {
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="px-5 py-3 rounded-xl border border-[#1C1A17]/20 text-[#1C1A17] hover:bg-[#D45B34]/5 transition-colors font-bold text-sm"
+                                    className="px-5 py-3 rounded-xl border border-[#1C1A17]/20 text-[#1C1A17] hover:bg-[#1C1A17]/5 transition-colors font-bold text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 bg-[#D45B34] text-white px-7 py-3 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all shadow-md text-sm"
+                                    className="flex items-center gap-2 bg-[#1C1A17] text-white px-7 py-3 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all shadow-md text-sm"
                                 >
                                     <Save size={16} />
                                     Save Month Block
@@ -483,7 +483,7 @@ const ManageTimelinePage = () => {
                         <p className="text-[#1C1A17]/60 mt-2">Initialize your timeline by creating your first monthly stage card.</p>
                         <button
                             onClick={handleStartAdd}
-                            className="mt-6 inline-flex items-center gap-2 bg-[#D45B34] text-white px-6 py-3 rounded-xl font-bold shadow-md hover:scale-105 transition-all text-sm"
+                            className="mt-6 inline-flex items-center gap-2 bg-[#1C1A17] text-white px-6 py-3 rounded-xl font-bold shadow-md hover:scale-105 transition-all text-sm"
                         >
                             <Plus size={16} /> Add First Month
                         </button>
@@ -501,7 +501,7 @@ const ManageTimelinePage = () => {
                             >
                                 <div className="flex-1">
                                     <div className="flex flex-wrap items-center gap-3">
-                                        <div className="bg-[#D45B34]/5 text-[#1C1A17] px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+                                        <div className="bg-[#1C1A17]/5 text-[#1C1A17] px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider">
                                             {monthBlock.month} ({monthBlock.id})
                                         </div>
                                         <h3 className="text-xl font-black text-[#1C1A17] leading-tight">{monthBlock.title}</h3>
@@ -543,7 +543,7 @@ const ManageTimelinePage = () => {
                                         <button
                                             disabled={idx === 0}
                                             onClick={() => handleMoveOrder(idx, 'up')}
-                                            className="p-1 hover:bg-[#D45B34]/5 disabled:opacity-30 rounded text-[#1C1A17] transition-colors"
+                                            className="p-1 hover:bg-[#1C1A17]/5 disabled:opacity-30 rounded text-[#1C1A17] transition-colors"
                                             title="Move Month Up"
                                         >
                                             <ArrowUp size={16} strokeWidth={2.5} />
@@ -551,7 +551,7 @@ const ManageTimelinePage = () => {
                                         <button
                                             disabled={idx === timeline.length - 1}
                                             onClick={() => handleMoveOrder(idx, 'down')}
-                                            className="p-1 hover:bg-[#D45B34]/5 disabled:opacity-30 rounded text-[#1C1A17] transition-colors"
+                                            className="p-1 hover:bg-[#1C1A17]/5 disabled:opacity-30 rounded text-[#1C1A17] transition-colors"
                                             title="Move Month Down"
                                         >
                                             <ArrowDown size={16} strokeWidth={2.5} />
@@ -560,7 +560,7 @@ const ManageTimelinePage = () => {
 
                                     <button
                                         onClick={() => handleStartEdit(monthBlock)}
-                                        className="flex items-center justify-center gap-1.5 bg-[#D45B34]/5 hover:bg-[#D45B34]/10 text-[#1C1A17] px-4.5 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-colors"
+                                        className="flex items-center justify-center gap-1.5 bg-[#1C1A17]/5 hover:bg-[#1C1A17]/10 text-[#1C1A17] px-4.5 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-colors"
                                     >
                                         <Edit2 size={13} strokeWidth={2.5} /> Edit Month
                                     </button>

@@ -62,7 +62,7 @@ const HelpDeskPage = () => {
                                     key={session.id}
                                     onClick={() => setSelectedSessionId(session.id)}
                                     className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 ${isSelected
-                                        ? 'bg-zinc-900 text-white border-zinc-900 shadow-lg shadow-zinc-900/20'
+                                        ? 'bg-[#1C1A17] text-white border-zinc-900 shadow-lg shadow-zinc-900/20'
                                         : 'border-transparent hover:border-zinc-50 hover:bg-zinc-50'
                                         }`}
                                 >
@@ -221,7 +221,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
             {/* Header */}
             <div className="px-4 sm:px-8 py-4 sm:py-5 border-b border-zinc-50 bg-[#FBFBFB] flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4">
                 <div className="flex items-center gap-4 min-w-0">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${exited ? 'bg-zinc-300' : 'bg-zinc-900 animate-pulse'}`} />
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${exited ? 'bg-zinc-300' : 'bg-[#1C1A17] animate-pulse'}`} />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 truncate">
                         Secure Monitor: <span className="text-zinc-900">{sessions.find(s => s.id === sessionId)?.user?.full_name || 'Active Session'}</span>
                     </span>
@@ -273,7 +273,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                             className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 w-full sm:w-auto ${
                                 intercepted
                                     ? 'bg-zinc-50 text-zinc-300 cursor-not-allowed'
-                                    : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-xl shadow-zinc-900/10'
+                                    : 'bg-[#1C1A17] text-white hover:bg-[#1C1A17]/90 shadow-xl shadow-zinc-900/10'
                             }`}
                         >
                             {intercepted
@@ -325,7 +325,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                     return (
                         <div key={idx} className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
                             <div className={`w-9 h-9 rounded-xl grid place-items-center shrink-0 border transition-all ${isUser
-                                ? 'bg-zinc-900 border-zinc-800 text-white'
+                                ? 'bg-[#1C1A17] border-zinc-800 text-white'
                                 : isAdmin
                                     ? 'bg-white border-zinc-100 text-zinc-900 shadow-sm'
                                     : 'bg-zinc-50 border-zinc-100 text-zinc-400'
@@ -334,7 +334,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                             </div>
                             <div className={`max-w-[75%] ${isUser ? 'text-right' : 'text-left'}`}>
                                 <div className={`p-5 card text-xs leading-relaxed shadow-sm transition-all ${isUser
-                                    ? 'bg-zinc-900 text-white rounded-tr-sm'
+                                    ? 'bg-[#1C1A17] text-white rounded-tr-sm'
                                     : isAdmin
                                         ? 'bg-white border border-zinc-100 text-zinc-900 rounded-tl-sm shadow-xl shadow-zinc-900/5'
                                         : 'bg-white border border-zinc-50 text-zinc-600 rounded-tl-sm'
@@ -366,7 +366,7 @@ const AdminChatViewer = ({ sessionId, sessions }) => {
                         <button
                             type="submit"
                             disabled={!inputValue.trim() || sending}
-                            className="bg-zinc-900 text-white px-8 py-4 rounded-2xl flex items-center justify-center hover:bg-zinc-800 disabled:opacity-30 transition-all font-bold text-xs"
+                            className="bg-[#1C1A17] text-white px-8 py-4 rounded-2xl flex items-center justify-center hover:bg-[#1C1A17]/90 disabled:opacity-30 transition-all font-bold text-xs"
                         >
                             {sending ? '...' : <Send size={20} />}
                         </button>

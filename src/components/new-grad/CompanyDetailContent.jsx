@@ -302,7 +302,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                                 tabsContainerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
                                             }
                                         }}
-                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
+                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#D45B34] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
                                         aria-label="Scroll left"
                                     >
                                         <ChevronLeft size={16} strokeWidth={3} />
@@ -323,8 +323,8 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                                     onClick={() => setActiveSyllabusTab(idx)}
                                                     className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all duration-300 border ${
                                                         isActive 
-                                                            ? 'bg-[#313851] text-white border-[#313851] shadow-md shadow-zinc-200' 
-                                                            : 'bg-white text-zinc-400 border-zinc-100 hover:text-[#313851] hover:bg-zinc-50'
+                                                            ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-md shadow-[#D45B34]/20' 
+                                                            : 'bg-white text-zinc-400 border-zinc-100 hover:text-[#D45B34] hover:bg-zinc-50'
                                                     }`}
                                                 >
                                                     {roundName}
@@ -341,7 +341,7 @@ export const CompanyDetailContent = ({ company, activeSection }) => {
                                                 tabsContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
                                             }
                                         }}
-                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#313851] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
+                                        className="w-10 h-10 border border-zinc-100 bg-white rounded-2xl flex items-center justify-center text-[#D45B34] shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
                                         aria-label="Scroll right"
                                     >
                                         <ChevronRight size={16} strokeWidth={3} />

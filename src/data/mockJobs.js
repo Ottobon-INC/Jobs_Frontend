@@ -81,7 +81,7 @@ export const MOCK_JOBS = [
         id: "mock-4",
         title: "Associate Product Manager",
         company_name: "Nova Ventures",
-        company_logo: "https://unavatar.io/google.com",
+        company_logo: "https://logos.hunter.io/google.com",
         location: "Remote",
         created_at: new Date().toISOString(),
         experience: "Freshers",

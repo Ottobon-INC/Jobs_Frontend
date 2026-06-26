@@ -80,7 +80,7 @@ const ManagePlaybooksPage = () => {
                     
                     <button 
                         onClick={() => navigate('/admin/playbooks/create')}
-                        className="flex items-center gap-2 bg-[#D45B34] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95"
+                        className="flex items-center gap-2 bg-[#1C1A17] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg active:scale-95"
                     >
                         <Plus size={20} />
                         Add New Playbook
@@ -117,7 +117,7 @@ const ManagePlaybooksPage = () => {
                         placeholder="Search by company name, industry, or category..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white border-none rounded-2xl py-4 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] font-medium"
+                        className="w-full bg-white border-none rounded-2xl py-4 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] font-medium"
                     />
                 </div>
 
@@ -144,7 +144,7 @@ const ManagePlaybooksPage = () => {
                                 className="group bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden"
                             >
                                 {/* Background Accent */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D45B34]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500" />
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#1C1A17]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500" />
 
                                 <div className="flex items-start justify-between relative z-10">
                                     <div className="flex-shrink-0 mr-4">
@@ -160,7 +160,7 @@ const ManagePlaybooksPage = () => {
                                         </button>
                                         <button 
                                             onClick={() => navigate(`/admin/playbooks/edit/${pb.id}`)}
-                                            className="p-2.5 bg-[#D45B34]/5 text-[#1C1A17] rounded-xl hover:bg-[#D45B34] hover:text-white transition-all shadow-sm"
+                                            className="p-2.5 bg-[#1C1A17]/5 text-[#1C1A17] rounded-xl hover:bg-[#1C1A17] hover:text-white transition-all shadow-sm"
                                             title="Edit Playbook"
                                         >
                                             <Edit2 size={18} />

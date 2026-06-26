@@ -95,7 +95,7 @@ export function FeaturedJobs() {
                     <div className="flex items-center gap-6">
                         <Link
                             to="/register"
-                            className="font-semibold px-6 py-2.5 rounded-xl text-sm shadow-sm transition-all hover:scale-105 hover:bg-[#B84A27] cursor-pointer inline-block bg-[#D45B34] text-white"
+                            className="font-bold px-6 py-3 rounded-xl text-[10px] tracking-widest uppercase shadow-xl shadow-zinc-900/10 transition-all hover:scale-105 active:scale-95 inline-block bg-[var(--color-primary)] text-white"
                         >
                             Get started
                         </Link>

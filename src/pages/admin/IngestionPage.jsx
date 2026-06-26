@@ -134,7 +134,7 @@ const TerminalConsole = ({ source, triggerTime, onClose }) => {
     };
 
     return (
-        <div className="mt-12 bg-[#1C1F2E] rounded-2xl border border-[#313851] shadow-2xl p-6 font-mono text-[11px] text-[#F5F3EE]/80 flex flex-col min-h-[450px]">
+        <div className="mt-12 bg-[#1C1A17] rounded-2xl border border-[#313851] shadow-2xl p-6 font-mono text-[11px] text-[#F5F3EE]/80 flex flex-col min-h-[450px]">
             {/* macOS Style Window Chrome */}
             <div className="flex items-center justify-between border-b border-[#313851] pb-4 mb-4">
                 <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ const TerminalConsole = ({ source, triggerTime, onClose }) => {
             {/* Dashboard / Status Grid */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 p-4 bg-[#131520]/60 border border-[#313851]/30 rounded-xl">
                 {Object.entries(scraperStates).map(([scraper, details]) => (
-                    <div key={scraper} className="flex flex-col gap-1.5 p-2.5 rounded-lg bg-[#1C1F2E]/60 border border-[#313851]/20">
+                    <div key={scraper} className="flex flex-col gap-1.5 p-2.5 rounded-lg bg-[#1C1A17]/60 border border-[#313851]/20">
                         <span className="font-bold text-[#F5F3EE] uppercase text-[9px] tracking-wider">{scraper}</span>
                         <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded text-center w-max ${getStatusBadgeColor(details.status)}`}>
                             {details.status}
@@ -230,18 +230,18 @@ const IngestionPage = () => {
     };
 
     const sources = [
-        { id: 'deloitte', name: 'Deloitte', pattern: 'bg-zinc-900 text-white' },
+        { id: 'deloitte', name: 'Deloitte', pattern: 'bg-[#1C1A17] text-white' },
         { id: 'pwc', name: 'PwC', pattern: 'bg-white border border-zinc-200 text-zinc-900' },
         { id: 'kpmg', name: 'KPMG', pattern: 'bg-zinc-50 text-zinc-600' },
-        { id: 'ey', name: 'EY', pattern: 'bg-zinc-900 text-white font-medium' },
+        { id: 'ey', name: 'EY', pattern: 'bg-[#1C1A17] text-white font-medium' },
         { id: 'generic', name: 'Generic GCC', pattern: 'bg-zinc-800 text-white' }
     ];
 
     return (
         <div className="max-w-6xl mx-auto py-10 sm:py-20 px-4 sm:px-8 bg-[#F5F3EE] min-h-screen">
             <header className="mb-10 sm:mb-20 border-b border-[#E2DDD6] pb-8 sm:pb-12">
-                <h1 className="text-3xl sm:text-4xl font-sans font-bold text-[#1C1F2E] tracking-tight flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                    <div className="w-16 h-16 bg-[#1C1F2E] rounded-2xl grid place-items-center shadow-lg shadow-[#1C1F2E]/20 shrink-0">
+                <h1 className="text-3xl sm:text-4xl font-sans font-bold text-[#1C1A17] tracking-tight flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                    <div className="w-16 h-16 bg-[#1C1A17] rounded-2xl grid place-items-center shadow-lg shadow-[#1C1A17]/20 shrink-0">
                         <Database size={32} className="text-white" />
                     </div>
                     Data Management
@@ -259,17 +259,17 @@ const IngestionPage = () => {
                 <div className="md:col-span-2 lg:col-span-3 bg-white border border-[#E2DDD6] rounded-3xl p-6 sm:p-8 shadow-xl shadow-zinc-900/5 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
                     <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-center sm:text-left w-full sm:w-auto">
                         <div className="w-16 h-16 bg-[#F5F3EE] border border-[#E2DDD6] rounded-2xl grid place-items-center shrink-0">
-                            <Power size={32} className="text-[#1C1F2E]/60" />
+                            <Power size={32} className="text-[#1C1A17]/60" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-sans font-bold text-[#1C1F2E] tracking-tight">Global System Update</h3>
+                            <h3 className="text-2xl font-sans font-bold text-[#1C1A17] tracking-tight">Global System Update</h3>
                             <p className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-2 leading-relaxed">Synchronize all configured sources</p>
                         </div>
                     </div>
                     <button
                         disabled={loading !== null}
                         onClick={() => handleIngest('all')}
-                        className="w-full md:w-auto bg-[#1C1F2E] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-[#1C1F2E]/90 transition-all flex items-center justify-center gap-4 shadow-xl shadow-[#1C1F2E]/10 disabled:opacity-30 active:scale-95"
+                        className="w-full md:w-auto bg-[#1C1A17] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-[#1C1A17]/90 transition-all flex items-center justify-center gap-4 shadow-xl shadow-[#1C1A17]/10 disabled:opacity-30 active:scale-95"
                     >
                         <RefreshCw size={20} className={loading === 'all' ? 'animate-spin' : ''} />
                         {loading === 'all' ? "Processing..." : "Start Global Update"}
@@ -277,15 +277,15 @@ const IngestionPage = () => {
                 </div>
 
                 {sources.map(source => (
-                    <div key={source.id} className="bg-white border border-[#E2DDD6] rounded-3xl p-8 flex flex-col items-center text-center hover:shadow-2xl hover:shadow-[#1C1F2E]/5 transition-all duration-500 group">
-                        <div className={`w-16 h-16 rounded-2xl mx-auto mb-8 grid place-items-center font-bold text-xl shadow-sm transition-all group-hover:scale-110 ${source.id === 'deloitte' || source.id === 'ey' ? 'bg-[#1C1F2E] text-white' : 'bg-white border border-[#E2DDD6] text-[#1C1F2E]'}`}>
+                    <div key={source.id} className="bg-white border border-[#E2DDD6] rounded-3xl p-8 flex flex-col items-center text-center hover:shadow-2xl hover:shadow-[#1C1A17]/5 transition-all duration-500 group">
+                        <div className={`w-16 h-16 rounded-2xl mx-auto mb-8 grid place-items-center font-bold text-xl shadow-sm transition-all group-hover:scale-110 ${source.id === 'deloitte' || source.id === 'ey' ? 'bg-[#1C1A17] text-white' : 'bg-white border border-[#E2DDD6] text-[#1C1A17]'}`}>
                             {source.name.charAt(0)}
                         </div>
-                        <h3 className="text-xl font-sans font-bold text-[#1C1F2E] tracking-tight mb-8 uppercase">{source.name}</h3>
+                        <h3 className="text-xl font-sans font-bold text-[#1C1A17] tracking-tight mb-8 uppercase">{source.name}</h3>
                         <button
                             disabled={loading !== null}
                             onClick={() => handleIngest(source.id)}
-                            className="w-full bg-[#F5F3EE] border border-[#E2DDD6] text-[#1C1F2E]/60 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-[#1C1F2E] hover:text-white transition-all flex items-center justify-center gap-3 disabled:opacity-30"
+                            className="w-full bg-[#F5F3EE] border border-[#E2DDD6] text-[#1C1A17]/60 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-[#1C1A17] hover:text-white transition-all flex items-center justify-center gap-3 disabled:opacity-30"
                         >
                             {loading === source.id ? <RefreshCw size={16} className="animate-spin" /> : <Download size={16} />}
                             Scrape Jobs
@@ -314,7 +314,7 @@ const IngestionPage = () => {
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="mt-16 bg-[#1C1F2E] text-white border border-[#E2DDD6] rounded-3xl p-8 overflow-hidden shadow-2xl"
+                        className="mt-16 bg-[#1C1A17] text-white border border-[#E2DDD6] rounded-3xl p-8 overflow-hidden shadow-2xl"
                     >
                         <h3 className="text-2xl font-sans font-bold text-white mb-6 flex items-center gap-4 uppercase tracking-tighter">
                             <AlertOctagon size={32} className="text-red-400" /> Import Error

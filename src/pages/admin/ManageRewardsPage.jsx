@@ -137,7 +137,7 @@ const ManageRewardsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D45B34]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1C1A17]"></div>
       </div>
     );
   }
@@ -152,7 +152,7 @@ const ManageRewardsPage = () => {
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#D45B34] text-white rounded-xl font-bold hover:bg-[#D45B34]/90 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#1C1A17] text-white rounded-xl font-bold hover:bg-[#1C1A17]/90 transition-all shadow-sm"
         >
           <PlusIcon />
           Add New Voucher
@@ -197,7 +197,7 @@ const ManageRewardsPage = () => {
                     <p className="text-[10px] text-[#1C1A17]/60 font-medium line-clamp-1">{item.description}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-lg bg-[#D45B34]/5 text-[#1C1A17] text-[10px] font-bold uppercase tracking-wider">
+                    <span className="px-2.5 py-1 rounded-lg bg-[#1C1A17]/5 text-[#1C1A17] text-[10px] font-bold uppercase tracking-wider">
                       {item.category}
                     </span>
                   </td>
@@ -240,7 +240,7 @@ const ManageRewardsPage = () => {
       {/* Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#D45B34]/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1A17]/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -260,7 +260,7 @@ const ManageRewardsPage = () => {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]"
                         placeholder="e.g. 20% Off Resume Review"
                       />
                     </div>
@@ -269,7 +269,7 @@ const ManageRewardsPage = () => {
                       <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-medium text-[#1C1A17] focus:outline-none focus:border-[#D45B34] min-h-[80px]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-medium text-[#1C1A17] focus:outline-none focus:border-[#1C1A17] min-h-[80px]"
                         placeholder="What does the user get?"
                       />
                     </div>
@@ -278,7 +278,7 @@ const ManageRewardsPage = () => {
                       <select
                         value={formData.category}
                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]"
                       >
                         <option value="Coupons">Coupons</option>
                         <option value="Boosts">Boosts</option>
@@ -295,7 +295,7 @@ const ManageRewardsPage = () => {
                         min="1"
                         value={formData.cost}
                         onChange={(e) => setFormData({ ...formData, cost: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]"
                       />
                     </div>
                     <div>
@@ -305,7 +305,7 @@ const ManageRewardsPage = () => {
                         min="1"
                         value={formData.expiry_days}
                         onChange={(e) => setFormData({ ...formData, expiry_days: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]"
                       />
                     </div>
                     <div>
@@ -314,7 +314,7 @@ const ManageRewardsPage = () => {
                         type="number"
                         value={formData.stock || ''}
                         onChange={(e) => setFormData({ ...formData, stock: e.target.value === '' ? null : parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]"
+                        className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]"
                       />
                     </div>
                   </div>
@@ -325,7 +325,7 @@ const ManageRewardsPage = () => {
                       id="is_active"
                       checked={formData.is_active}
                       onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                      className="w-4 h-4 rounded border-[#1C1A17]/15 text-[#1C1A17] focus:ring-[#D45B34]"
+                      className="w-4 h-4 rounded border-[#1C1A17]/15 text-[#1C1A17] focus:ring-[#1C1A17]"
                     />
                     <label htmlFor="is_active" className="text-xs font-bold text-[#1C1A17] uppercase tracking-wider cursor-pointer">Visible in shop</label>
                   </div>
@@ -340,7 +340,7 @@ const ManageRewardsPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-[2] py-4 rounded-2xl bg-[#D45B34] text-white font-bold text-sm hover:bg-[#D45B34]/90 transition-all shadow-sm"
+                      className="flex-[2] py-4 rounded-2xl bg-[#1C1A17] text-white font-bold text-sm hover:bg-[#1C1A17]/90 transition-all shadow-sm"
                     >
                       {editingItem ? 'Save Changes' : 'Create Reward'}
                     </button>

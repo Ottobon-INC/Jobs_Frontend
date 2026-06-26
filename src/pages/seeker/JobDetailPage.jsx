@@ -390,11 +390,10 @@ const JobDetailPage = () => {
                                         </button>
                                     </Link>
                                 )}
-
                                 {/* External job — show redirect button for everyone */}
-                                {job.external_apply_url && (() => {
+                                {(job.external_apply_url || job.external_url) && (() => {
                                     const src = (() => {
-                                        const u = job.external_apply_url;
+                                        const u = job.external_apply_url || job.external_url;
                                         if (u.includes('linkedin'))    return 'LinkedIn';
                                         if (u.includes('naukri'))      return 'Naukri';
                                         if (u.includes('shine'))       return 'Shine';
@@ -407,12 +406,12 @@ const JobDetailPage = () => {
                                     })();
                                     return (
                                         <a
-                                            href={job.external_apply_url}
+                                            href={job.external_apply_url || job.external_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="w-full sm:w-auto bg-[#D45B34] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#B84A27] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#D45B34]/20 active:scale-95 border border-white/10"
+                                            className="w-full sm:w-auto bg-[var(--color-primary)] text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest hover:scale-[1.02] transition-all flex items-center justify-center gap-3 shadow-xl shadow-zinc-900/10 active:scale-95 border border-white/10"
                                         >
-                                            <ExternalLink size={16} className="text-white" />
+                                            <ExternalLink size={18} className="text-white" />
                                             Apply on {src}
                                         </a>
                                     );
