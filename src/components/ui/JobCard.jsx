@@ -179,7 +179,7 @@ const JobCard = ({ job, isAuthenticated = true }) => {
                 {/* 4. Action Bar */}
                 <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
                     <Link to={`/jobs/${job.id}`} state={{ displayLocation }} className="flex-1 min-w-0">
-                        <button className="w-full py-3.5 sm:py-4 bg-[#D45B34] text-white rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] flex items-center justify-center transition-all hover:bg-[#B84A27] group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10 truncate">
+                        <button className="w-full py-3.5 sm:py-4 bg-[var(--color-primary)] text-white rounded-xl sm:rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] flex items-center justify-center transition-all hover:scale-[1.02] group-active/job:scale-[0.98] shadow-lg shadow-zinc-900/10 truncate">
                             View details
                         </button>
                     </Link>

@@ -120,7 +120,7 @@ const HumanMockInterviewsDashboard = () => {
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
-                                filter === f ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-500 border border-zinc-200 hover:bg-zinc-50'
+                                filter === f ? 'bg-[#1C1A17] text-white' : 'bg-white text-zinc-500 border border-zinc-200 hover:bg-zinc-50'
                             }`}
                         >
                             {f.replace('_', ' ')}
@@ -199,7 +199,7 @@ const HumanMockInterviewsDashboard = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsDrawerOpen(false)}
-                            className="fixed inset-0 bg-zinc-900/40 backdrop-blur-sm z-40"
+                            className="fixed inset-0 bg-[#1C1A17]/40 backdrop-blur-sm z-40"
                         />
                         <motion.div 
                             initial={{ x: '100%' }}
@@ -294,7 +294,7 @@ const HumanMockInterviewsDashboard = () => {
                                         
                                         {/* Resume Preview & Download area if resume_url exists */}
                                         {selectedRequest.resume_url && (
-                                            <div className="p-4 bg-zinc-900 rounded-xl flex items-center justify-between">
+                                            <div className="p-4 bg-[#1C1A17] rounded-xl flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-white">
                                                         <FileText size={20} />
@@ -418,7 +418,7 @@ const HumanMockInterviewsDashboard = () => {
                                             <button 
                                                 onClick={handleComplete}
                                                 disabled={isActionLoading}
-                                                className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                                className="w-full bg-[#1C1A17] hover:bg-[#1C1A17]/90 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                                             >
                                                 <CheckCircle2 size={16} /> Mark as Completed
                                             </button>

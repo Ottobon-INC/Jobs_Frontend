@@ -56,7 +56,7 @@ const AdminDashboardHome = () => {
             <header className="mb-10 border-b border-zinc-100 pb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
                 <div>
                     <h1 className="text-3xl sm:text-4xl font-sans font-bold text-zinc-900 tracking-tight flex items-center gap-4">
-                        <div className="w-14 h-14 bg-zinc-900 rounded-2xl grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
+                        <div className="w-14 h-14 bg-[#1C1A17] rounded-2xl grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
                             <LayoutDashboard size={28} className="text-white" />
                         </div>
                         Admin Command Center
@@ -81,7 +81,7 @@ const AdminDashboardHome = () => {
                         <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Total Registered</p>
                         <h3 className="text-3xl font-extrabold text-zinc-900 mt-2">{stats?.total_users || 0}</h3>
                     </div>
-                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-all duration-300">
+                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-[#1C1A17] group-hover:text-white transition-all duration-300">
                         <Users size={20} />
                     </div>
                 </Link>
@@ -91,7 +91,7 @@ const AdminDashboardHome = () => {
                         <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Registered Seekers</p>
                         <h3 className="text-3xl font-extrabold text-zinc-900 mt-2">{stats?.total_seekers || 0}</h3>
                     </div>
-                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-all duration-300">
+                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-[#1C1A17] group-hover:text-white transition-all duration-300">
                         <Users size={20} className="opacity-75" />
                     </div>
                 </Link>
@@ -101,7 +101,7 @@ const AdminDashboardHome = () => {
                         <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Active Chat Sessions</p>
                         <h3 className="text-3xl font-extrabold text-zinc-900 mt-2">{activeSessions.length || 0}</h3>
                     </div>
-                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-all duration-300">
+                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-[#1C1A17] group-hover:text-white transition-all duration-300">
                         <Radio size={20} className="animate-pulse" />
                     </div>
                 </Link>
@@ -111,7 +111,7 @@ const AdminDashboardHome = () => {
                         <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Pending Reviews</p>
                         <h3 className="text-3xl font-extrabold text-zinc-900 mt-2">{mockInterviews.length || 0}</h3>
                     </div>
-                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-all duration-300">
+                    <div className="w-12 h-12 bg-zinc-50 border border-zinc-100 rounded-xl grid place-items-center text-zinc-900 group-hover:bg-[#1C1A17] group-hover:text-white transition-all duration-300">
                         <ShieldAlert size={20} />
                     </div>
                 </Link>
@@ -151,7 +151,7 @@ const AdminDashboardHome = () => {
                                         </div>
                                         <button 
                                             onClick={() => navigate(`/admin/interview-reviews`)}
-                                            className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                                            className="px-4 py-2 bg-[#1C1A17] hover:bg-[#1C1A17]/90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                                         >
                                             Review <ArrowRight size={12} />
                                         </button>

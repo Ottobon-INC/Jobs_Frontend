@@ -535,7 +535,7 @@ const CommunityJobsPage = () => {
                                 </div>
                                 <Button 
                                     onClick={handleSubmit}
-                                    className="w-full bg-[#D45B34] text-white font-black py-5 rounded-2xl text-lg flex items-center justify-center gap-2 hover:bg-[#D45B34]/90 transition-all shadow-xl"
+                                    className="w-full bg-[var(--color-primary)] text-white font-black py-5 rounded-2xl text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-zinc-900/10 active:scale-[0.98]"
                                 >
                                     Submit to Community
                                     <ArrowRight size={20} />
@@ -646,7 +646,7 @@ const CommunityJobsPage = () => {
                                                         onClick={handleInitializeAI}
                                                         isLoading={isInitializingAI}
                                                         size="sm"
-                                                        className="bg-[#D45B34] text-white px-4 py-2 rounded-lg font-bold text-xs"
+                                                        className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-bold text-xs transition-transform hover:scale-105 active:scale-95 shadow-sm"
                                                     >
                                                         Initialize AI
                                                     </Button>
@@ -655,7 +655,7 @@ const CommunityJobsPage = () => {
                                                 <Button 
                                                     onClick={runDetailMatchIQ}
                                                     isLoading={isDetailMatching}
-                                                    className="bg-[#D45B34] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md"
+                                                    className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-xl shadow-zinc-900/10 transition-transform hover:scale-105 active:scale-95"
                                                 >
                                                     Calculate Fit
                                                 </Button>

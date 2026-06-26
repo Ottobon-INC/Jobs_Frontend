@@ -6,7 +6,7 @@ import api from './client';
  */
 export const analyzeResumeATS = async (formData) => {
     const config = {
-        timeout: 90000, // 90 seconds to allow deep LLM reasoning and prompt generation
+        timeout: 150000, // 150 seconds to allow deep LLM reasoning and prompt generation
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -21,7 +21,7 @@ export const analyzeResumeATS = async (formData) => {
  * @param {object} payload - Optional payload containing { resume_text }
  */
 export const parseResumeStructured = async (payload = {}) => {
-    const response = await api.post('/resume-builder/parse-structured', payload, { timeout: 60000 });
+    const response = await api.post('/resume-builder/parse-structured', payload, { timeout: 150000 });
     return response.data;
 };
 
@@ -67,5 +67,14 @@ export const updateUserResume = async (resumeId, updateData) => {
  */
 export const deleteUserResume = async (resumeId) => {
     const response = await api.delete(`/resume-builder/resumes/${resumeId}`);
+    return response.data;
+};
+
+/**
+ * Injects missing skills into a structured resume configuration seamlessly via AI.
+ * @param {object} payload - Contains { resume_data, missing_skills }
+ */
+export const injectMissingSkills = async (payload) => {
+    const response = await api.post('/resume-builder/inject-skills', payload, { timeout: 60000 });
     return response.data;
 };

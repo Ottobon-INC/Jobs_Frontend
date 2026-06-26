@@ -140,7 +140,7 @@ const ControlTowerPage = () => {
             <header className="mb-10 sm:mb-20 border-b border-zinc-100 pb-8 sm:pb-12 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
                 <div className="w-full sm:w-auto">
                     <h1 className="text-3xl sm:text-4xl font-sans font-bold text-zinc-900 tracking-tight flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                        <div className="w-16 h-16 bg-zinc-900 card grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
+                        <div className="w-16 h-16 bg-[#1C1A17] card grid place-items-center shadow-lg shadow-zinc-900/20 shrink-0">
                             <Ear size={32} className="text-white" />
                         </div>
                         System Administration
@@ -170,7 +170,7 @@ const ControlTowerPage = () => {
                                 onChange={(e) => setSessionId(e.target.value)}
                                 className="w-full sm:flex-1 bg-zinc-50 border border-zinc-100 rounded-2xl p-4 sm:p-5 text-zinc-900 font-semibold text-sm placeholder:text-zinc-300 focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all tracking-widest"
                             />
-                            <button type="submit" className="w-full sm:w-auto bg-zinc-900 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 shadow-lg shadow-zinc-900/10 transition-all">
+                            <button type="submit" className="w-full sm:w-auto bg-[#1C1A17] text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[#1C1A17]/90 shadow-lg shadow-zinc-900/10 transition-all">
                                 Connect
                             </button>
                         </form>
@@ -178,7 +178,7 @@ const ControlTowerPage = () => {
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                    <div className="bg-zinc-900 card p-6 sm:p-8 shadow-2xl shadow-zinc-900/20 h-full flex items-center justify-between text-white relative overflow-hidden gap-4">
+                    <div className="bg-[#1C1A17] card p-6 sm:p-8 shadow-2xl shadow-zinc-900/20 h-full flex items-center justify-between text-white relative overflow-hidden gap-4">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
                         <div className="relative z-10">
                             <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-3">Active Sessions</p>
@@ -201,7 +201,7 @@ const ControlTowerPage = () => {
                     className="mb-10 sm:mb-20 space-y-8"
                 >
                     <h2 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.5em] ml-2 flex items-center gap-4">
-                        <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> User Metrics & Analytics
+                        <div className="w-1.5 h-6 bg-[#1C1A17] rounded-full" /> User Metrics & Analytics
                     </h2>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -336,7 +336,7 @@ const ControlTowerPage = () => {
                                                         <tr key={member.id} className="text-xs group hover:bg-zinc-50/50 transition-colors">
                                                             <td className="py-4">
                                                                 <div className="flex items-center gap-3">
-                                                                    <div className="w-9 h-9 rounded-full bg-zinc-900/5 border border-zinc-100 flex items-center justify-center font-bold text-zinc-800 text-xs shrink-0 uppercase">
+                                                                    <div className="w-9 h-9 rounded-full bg-[#1C1A17]/5 border border-zinc-100 flex items-center justify-center font-bold text-zinc-800 text-xs shrink-0 uppercase">
                                                                         {member.avatar_url ? (
                                                                             <img src={member.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                                                                         ) : (
@@ -354,7 +354,7 @@ const ControlTowerPage = () => {
                                                             <td className="py-4">
                                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
                                                                     member.role === 'admin' 
-                                                                        ? 'bg-zinc-900 text-white border-zinc-900' 
+                                                                        ? 'bg-[#1C1A17] text-white border-zinc-900' 
                                                                         : member.role === 'provider'
                                                                             ? 'bg-slate-50 text-slate-700 border-slate-200'
                                                                             : 'bg-zinc-50 text-zinc-700 border-zinc-200'
@@ -364,7 +364,7 @@ const ControlTowerPage = () => {
                                                             </td>
                                                             <td className="py-4">
                                                                 <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold ${member.privacy_policy_accepted ? 'text-zinc-900' : 'text-zinc-400'}`}>
-                                                                    <span className={`w-1.5 h-1.5 rounded-full ${member.privacy_policy_accepted ? 'bg-zinc-900' : 'bg-zinc-300'}`} />
+                                                                    <span className={`w-1.5 h-1.5 rounded-full ${member.privacy_policy_accepted ? 'bg-[#1C1A17]' : 'bg-zinc-300'}`} />
                                                                     {member.privacy_policy_accepted ? 'Active Account' : 'Pending Verification'}
                                                                 </span>
                                                             </td>
@@ -568,7 +568,7 @@ const ControlTowerPage = () => {
             )}
 
             <h2 className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.5em] mb-6 sm:mb-10 ml-2 flex items-center gap-4">
-                <div className="w-1.5 h-6 bg-zinc-900 rounded-full" /> Live Sessions
+                <div className="w-1.5 h-6 bg-[#1C1A17] rounded-full" /> Live Sessions
             </h2>
 
 
@@ -589,9 +589,9 @@ const ControlTowerPage = () => {
                         <div className="bg-white border border-zinc-100 card p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-8 hover:shadow-2xl hover:shadow-zinc-900/5 transition-all duration-500 group">
                             <div className="flex gap-4 sm:gap-8 items-center flex-1 w-full min-w-0">
                                 <div className="relative shrink-0">
-                                    <div className={`w-3 h-3 rounded-full ${session.status === 'active_human' ? 'bg-zinc-900' : 'bg-zinc-100'}`} />
+                                    <div className={`w-3 h-3 rounded-full ${session.status === 'active_human' ? 'bg-[#1C1A17]' : 'bg-zinc-100'}`} />
                                     {session.status === 'active_human' && (
-                                        <div className="absolute inset-0 bg-zinc-900 rounded-full animate-ping opacity-20" />
+                                        <div className="absolute inset-0 bg-[#1C1A17] rounded-full animate-ping opacity-20" />
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -610,7 +610,7 @@ const ControlTowerPage = () => {
                                 </div>
                                 <button
                                     onClick={() => navigate('/admin/helpdesk', { state: { sessionId: session.id } })}
-                                    className="px-8 sm:px-12 py-3.5 sm:py-4 bg-zinc-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/10 shrink-0"
+                                    className="px-8 sm:px-12 py-3.5 sm:py-4 bg-[#1C1A17] text-white rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-[#1C1A17]/90 transition-all shadow-lg shadow-zinc-900/10 shrink-0"
                                 >
                                     Monitor
                                 </button>

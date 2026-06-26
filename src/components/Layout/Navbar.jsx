@@ -22,7 +22,8 @@ import {
     Trophy, 
     Heart, 
     TrendingUp, 
-    Newspaper 
+    Newspaper,
+    Gamepad2
 } from 'lucide-react';
 import { supabase } from '../../api/client';
 import { useState, useRef, useEffect } from 'react';
@@ -31,22 +32,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PillNav from './PillNav';
 
 const seekerNavigationLinks = [
-    { to: '/jobs', label: 'Job Board', icon: Search, category: 'Jobs' },
-    { to: '/jobs-ai', label: 'Check Match', icon: Target, category: 'Jobs' },
-    { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, category: 'Jobs' },
-    { to: '/saved', label: 'Saved Jobs', icon: Bookmark, category: 'Jobs' },
-    { to: '/profile', label: 'My Profile', icon: User, category: 'Jobs' },
-    { to: '/courses', label: 'Skills & Courses', icon: BookOpen, category: 'Resources' },
-    { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, category: 'Resources' },
-    { to: '/mock-interview', label: 'Interview Prep', icon: Radio, category: 'Resources' },
-    { to: '/materials', label: 'Interview Materials', icon: FileText, category: 'Resources' },
-    { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, category: 'Resources' },
-    { to: '/my-human-mock-interviews', label: '1-on-1 Sessions', icon: Users, category: 'Resources' },
-    { to: '/chat', label: 'Messages', icon: MessageSquare, category: 'Resources' },
-    { to: '/rewards', label: 'Rewards', icon: Trophy, category: 'Resources' },
-    { to: '/feedback', label: 'Share Feedback', icon: Heart, category: 'Resources' },
-    { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, category: 'Analytics' },
-    { to: '/blogs', label: 'Career Blog', icon: Newspaper, category: 'Analytics' },
+    { to: '/jobs', label: 'Job Board', icon: Search, category: 'JOBS' },
+    { to: '/jobs-ai', label: 'Check Match', icon: Target, category: 'JOBS' },
+    { to: '/ats-analyzer', label: 'ATS Scanner', icon: ShieldCheck, category: 'JOBS' },
+    { to: '/saved', label: 'Saved Jobs', icon: Bookmark, category: 'JOBS' },
+    { to: '/profile', label: 'My Profile', icon: User, category: 'JOBS' },
+    { to: '/courses', label: 'Skills & Courses', icon: BookOpen, category: 'RESOURCES' },
+    { to: '/new-grad/timeline', label: 'Hiring Timeline', icon: Calendar, category: 'RESOURCES' },
+    { to: '/mock-interview', label: 'Interview Prep', icon: Radio, category: 'RESOURCES' },
+    { to: '/materials', label: 'Interview Materials', icon: FileText, category: 'RESOURCES' },
+    { to: '/interview-reviews', label: 'Interview Reviews', icon: ClipboardList, category: 'RESOURCES' },
+    { to: '/my-human-mock-interviews', label: '1-on-1 Sessions', icon: Users, category: 'RESOURCES' },
+    { to: '/chat', label: 'Messages', icon: MessageSquare, category: 'RESOURCES' },
+    { to: '/rewards', label: 'Rewards', icon: Trophy, category: 'RESOURCES' },
+    { to: '/engagement/hub', label: 'Arcade Hub', icon: Gamepad2, category: 'RESOURCES' },
+    { to: '/feedback', label: 'Share Feedback', icon: Heart, category: 'RESOURCES' },
+    { to: '/market-intelligence', label: 'Market Analytics', icon: TrendingUp, category: 'ANALYTICS' },
+    { to: '/blogs', label: 'Career Blog', icon: Newspaper, category: 'ANALYTICS' },
 ];
 
 const Navbar = () => {
@@ -77,7 +79,7 @@ const Navbar = () => {
     };
 
     const getPillItems = () => {
-        return ['Jobs', 'Resources', 'Analytics'].map((cat) => {
+        return ['JOBS', 'RESOURCES', 'ANALYTICS'].map((cat) => {
             const isRelated = seekerNavigationLinks.some(link => {
                 if (link.category !== cat) return false;
                 return location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));

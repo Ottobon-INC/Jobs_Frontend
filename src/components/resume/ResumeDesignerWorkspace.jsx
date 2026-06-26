@@ -22,12 +22,14 @@ import {
     FolderGit,
     FolderCheck,
     Award,
-    Layout
+    Layout,
+    ArrowLeft,
+    Layers
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/client';
-import { jsPDF } from 'jspdf';
-import { toPng } from 'html-to-image';
+import { listUserResumes, saveUserResume, updateUserResume, deleteUserResume } from '../../api/resumeAnalyzerApi';
+
 
 // Load Google Fonts dynamically when entering workspace
 const useGoogleFonts = () => {
@@ -105,7 +107,7 @@ const cleanTextContent = (text) => {
 };
 
 // Dedicated Skills Gaps & Missing Keywords Section Component
-const AtsGapsSection = ({ analysisResult, accent }) => {
+const AtsGapsSection = ({ analysisResult, accent, onInject, isInjecting }) => {
     if (!analysisResult) return null;
     
     // The weaknesses represent missing skills/keywords, and strengths represent aligned keywords
@@ -116,22 +118,39 @@ const AtsGapsSection = ({ analysisResult, accent }) => {
     if (missingSkills.length === 0 && recommendations.length === 0) return null;
 
     return (
-        <div className="mt-4 pt-3 border-t border-dashed border-zinc-200/80 print:mt-3 break-inside-avoid">
-            <h2 className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{ color: accent }}>
-                <Sparkles size={11} />
-                Skills Gaps & Missing Keywords (ATS Evaluation)
-            </h2>
-            <div className="grid grid-cols-2 gap-4 text-[10px]">
+        <div className="mb-4 bg-white border border-zinc-200 rounded-xl p-4 print:hidden break-inside-avoid shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xs font-extrabold uppercase tracking-widest flex items-center gap-1.5" style={{ color: accent || '#3b82f6' }}>
+                    <Sparkles size={14} />
+                    ATS Gaps & Recommendations
+                </h2>
+                {missingSkills.length > 0 && onInject && (
+                    <button
+                        onClick={onInject}
+                        disabled={isInjecting}
+                        className={`px-3 py-1.5 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition-all
+                            ${isInjecting 
+                                ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' 
+                                : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 active:scale-95'
+                            }`}
+                    >
+                        <Sparkles size={12} />
+                        {isInjecting ? 'Injecting via AI...' : 'Auto-Inject Missing Skills'}
+                    </button>
+                )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Left side: Missing Keywords */}
                 {missingSkills.length > 0 && (
-                    <div className="bg-rose-50/15 border border-rose-100/40 rounded-lg p-2">
-                        <h3 className="font-bold text-rose-800 text-[9px] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-rose-500" />
-                            Missing Keywords / ATS Gaps
+                    <div className="bg-rose-50/30 border border-rose-100 rounded-lg p-3">
+                        <h3 className="font-bold text-rose-800 text-[10px] uppercase tracking-wider mb-2 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                            Missing Keywords
                         </h3>
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                             {missingSkills.map((skill, idx) => (
-                                <span key={idx} className="px-1.5 py-0.5 bg-white border border-rose-100/60 rounded text-[9px] font-semibold text-rose-700 flex items-center gap-0.5">
+                                <span key={idx} className="px-2 py-1 bg-white border border-rose-100 rounded-md text-[10px] font-bold text-rose-700 flex items-center gap-0.5 shadow-sm">
                                     {skill}
                                 </span>
                             ))}
@@ -141,14 +160,14 @@ const AtsGapsSection = ({ analysisResult, accent }) => {
 
                 {/* Right side: Recommendations */}
                 {recommendations.length > 0 && (
-                    <div className="bg-amber-50/15 border border-amber-100/40 rounded-lg p-2">
-                        <h3 className="font-bold text-amber-800 text-[9px] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-amber-500" />
-                            Actionable Recommendations
+                    <div className="bg-amber-50/30 border border-amber-100 rounded-lg p-3">
+                        <h3 className="font-bold text-amber-800 text-[10px] uppercase tracking-wider mb-2 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            Actionable Tips
                         </h3>
-                        <ul className="space-y-1 text-zinc-650 font-normal leading-normal list-disc pl-3.5">
+                        <ul className="space-y-1.5 text-zinc-700 font-medium list-disc pl-4">
                             {recommendations.slice(0, 3).map((tip, idx) => (
-                                <li key={idx} className="text-[9px]">
+                                <li key={idx} className="text-[10px] leading-snug">
                                     {tip}
                                 </li>
                             ))}
@@ -156,15 +175,16 @@ const AtsGapsSection = ({ analysisResult, accent }) => {
                     </div>
                 )}
             </div>
-            <p className="text-[8px] text-zinc-400 font-medium mt-1.5 italic">
-                * ATS Match Score: {score}% • Integrating these missing keywords into your experience/skills description will optimize matching.
-            </p>
+            <div className="mt-3 text-[10px] text-zinc-500 font-semibold flex items-center justify-between bg-zinc-50 p-2 rounded-lg">
+                <span>ATS Match Score: <span className="font-bold" style={{ color: score > 70 ? '#10b981' : score > 40 ? '#f59e0b' : '#ef4444' }}>{score}%</span></span>
+                <span className="italic">AI can integrate missing keywords seamlessly.</span>
+            </div>
         </div>
     );
 };
 
 // Onyx (Minimalist Column) Template
-const OnyxTemplate = ({ data, styling, analysisResult }) => {
+const OnyxTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -322,12 +342,28 @@ const OnyxTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Pikachu (Left-Sidebar) Template
-const PikachuTemplate = ({ data, styling, analysisResult }) => {
+const PikachuTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor || '#3B5F95';
     const avatarUrl = basics.photo || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80";
@@ -502,12 +538,28 @@ const PikachuTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Azurill (Header Banner) Template
-const AzurillTemplate = ({ data, styling, analysisResult }) => {
+const AzurillTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -659,12 +711,28 @@ const AzurillTemplate = ({ data, styling, analysisResult }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Gengar (Right-Sidebar) Template
-const GengarTemplate = ({ data, styling, analysisResult }) => {
+const GengarTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -850,12 +918,28 @@ const GengarTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Castform (Timeline) Template
-const CastformTemplate = ({ data, styling, analysisResult }) => {
+const CastformTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -986,12 +1070,28 @@ const CastformTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Glissando (Two-Column Grid) Template
-const GlissandoTemplate = ({ data, styling, analysisResult }) => {
+const GlissandoTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -1109,12 +1209,28 @@ const GlissandoTemplate = ({ data, styling, analysisResult }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Dublin (Executive) Template
-const DublinTemplate = ({ data, styling, analysisResult }) => {
+const DublinTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -1260,12 +1376,28 @@ const DublinTemplate = ({ data, styling, analysisResult }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Harvard (Classic) Template
-const HarvardTemplate = ({ data, styling, analysisResult }) => {
+const HarvardTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -1405,12 +1537,28 @@ const HarvardTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
 // Kyoto (Modern) Template
-const KyotoTemplate = ({ data, styling, analysisResult }) => {
+const KyotoTemplate = ({ data, styling }) => {
     const { basics, summary, sections } = data;
     const accent = styling.accentColor;
 
@@ -1523,6 +1671,22 @@ const KyotoTemplate = ({ data, styling, analysisResult }) => {
                     </div>
                 </div>
             )}
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -1643,6 +1807,22 @@ const LeafishTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -1737,6 +1917,22 @@ const RhyhornTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -1831,6 +2027,22 @@ const ChikoritaTemplate = ({ data, styling }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -1943,6 +2155,22 @@ const KakunaTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2067,6 +2295,22 @@ const EeveeTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2174,6 +2418,22 @@ const CharmanderTemplate = ({ data, styling }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2410,6 +2670,47 @@ export default function ResumeDesignerWorkspace({ resumeData, setResumeData, ini
     const printAreaRef = useRef();
 
     const [fontDropdownOpen, setFontDropdownOpen] = useState(false);
+    const [isInjecting, setIsInjecting] = useState(false);
+
+    const handleInjectSkills = async () => {
+        if (!analysisResult?.weaknesses?.length) return;
+        setIsInjecting(true);
+        const toastId = toast.loading("Injecting missing skills...");
+        
+        try {
+            // Transform missing skills into standard schema objects
+            const newSkills = analysisResult.weaknesses.map(skill => ({
+                id: crypto.randomUUID(),
+                name: skill,
+                level: 0,
+                proficiency: '',
+                hidden: false,
+                keywords: []
+            }));
+            
+            // Append them directly to the skills section locally
+            setResumeData(prev => {
+                const existingSkills = prev.sections.skills?.items || [];
+                return {
+                    ...prev,
+                    sections: {
+                        ...prev.sections,
+                        skills: {
+                            ...(prev.sections.skills || {}),
+                            items: [...existingSkills, ...newSkills]
+                        }
+                    }
+                };
+            });
+            
+            toast.success("Skills added to your Skills Section!", { id: toastId });
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to inject skills.", { id: toastId });
+        } finally {
+            setIsInjecting(false);
+        }
+    };
 
     
 const BronzorTemplate = ({ data, styling }) => {
@@ -2494,6 +2795,22 @@ const BronzorTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2575,6 +2892,22 @@ const GlalieTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2650,6 +2983,22 @@ const DittoTemplate = ({ data, styling }) => {
                     </div>
                 </div>
             )}
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2744,6 +3093,22 @@ const JigglypuffTemplate = ({ data, styling }) => {
                     )}
                 </div>
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2813,6 +3178,22 @@ const CelebiTemplate = ({ data, styling }) => {
                     </div>
                 )}
             </div>
+        
+            {/* Custom Sections */}
+            {sections.custom && sections.custom.map(sec => !sec.hidden && sec.items?.length > 0 && (
+                <div key={sec.id} className="mt-5 mb-5 custom-section">
+                    <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: styling?.accentColor || '#1f2937' }}>{sec.title}</h3>
+                    <div className="space-y-4">
+                        {sec.items.map(item => (
+                            <div key={item.id}>
+                                <div className="flex font-bold text-xs text-zinc-900 mb-0.5">{item.name} {item.subtitle && <span className="font-normal mx-1">- {item.subtitle}</span>}</div>
+                                <div className="text-[10px] text-zinc-500 font-semibold mb-2">{item.location} {item.location && item.period ? '•' : ''} {item.period}</div>
+                                {item.description && <div className="text-xs text-zinc-600 whitespace-pre-line">{typeof cleanTextContent === 'function' ? cleanTextContent(item.description) : item.description}</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
@@ -2903,27 +3284,27 @@ const LucarioTemplate = ({ data, styling }) => {
 
 
 const allTemplates = [
-        { id: 'onyx', name: 'Onyx', desc: 'Minimalist Column', category: 'classic', columns: 1, graphics: false },
-        { id: 'pikachu', name: 'Pikachu', desc: 'Left Sidebar Theme', category: 'modern', columns: 2, graphics: true },
-        { id: 'harvard', name: 'Harvard', desc: 'Classic Corporate Theme', category: 'classic', columns: 1, graphics: false },
-        { id: 'azurill', name: 'Azurill', desc: 'Header Banner Theme', category: 'modern', columns: 1, graphics: true },
-        { id: 'gengar', name: 'Gengar', desc: 'Right Sidebar Theme', category: 'modern', columns: 2, graphics: true },
-        { id: 'castform', name: 'Castform', desc: 'Timeline Highlight', category: 'modern', columns: 1, graphics: true },
-        { id: 'glissando', name: 'Glissando', desc: 'Two-Column Grid', category: 'modern', columns: 2, graphics: false },
-        { id: 'dublin', name: 'Dublin', desc: 'Executive Split Layout', category: 'classic', columns: 2, graphics: true },
-        { id: 'kyoto', name: 'Kyoto', desc: 'Modern Left Accent Border', category: 'modern', columns: 1, graphics: true },
-        { id: 'leafish', name: 'Leafish', desc: 'Elegant Border Accent', category: 'modern', columns: 1, graphics: true },
-        { id: 'rhyhorn', name: 'Rhyhorn', desc: 'Solid Accent Header', category: 'modern', columns: 2, graphics: true },
-        { id: 'chikorita', name: 'Chikorita', desc: 'Minimal Horizontal Accents', category: 'classic', columns: 1, graphics: false },
-        { id: 'kakuna', name: 'Kakuna', desc: 'Two-Column Corporate', category: 'classic', columns: 2, graphics: false },
-        { id: 'eevee', name: 'Eevee', desc: 'Creative Bold Accent', category: 'modern', columns: 2, graphics: true },
-        { id: 'charmander', name: 'Charmander', desc: 'Modern Minimalist Split', category: 'classic', columns: 2, graphics: false },
-        { id: 'bronzor', name: 'Bronzor', desc: 'Split Color Blocks', category: 'modern', columns: 2, graphics: true },
-        { id: 'glalie', name: 'Glalie', desc: 'Dark Banner Headers', category: 'modern', columns: 2, graphics: true },
-        { id: 'ditto', name: 'Ditto', desc: 'Minimalist Centered', category: 'classic', columns: 1, graphics: false },
-        { id: 'jigglypuff', name: 'Jigglypuff', desc: 'Accent Top Banner', category: 'modern', columns: 2, graphics: true },
-        { id: 'celebi', name: 'Celebi', desc: 'Full Outline Accent', category: 'modern', columns: 1, graphics: true },
-        { id: 'lucario', name: 'Lucario', desc: 'Elegant Top Border', category: 'classic', columns: 1, graphics: false },
+        { id: 'onyx', name: 'Apex', desc: 'Minimalist Column', category: 'classic', columns: 1, graphics: false },
+        { id: 'pikachu', name: 'Vertex', desc: 'Left Sidebar Theme', category: 'modern', columns: 2, graphics: true },
+        { id: 'harvard', name: 'Fusion', desc: 'Classic Corporate Theme', category: 'classic', columns: 1, graphics: false },
+        { id: 'azurill', name: 'Nova', desc: 'Header Banner Theme', category: 'modern', columns: 1, graphics: true },
+        { id: 'gengar', name: 'Orbit', desc: 'Right Sidebar Theme', category: 'modern', columns: 2, graphics: true },
+        { id: 'castform', name: 'Summit', desc: 'Timeline Highlight', category: 'modern', columns: 1, graphics: true },
+        { id: 'glissando', name: 'Elite', desc: 'Two-Column Grid', category: 'modern', columns: 2, graphics: false },
+        { id: 'dublin', name: 'Prime', desc: 'Executive Split Layout', category: 'classic', columns: 2, graphics: true },
+        { id: 'kyoto', name: 'Horizon', desc: 'Modern Left Accent Border', category: 'modern', columns: 1, graphics: true },
+        { id: 'leafish', name: 'Prestige', desc: 'Elegant Border Accent', category: 'modern', columns: 1, graphics: true },
+        { id: 'rhyhorn', name: 'Legacy', desc: 'Solid Accent Header', category: 'modern', columns: 2, graphics: true },
+        { id: 'chikorita', name: 'Pinnacle', desc: 'Minimal Horizontal Accents', category: 'classic', columns: 1, graphics: false },
+        { id: 'kakuna', name: 'Executive', desc: 'Two-Column Corporate', category: 'classic', columns: 2, graphics: false },
+        { id: 'eevee', name: 'Sydney', desc: 'Creative Bold Accent', category: 'modern', columns: 2, graphics: true },
+        { id: 'charmander', name: 'Boston', desc: 'Modern Minimalist Split', category: 'classic', columns: 2, graphics: false },
+        { id: 'bronzor', name: 'Austin', desc: 'Split Color Blocks', category: 'modern', columns: 2, graphics: true },
+        { id: 'glalie', name: 'Seattle', desc: 'Dark Banner Headers', category: 'modern', columns: 2, graphics: true },
+        { id: 'ditto', name: 'San Francisco', desc: 'Minimalist Centered', category: 'classic', columns: 1, graphics: false },
+        { id: 'jigglypuff', name: 'Paris', desc: 'Accent Top Banner', category: 'modern', columns: 2, graphics: true },
+        { id: 'celebi', name: 'Tokyo', desc: 'Full Outline Accent', category: 'modern', columns: 1, graphics: true },
+        { id: 'lucario', name: 'Rome', desc: 'Elegant Top Border', category: 'classic', columns: 1, graphics: false },
     ];
 
     const filteredTemplates = allTemplates.filter(t => {
@@ -3318,6 +3699,109 @@ const allTemplates = [
         }));
     };
 
+    // Custom Section CRUD Handlers
+    const handleAddCustomSection = () => {
+        const newSectionId = `custom-${crypto.randomUUID()}`;
+        const newSection = {
+            id: newSectionId,
+            title: "New Custom Section",
+            hidden: false,
+            items: [
+                {
+                    id: crypto.randomUUID(),
+                    name: "Item Name",
+                    subtitle: "Subtitle",
+                    location: "Location",
+                    period: "Date - Date",
+                    description: "Description"
+                }
+            ]
+        };
+
+        setResumeData(prev => {
+            const currentCustom = prev.sections?.custom || [];
+            return {
+                ...prev,
+                sections: {
+                    ...prev.sections,
+                    custom: [...currentCustom, newSection]
+                }
+            };
+        });
+        
+        setActiveTab('edit');
+        setOpenSection(newSectionId);
+        toast.success("New custom section added!");
+    };
+
+    const updateCustomSectionTitle = (secId, newTitle) => {
+        setResumeData(prev => {
+            const custom = (prev.sections.custom || []).map(sec => {
+                if (sec.id === secId) return { ...sec, title: newTitle };
+                return sec;
+            });
+            return { ...prev, sections: { ...prev.sections, custom } };
+        });
+    };
+
+    const deleteCustomSection = (secId) => {
+        setResumeData(prev => {
+            const custom = (prev.sections.custom || []).filter(sec => sec.id !== secId);
+            return { ...prev, sections: { ...prev.sections, custom } };
+        });
+    };
+
+    const addCustomSectionItem = (secId) => {
+        setResumeData(prev => {
+            const custom = (prev.sections.custom || []).map(sec => {
+                if (sec.id === secId) {
+                    return {
+                        ...sec,
+                        items: [...sec.items, {
+                            id: crypto.randomUUID(),
+                            name: "Item Name",
+                            subtitle: "Subtitle",
+                            location: "Location",
+                            period: "Date",
+                            description: "Description"
+                        }]
+                    };
+                }
+                return sec;
+            });
+            return { ...prev, sections: { ...prev.sections, custom } };
+        });
+    };
+
+    const updateCustomSectionItem = (secId, itemId, field, val) => {
+        setResumeData(prev => {
+            const custom = (prev.sections.custom || []).map(sec => {
+                if (sec.id === secId) {
+                    const items = sec.items.map(item => {
+                        if (item.id === itemId) return { ...item, [field]: val };
+                        return item;
+                    });
+                    return { ...sec, items };
+                }
+                return sec;
+            });
+            return { ...prev, sections: { ...prev.sections, custom } };
+        });
+    };
+
+    const deleteCustomSectionItem = (secId, itemId) => {
+        setResumeData(prev => {
+            const custom = (prev.sections.custom || []).map(sec => {
+                if (sec.id === secId) {
+                    const items = sec.items.filter(item => item.id !== itemId);
+                    return { ...sec, items };
+                }
+                return sec;
+            });
+            return { ...prev, sections: { ...prev.sections, custom } };
+        });
+    };
+
     // Save Resume to Database
     const handleSaveResume = async () => {
         const payload = {
@@ -3379,118 +3863,61 @@ const allTemplates = [
             return;
         }
 
-        const toastId = toast.loading("Generating pixel-perfect PDF...");
-        
-        try {
-            // Wait a brief moment to ensure layouts are stable
-            await new Promise(resolve => setTimeout(resolve, 150));
-
-            // Calculate padding based on styling config
-            let paddingVal = 40; // default for p-10 (which is the default when not p-6 or p-14)
-            if (styling.marginPadding === 'p-6') paddingVal = 24;
-            else if (styling.marginPadding === 'p-14') paddingVal = 56;
-
-            // Find the child element that is the template container (not a print:hidden/absolute indicator)
-            const templateElement = Array.from(element.children).find(
-                child => !child.classList.contains('print:hidden') && !child.classList.contains('print-hidden') && child.tagName !== 'STYLE'
-            ) || element.firstElementChild;
-
-            const contentHeight = templateElement ? templateElement.offsetHeight : 0;
-            
-            // Total height of the resume content, including top and bottom padding
-            const actualHeight = contentHeight + (paddingVal * 2);
-
-            const elementWidth = element.offsetWidth || 793;
-            const canvasPageHeight = 1122;
-            
-            // If fitToSinglePage is active, force the height to exactly 1 page (1122px) and pageCount to 1
-            const elementHeight = styling.fitToSinglePage ? canvasPageHeight : Math.max(canvasPageHeight, actualHeight);
-            const pageCount = styling.fitToSinglePage ? 1 : Math.max(1, Math.ceil(elementHeight / canvasPageHeight));
-
-            // Capture the entire canvas as a high-resolution PNG using 2x scale for printing
-            const dataUrl = await toPng(element, {
-                cacheBust: true,
-                pixelRatio: 2, // 2x high-resolution scaling
-                backgroundColor: '#ffffff',
-                filter: (node) => {
-                    if (node.getAttribute && typeof node.getAttribute === 'function') {
-                        const className = node.getAttribute('class');
-                        if (className && typeof className === 'string') {
-                            if (className.includes('print:hidden') || className.includes('print-hidden')) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                },
-                style: {
-                    transform: 'scale(1)',
-                    transformOrigin: 'top left',
-                    width: `${elementWidth}px`,
-                    height: `${elementHeight}px`
+        const printStyle = document.createElement('style');
+        printStyle.id = 'resume-single-print-rules';
+        printStyle.innerHTML = `
+            @media print {
+                @page {
+                    size: A4 portrait;
+                    margin: 0 !important;
                 }
-            });
-
-            // Load captured image
-            const img = new Image();
-            img.src = dataUrl;
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-            });
-
-            // Create A4 PDF using jsPDF
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            const pdfPageWidth = 210; // mm
-            const pdfPageHeight = 297; // mm
-
-            // Slice the image into A4 page increments using canvas
-            for (let i = 0; i < pageCount; i++) {
-                const sourceX = 0;
-                const sourceY = i * canvasPageHeight * 2;
-                const sourceWidth = elementWidth * 2;
-                const sourceHeight = canvasPageHeight * 2;
-
-                const sliceCanvas = document.createElement('canvas');
-                sliceCanvas.width = sourceWidth;
-                sliceCanvas.height = sourceHeight;
-                const ctx = sliceCanvas.getContext('2d');
+                /* Hide sidebar, navbar, and print-hidden elements */
+                aside, nav, header, .print\\:hidden, [class*="print:hidden"], button {
+                    display: none !important;
+                }
                 
-                // Draw slice on temporary canvas
-                ctx.drawImage(
-                    img,
-                    sourceX,
-                    sourceY,
-                    sourceWidth,
-                    sourceHeight,
-                    0,
-                    0,
-                    sourceWidth,
-                    sourceHeight
-                );
-
-                const sliceDataUrl = sliceCanvas.toDataURL('image/jpeg', 0.95);
-
-                if (i > 0) {
-                    pdf.addPage();
+                body * {
+                    visibility: hidden;
                 }
-                pdf.addImage(sliceDataUrl, 'JPEG', 0, 0, pdfPageWidth, pdfPageHeight);
+                
+                #resume-a4-canvas, #resume-a4-canvas * {
+                    visibility: visible;
+                }
+                
+                html, body, #root, .workspace-container, div:has(#resume-a4-canvas), main:has(#resume-a4-canvas) {
+                    height: auto !important;
+                    min-height: auto !important;
+                    overflow: visible !important;
+                    position: static !important;
+                    background: transparent !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                }
+
+                #resume-a4-canvas {
+                    position: absolute !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 210mm !important;
+                    box-shadow: none !important;
+                    transform: none !important;
+                    background-color: white !important;
+                    border: none !important;
+                }
             }
+        `;
+        document.head.appendChild(printStyle);
 
-            // Save the generated PDF file
-            const safeTitle = resumeTitle.replace(/[^a-z0-9]/gi, '_');
-            pdf.save(`Tailored_Resume_${safeTitle}.pdf`);
-
-            toast.success("PDF exported successfully!", { id: toastId });
-        } catch (error) {
-            console.error("PDF Export error:", error);
-            toast.error("Failed to generate PDF.", { id: toastId });
-        }
+        // Allow DOM to apply styles
+        setTimeout(() => {
+            window.print();
+            
+            // Clean up
+            setTimeout(() => {
+                const existing = document.getElementById('resume-single-print-rules');
+                if (existing) document.head.removeChild(existing);
+            }, 1000);
+        }, 150);
     };
 
     // Trigger print/PDF layout for multiple selected resumes
@@ -3694,7 +4121,7 @@ const allTemplates = [
 
     if (showGallery) {
         return (
-            <div className="fixed inset-0 z-[100] bg-[#FAF9F5] overflow-y-auto flex flex-col font-sans select-none">
+            <div className="fixed inset-y-0 right-0 left-0 md:left-[70px] z-[100] bg-[#FAF9F5] overflow-y-auto flex flex-col font-sans select-none transition-[left] duration-[0.25s] ease-[cubic-bezier(0.4,0,0.2,1)]">
                 {/* Header */}
                 <div className="bg-white border-b border-zinc-200 px-8 py-5 flex justify-between items-center sticky top-0 z-50">
                     <div className="flex items-center gap-3">
@@ -3704,16 +4131,13 @@ const allTemplates = [
                                     if (cameFromEditor) {
                                         setShowGallery(false);
                                     } else {
-                                        navigate('/jobs');
+                                        navigate(-1);
                                     }
                                 }}
-                                className="p-2 hover:bg-zinc-100 rounded-xl transition-all mr-2"
-                                title={cameFromEditor ? "Back to editor" : "Back to scanner"}
+                                className="p-2 hover:bg-zinc-100 rounded-xl transition-all mr-2 flex items-center gap-2 font-bold text-xs text-zinc-500 hover:text-zinc-800 uppercase tracking-widest"
+                                title={cameFromEditor ? "Back to editor" : "Back"}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600">
-                                    <path d="M19 12H5"/>
-                                    <path d="M12 19l-7-7 7-7"/>
-                                </svg>
+                                <ArrowLeft size={16} strokeWidth={2.5} /> {cameFromEditor ? "Back to Editor" : "Back"}
                             </button>
                         )}
                         <div>
@@ -3743,7 +4167,8 @@ const allTemplates = [
                                     if (cameFromEditor) {
                                         setShowGallery(false);
                                     } else {
-                                        navigate('/jobs');
+                                        if (onClose) onClose();
+                                        else navigate(-1);
                                     }
                                 }}
                                 className="p-2 hover:bg-zinc-100 rounded-xl transition-all"
@@ -3981,9 +4406,9 @@ const allTemplates = [
                                 navigate('/jobs');
                             }
                         }}
-                        className="p-2 hover:bg-zinc-100 rounded-xl transition-all"
+                        className="px-3 py-1.5 hover:bg-zinc-100 rounded-xl transition-all flex items-center gap-2 font-bold text-xs text-zinc-500 hover:text-zinc-800 uppercase tracking-widest"
                     >
-                        <X size={18} className="text-zinc-500" />
+                        <ArrowLeft size={16} strokeWidth={2.5} /> Back
                     </button>
                     <div className="w-[1px] h-6 bg-zinc-200" />
                     <div className="flex items-center gap-2">
@@ -4009,11 +4434,18 @@ const allTemplates = [
 
                 <div className="flex items-center gap-2">
                     <button
+                        onClick={handleAddCustomSection}
+                        className="p-2 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 text-xs font-bold rounded-xl flex items-center justify-center transition-all active:scale-[0.98]"
+                        title="Add Section"
+                    >
+                        <Plus size={16} />
+                    </button>
+                    <button
                         onClick={handleSaveResume}
                         className="px-4 py-2 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 text-xs font-bold rounded-xl flex items-center gap-2 transition-all active:scale-[0.98]"
                     >
                         <Save size={13} />
-                        Save Draft
+                        Save Resume
                     </button>
                     <button
                         onClick={handleDownloadDocx}
@@ -4071,19 +4503,19 @@ const allTemplates = [
                                     <h3 className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400 mb-3.5">Templates</h3>
                                     <div className="grid grid-cols-3 gap-3">
                                         {[
-                                            { id: 'onyx', name: 'Onyx', desc: 'Minimalist' },
-                                            { id: 'pikachu', name: 'Pikachu', desc: 'Left Sidebar' },
-                                            { id: 'azurill', name: 'Azurill', desc: 'Header Banner' },
-                                            { id: 'gengar', name: 'Gengar', desc: 'Right Sidebar' },
-                                            { id: 'castform', name: 'Castform', desc: 'Timeline' },
-                                            { id: 'glissando', name: 'Glissando', desc: 'Two-Column' },
-                                            { id: 'dublin', name: 'Dublin', desc: 'Executive' },
-                                            { id: 'harvard', name: 'Harvard', desc: 'Classic' },
-                                            { id: 'kyoto', name: 'Kyoto', desc: 'Modern' },
-                                            { id: 'leafish', name: 'Leafish', desc: 'Elegant Accent' },
-                                            { id: 'rhyhorn', name: 'Rhyhorn', desc: 'Solid Banner' },
-                                            { id: 'chikorita', name: 'Chikorita', desc: 'Horizontal line' },
-                                            { id: 'kakuna', name: 'Kakuna', desc: 'Two-Column Corp' }
+                                            { id: 'onyx', name: 'Apex', desc: 'Minimalist' },
+                                            { id: 'pikachu', name: 'Vertex', desc: 'Left Sidebar' },
+                                            { id: 'azurill', name: 'Nova', desc: 'Header Banner' },
+                                            { id: 'gengar', name: 'Orbit', desc: 'Right Sidebar' },
+                                            { id: 'castform', name: 'Summit', desc: 'Timeline' },
+                                            { id: 'glissando', name: 'Elite', desc: 'Two-Column' },
+                                            { id: 'dublin', name: 'Prime', desc: 'Executive' },
+                                            { id: 'harvard', name: 'Fusion', desc: 'Classic' },
+                                            { id: 'kyoto', name: 'Horizon', desc: 'Modern' },
+                                            { id: 'leafish', name: 'Prestige', desc: 'Elegant Accent' },
+                                            { id: 'rhyhorn', name: 'Legacy', desc: 'Solid Banner' },
+                                            { id: 'chikorita', name: 'Pinnacle', desc: 'Horizontal line' },
+                                            { id: 'kakuna', name: 'Executive', desc: 'Two-Column Corp' }
                                         ].map((t) => (
                                             <button
                                                 key={t.id}
@@ -4346,6 +4778,12 @@ const allTemplates = [
                         {/* Tab 2: Accordion Resume Data Form Editor */}
                         {activeTab === 'edit' && (
                             <div className="space-y-3.5">
+                                <AtsGapsSection 
+                                    analysisResult={analysisResult} 
+                                    accent={styling.accentColor} 
+                                    onInject={handleInjectSkills}
+                                    isInjecting={isInjecting}
+                                />
                                 {/* Section 1: Basics */}
                                 <div className="border border-zinc-150 rounded-xl overflow-hidden">
                                     <button
@@ -4893,6 +5331,115 @@ const allTemplates = [
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Dynamic Custom Sections */}
+                                {resumeData.sections.custom && resumeData.sections.custom.map((sec, secIndex) => (
+                                    <div key={sec.id} className="border border-zinc-150 rounded-xl overflow-hidden relative group/section">
+                                        <button
+                                            onClick={() => setOpenSection(openSection === sec.id ? null : sec.id)}
+                                            className="w-full px-5 py-4 flex justify-between items-center bg-zinc-50 hover:bg-zinc-100/65 font-bold text-xs uppercase tracking-wider text-zinc-800 transition-all"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Layers size={14} className="text-zinc-500" />
+                                                <span>{sec.title || "Custom Section"}</span>
+                                            </div>
+                                            <ChevronRight size={14} className={`text-zinc-400 transition-transform ${openSection === sec.id ? 'rotate-95' : ''}`} />
+                                        </button>
+                                        
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); deleteCustomSection(sec.id); }}
+                                            className="absolute top-3.5 right-12 p-1.5 bg-zinc-100 border border-zinc-200 rounded-lg text-rose-500 hover:bg-rose-100 transition-all opacity-0 group-hover/section:opacity-100 shadow-sm"
+                                            title="Delete Entire Section"
+                                        >
+                                            <Trash2 size={12} />
+                                        </button>
+
+                                        {openSection === sec.id && (
+                                            <div className="p-4 bg-white border-t border-zinc-100 space-y-4">
+                                                <div>
+                                                    <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Section Title</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={sec.title}
+                                                        onChange={(e) => updateCustomSectionTitle(sec.id, e.target.value)}
+                                                        className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                    />
+                                                </div>
+
+                                                {sec.items.map((item, index) => (
+                                                    <div key={item.id} className="p-4 border border-zinc-100 rounded-xl bg-zinc-50/50 space-y-3 relative group">
+                                                        <button 
+                                                            onClick={() => deleteCustomSectionItem(sec.id, item.id)}
+                                                            className="absolute top-2 right-2 p-1.5 bg-white border border-zinc-200 rounded-lg text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 shadow-sm"
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                        <div className="text-[10px] font-bold text-zinc-400 uppercase">Item #{index + 1}</div>
+                                                        
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                            <div>
+                                                                <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Name / Role</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    value={item.name}
+                                                                    onChange={(e) => updateCustomSectionItem(sec.id, item.id, 'name', e.target.value)}
+                                                                    className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Subtitle / Company</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    value={item.subtitle}
+                                                                    onChange={(e) => updateCustomSectionItem(sec.id, item.id, 'subtitle', e.target.value)}
+                                                                    className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                            <div>
+                                                                <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Location</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    value={item.location}
+                                                                    onChange={(e) => updateCustomSectionItem(sec.id, item.id, 'location', e.target.value)}
+                                                                    className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Period</label>
+                                                                <input 
+                                                                    type="text" 
+                                                                    value={item.period}
+                                                                    onChange={(e) => updateCustomSectionItem(sec.id, item.id, 'period', e.target.value)}
+                                                                    className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <label className="block text-[9px] font-extrabold uppercase text-zinc-400 mb-0.5">Description</label>
+                                                            <textarea 
+                                                                value={item.description}
+                                                                onChange={(e) => updateCustomSectionItem(sec.id, item.id, 'description', e.target.value)}
+                                                                rows={3}
+                                                                className="w-full border border-zinc-200 px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:border-zinc-900 bg-white"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <button 
+                                                    onClick={() => addCustomSectionItem(sec.id)}
+                                                    className="w-full py-2.5 border border-dashed border-zinc-350 hover:border-zinc-500 rounded-xl text-zinc-600 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                                                >
+                                                    <Plus size={14} /> Add Item
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+
                             </div>
                         )}
 

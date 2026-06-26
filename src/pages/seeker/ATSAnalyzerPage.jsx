@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     ShieldCheck, 
@@ -38,6 +38,7 @@ const Card = ({ children, className = "", delay = 0 }) => (
 
 const ATSAnalyzerPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const howItWorksSteps = [
         {
             title: "Add Your Resume",
@@ -194,13 +195,85 @@ const ATSAnalyzerPage = () => {
         }
     };
 
+    const convertStructuredToText = (data) => {
+        if (!data) return '';
+        let text = `${data.basics?.name || ''}\n${data.basics?.headline || ''}\n\n`;
+        
+        if (data.summary?.content) text += `Summary\n${data.summary.content}\n\n`;
+        
+        if (data.sections?.experience?.items?.length > 0) {
+            text += `Experience\n`;
+            data.sections.experience.items.forEach(item => {
+                text += `${item.position || ''} at ${item.company || ''} ${item.location ? `(${item.location})` : ''} - ${item.period || ''}\n`;
+                if (item.description) text += `${item.description}\n`;
+            });
+            text += '\n';
+        }
+        
+        if (data.sections?.education?.items?.length > 0) {
+            text += `Education\n`;
+            data.sections.education.items.forEach(item => {
+                text += `${item.degree || ''} at ${item.institution || ''} - ${item.period || ''}\n`;
+            });
+            text += '\n';
+        }
+        
+        if (data.sections?.projects?.items?.length > 0) {
+            text += `Projects\n`;
+            data.sections.projects.items.forEach(item => {
+                text += `${item.name || ''} - ${item.date || ''}\n`;
+                if (item.description) text += `${item.description}\n`;
+            });
+            text += '\n';
+        }
+        
+        if (data.sections?.skills?.items?.length > 0) {
+            text += `Skills\n`;
+            text += data.sections.skills.items.map(s => s.name).join(', ') + '\n\n';
+        }
+        
+        if (data.sections?.certifications?.items?.length > 0) {
+            text += `Certifications\n`;
+            data.sections.certifications.items.forEach(item => {
+                text += `${item.name || ''} by ${item.issuer || ''} - ${item.date || ''}\n`;
+            });
+            text += '\n';
+        }
+        
+        if (data.sections?.languages?.items?.length > 0) {
+            text += `Languages\n`;
+            data.sections.languages.items.forEach(item => {
+                text += `${item.name || ''} - ${item.description || ''}\n`;
+            });
+            text += '\n';
+        }
+        
+        return text;
+    };
+
     if (showDesigner && structuredResume) {
         return (
             <ResumeDesignerWorkspace 
                 resumeData={structuredResume}
                 setResumeData={setStructuredResume}
                 analysisResult={analysisResult}
-                onClose={() => setShowDesigner(false)}
+                onClose={() => {
+                    setShowDesigner(false);
+                    // Convert the newly edited structured JSON back to plain text
+                    const updatedText = convertStructuredToText(structuredResume);
+                    
+                    // Reset the scanner state to use the new text
+                    setResumeText(updatedText);
+                    setUseProfileResume(false);
+                    setShowTextPaste(true);
+                    setFile(null);
+                    
+                    // Clear the stale analysis result so the user knows they need to re-scan
+                    setAnalysisResult(null);
+                    sessionStorage.removeItem('ats_analysisResult');
+                    
+                    toast.success("Resume text updated from designer. Ready for a fresh ATS scan!");
+                }}
             />
         );
     }
@@ -657,7 +730,7 @@ const ATSAnalyzerPage = () => {
                         <div className="lg:col-span-12 mt-6">
                             <button
                                 onClick={handleSubmit}
-                                className="group w-full py-4.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-zinc-900/10 transition-all active:scale-[0.99] flex items-center justify-center gap-2"
+                                className="group w-full py-4.5 bg-[var(--color-primary)] text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-zinc-900/10 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                             >
                                 <Sparkles size={15} className="text-white/80 group-hover:rotate-12 transition-transform" />
                                 Run Compatibility Scanner
@@ -837,10 +910,10 @@ const ATSAnalyzerPage = () => {
 
                                 {/* Custom dark prompt pre block */}
                                 <div className="flex-1 bg-zinc-900 text-zinc-100 p-5 rounded-xl border border-zinc-800 relative font-mono text-xs overflow-auto max-h-[350px] shadow-inner select-text">
-                                    <div className="absolute top-0 right-0 p-2 text-[8px] font-bold text-zinc-700 tracking-wider uppercase font-mono select-none">
+                                    <div className="absolute top-0 right-0 p-2 text-[8px] font-bold text-white/70 tracking-wider uppercase font-mono select-none">
                                         {activePromptTab}_schema
                                     </div>
-                                    <pre className="whitespace-pre-wrap leading-relaxed text-zinc-300 font-medium font-mono">
+                                    <pre className="whitespace-pre-wrap leading-relaxed text-white font-medium font-mono">
                                         {analysisResult.prompts?.[activePromptTab] || "Formatting optimization sequence..."}
                                     </pre>
                                 </div>

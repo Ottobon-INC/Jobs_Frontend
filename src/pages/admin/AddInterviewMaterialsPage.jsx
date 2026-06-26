@@ -218,7 +218,7 @@ const AddInterviewMaterialsPage = () => {
                                 <button 
                                     onClick={() => setSelectedFolderId('')}
                                     className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-between group ${
-                                        selectedFolderId === '' ? 'bg-zinc-900 text-white font-semibold' : 'text-zinc-600 hover:bg-zinc-100'
+                                        selectedFolderId === '' ? 'bg-[#1C1A17] text-white font-semibold' : 'text-zinc-600 hover:bg-zinc-100'
                                     }`}
                                 >
                                     <span>All Materials</span>
@@ -392,7 +392,7 @@ const AddInterviewMaterialsPage = () => {
                                 <button
                                     type="submit"
                                     disabled={isUploading || files.length === 0}
-                                    className="w-full py-3 bg-zinc-900 text-white rounded-2xl font-semibold text-sm hover:bg-zinc-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                                    className="w-full py-3 bg-[#1C1A17] text-white rounded-2xl font-semibold text-sm hover:bg-[#1C1A17]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                                 >
                                     {isUploading ? <Loader2 className="animate-spin" size={18} /> : <Upload size={18} />}
                                     {isUploading ? 'Uploading...' : 'Upload Material'}
@@ -460,7 +460,7 @@ const AddInterviewMaterialsPage = () => {
             {/* New Folder Modal */}
             <AnimatePresence>
                 {showNewFolderModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-900/40 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#1C1A17]/40 backdrop-blur-sm">
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}

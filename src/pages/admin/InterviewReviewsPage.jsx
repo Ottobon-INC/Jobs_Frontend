@@ -233,12 +233,12 @@ const InterviewReviewsPage = () => {
             {/* Header section with modern pill and sleek typography */}
             <div className="mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-[#1C1A17]/15 pb-8">
                 <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D45B34]/5 border border-[#1C1A17]/10 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1C1A17]/5 border border-[#1C1A17]/10 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-4">
                         <Sparkles size={10} className="animate-spin-slow text-[#1C1A17]" />
                         Admin Workspace
                     </div>
                     <h1 className="text-4xl font-extrabold tracking-tight text-[#1C1A17] flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[#D45B34] flex items-center justify-center shadow-lg shadow-[#D45B34]/20 shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-[#1C1A17] flex items-center justify-center shadow-lg shadow-[#1C1A17]/20 shrink-0">
                             <ClipboardList size={22} className="text-white" />
                         </div>
                         Interview Reviews
@@ -256,14 +256,14 @@ const InterviewReviewsPage = () => {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search user, email, or role..."
-                            className="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-medium text-[#1C1A17] placeholder:text-[#1C1A17]/40 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                            className="w-full sm:w-72 pl-11 pr-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-medium text-[#1C1A17] placeholder:text-[#1C1A17]/40 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                         />
                     </div>
 
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-semibold text-[#1C1A17] focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                        className="px-4 py-3 rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] text-sm font-semibold text-[#1C1A17] focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                     >
                         <option value="all">All Reviews</option>
                         <option value="pending_review">Pending Review</option>
@@ -298,7 +298,7 @@ const InterviewReviewsPage = () => {
                         <button
                             type="button"
                             onClick={selectNextPending}
-                            className="shrink-0 self-start md:self-auto rounded-full bg-[#D45B34] hover:bg-[#B84A27] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-[#D45B34]/20 cursor-pointer"
+                            className="shrink-0 self-start md:self-auto rounded-full bg-[#1C1A17] hover:bg-[#B84A27] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-[#1C1A17]/20 cursor-pointer"
                         >
                             Review Next Ticket →
                         </button>
@@ -347,8 +347,8 @@ const InterviewReviewsPage = () => {
                                     onClick={() => setSelectedReviewId(review.id)}
                                     className={`group relative w-full text-left rounded-2xl border p-4.5 transition-all duration-300 ${
                                         isSelected 
-                                        ? 'bg-[#D45B34] text-white border-[#D45B34] shadow-xl shadow-[#D45B34]/20' 
-                                        : 'bg-[#ffffff] border-[#1C1A17]/20 hover:border-[#D45B34]/60 hover:shadow-[0_8px_20px_rgba(49,56,81,0.04)]'
+                                        ? 'bg-[#1C1A17] text-white border-[#1C1A17] shadow-xl shadow-[#1C1A17]/20' 
+                                        : 'bg-[#ffffff] border-[#1C1A17]/20 hover:border-[#1C1A17]/60 hover:shadow-[0_8px_20px_rgba(49,56,81,0.04)]'
                                     }`}
                                 >
                                     <div className="flex items-start gap-3.5">
@@ -474,7 +474,7 @@ const InterviewReviewsPage = () => {
                                 </div>
 
                                 {/* System Insights Context */}
-                                <div className="p-5 rounded-2xl bg-[#D45B34]/5 border border-[#1C1A17]/15 flex items-start gap-3.5">
+                                <div className="p-5 rounded-2xl bg-[#1C1A17]/5 border border-[#1C1A17]/15 flex items-start gap-3.5">
                                     <Bot size={18} className="text-[#1C1A17] mt-0.5 shrink-0" />
                                     <div>
                                         <p className="text-[10px] font-black text-[#1C1A17] uppercase tracking-widest mb-1.5 leading-none">System Context</p>
@@ -500,7 +500,7 @@ const InterviewReviewsPage = () => {
                                                 type="button"
                                                 onClick={() => setViewMode('chat')}
                                                 className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                                                    viewMode === 'chat' ? 'bg-[#D45B34] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
+                                                    viewMode === 'chat' ? 'bg-[#1C1A17] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
                                                 }`}
                                             >
                                                 <LayoutGrid size={11} /> Unified
@@ -509,7 +509,7 @@ const InterviewReviewsPage = () => {
                                                 type="button"
                                                 onClick={() => setViewMode('split')}
                                                 className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                                                    viewMode === 'split' ? 'bg-[#D45B34] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
+                                                    viewMode === 'split' ? 'bg-[#1C1A17] text-white shadow-sm' : 'text-[#1C1A17]/60 hover:text-[#1C1A17]'
                                                 }`}
                                             >
                                                 <Clock size={11} /> Split View
@@ -526,13 +526,13 @@ const InterviewReviewsPage = () => {
                                                 return (
                                                     <div key={index} className={`flex items-start gap-3.5 ${isAI ? 'justify-start' : 'justify-end'}`}>
                                                         {isAI && (
-                                                            <div className="w-8 h-8 rounded-lg bg-[#D45B34] border border-[#D45B34] flex items-center justify-center text-white shrink-0">
+                                                            <div className="w-8 h-8 rounded-lg bg-[#1C1A17] border border-[#1C1A17] flex items-center justify-center text-white shrink-0">
                                                                 <Bot size={13} />
                                                             </div>
                                                         )}
                                                         <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed border shadow-[0_2px_4px_rgba(0,0,0,0.01)] ${
                                                             isAI 
-                                                            ? 'bg-[#D45B34]/5 border-[#1C1A17]/15 text-[#1C1A17]' 
+                                                            ? 'bg-[#1C1A17]/5 border-[#1C1A17]/15 text-[#1C1A17]' 
                                                             : 'bg-[#ffffff] border-[#1C1A17]/15 text-[#1C1A17]'
                                                         }`}>
                                                             <div className="flex items-center gap-2 mb-1">
@@ -579,7 +579,7 @@ const InterviewReviewsPage = () => {
                                                         <p className="text-xs text-[#1C1A17]/50 italic">No AI questions captured.</p>
                                                     )}
                                                     {aiTranscript.map((entry, index) => (
-                                                        <div key={index} className="p-3.5 rounded-xl bg-[#D45B34]/5 border border-[#1C1A17]/15 text-xs font-semibold leading-relaxed text-[#1C1A17] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                                                        <div key={index} className="p-3.5 rounded-xl bg-[#1C1A17]/5 border border-[#1C1A17]/15 text-xs font-semibold leading-relaxed text-[#1C1A17] shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
                                                             {entry}
                                                         </div>
                                                     ))}
@@ -596,7 +596,7 @@ const InterviewReviewsPage = () => {
                     {selectedReview && (
                         <form onSubmit={handleSubmit} className="bg-[#ffffff] border border-[#1C1A17]/25 rounded-[32px] p-6 lg:p-8 shadow-lg shadow-[#1C1A17]/5 space-y-6">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D45B34]/5 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-3 border border-[#1C1A17]/10">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1C1A17]/5 text-[#1C1A17] text-[9px] font-black uppercase tracking-[0.2em] mb-3 border border-[#1C1A17]/10">
                                     <BookOpen size={10} />
                                     Review Form
                                 </div>
@@ -615,7 +615,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, overallSummary: e.target.value }))}
                                         placeholder="Summarize their general performance and communication..."
                                         rows={4}
-                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
@@ -629,7 +629,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, strengths: e.target.value }))}
                                         placeholder={"Excellent database querying knowledge\nSolid architectural understanding"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
@@ -643,7 +643,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, improvements: e.target.value }))}
                                         placeholder={"Explain time complexity before writing code\nFalter under pressure"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
@@ -657,7 +657,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, topics: e.target.value }))}
                                         placeholder={"Big-O Notation\nSystem Design Scaling Patterns"}
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
 
@@ -671,7 +671,7 @@ const InterviewReviewsPage = () => {
                                         onChange={(e) => setForm((prev) => ({ ...prev, nextSteps: e.target.value }))}
                                         placeholder="Review playbooks on system architecture, and schedule a mock session next week..."
                                         rows={3}
-                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 focus:border-[#D45B34] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
+                                        className="w-full rounded-2xl border border-[#1C1A17]/15 bg-[#ffffff] px-4 py-3 text-sm font-semibold text-[#1C1A17] placeholder:text-[#1C1A17]/30 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 focus:border-[#1C1A17] transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]"
                                     />
                                 </div>
                             </div>
@@ -679,7 +679,7 @@ const InterviewReviewsPage = () => {
                             <button
                                 type="submit"
                                 disabled={!selectedReviewId || saving}
-                                className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-[#D45B34] hover:bg-[#B84A27] py-4.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40 active:scale-[0.99] transition-all shadow-lg shadow-[#D45B34]/20 cursor-pointer"
+                                className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-[#1C1A17] hover:bg-[#B84A27] py-4.5 text-[11px] font-bold uppercase tracking-[0.3em] text-white disabled:opacity-40 active:scale-[0.99] transition-all shadow-lg shadow-[#1C1A17]/20 cursor-pointer"
                             >
                                 {saving ? <Activity size={16} className="animate-spin" /> : <Send size={15} />}
                                 {saving ? 'Submitting Analysis...' : 'Send Review Analysis'}

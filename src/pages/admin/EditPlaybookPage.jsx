@@ -142,7 +142,7 @@ const EditPlaybookPage = () => {
 
                 <div className="bg-white rounded-[32px] shadow-xl overflow-hidden border border-[#1C1A17]/10">
                     {/* Header */}
-                    <div className="bg-[#D45B34] p-8 text-white">
+                    <div className="bg-[#1C1A17] p-8 text-white">
                         <div className="flex justify-between items-center">
                             <div>
                                 <h1 className="text-3xl font-black tracking-tight">
@@ -175,7 +175,7 @@ const EditPlaybookPage = () => {
                                 {activeTab === tab.id && (
                                     <motion.div 
                                         layoutId="activeTab"
-                                        className="absolute bottom-0 left-0 right-0 h-1 bg-[#D45B34] rounded-t-full"
+                                        className="absolute bottom-0 left-0 right-0 h-1 bg-[#1C1A17] rounded-t-full"
                                     />
                                 )}
                             </button>
@@ -195,7 +195,7 @@ const EditPlaybookPage = () => {
                                     <textarea 
                                         value={jsonInput}
                                         onChange={(e) => setJsonInput(e.target.value)}
-                                        className="w-full h-96 bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-4 font-mono text-xs text-[#1C1A17] outline-none transition-all resize-y shadow-inner"
+                                        className="w-full h-96 bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-4 font-mono text-xs text-[#1C1A17] outline-none transition-all resize-y shadow-inner"
                                         placeholder={'{\n  "name": "Google",\n  "slug": "google",\n  "industry": "Technology",\n  ...\n}'}
                                     />
                                     <button 
@@ -209,7 +209,7 @@ const EditPlaybookPage = () => {
                                                 toast.error('Invalid JSON. Please check syntax.');
                                             }
                                         }}
-                                        className="w-full mt-6 py-4 bg-[#D45B34] text-white rounded-xl font-bold hover:scale-[1.02] transition-transform shadow-lg"
+                                        className="w-full mt-6 py-4 bg-[#1C1A17] text-white rounded-xl font-bold hover:scale-[1.02] transition-transform shadow-lg"
                                     >
                                         Parse and Apply JSON
                                     </button>
@@ -224,7 +224,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Company Name</label>
                                         <input 
                                             type="text" name="name" value={formData.name} onChange={handleChange} required
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. Google"
                                         />
                                     </div>
@@ -232,7 +232,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Slug</label>
                                         <input 
                                             type="text" name="slug" value={formData.slug} onChange={handleChange} required
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. google"
                                         />
                                     </div>
@@ -240,7 +240,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Industry</label>
                                         <input 
                                             type="text" name="industry" value={formData.industry} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. Technology"
                                         />
                                     </div>
@@ -248,7 +248,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Category</label>
                                         <input 
                                             type="text" name="category" value={formData.category} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. Big Tech"
                                         />
                                     </div>
@@ -259,7 +259,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Logo URL</label>
                                         <input 
                                             type="text" name="logo" value={formData.logo} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="https://..."
                                         />
                                     </div>
@@ -267,7 +267,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">HQ Location</label>
                                         <input 
                                             type="text" name="hq" value={formData.hq} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. Mountain View, CA"
                                         />
                                     </div>
@@ -278,7 +278,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Exam Date</label>
                                         <input 
                                             type="text" name="exam_date" value={formData.exam_date || ''} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. August 2026 or TBA"
                                         />
                                     </div>
@@ -289,7 +289,7 @@ const EditPlaybookPage = () => {
                                                 <button
                                                     key={zone} type="button"
                                                     onClick={() => setFormData(prev => ({ ...prev, hiring_zone: zone }))}
-                                                    className={`px-6 py-3 rounded-xl font-bold capitalize transition-all ${formData.hiring_zone === zone ? 'bg-[#D45B34] text-white shadow-lg' : 'bg-[#F4F1EA] text-[#1C1A17]/40'}`}
+                                                    className={`px-6 py-3 rounded-xl font-bold capitalize transition-all ${formData.hiring_zone === zone ? 'bg-[#1C1A17] text-white shadow-lg' : 'bg-[#F4F1EA] text-[#1C1A17]/40'}`}
                                                 >
                                                     {zone}
                                                 </button>
@@ -329,7 +329,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Hiring Seasons</label>
                                         <input 
                                             type="text" name="hiring_seasons" value={formData.hiring_seasons} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. Aug - Oct"
                                         />
                                     </div>
@@ -337,7 +337,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Hiring Type</label>
                                         <input 
                                             type="text" name="hiring_type" value={formData.hiring_type} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="e.g. FTE & Internships"
                                         />
                                     </div>
@@ -348,7 +348,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Difficulty</label>
                                         <select 
                                             name="difficulty" value={formData.difficulty} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all appearance-none"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all appearance-none"
                                         >
                                             <option>Easy</option>
                                             <option>Medium</option>
@@ -359,14 +359,14 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Rounds Count</label>
                                         <input 
                                             type="number" name="rounds_count" value={formData.rounds_count} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Difficulty Level (1-5)</label>
                                         <input 
                                             type="number" name="difficulty_level" value={formData.difficulty_level} onChange={handleChange} min="1" max="5"
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                         />
                                     </div>
                                 </div>
@@ -376,7 +376,7 @@ const EditPlaybookPage = () => {
                                     <textarea 
                                         value={formData.roles.join('\n')}
                                         onChange={(e) => setFormData(prev => ({ ...prev, roles: e.target.value.split('\n').filter(r => r.trim()) }))}
-                                        className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
+                                        className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
                                         placeholder="Software Engineer&#10;Data Scientist"
                                     />
                                 </div>
@@ -665,7 +665,7 @@ const EditPlaybookPage = () => {
 
                         {activeTab === 'prep' && (
                             <div className="space-y-8">
-                                <div className="p-6 bg-[#D45B34]/5 rounded-3xl space-y-4">
+                                <div className="p-6 bg-[#1C1A17]/5 rounded-3xl space-y-4">
                                     <h4 className="font-black text-[#1C1A17] flex items-center gap-2">
                                         <DollarSign size={18} /> Compensation Details
                                     </h4>
@@ -688,7 +688,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Preparation Focus</label>
                                         <textarea 
                                             name="prep_focus" value={formData.prep_focus} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
                                             placeholder="What should candidates focus on?"
                                         />
                                     </div>
@@ -696,7 +696,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">Insider Scoop</label>
                                         <textarea 
                                             name="insider_scoop" value={formData.insider_scoop} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-4 font-bold text-[#1C1A17] outline-none transition-all h-32"
                                             placeholder="Expert tips or internal insights..."
                                         />
                                     </div>
@@ -704,7 +704,7 @@ const EditPlaybookPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-widest text-[#1C1A17]/40 mb-2">External Jobs Link</label>
                                         <input 
                                             type="text" name="jobs_link" value={formData.jobs_link} onChange={handleChange}
-                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#D45B34]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
+                                            className="w-full bg-[#F4F1EA]/50 border-2 border-transparent focus:border-[#1C1A17]/20 rounded-xl p-3 font-bold text-[#1C1A17] outline-none transition-all"
                                             placeholder="https://..."
                                         />
                                     </div>

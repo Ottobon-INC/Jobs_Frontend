@@ -83,7 +83,7 @@ const FeedbackDashboard = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-black rounded-2xl shadow-lg">
+            <div className="p-3 bg-[#1C1A17] rounded-2xl shadow-lg">
               <BarChart3 className="text-white" size={24} />
             </div>
             <h1 className="text-4xl font-bold text-gray-900">Feedback Intelligence</h1>

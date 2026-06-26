@@ -125,7 +125,7 @@ const ManageCoursesPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D45B34]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1C1A17]"></div>
       </div>
     );
   }
@@ -140,7 +140,7 @@ const ManageCoursesPage = () => {
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#D45B34] text-white rounded-xl font-bold hover:bg-[#D45B34]/90 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#1C1A17] text-white rounded-xl font-bold hover:bg-[#1C1A17]/90 transition-all shadow-sm"
         >
           <PlusIcon />
           Add New Course
@@ -231,7 +231,7 @@ const ManageCoursesPage = () => {
       {/* Add / Edit Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#D45B34]/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1A17]/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -250,7 +250,7 @@ const ManageCoursesPage = () => {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]/40"
                       placeholder="e.g. Next.js Foundations"
                     />
                   </div>
@@ -260,7 +260,7 @@ const ManageCoursesPage = () => {
                       required
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-medium text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40 min-h-[100px]"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-medium text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]/40 min-h-[100px]"
                       placeholder="e.g. Master routing, rendering, data fetching, and layouts in App Router."
                     />
                   </div>
@@ -271,7 +271,7 @@ const ManageCoursesPage = () => {
                       required
                       value={formData.redirect_url}
                       onChange={(e) => setFormData({ ...formData, redirect_url: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#D45B34]/40"
+                      className="w-full px-4 py-3 bg-[#F4F1EA] border border-[#1C1A17]/10 rounded-xl text-sm font-bold text-[#1C1A17] focus:outline-none focus:border-[#1C1A17]/40"
                       placeholder="e.g. https://nextjs.org/learn"
                     />
                   </div>
@@ -286,7 +286,7 @@ const ManageCoursesPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-[2] py-4 rounded-2xl bg-[#D45B34] text-white font-bold text-sm hover:bg-[#D45B34]/90 transition-all shadow-sm"
+                      className="flex-[2] py-4 rounded-2xl bg-[#1C1A17] text-white font-bold text-sm hover:bg-[#1C1A17]/90 transition-all shadow-sm"
                     >
                       {editingCourse ? 'Save Changes' : 'Create Course'}
                     </button>

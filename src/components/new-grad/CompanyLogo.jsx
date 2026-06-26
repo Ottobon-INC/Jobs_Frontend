@@ -249,11 +249,7 @@ export const CompanyLogo = ({ company, className = "w-16 h-16", iconSize = 24 })
         LOGO_MAP[baseName],
         externalLogo,
         `https://logos.hunter.io/${slug}.com`,
-        `https://logos.hunter.io/${baseName}.com`,
-        `https://unavatar.io/${slug}.com?fallback=false`,
-        `https://unavatar.io/${baseName}.com?fallback=false`,
-        `https://www.google.com/s2/favicons?sz=64&domain_url=${slug}.com`,
-        `https://www.google.com/s2/favicons?sz=64&domain_url=${baseName}.com`
+        `https://logos.hunter.io/${baseName}.com`
     ].filter(Boolean))];
 
     const hasValidSource = imgIdx < sources.length;

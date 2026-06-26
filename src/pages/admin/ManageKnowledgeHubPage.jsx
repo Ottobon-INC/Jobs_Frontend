@@ -242,13 +242,13 @@ const ManageKnowledgeHubPage = () => {
                     </div>
 
                     {/* Tab Switcher */}
-                    <div className="bg-[#D45B34]/5 p-1 rounded-xl flex gap-1 self-start">
+                    <div className="bg-[#1C1A17]/5 p-1 rounded-xl flex gap-1 self-start">
                         <button
                             onClick={() => setActiveTab('global')}
                             className={`px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                 activeTab === 'global' 
-                                    ? 'bg-[#D45B34] text-white shadow-md' 
-                                    : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
+                                    ? 'bg-[#1C1A17] text-white shadow-md' 
+                                    : 'text-[#1C1A17]/75 hover:bg-[#1C1A17]/5'
                             }`}
                         >
                             <span className="flex items-center gap-1.5">
@@ -259,8 +259,8 @@ const ManageKnowledgeHubPage = () => {
                             onClick={() => setActiveTab('company')}
                             className={`px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                 activeTab === 'company' 
-                                    ? 'bg-[#D45B34] text-white shadow-md' 
-                                    : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
+                                    ? 'bg-[#1C1A17] text-white shadow-md' 
+                                    : 'text-[#1C1A17]/75 hover:bg-[#1C1A17]/5'
                             }`}
                         >
                             <span className="flex items-center gap-1.5">
@@ -305,7 +305,7 @@ const ManageKnowledgeHubPage = () => {
 
                             {/* Prompt Editing Area */}
                             <div className="space-y-6">
-                                <div className="bg-[#D45B34]/5 rounded-2xl p-5 border border-[#1C1A17]/10">
+                                <div className="bg-[#1C1A17]/5 rounded-2xl p-5 border border-[#1C1A17]/10">
                                     <h3 className="text-xs font-black uppercase tracking-wider text-[#1C1A17]/60 mb-2 flex items-center gap-1.5">
                                         <AlertCircle size={14} /> Quick Guide
                                     </h3>
@@ -325,7 +325,7 @@ const ManageKnowledgeHubPage = () => {
                                         onChange={(e) => setGlobalPrompt(e.target.value)}
                                         placeholder="Paste your system prompt instructions here..."
                                         rows={16}
-                                        className="w-full bg-[#F4F1EA]/30 border border-[#1C1A17]/15 rounded-2xl p-5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed shadow-inner"
+                                        className="w-full bg-[#F4F1EA]/30 border border-[#1C1A17]/15 rounded-2xl p-5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed shadow-inner"
                                     />
                                 </div>
 
@@ -344,7 +344,7 @@ const ManageKnowledgeHubPage = () => {
                                         disabled={loading || !isGlobalModified}
                                         className={`flex items-center gap-2 px-7 py-3 rounded-xl font-bold transition-all shadow-md text-sm cursor-pointer ${
                                             isGlobalModified 
-                                                ? 'bg-[#D45B34] text-white hover:scale-105 active:scale-95' 
+                                                ? 'bg-[#1C1A17] text-white hover:scale-105 active:scale-95' 
                                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
                                         }`}
                                     >
@@ -379,7 +379,7 @@ const ManageKnowledgeHubPage = () => {
                                             placeholder="e.g. Google Android Engineer Specs"
                                             value={newTitle}
                                             onChange={(e) => setNewTitle(e.target.value)}
-                                            className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
+                                            className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                             required
                                         />
                                     </div>
@@ -394,7 +394,7 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="e.g. Google"
                                                 value={newCompany}
                                                 onChange={(e) => setNewCompany(e.target.value)}
-                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                                 required
                                             />
                                         </div>
@@ -407,7 +407,7 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="e.g. Android Engineer"
                                                 value={newRole}
                                                 onChange={(e) => setNewRole(e.target.value)}
-                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-sm text-[#1C1A17] font-bold placeholder-[#1C1A17]/35"
                                             />
                                         </div>
                                     </div>
@@ -417,14 +417,14 @@ const ManageKnowledgeHubPage = () => {
                                         <label className="block text-xs font-black uppercase tracking-wider text-[#1C1A17]/55 mb-2">
                                             Content Source Type
                                         </label>
-                                        <div className="bg-[#D45B34]/5 p-1 rounded-xl flex gap-1 w-full">
+                                        <div className="bg-[#1C1A17]/5 p-1 rounded-xl flex gap-1 w-full">
                                             <button
                                                 type="button"
                                                 onClick={() => setSourceType('text')}
                                                 className={`flex-1 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                                     sourceType === 'text' 
-                                                        ? 'bg-[#D45B34] text-white shadow' 
-                                                        : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
+                                                        ? 'bg-[#1C1A17] text-white shadow' 
+                                                        : 'text-[#1C1A17]/75 hover:bg-[#1C1A17]/5'
                                                 }`}
                                             >
                                                 Write Note
@@ -434,8 +434,8 @@ const ManageKnowledgeHubPage = () => {
                                                 onClick={() => setSourceType('file')}
                                                 className={`flex-1 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 ${
                                                     sourceType === 'file' 
-                                                        ? 'bg-[#D45B34] text-white shadow' 
-                                                        : 'text-[#1C1A17]/75 hover:bg-[#D45B34]/5'
+                                                        ? 'bg-[#1C1A17] text-white shadow' 
+                                                        : 'text-[#1C1A17]/75 hover:bg-[#1C1A17]/5'
                                                 }`}
                                             >
                                                 Upload Doc (PDF/TXT)
@@ -457,7 +457,7 @@ const ManageKnowledgeHubPage = () => {
                                                 placeholder="Write specific guidelines, topics to target, or culture questions to ask..."
                                                 value={textContent}
                                                 onChange={(e) => setTextContent(e.target.value)}
-                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#D45B34]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed"
+                                                className="w-full bg-[#F4F1EA]/40 border border-[#1C1A17]/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1C1A17]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 leading-relaxed"
                                                 required={sourceType === 'text'}
                                             />
                                         </motion.div>
@@ -473,7 +473,7 @@ const ManageKnowledgeHubPage = () => {
                                             <div className={`border border-dashed transition-colors rounded-2xl p-6 text-center cursor-pointer relative ${
                                                  selectedFile 
                                                      ? 'border-green-500 bg-green-50/20' 
-                                                     : 'border-[#1C1A17]/20 hover:border-[#D45B34]/50 bg-[#F4F1EA]/20'
+                                                     : 'border-[#1C1A17]/20 hover:border-[#1C1A17]/50 bg-[#F4F1EA]/20'
                                              }`}>
                                                 <input
                                                     type="file"
@@ -499,7 +499,7 @@ const ManageKnowledgeHubPage = () => {
                                     <button
                                         type="submit"
                                         disabled={formSubmitting}
-                                        className="w-full flex items-center justify-center gap-2 bg-[#D45B34] text-white py-3.5 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md mt-4 text-xs uppercase tracking-wider cursor-pointer"
+                                        className="w-full flex items-center justify-center gap-2 bg-[#1C1A17] text-white py-3.5 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md mt-4 text-xs uppercase tracking-wider cursor-pointer"
                                     >
                                         {formSubmitting ? (
                                             <>
@@ -531,7 +531,7 @@ const ManageKnowledgeHubPage = () => {
                                             placeholder="Search company or title..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full bg-[#F4F1EA]/50 border border-[#1C1A17]/10 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-[#D45B34]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 font-medium"
+                                            className="w-full bg-[#F4F1EA]/50 border border-[#1C1A17]/10 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-[#1C1A17]/10 text-xs text-[#1C1A17] placeholder-[#1C1A17]/35 font-medium"
                                         />
                                     </div>
                                 </div>
@@ -559,11 +559,11 @@ const ManageKnowledgeHubPage = () => {
                                             >
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="bg-[#D45B34] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
+                                                        <span className="bg-[#1C1A17] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
                                                             {entry.company_name}
                                                         </span>
                                                         {entry.role_name && (
-                                                            <span className="bg-[#D45B34]/5 text-[#1C1A17] border border-[#1C1A17]/15 px-2 py-0.5 rounded text-[10px] font-bold">
+                                                            <span className="bg-[#1C1A17]/5 text-[#1C1A17] border border-[#1C1A17]/15 px-2 py-0.5 rounded text-[10px] font-bold">
                                                                 {entry.role_name}
                                                             </span>
                                                         )}
@@ -584,7 +584,7 @@ const ManageKnowledgeHubPage = () => {
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     <button
                                                         onClick={() => setPreviewEntry(entry)}
-                                                        className="flex items-center gap-1 bg-[#D45B34]/5 hover:bg-[#D45B34]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
+                                                        className="flex items-center gap-1 bg-[#1C1A17]/5 hover:bg-[#1C1A17]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
                                                         title="Preview Content"
                                                     >
                                                         <Eye size={14} />
@@ -595,7 +595,7 @@ const ManageKnowledgeHubPage = () => {
                                                             href={entry.file_url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center gap-1 bg-[#D45B34]/5 hover:bg-[#D45B34]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
+                                                            className="flex items-center gap-1 bg-[#1C1A17]/5 hover:bg-[#1C1A17]/10 text-[#1C1A17] p-2.5 rounded-lg transition-colors font-bold text-xs uppercase"
                                                             title="Download File"
                                                         >
                                                             <FileUp size={14} className="rotate-180" />
@@ -627,7 +627,7 @@ const ManageKnowledgeHubPage = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/50 z-[2000] flex items-center justify-center p-4 backdrop-blur-xs"
+                            className="fixed inset-0 bg-[#1C1A17]/50 z-[2000] flex items-center justify-center p-4 backdrop-blur-xs"
                             onClick={() => setPreviewEntry(null)}
                         >
                             <motion.div 
@@ -640,13 +640,13 @@ const ManageKnowledgeHubPage = () => {
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 {/* Modal Header */}
-                                <div className="p-6 border-b border-[#1C1A17]/10 bg-[#D45B34]/5">
+                                <div className="p-6 border-b border-[#1C1A17]/10 bg-[#1C1A17]/5">
                                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                                        <span className="bg-[#D45B34] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
+                                        <span className="bg-[#1C1A17] text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
                                             {previewEntry.company_name}
                                         </span>
                                         {previewEntry.role_name && (
-                                            <span className="bg-[#D45B34]/10 text-[#1C1A17] px-2 py-0.5 rounded text-[10px] font-bold">
+                                            <span className="bg-[#1C1A17]/10 text-[#1C1A17] px-2 py-0.5 rounded text-[10px] font-bold">
                                                 {previewEntry.role_name}
                                             </span>
                                         )}
@@ -668,7 +668,7 @@ const ManageKnowledgeHubPage = () => {
                                 <div className="p-4 border-t border-[#1C1A17]/10 flex justify-end bg-white">
                                     <button
                                         onClick={() => setPreviewEntry(null)}
-                                        className="bg-[#D45B34] text-white px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider cursor-pointer"
+                                        className="bg-[#1C1A17] text-white px-6 py-2.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider cursor-pointer"
                                     >
                                         Close Preview
                                     </button>

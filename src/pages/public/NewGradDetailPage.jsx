@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
     ArrowLeft, 
@@ -29,6 +29,7 @@ import { COMPANIES } from '../../data/newGradData';
 
 const NewGradDetailPage = () => {
     const { slug } = useParams();
+    const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState('overview');
     const [company, setCompany] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -80,12 +81,12 @@ const NewGradDetailPage = () => {
         <div className="min-h-screen bg-[#F4F1EA]">
             {/* Header Navigation */}
             <div className="bg-[#222222] py-4 px-6 flex items-center justify-between border-b border-white/5 sticky top-0 z-50">
-                <Link 
-                    to="/new-grad" 
-                    className="inline-flex items-center gap-2 text-[#ffffff]/60 hover:text-[#ffffff] transition-colors text-[10px] font-black uppercase tracking-[0.2em]"
+                <button 
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-2 text-[#ffffff]/60 hover:text-[#ffffff] transition-colors text-[10px] font-black uppercase tracking-[0.2em] outline-none"
                 >
-                    <ArrowLeft size={14} strokeWidth={3} /> Back to Playbooks
-                </Link>
+                    <ArrowLeft size={14} strokeWidth={3} /> Back
+                </button>
                 <div className="flex items-center gap-2 text-white/90">
                     <ShieldCheck size={14} className="text-green-400" />
                     <span className="text-[10px] font-black uppercase tracking-[0.3em]">Verified Playbook</span>
