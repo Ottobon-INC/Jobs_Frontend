@@ -85,8 +85,9 @@
   text-decoration: none;
   border-radius: 9999px;
   box-sizing: border-box;
+  font-family: var(--font-sans);
   font-weight: 800;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.1em;

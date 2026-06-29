@@ -274,7 +274,7 @@ const PillNav = ({
                       onMouseLeave={() => handleLeave(i)}
                       style={{
                         border: 'none',
-                        font: 'inherit',
+                        fontFamily: 'inherit',
                         outline: 'none',
                         cursor: 'pointer'
                       }}
